@@ -1,0 +1,486 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="chkPublishResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chkPublishResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ddlNewsCatListResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="fluNewsCategoryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gdvManageNewsCategoryResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gdvManageNewsCategoryResource1.EmptyDataText" xml:space="preserve">
+    <value>..........News Category Not Found..........</value>
+  </data>
+  <data name="gdvManageNewsCategoryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gdvManageNewsResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gdvManageNewsResource1.EmptyDataText" xml:space="preserve">
+    <value>.........No News filed under this category.........</value>
+  </data>
+  <data name="gdvManageNewsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbAddNewsCategoryResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbAddNewsCategoryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbAddNewsResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbAddNewsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbCancelResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbCancelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbDeleteNewsCategoryResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbDeleteNewsCategoryResource1.ToolTip" xml:space="preserve">
+    <value>Delete News Category</value>
+  </data>
+  <data name="imbDeleteResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbDeleteResource1.ToolTip" xml:space="preserve">
+    <value>Delete News</value>
+  </data>
+  <data name="imbEditNewsCategoryResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbEditNewsCategoryResource1.ToolTip" xml:space="preserve">
+    <value>Edit News Category</value>
+  </data>
+  <data name="imbEditResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbEditResource1.ToolTip" xml:space="preserve">
+    <value>Edit News</value>
+  </data>
+  <data name="imbNewsCancelResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbNewsCancelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbUpdateNewsResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbUpdateNewsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbUpdateResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imbUpdateResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgIconResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgIconResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ImgNewsCategoryResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ImgNewsCategoryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddNewsCategoryResource1.Text" xml:space="preserve">
+    <value>Add News Category</value>
+  </data>
+  <data name="lblAddNewsCategoryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAddNewsResource1.Text" xml:space="preserve">
+    <value>Add News</value>
+  </data>
+  <data name="lblAddNewsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCancelResource1.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="lblCancelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCategoryDescriptionResource1.Text" xml:space="preserve">
+    <value>News Category Description:</value>
+  </data>
+  <data name="lblCategoryDescriptionResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblCategoryNameResource1.Text" xml:space="preserve">
+    <value>News Category Name:</value>
+  </data>
+  <data name="lblCategoryNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblErrorResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblErrorResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblIconResource1.Text" xml:space="preserve">
+    <value>News Category Image:</value>
+  </data>
+  <data name="lblIconResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblManageNewsCategoryHelpResource1.Text" xml:space="preserve">
+    <value>In this section, you can manage the News Category for the News Module</value>
+  </data>
+  <data name="lblManageNewsCategoryHelpResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblManageNewsHelpResource1.Text" xml:space="preserve">
+    <value>In this section, you can manage the News for the News Module</value>
+  </data>
+  <data name="lblManageNewsHelpResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNewsCancelResource1.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="lblNewsCancelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNewsCategoryDateResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNewsCategoryDescriptionResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNewsCategoryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNewsCatListResource1.Text" xml:space="preserve">
+    <value>News Category:</value>
+  </data>
+  <data name="lblNewsCatListResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNewsDateResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblNewsTitleResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblPublishResource1.Text" xml:space="preserve">
+    <value>Publish</value>
+  </data>
+  <data name="lblPublishResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblShortNewsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblUpdateNewsResource1.Text" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="lblUpdateNewsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblUpdateResource1.Text" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="lblUpdateResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddNewsCategoryResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddNewsCategoryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddNewsResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlAddNewsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlManageNewsCategoryResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlManageNewsCategoryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlNewsInGridResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlNewsInGridResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rfvCategoryDescriptionResource1.ErrorMessage" xml:space="preserve">
+    <value>&lt;b&gt; Description is Required &lt;/b&gt;</value>
+  </data>
+  <data name="rfvCategoryDescriptionResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rfvCategoryDescriptionResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rfvCategoryNameResource1.ErrorMessage" xml:space="preserve">
+    <value>&lt;b&gt;Name is required&lt;/b&gt;</value>
+  </data>
+  <data name="rfvCategoryNameResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rfvCategoryNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TabContainerNewsEditResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TabPanelManageNewsCategoryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TabPanelManageNewsResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.HeaderText" xml:space="preserve">
+    <value>News Title</value>
+  </data>
+  <data name="TemplateFieldResource10.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource10.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource10.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource11.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource11.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource11.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource2.HeaderText" xml:space="preserve">
+    <value>News Date</value>
+  </data>
+  <data name="TemplateFieldResource3.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource3.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource3.HeaderText" xml:space="preserve">
+    <value>News Short Description</value>
+  </data>
+  <data name="TemplateFieldResource4.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource4.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource4.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource5.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource5.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource5.HeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource6.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource6.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource6.HeaderText" xml:space="preserve">
+    <value>News Category</value>
+  </data>
+  <data name="TemplateFieldResource7.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource7.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource7.HeaderText" xml:space="preserve">
+    <value>News Category Description</value>
+  </data>
+  <data name="TemplateFieldResource8.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource8.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource8.HeaderText" xml:space="preserve">
+    <value>IconFile</value>
+  </data>
+  <data name="TemplateFieldResource9.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource9.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource9.HeaderText" xml:space="preserve">
+    <value>Added On</value>
+  </data>
+  <data name="txtCategoryDescriptionResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtCategoryDescriptionResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtCategoryNameResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtCategoryNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+</root>

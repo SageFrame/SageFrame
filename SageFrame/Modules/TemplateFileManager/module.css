@@ -1,0 +1,19 @@
+﻿/*template file manager */
+.sfTFM{ background:#ccc;}
+.sfTFMbreadcrumb { background:#d1d1d1; padding:8px 5px; margin:5px 0 10px 0; font:normal 11px Arial, Helvetica, sans-serif; color:#272727; text-shadow:1px 1px 0 #e7e7e7; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; border-bottom:1px solid #bdbdbd; }
+.sfTFMbreadcrumb a { font:normal 11px Arial, Helvetica, sans-serif; color:#272727; text-shadow:1px 1px 0 #e7e7e7; text-decoration:underline; background:url(images/black-arrow.png) no-repeat right; padding:0 12px 0 0;}
+.sfTFMbreadcrumb a:hover{ text-decoration:none; color:#000; }
+.sfFormwrapper .sfTFMgrid table td{ padding:4px 10px;}
+.sfFormwrapper .sfTFMgrid table td a{ font:bold 12px Arial, Helvetica, sans-serif; color:#000; }
+
+a.sfScreenshots{background:url(images/screenshots.png) no-repeat 0 50%; padding:0 0 0 25px;}
+a.sfJs{background:url(images/js.png) no-repeat 0 50%; padding:0 0 0 25px;}
+a.sfFolder{background:url(images/folder.png) no-repeat 0 50%; padding:0 0 0 25px;}
+a.sfCss{background:url(images/css.png) no-repeat 0 50%; padding:0 0 0 25px;}
+a.sfAscx{background:url(images/ascx.png) no-repeat 0 50%; padding:0 0 0 25px;}
+a.sfIco,a.sfPng,a.sfGif,a.sfJpg{background:url(images/picture.png) no-repeat 0 50%; padding:0 0 0 25px;}
+a.sfXml{background:url(images/xml.png) no-repeat 0 50%; padding:0 0 0 25px;}
+
+input.sfBack{background:url(images/up.png) no-repeat 0 50%; padding:0 0 0 25px; display:inline-block; min-height:18px; cursor:pointer; border:none;}
+input.sfBack:hover{background:url(images/up-hover.png) no-repeat 0 50%;}
+.sfBtn, .sfEdit a{ margin-bottom:0; }

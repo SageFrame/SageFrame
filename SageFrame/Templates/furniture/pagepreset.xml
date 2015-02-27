@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<pagepreset>
+  <layout>
+    <preset layout="Contact">Contact-Us</preset>
+    <preset layout="frontpage">Home</preset>
+    <preset layout="innerpage">All</preset>
+  </layout>
+  <theme>default</theme>
+  <width>wide</width>
+</pagepreset>

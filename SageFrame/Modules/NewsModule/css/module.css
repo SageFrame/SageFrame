@@ -1,0 +1,73 @@
+.sfNewsitem {
+	border-bottom:1px dotted #ccc;
+	margin:0 0 7px 0;
+}
+.sfNewsitem span.sfNewsdate {
+	font-size:11px;
+	font-weight:normal;
+}
+/* news detail page */
+.sfNewsholder .sfFormwrapper {
+	margin:10px 0;
+}
+.sfNewsholder .sfFormwrapper .sfFormlabel {
+	margin-right:60px;
+}
+.sfNewsholder .sfFormwrapper input.sfInputbox {
+	padding:3px 6px;
+}
+.sfNewsholder .sfFormwrapper select.sfListmenu {
+	padding:3px 6px;
+	width:150px;
+}
+/* grid wrapper */
+.sfNewsholder .sfGridwrapper .sfNewsinfo {
+	border:none
+}
+.sfNewsholder .sfGridwrapper table {
+	border:none;
+}
+.sfNewsholder .sfGridwrapper tr td {
+	padding:6px 5px;
+	text-shadow:0 1px 1px #fff;
+}
+.sfGridwrapper td p, .sfGridwrapper td {
+	vertical-align:middle;
+}
+.sfNewsholder .sfGridwrapper table tr.sfOdd {
+	background:url(../images/grid-bg1.gif) repeat-x bottom #f2f2f2;
+}
+.sfNewsholder .sfGridwrapper table tr.sfEven {
+	background:url(../images/grid-bg2.gif) repeat-x bottom #ebebeb;
+}
+.sfNewsholder .sfGridwrapper table tr.sfOdd:hover, .sfGridwrapper table tr.sfEven:hover {
+	background:url(../images/grid-bg-hover.gif) repeat-x bottom #e0e0e0;
+}
+/* button wrapper */
+.sfNewsholder .sfButtonwrapper {
+	margin:10px 0;
+}
+.sfNewsholder .sfButtonwrapper label.sfFormlabel {
+	margin:0 10px;
+	cursor:pointer;
+}
+.sfNewsitem {
+	border-bottom:1px dotted #a2a2a2;
+	margin:0 0 10px 0;
+}
+.sfNewsitem h3 {
+	margin:0 0 5px 0;
+}
+.sfNewsitem span.sfNewsdate {
+	font-size:11px;
+}
+.sfNewsdate .sfBtn {
+}
+.sfLeftB .sfNews .sfNewsitem h3 {
+	margin:0;
+	padding:0;
+}
+.sfLeftB .sfNews .sfNewsitem span.sfNewsdate {
+	padding:0 0 5px 0;
+	display:inline-block;
+}

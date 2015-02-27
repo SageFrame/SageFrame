@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout name="layout_all">
+  <section name="sfHeader">
+    <placeholder name="headertop" width="20">bdlogo,bdnavigation</placeholder>
+    <placeholder name="banner">bdbanner</placeholder>
+  </section>
+  <section name="sfContent">
+    <placeholder name="righta" width="31">rightb</placeholder>
+    <placeholder name="middlemaincurrent">innercontent</placeholder>
+  </section>
+  <section name="sfFooter">
+    <placeholder name="footerbtn" mode="fixed">bdcopyright,bdfootermenu</placeholder>
+  </section>
+</layout>

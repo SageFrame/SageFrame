@@ -1,0 +1,378 @@
+﻿/* basic theme */
+#templateList {
+	margin:20px 0 0 0;
+}
+.sfTemplateinfo span.sfLabel {
+	font-weight:bold;
+}
+.sfCreatetemplate span.sfFormlabel, .sfCreatetemplate input.sfBtn, .sfCreatetemplate input.sfInputbox, .sfCreatetemplate .uploader, .sfCreatetemplate #sfCreateTemplate {
+	float:left;
+	margin:0 10px 0 0;
+}
+.sfCreatetemplate span.sfFormlabel {
+	padding:5px 0 0;
+}
+.sfCreatetemplate {
+}
+/* template list */
+#templateList {
+	margin:20px 0 0 0;
+}
+#templateList .sfTemplateholder {
+	width: 352px;
+	float:left;
+	border: 1px solid #d9d9d9;
+	padding: 10px;
+	background:#fff;
+	margin:0 10px 20px 10px;
+	position:relative;
+	opacity:0.6;
+}
+#templateList .sfTemplateholder:hover, #templateList .sfActivetemplate {
+	opacity:100;
+}
+#templateList .sfTemplatethumb {
+	float:left;
+	height: 98px;
+	width: 134px;
+	text-align:center;
+	background:#d7d7d7;
+	overflow:hidden;
+	border:1px solid #e5e5e5;
+	background:#fff;
+	padding:2px;
+	margin:0 20px 0 0;
+	overflow:hidden;
+}
+#templateList .sfTemplatethumb img {
+	width:134px;
+	height:98px;
+}
+/*template detail*/ 
+.sfTemplatedetail {
+	padding: 5px 0;
+	min-height: 33px;
+	cursor: pointer;
+	overflow:hidden;
+}
+.sfTemplatedetail ul {
+	margin: 0;
+	padding: 0;
+}
+.sfTemplatedetail ul li {
+	list-style: none;
+	font: bold 11px Arial, Helvetica;
+	color:#757575;
+	border:none;
+	background:none;
+}
+.sfTemplatedetail ul li.author span, .sfTemplatedetail ul li.author span a {
+	font: 11px Arial, Helvetica, sans-serif;
+	color: #4f4e4e;
+}
+.sfTemplatedetail li.author span a {
+	color: #3e6d7f;
+}
+.sfTemplatedetail ul li.title span {
+	color: #686868;
+	font: bold 14px/16px Arial, Helvetica;
+	padding: 0 0 5px;
+}
+/*button*/
+#templateList .sfButtonwrapper {
+	overflow: hidden;
+	position:absolute;
+	bottom:10px;
+	right:5px;
+}
+#templateList .sfButtonwrapper ul li {
+	float:left;
+}
+#templateList .sfButtonwrapper ul li a {
+	background:url(../images/gray-btn.gif) repeat-x;
+	border:1px solid#bfbfbf;
+	color:#636363;
+	text-shadow:1px 1px 0 #f5f5f5;
+	margin:0 5px 0 0;
+	font:normal 12px Arial, Helvetica, sans-serif;
+	padding:4px 10px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	cursor:pointer;
+	display:inline-block;
+}
+#templateList .sfButtonwrapper ul li a:hover {
+	text-decoration:none;
+}
+#templateList .sfButtonwrapper ul li a:hover {
+	background:url(../images/gray-btn-hover.gif) repeat-x;
+}
+#templateList .sfActivetemplate .sfButtonwrapper ul li.sfDelete a {
+	background:url(../images/red-btn.gif) repeat-x;
+	border:1px solid #ae3b13;
+	color:#fff;
+	text-shadow:none;
+}
+#templateList .sfActivetemplate .sfButtonwrapper ul li.sfDelete a:hover {
+	background:url(../images/red-btn-hover.gif) repeat-x;
+}
+#templateList .sfActivetemplate .sfButtonwrapper ul li.activate a, #templateList .sfActivetemplate .sfButtonwrapper ul li.activate a:hover {
+	background:url(../images/btn-bg.png) repeat-x;
+	color:#fff;
+	text-shadow:none;
+	border:1px solid #119ae2;
+}
+/*active template*/ 
+#templateList .sfTemplateholder:hover, #templateList .sfActivetemplate {
+	border: 1px solid #fff;
+	background-color: #fff;
+	-moz-box-shadow: 0 0 5px #ccc;
+	-webkit-box-shadow: 0 0 5px #ccc;
+	box-shadow: 0 0 5px #ccc;
+}
+/* template preview pop up */ 
+#imagePreview {
+	text-align:center;
+	overflow:hidden;
+}
+#imageThumbs {
+	overflow:hidden;
+	margin:10px 0;
+}
+#imageThumbs a {
+	float:left;
+	margin:0 10px 0 0;
+}
+#imageThumbs a img {
+	width:100px;
+	height:80px;
+	background:#fff;
+	padding:4px;
+	border:1px solid #ccc;
+}
+/* preset (layout) */
+#presetsDiv fieldset {
+	background:#fff;
+}
+#presetsDiv fieldset #activeLayoutList ul li {
+	margin:5px;
+	margin:0 0 10px 0;
+}
+#presetsDiv fieldset #activeLayoutList ul li label {
+	float:left;
+	min-width:150px;
+	margin:0 10px 0 0;
+	text-align:center;
+	width:180px;
+}
+#presetsDiv fieldset #activeLayoutList ul li select {
+	float:left;
+	width:150px;
+}
+#presetsDiv fieldset #activeLayoutList ul li span.customize {
+	float:left;
+	margin:0 5px;
+	padding:7px 0 0;
+	cursor: pointer;
+}
+#presetsDiv fieldset #activeLayoutList ul li .sfPresetpages {
+	float:left;
+}
+#presetsDiv fieldset #activeLayoutList ul li .sfPresetpages ul li {
+	float:left;
+	margin:0 5px;
+	font:normal 11px/22px Arial, Helvetica, sans-serif;
+	background:#fff;
+	padding:0 5px;
+	border:1px solid #e8e8e8;
+}
+#presetsDiv fieldset #activeLayoutList ul li .sfPresetpages ul li span img {
+	vertical-align:middle;
+	cursor:pointer;
+	margin-left:3px;
+}
+#presetPages span.sfDelete {
+	float: right;
+	margin:0 5px;
+	cursor:pointer;
+}
+#divPagePresets ul#pageTree li span {
+	font:bold 12px Arial, Helvetica, sans-serif;
+	text-shadow:1px 1px 0 #fff;
+	color:#1193c5;
+	border-bottom:1px dotted #d4d4d4;
+	display:block;
+	padding:5px 10px;
+	cursor:pointer;
+}
+#divPagePresets ul#pageTree li ul li span {
+	font-weight:normal;
+}
+#divPagePresets ul#pageTree li span.sfActivepage {
+	background:#b5e3f5;
+	border:none;
+	border-bottom:1px solid #fff;
+	color:#333;
+}
+#divPagePresets ul#pageTree li span.sfAssigned {
+	background:#c0c0c0;
+	border:none;
+	border-bottom:1px solid #fff;
+	color:#666;
+	text-shadow:none;
+}
+.sfPopup .controls {
+	background:#fff;
+	padding:5px;
+	min-width:250px;
+}
+.sfPopup .controls .sftype1 {
+	overflow:hidden;
+	padding:5px;
+	background:#f2f2f2;
+}
+/* preset (thame) +  preset (width) */
+#activeThemeList, #activeWidthList {
+	margin:0 0 15px 0;
+}
+#activeThemeList ul li, #activeWidthList ul li, #presetsDiv fieldset #activeLayoutList ul li label {
+	float:left;
+	padding:5px 15px;
+	background:#f2f2f2;
+	margin:0 10px 0 0;
+	font-weight:bold;
+	cursor:pointer;
+	font-size:12px;
+	border:1px solid #e5e5e5;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	color:#444;
+}
+#presetsDiv fieldset #activeLayoutList ul li label {
+	cursor:default;
+}
+#activeThemeList ul li:hover, #activeWidthList ul li:hover {
+	background:#fff;
+	color:#000;
+}
+#activeThemeList ul li.sfActive, #activeWidthList ul li.sfActive, #activeLayoutList ul li label.sfActive {
+	background:#BAE1F0 !important;
+	color:#0b83b3 !important;
+	text-shadow:1px 1px 0 #dcf5ff;
+	border:1px solid #55b2d7 !important;
+}
+/* new css */
+.sflayoutbuilderhead {
+	font:bold 12px Arial, Helvetica, sans-serif;
+	padding:6px;
+	cursor:pointer;
+	color:#00719C;
+}
+.sflayoutbuilderhead:hover {
+	color:#0094DE;
+}
+.sfBuilder, .sflayoutbuilderhead {
+	background:#ddd;
+	-moz-border-radius:0;
+	-webkit-border-radius:0;
+	border-radius:0;
+}
+.sfFormwrapper input.sfInputlm, .sfFormwrapper select.sfInputlm {
+	width:94px;
+}
+.sfFormwrapper .sfBuilder td {
+	padding:2px 5px;
+}
+.sfFormwrapper .sfBuilder td td {
+	padding-left:0;
+}
+.sfCodepreview {
+	background:#fff;
+	padding:10px;
+	margin:0 0 10px 0
+}
+#divControls {
+	margin:0 0 5px 0;
+	overflow:hidden;
+}
+#divControls .sftype1 {
+	float:left;
+	margin:5px 0 0 10px
+}
+#divControls select {
+	float:left
+}
+/* ---------------------------------- template wireframe -----------------------------------*/
+.sfOuterwrapper, #divFloat {
+	background: #f7f7f7;
+	border: 1px solid #d4d4d4;
+	padding: 5px;
+	margin:5px 0;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	-moz-box-shadow: 0 1px 0 #fff inset;
+	-webkit-box-shadow: 0 1px 0 #fff inset;
+	box-shadow: 0 1px 0 #fff inset;
+}
+.sfWrapper {
+	border: 1px solid #bce0f2;
+	padding: 5px;
+	margin:5px;
+	-moz-box-shadow: inset 0 1px 0 #fff, 0 1px 0 #fff;
+	-webkit-box-shadow: inset 0 1px 0 #fff, 0 1px 0 #fff;
+	box-shadow: inset 0 1px 0 #fff, 0 1px 0 #fff;
+	background: #f2f9fd;
+	background: -moz-linear-gradient(top, #deeffb 0%, #f2f9fd 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #deeffb), color-stop(100%, #f2f9fd));
+	background: -webkit-linear-gradient(top, #deeffb 0%, #f2f9fd 100%);
+	background: -o-linear-gradient(top, #deeffb 0%, #f2f9fd 100%);
+	background: -ms-linear-gradient(top, #deeffb 0%, #f2f9fd 100%);
+	background: linear-gradient(top, #deeffb 0%, #f2f9fd 100%);
+ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#deeffb', endColorstr='#f2f9fd', GradientType=0 );
+}
+.sfPosition {
+	font: bold 12px Arial, Helvetica, sans-serif;
+	color: #555;
+	text-shadow: 1px 1px 0 #fff;
+	text-align: center;
+	padding:5px 0;
+	text-transform: capitalize;
+}
+#visualLayoutMgr {
+	background:#fff;
+}
+#sfLeft, #sfRight, #sfMainWrapper {
+	float:left;
+}
+.sfColswrap .sfLefta, .sfColswrap .sfRighta {
+	float:left;
+}
+.sfColswrap .sfLeftb, .sfColswrap .sfRightb {
+	float:right;
+}
+.sfLayoutmanager .ui-tabs-nav {
+	margin-bottom:10px;
+}
+.layoutEditor .sflayoutbuilderhead {
+}
+#sfMainWrapper .sfWrapper {
+	margin:5px 5px 10px;
+}
+.sfHolder {
+	margin:30px 0 0 0;
+}
+.sfHolder .sfTheme {
+	float:left;
+	width:48%;
+}
+.sfHolder .sfScreen {
+	float:right;
+	width:48%;
+}
+.sfPchpreview {
+	background:#fff;
+	padding:10px;
+}

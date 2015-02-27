@@ -1,0 +1,177 @@
+﻿/*
+SageFrame® - http://www.sageframe.com
+Copyright (c) 2009-2012 by SageFrame
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Security.Permissions;
+
+namespace SageFrame.Framework
+{
+    public class SecurityPolicy
+    {
+        private static bool m_Initialized = false;
+
+        private static bool m_ReflectionPermission;
+
+        private static bool m_WebPermission;
+
+        private static bool m_AspNetHostingPermission;
+
+        //  all supported permissions need an associated public string constant
+        public const string ReflectionPermission = "ReflectionPermission";
+
+        public const string WebPermission = "WebPermission";
+
+        public const string AspNetHostingPermission = "AspNetHostingPermission";
+
+        public static string Permissions
+        {
+            get
+            {
+                string strPermissions = "";
+                if (Framework.SecurityPolicy.HasReflectionPermission())
+                {
+                    strPermissions = (strPermissions + (", " + Framework.SecurityPolicy.ReflectionPermission));
+                }
+                if (Framework.SecurityPolicy.HasWebPermission())
+                {
+                    strPermissions = (strPermissions + (", " + Framework.SecurityPolicy.WebPermission));
+                }
+                if (Framework.SecurityPolicy.HasAspNetHostingPermission())
+                {
+                    strPermissions = (strPermissions + (", " + Framework.SecurityPolicy.AspNetHostingPermission));
+                }
+                if ((strPermissions != ""))
+                {
+                    strPermissions = strPermissions.Substring(2);
+                }
+                return strPermissions;
+            }
+        }
+
+        private static void GetPermissions()
+        {
+            if (!m_Initialized)
+            {
+                //  test RelectionPermission
+                System.Security.CodeAccessPermission securityTest;
+                try
+                {
+                    securityTest = new ReflectionPermission(PermissionState.Unrestricted);
+                    securityTest.Demand();
+                    m_ReflectionPermission = true;
+                }
+                catch
+                {
+                    m_ReflectionPermission = false;
+                }
+                //  test WebPermission
+                try
+                {
+                    securityTest = new System.Net.WebPermission(PermissionState.Unrestricted);
+                    securityTest.Demand();
+                    m_WebPermission = true;
+                }
+                catch
+                {
+                   m_WebPermission = false;
+                }
+                //  test WebHosting Permission (Full Trust)
+                try
+                {
+                    securityTest = new AspNetHostingPermission(AspNetHostingPermissionLevel.Unrestricted);
+                    securityTest.Demand();
+                    m_AspNetHostingPermission = true;
+                }
+                catch
+                {
+                    m_AspNetHostingPermission = false;
+                }
+                m_Initialized = true;
+            }
+        }
+
+        public static bool HasAspNetHostingPermission()
+        {
+            GetPermissions();
+            return m_AspNetHostingPermission;
+        }
+
+        public static bool HasReflectionPermission()
+        {
+            GetPermissions();
+            return m_ReflectionPermission;
+        }
+
+        public static bool HasWebPermission()
+        {
+            GetPermissions();
+            return m_WebPermission;
+        }
+
+        public static bool HasPermissions(string permissions, ref string permission)
+        {
+            bool _HasPermission = true;
+            if ((permissions != ""))
+            {
+                foreach (string mpermission in ((permissions + ";")).Split(Convert.ToChar(";")))
+                {
+                    if ((mpermission.Trim() != ""))
+                    {
+                        switch (mpermission)
+                        {
+                            case AspNetHostingPermission:
+                                if ((HasAspNetHostingPermission() == false))
+                                {
+                                    _HasPermission = false;
+                                }
+                                break;
+                            case ReflectionPermission:
+                                if ((HasReflectionPermission() == false))
+                                {
+                                    _HasPermission = false;
+                                }
+                                break;
+                            case WebPermission:
+                                if ((HasWebPermission() == false))
+                                {
+                                    _HasPermission = false;
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+            return _HasPermission;
+        }
+
+        [Obsolete("Replaced by correctly spelt method")]
+        public static bool HasRelectionPermission()
+        {
+            GetPermissions();
+            return m_ReflectionPermission;
+        }
+    }
+
+}

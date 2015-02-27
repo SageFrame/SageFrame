@@ -1,0 +1,37 @@
+﻿.sfLanguage .sfTreeview {
+	float:left;
+	min-width:25%;
+	margin:0 20px 0 0;
+	background:#E8F5FF;
+	border:1px solid #A6C9E2;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+.sfLanguage .sfTreeview td {
+	padding:0 0 0 6px;
+	margin:0;
+	white-space:normal;
+}
+.sfLanguage .sflanguagecontent {
+	overflow:hidden;
+}
+img.sfEdit {
+	cursor:pointer;
+}
+.sfLanguage .sfGridwrapper li {
+	font-weight:normal;
+}
+.sfLanguage .sfGridwrapper li.sfResxvalue {
+	margin:5px 0 0 0;
+	font-weight:bold;
+}
+.sfLanguage .sfFormwrapper textarea.sfTextarea {
+	height:45px;
+}
+.sfLanguage td.sfSelectednode a {
+	background:#fff;
+	border:1px dashed #1e9fd0;
+	padding:5px 10px;
+	margin:0 0 0 5px;
+}

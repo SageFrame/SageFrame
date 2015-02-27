@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Database Name="SageFrame27" Class="FeedBackDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=braindignet;Initial Catalog=SageFrame;Persist Security Info=True;User ID=sa" SettingsObjectName="SageFrame.FeedBack.Properties.Settings" SettingsPropertyName="SageFrameConnectionString" Provider="System.Data.SqlClient" />
+  <Function Name="dbo.sp_FeedbackItemUpdate" Method="sp_FeedbackItemUpdate">
+    <Parameter Name="FeedbackItemID" Parameter="feedbackItemID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="FeedbackItem" Parameter="feedbackItem" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="DisplayOrder" Parameter="displayOrder" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsActive" Parameter="isActive" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsModified" Parameter="isModified" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="UpdatedOn" Parameter="updatedOn" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="AddedBy" Parameter="addedBy" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="UpdatedBy" Parameter="updatedBy" Type="System.String" DbType="NVarChar(256)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.sp_FeedBackAdd" Method="sp_FeedBackAdd">
+    <Parameter Name="FeedbackItemID" Parameter="feedbackItemID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="FeedbackItem" Parameter="feedbackItem" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="DisplayOrder" Parameter="displayOrder" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsActive" Parameter="isActive" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="IsModified" Parameter="isModified" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="AddedOn" Parameter="addedOn" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="AddedBy" Parameter="addedBy" Type="System.String" DbType="NVarChar(256)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.sp_FeedbackItemAdd" Method="sp_FeedbackItemAdd">
+    <Parameter Name="FeedbackItem" Parameter="feedbackItem" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="FieldCaption" Parameter="fieldCaption" Type="System.String" DbType="NVarChar(500)" />
+    <Parameter Name="DisplayOrder" Parameter="displayOrder" Type="System.Int32" DbType="Int" />
+    <Parameter Name="IsActive" Parameter="isActive" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="AddedBy" Parameter="addedBy" Type="System.String" DbType="NVarChar(256)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.sp_FeedbackSettingGetAll" Method="sp_FeedbackSettingGetAll">
+    <Parameter Name="UserModuleID" Parameter="userModuleID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <ElementType Name="sp_FeedbackSettingGetAllResult">
+      <Column Name="FeedbackSettingValueID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UserModuleID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SettingKey" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="SettingValue" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsModified" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="AddedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DeletedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="PortalID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AddedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="DeletedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.sp_FeedbackSettingUpdate" Method="sp_FeedbackSettingUpdate">
+    <Parameter Name="FeedbackSettingValueID" Parameter="feedbackSettingValueID" Type="System.Int32" DbType="Int" Direction="InOut" />
+    <Parameter Name="UserModuleID" Parameter="userModuleID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="SettingKey" Parameter="settingKey" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="SettingValue" Parameter="settingValue" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="IsActive" Parameter="isActive" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="UpdatedBy" Parameter="updatedBy" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="AddedBy" Parameter="addedBy" Type="System.String" DbType="NVarChar(256)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.sp_GetListEntriesByNameParentKeyAndPortalID" Method="sp_GetListEntriesByNameParentKeyAndPortalID">
+    <Parameter Name="ListName" Parameter="listName" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="ParentKey" Parameter="parentKey" Type="System.String" DbType="NVarChar(150)" />
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <ElementType Name="sp_GetListEntriesByNameParentKeyAndPortalIDResult">
+      <Column Name="EntryID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ListName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Value" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Text" Type="System.String" DbType="NVarChar(150) NOT NULL" CanBeNull="false" />
+      <Column Name="[Level]" Member="Level" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CurrencyCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="DisplayLocale" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="DisplayOrder" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DefinitionID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ParentID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="PortalID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SystemList" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ParentKey" Type="System.String" DbType="NVarChar(2000)" CanBeNull="true" />
+      <Column Name="Parent" Type="System.String" DbType="NVarChar(2000)" CanBeNull="true" />
+      <Column Name="ParentList" Type="System.String" DbType="NVarChar(2000)" CanBeNull="true" />
+      <Column Name="MaxSortOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EntryCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="HasChildren" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="AddedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="AddedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="UpdatedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.sp_GetListEntrybyNameAndID" Method="sp_GetListEntrybyNameAndID">
+    <Parameter Name="ListName" Parameter="listName" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="EntryID" Parameter="entryID" Type="System.Int32" DbType="Int" />
+    <ElementType Name="sp_GetListEntrybyNameAndIDResult">
+      <Column Name="EntryID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ListName" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Value" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="Text" Type="System.String" DbType="NVarChar(150) NOT NULL" CanBeNull="false" />
+      <Column Name="[Level]" Member="Level" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CurrencyCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="DisplayLocale" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="DisplayOrder" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DefinitionID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ParentID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Description" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="PortalID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SystemList" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="ParentKey" Type="System.String" DbType="NVarChar(2000)" CanBeNull="true" />
+      <Column Name="Parent" Type="System.String" DbType="NVarChar(2000)" CanBeNull="true" />
+      <Column Name="ParentList" Type="System.String" DbType="NVarChar(2000)" CanBeNull="true" />
+      <Column Name="MaxSortOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="EntryCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="HasChildren" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="AddedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="AddedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="UpdatedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.sp_FeedbackFormAddandUpdate" Method="sp_FeedbackFormAddandUpdate">
+    <Parameter Name="FormTitle" Parameter="formTitle" Type="System.String" DbType="NVarChar(200)" />
+    <Parameter Name="FormInfo" Parameter="formInfo" Type="System.String" DbType="NVarChar(4000)" />
+    <Parameter Name="Name" Parameter="name" Type="System.String" DbType="NVarChar(250)" />
+    <Parameter Name="PermanentCountry" Parameter="permanentCountry" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="PermanentState" Parameter="permanentState" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="PermanentCity" Parameter="permanentCity" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="PermanentZipCode" Parameter="permanentZipCode" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="PermanentPostCode" Parameter="permanentPostCode" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="PermanentAddress" Parameter="permanentAddress" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="TemporaryCountry" Parameter="temporaryCountry" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="TemporaryState" Parameter="temporaryState" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="TemporaryCity" Parameter="temporaryCity" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="TemporaryZipCode" Parameter="temporaryZipCode" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="TemporaryPostCode" Parameter="temporaryPostCode" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="TemporaryAddress" Parameter="temporaryAddress" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="Email1" Parameter="email1" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="Email2" Parameter="email2" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="Phone1" Parameter="phone1" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="Phone2" Parameter="phone2" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="Mobile" Parameter="mobile" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="Company" Parameter="company" Type="System.String" DbType="NVarChar(500)" />
+    <Parameter Name="Website" Parameter="website" Type="System.String" DbType="NVarChar(500)" />
+    <Parameter Name="Message" Parameter="message" Type="System.String" DbType="NVarChar(4000)" />
+    <Parameter Name="Attachment" Parameter="attachment" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="IsActive" Parameter="isActive" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="AddedOn" Parameter="addedOn" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="AddedBy" Parameter="addedBy" Type="System.String" DbType="NVarChar(256)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.sp_FeedbackGet" Method="sp_FeedbackGet">
+    <ElementType Name="sp_FeedbackGetResult">
+      <Column Name="FormTitle" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="FormInfo" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="PermanentCountry" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="PermanentState" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="PermanentCity" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="PermanentZipCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="PermanentPostCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="PermanentAddress" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="TemporaryCountry" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="TemporaryState" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="TemporaryCity" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="TemporaryZipCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="TemporaryPostCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="TemporaryAddress" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Email1" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Email2" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Phone1" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Phone2" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Mobile" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Company" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="Website" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="Message" Type="System.String" DbType="NVarChar(4000)" CanBeNull="true" />
+      <Column Name="Attachment" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsModified" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="AddedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DeletedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="PortalID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AddedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="DeletedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.sp_FeedbackDeletebyFeedbackID" Method="sp_FeedbackDeletebyFeedbackID">
+    <Parameter Name="FeedbackID" Parameter="feedbackID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="DeletedBy" Parameter="deletedBy" Type="System.String" DbType="NVarChar(256)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.sp_FeedbackFormAdd" Method="sp_FeedbackFormAdd">
+    <Parameter Name="FormTitle" Parameter="formTitle" Type="System.String" DbType="NVarChar(200)" />
+    <Parameter Name="FormInfo" Parameter="formInfo" Type="System.String" DbType="NVarChar(4000)" />
+    <Parameter Name="Name" Parameter="name" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="PermanentCountry" Parameter="permanentCountry" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="PermanentState" Parameter="permanentState" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="PermanentCity" Parameter="permanentCity" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="PermanentZipCode" Parameter="permanentZipCode" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="PermanentPostCode" Parameter="permanentPostCode" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="PermanentAddress" Parameter="permanentAddress" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="TemporaryCountry" Parameter="temporaryCountry" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="TemporaryState" Parameter="temporaryState" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="TemporaryCity" Parameter="temporaryCity" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="TemporaryZipCode" Parameter="temporaryZipCode" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="TemporaryPostCode" Parameter="temporaryPostCode" Type="System.String" DbType="NVarChar(50)" />
+    <Parameter Name="TemporaryAddress" Parameter="temporaryAddress" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="Email1" Parameter="email1" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="Email2" Parameter="email2" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="Phone1" Parameter="phone1" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="Phone2" Parameter="phone2" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="Mobile" Parameter="mobile" Type="System.String" DbType="NVarChar(100)" />
+    <Parameter Name="Company" Parameter="company" Type="System.String" DbType="NVarChar(500)" />
+    <Parameter Name="Website" Parameter="website" Type="System.String" DbType="NVarChar(500)" />
+    <Parameter Name="Message" Parameter="message" Type="System.String" DbType="NVarChar(4000)" />
+    <Parameter Name="Attachment" Parameter="attachment" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="IsActive" Parameter="isActive" Type="System.Boolean" DbType="Bit" />
+    <Parameter Name="AddedOn" Parameter="addedOn" Type="System.DateTime" DbType="DateTime" />
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="AddedBy" Parameter="addedBy" Type="System.String" DbType="NVarChar(256)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.sp_FeedbackGetList" Method="sp_FeedbackGetList">
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="Username" Parameter="username" Type="System.String" DbType="NVarChar(256)" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.sp_InsertUpdateFeedbackItems" Method="sp_InsertUpdateFeedbackItems">
+    <Parameter Name="FeedbackItems" Parameter="feedbackItems" Type="System.String" DbType="NVarChar(4000)" />
+    <Parameter Name="FieldCaptions" Parameter="fieldCaptions" Type="System.String" DbType="NVarChar(4000)" />
+    <Parameter Name="DisplayOrders" Parameter="displayOrders" Type="System.String" DbType="NVarChar(4000)" />
+    <Parameter Name="IsActives" Parameter="isActives" Type="System.String" DbType="NVarChar(4000)" />
+    <Parameter Name="Username" Parameter="username" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="CultureName" Parameter="cultureName" Type="System.String" DbType="NVarChar(256)" />
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <Return Type="System.Int32" />
+  </Function>
+  <Function Name="dbo.sp_FeedbackItemGet" Method="sp_FeedbackItemGet">
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <Parameter Name="CultureName" Parameter="cultureName" Type="System.String" DbType="NVarChar(256)" />
+    <ElementType Name="sp_FeedbackItemGetResult">
+      <Column Name="FeedbackItemID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FeedbackItem" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="FeedbackItemLocal" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="FieldCaption" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="IsVisible" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="DisplayOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsModified" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="AddedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DeletedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="PortalID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AddedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="DeletedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="CultureName" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+  <Function Name="dbo.sp_FeedbackSettingValueList" Method="sp_FeedbackSettingValueList">
+    <Parameter Name="PortalID" Parameter="portalID" Type="System.Int32" DbType="Int" />
+    <ElementType Name="sp_FeedbackSettingValueListResult">
+      <Column Name="FeedbackSettingValueID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SettingKey" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="SettingValue" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsDeleted" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="IsModified" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="AddedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="DeletedOn" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="PortalID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="AddedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="DeletedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+    </ElementType>
+  </Function>
+</Database>

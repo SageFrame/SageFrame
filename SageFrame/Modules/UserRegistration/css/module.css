@@ -1,0 +1,24 @@
+﻿/*-----------------------------------------USER REGISTRATION  ------------------------------------------ */
+/*.sfUserRegistrationPage{ border:2px solid #fff; background-color:#f3f2ee; padding:3px 23px 23px 23px; overflow:hidden; -moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px;}
+.sfUserRegistration{ }
+.sfUserRegistration span.sfRequired{ font:12px Arial, Helvetica, sans-serif; color:#a4a4a4;}
+.sfUserRegistration span.sfRequired b{ color:#FF0000 !important; }
+.sfUserRegistration .sfUserRegistrationInfoLeft{-moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; -khtml-border-radius: 5px; background-color:#f2f2f2; border:none; margin:5px 0 0 0; padding:0;}
+.sfUserRegistration .sfFormWrapper{ background:none; border:none; padding:0; margin:0;}
+.sfUserRegistration .sfrequired{ font:bold 11px/18px Arial; color:#d27e28; text-shadow:1px 1px 0 #fff;}
+.sfUserRegistration h1{ font:bold 12px Arial, Helvetica, sans-serif; color:#a0a0a0; padding:0 0 4px 0; border-bottom:1px dashed #e5e5e5; margin:0 0 15px 0;}
+.sfUserRegistration h3{ font:bold 14px Arial, Helvetica, sans-serif; color:#ec9009; padding:0 0 3px 0; height:18px; background:url(../images/hr-line.gif) repeat-x bottom; margin:10px 0 10px 0;}
+.sfUserRegistration td{ vertical-align:top; }
+.sfUserRegistration .sfFormWrapper label{ font:normal 12px Arial, Helvetica, sans-serif !important; color:#767676; padding:0;}
+.sfUserRegistration .sfFormWrapper label span{ color:#ec9009;}
+.sfUserRegistration .sfFormWrapper p{ padding:0; margin:0; }
+.sfRegisterInputBg input{ border:1px solid #dddddd; height:20px; width:240px; overflow:hidden; }
+p.sfRegisterInputBgBig input{ border:1px solid #d0d0d0; height:20px; width:510px; overflow:hidden; }
+.sfUserRegistrationPage .sfButtonWrapper{ margin:5px 0 0 0; padding:0; }
+.sfUserRegistrationPage .sfButtonWrapper .sfCreateUserButton { border:1px solid #fdbd50; -moz-border-radius:5px; -webkit-border-radius:5px; text-align:center; font:bold 11px/23px Arial; color:#fff; cursor:pointer; margin:0 !important; background:url(../images/user-registration-btn-bg.gif) repeat-x; height:23px; padding:0 5px !important;}
+.sfUserRegistrationPage .sfButtonWrapper .sfCreateUserButton:hover { border:1px solid #fdbd50; background:url(../images/user-registration-btn-bg-hover.gif) repeat-x !important; color:#666; text-shadow:1px 1px 0 #fff; }
+.sfUserRegistrationPage .sfregvalidation{ color:#eba43f; padding:0;}
+.sfUserRegistrationPage .sfregvalidation ul { margin:0 0 0 5px; padding:0; }
+.sfUserRegistrationInfo{ float:right; width:400px; background-color:#090;}
+.sfRegistrationInformation{ font:bold 12px Arial, Helvetica, sans-serif; color:#a0a0a0; padding:6px 0 4px 0; text-shadow:1px 1px 0 #fff;}
+*/

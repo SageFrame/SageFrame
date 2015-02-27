@@ -1,0 +1,74 @@
+﻿.cssClassTreeNav {
+	border: 1px solid #a6c9e2;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	float: left;
+	font-weight: bold;
+	padding:10px 0;
+	width: 21%;
+	color: #4C4C4C;
+	background:#e8f5ff;
+	min-height:300px;
+}
+.cssClassDetails {
+	float:right;
+	min-height:300px;
+	width:77%;
+}
+.cssClassSeparator {
+	border-bottom:1px solid #c0c0c0;
+}
+.cssClassTreeNav li.ui-tree-list {
+/*border-bottom:1px solid #c4dff4;*/
+}
+div.sfFormwrapper div.divPermissions {
+	width:100%;
+}
+#divSearchedUsers ul li {
+	border-bottom:1px solid #c0c0c0;
+	width:100%;
+	cursor:pointer;
+}
+#divSearchedUsers ul li.cssClassActive {
+	background-color:#a4a4a4;
+}
+#gdvModules ul li {
+	width:98%;
+	height:22px;
+	padding:4px;
+	border-bottom:1px solid #c0c0c0;
+	margin-top: 2px;
+}
+#gdvModules ul li span.edit {
+	cursor:pointer;
+	float:right;
+}
+#gdvModules ul li span.cancel {
+	cursor:pointer;
+	float:right;
+}
+.sfActive {
+	background-color:#c4dff4;
+}
+h3.sfMargintop {
+	margin:20px 0 0 0 !important;
+}
+.cssClassUploadFiles {
+	padding:4px;
+}
+.cssClassUploadFiles span {
+	float:left;
+}
+.cssClassUploadFiles img {
+	max-height:40px;
+	float:left;
+}
+.cssClassUploadFiles img.delete {
+	float:right;
+	height:16px;
+	border:none;
+	cursor:pointer;
+}
+td.sfVtop div.cssClassUploadFiles img, td.sfVtop div.cssClassUploadFiles span.deleteIcon{ float:left;}
+td.sfVtop div.cssClassUploadFiles span.deleteIcon{ margin:0 0 0 10px; }

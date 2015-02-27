@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layout name="layout_all">
+  <section name="sfHeader">
+    <placeholder name="headertop" width="20">flogo,search</placeholder>
+    <placeholder name="navigation">Fnavigation</placeholder>
+  </section>
+  <section name="sfcontent">
+    <placeholder name="fulltopspan">slider</placeholder>
+    <placeholder name="middlemaincurrent">middlemaincurrentv</placeholder>
+    <placeholder name="rightA" width="50">Locationmap</placeholder>
+  </section>
+  <section name="sfFooter">
+    <placeholder name="footer" width="65">footerLink,social2</placeholder>
+  </section>
+</layout>

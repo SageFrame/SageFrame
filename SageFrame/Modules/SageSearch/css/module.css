@@ -1,0 +1,175 @@
+.sfSearchwrapper li {
+	float:left;
+}
+.sfSearchwrapper li input.sfInputbox {
+	-webkit-border-top-left-radius: 4px;
+	-webkit-border-top-right-radius: 0;
+	-webkit-border-bottom-right-radius: 0;
+	-webkit-border-bottom-left-radius: 4px;
+	-moz-border-radius-topleft: 4px;
+	-moz-border-radius-topright: 0;
+	-moz-border-radius-bottomright: 0;
+	-moz-border-radius-bottomleft: 4px;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 4px;
+	height:29px;
+	line-height:29px;
+	padding:0 5px;
+	margin:0;
+	width:230px;
+	border:1px solid #e5e5e5;
+	background:#fff;
+	border-right:none;
+}
+.sfSearchwrapper li a.sfBtn, .sfSearchwrapper li input.sfBtn {
+	-webkit-border-top-left-radius: 0;
+	-webkit-border-top-right-radius: 4px;
+	-webkit-border-bottom-right-radius: 4px;
+	-webkit-border-bottom-left-radius: 0;
+	-moz-border-radius-topleft: 0;
+	-moz-border-radius-topright: 4px;
+	-moz-border-radius-bottomright: 4px;
+	-moz-border-radius-bottomleft: 0;
+	border-top-left-radius: 0;
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom-left-radius: 0;
+	height:31px;
+	line-height:31px;
+	padding:0 5px;
+	margin:0;
+	border:1px solid #d5d5d5;
+	background:url(../images/btn-bg.gif) repeat-x;
+	color:#555;
+	text-shadow:0 1px 0 #f5f5f5;
+	font-weight:normal;
+	cursor:pointer;
+}
+.sfSearchwrapper li a.sfBtn:hover, .sfSearchwrapper li input.sfBtn:hover {
+	background:url(../images/btn-bg-hover.gif) repeat-x;
+}
+/* search page */
+.sfSearchpage table, .sfSearchpage table td {
+	border:none;
+	margin:0;
+	padding:0;
+}
+/* ---*/
+.sfInnerwrapper .sfSearchpage table, .sfInnerwrapper .sfSearchpage table td, .sfInnerwrapper .sfSearchpage table:hover, .sfInnerwrapper .sfSearchpage table td:hover, .sfInnerwrapper .sfSearchpage table tr:hover, .sfInnerwrapper .sfSearchpage table tr {
+	background:none;
+	border:none;
+	border:none;
+}
+.sfSearchpage h1 {
+	font:bold 14px Arial, Helvetica, sans-serif;
+}
+.sfSearchpage h1 span.sfSearchkey {
+	font:normal 12px Arial, Helvetica, sans-serif;
+}
+.sfSearchpage h2 {
+	font:bold 12px Arial, Helvetica, sans-serif;
+}
+/* ---Search Holder-*/
+.sfSearchorder {
+	overflow:hidden;
+	background:#f7f7f7;
+	padding:10px;
+}
+.sfSearchorder ul li {
+	float:left;
+}
+.sfSearchorder ul li.sfRight {
+	float:right;
+}
+.sfSearchorder label {
+	font:normal 11px Arial, Helvetica, sans-serif;
+	padding:0;
+	margin:0 7px 0 3px;
+}
+.sfSearchorder input {
+	padding:0;
+	margin:0;
+}
+.sfSearchorder select.sfListmenu {
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	width:60px;
+	border:1px solid #e5e5e5;
+	background:#fff;
+	padding:3px 5px;
+	margin:0 0 0 5px;
+}
+/* ---Search Only- */
+.sfSearchonly {
+	margin:20px 0;
+	overflow:hidden;
+	background:#f7f7f7;
+	padding:10px;
+}
+.sfSearchonly label {
+	font:normal 11px Arial, Helvetica, sans-serif;
+}
+.sfSearchpage .sfSearchonly td {
+	padding:4px 0;
+}
+/* --Search Result-- */
+.sfSearchpage .sfSearchresult td {
+	padding:20px 10px;
+}
+.sfSearchpage .sfSearchresult td h2, .sfSearchpage .sfSearchresult td h2 a {
+	font:bold 14px Arial, Helvetica, sans-serif;
+	margin:0;
+	padding:0;
+	color:#3D6EC8;
+}
+.sfSearchpage .sfSearchresult td h3 {
+	font:normal 11px Arial, Helvetica, sans-serif;
+	margin:0;
+	padding:0;
+}
+.sfSearchpage .sfSearchresult td span.sfUrlLink {
+	font:normal 11px Arial, Helvetica, sans-serif;
+	color:#3D6EC8;
+}
+.sfSearchpage .sfSearchresult tr.sfOdd, .sfSearchpage .sfSearchresult tr.sfEven {
+	background:none;
+	background:url(../images/news-seperator.jpg) repeat-x bottom;
+}
+.sfSearchpage .sfSearchresult tr.sfOdd:hover, .sfSearchpage .sfSearchresult tr.sfEven:hover {
+	background:url(../images/news-seperator.jpg) repeat-x bottom #fafafa;
+}
+.sfSearchpage .sfSearchresult td p {
+	margin:10px 0 0 0;
+}
+/* -- Button Wrapper -- */
+.sfSearchpage .sfButtonwrapper label {
+	padding:4px 25px;
+	cursor:pointer;
+	font:normal 12px Arial, Helvetica, sans-serif;
+	display:inline-block;
+	border:1px solid #d5d5d5;
+	color:#555;
+	text-shadow:0 1px 0 #f5f5f5;
+	-webkit-border-radius: 16px;
+	-moz-border-radius: 16px;
+	border-radius: 16px;
+	-webkit-box-shadow: inset 0px 1px 0px 0px #fff;
+	-moz-box-shadow: inset 0px 1px 0px 0px #fff;
+	box-shadow: inset 0px 1px 0px 0px #fff;
+	cursor:pointer;
+}
+.sfSearchpage tr.sfPagination td {
+	padding:8px 8px 0 0;
+	margin:0;
+}
+.sfSearchpage tr.sfPagination td a {
+	background:#f7f7f7;
+	border:1px solid #e5e5e5;
+	padding:2px 6px;
+}
+.sfSearchpage tr.sfPagination td a:hover {
+	background:#f0f0f0;
+}

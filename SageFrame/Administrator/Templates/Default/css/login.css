@@ -1,0 +1,499 @@
+/* common styles */
+body {
+	background:#f5f5f5;
+	margin:0;
+	padding:0;
+	font:14px/20px Arial, Helvetica, sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family:Arial, Helvetica, sans-serif !important;
+}
+h1 {
+	font:bold 16px Arial, Helvetica, sans-serif;
+	padding:0 0 0 20px;
+}
+p.sfCenter {
+	text-align:center;
+}
+a img {
+	border:none;
+	outline:none;
+}
+.sfMarginnone {
+	margin:0 !important;
+}
+#sfOuterwrapper a.sflogo img {
+	margin:60px auto 30px;
+	border:none;
+}
+p.sfBack {
+	margin:10px auto;
+	width:300px;
+	text-align:center;
+}
+.sfError {
+	font:11px/18px Arial, Helvetica, sans-serif;
+	color:Red;
+}
+/*---Normal link---*/
+a {
+	color: #034D68;
+	text-decoration: none;
+	font:12px Arial, Helvetica, sans-serif;
+}
+a:hover, a:active, a:focus {
+	color: #034D68;
+	text-decoration: underline;
+}
+a img {
+	border:none;
+}
+.sfLogoholder {
+	margin:0 auto;
+	width:278px;
+}
+td.sfCatpchatd{ padding:5px 0;}
+td.sfCatpchatd input.sfCaptchadata {
+	float:left;
+	margin:0 0 0 5px;
+}
+img.sfCaptcha {
+	float:left;
+	margin:0;
+	display:inline-block;
+}
+p {
+	font:bold 12px/18px Arial, Helvetica, sans-serif;
+	color:#545454;
+	text-shadow:0 1px 0px #fff;
+}
+.sfLogin {
+	position:relative;
+}
+.sfInputbox {
+	background:#fff;
+	border: 1px solid #6FB2D0;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	color: #999;
+	font: 12px Arial, Helvetica, sans-serif;
+	padding:7px 5px;
+	margin:3px 0 0 0;
+	width: 200px;
+	outline:none;
+}
+.sfInputbox:focus {
+	-moz-transition: all 0.3s ease-out 0s;
+	-moz-box-shadow:0 0 2px 1px #84B3CB;
+	-webkit-box-shadow:0 0 2px 1px #84B3CB;
+	box-shadow:0 0 2px 1px #84B3CB;
+}
+.sfBtn {
+	margin-right:7px;
+	border:1px solid #0170ab;
+	font:bold 12px Arial, Helvetica, sans-serif;
+	color:#fff;
+	padding:4px 10px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	cursor:pointer;
+	display:inline-block;
+	-moz-box-shadow:0 1px 0 #45b7e3 inset;
+	-webkit-box-shadow:0 1px 0 #45b7e3 inset;
+	box-shadow:0 1px 0 #45b7e3 inset;
+	background: #16a5db; /* Old browsers */
+	background: -moz-linear-gradient(top, #16a5db 16%, #0170ab 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(16%, #16a5db), color-stop(100%, #0170ab)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #16a5db 16%, #0170ab 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #16a5db 16%, #0170ab 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #16a5db 16%, #0170ab 100%); /* IE10+ */
+	background: linear-gradient(top, #16a5db 16%, #0170ab 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#16a5db', endColorstr='#0170ab', GradientType=0 ); /* IE6-9 */
+}
+.sfBtn:hover {
+	background: #43c1f2; /* Old browsers */
+	background: -moz-linear-gradient(top, #43c1f2 0%, #069bd5 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #43c1f2), color-stop(100%, #069bd5)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #43c1f2 0%, #069bd5 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #43c1f2 0%, #069bd5 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #43c1f2 0%, #069bd5 100%); /* IE10+ */
+	background: linear-gradient(top, #43c1f2 0%, #069bd5 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#43c1f2', endColorstr='#069bd5', GradientType=0 ); /* IE6-9 */
+	border:1px solid #119ae2;
+	-webkit-box-shadow:0 1px 0 #69cef5 inset;
+	-moz-box-shadow:0 1px 0 #69cef5 inset;
+	box-shadow:0 1px 0 #69cef5 inset;
+	color:#fff;
+	text-decoration:none;
+}
+.sfBtn:active {
+	-moz-box-shadow:0 3px 2px rgba(0, 82, 125, 0.3) inset;
+	-webkit-box-shadow:0 3px 2px rgba(0, 82, 125, 0.3) inset;
+	box-shadow:0 3px 2px rgba(0, 82, 125, 0.3) inset;
+}
+.sfFormlabel {
+	font:13px Arial, Helvetica, sans-serif;
+	text-shadow:0 1px 1px #fff;
+	color:#777;
+}
+.sfBtnlogin {
+	background: url("../images/btn-bg.png") repeat-x;
+	-webkit-border-radius:3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid #none;
+	color: #FFFFFF;
+	cursor:pointer;
+	text-shadow: none;
+	border:none;
+	padding:4px 15px;
+	font:bold 12px Arial, Helvetica, sans-serif;
+	margin-right:7px;
+}
+.sfBtnlogin:hover {
+	background: url("../images/btn-bg-hover.png") repeat-x;
+}
+h2 {
+	font:17px Arial, Helvetica, sans-serif;
+	color:#2384bc;
+	text-shadow:1px 1px 0 #fff;
+	text-transform:uppercase;
+	padding:0 0 10px 0;
+	background:url(../images/lines.png) repeat-x left bottom;
+	margin:0;
+}
+.sfSagewrapper {
+	margin:0 auto;
+	width:800px;
+}
+.sfFailure {
+	color:#fff;
+	background:#d05a5a;
+}
+.sfLogin, .sfForgetPasswordPage, .sfRecoverPasswordPage, .sfUserRegistrationPage, .sfFallbackHolder, .sfPagenotAccesible {
+	margin:0 auto;
+	width:310px;
+	background:url("../images/lines.png");
+	padding:5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+.sfLogininside, .sfForgetPasswordPageLeft, .sfUserRegistration, .sfFallbackStatement, .sfPagenotAccesibleInfo {
+	background:#f9f9f9 url(../images/loginBg.png) no-repeat right 115%;
+	border:5px solid rgba(0, 0, 0, 0.1);
+	padding:15px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	box-shadow:0 0 3px rgba(0, 0, 0, 0.5), 0 0 30px #E7E7E7 inset;
+	-moz-transition:background 0.2s linear;
+}
+.sfLogininside p {
+	margin:0;
+	padding:3px 0;
+	border:none;
+	background:none;
+}
+.sfButtonwrapper {
+	margin:10px 0 0 0;
+}
+.sfButtonWrapper a {
+	background: #0073A0;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	color: #FFFFFF;
+	cursor: pointer;
+	font:bold 12px Arial, Helvetica, sans-serif;
+	padding:4px 7px;
+	float:left;
+}
+.sfButtonWrapper a:hover {
+	background:#069;
+	text-decoration:none;
+}
+.sfMessagebox {
+	margin:20px auto;/*
+	padding:10px;
+	padding-left:55px;*/
+	font:bold 12px Arial, Helvetica, sans-serif;
+	color:#555;
+	width: 200px;
+}
+.sfErrormsg .sfMessagebox {
+	background:#fcffe5 url(../images/error.png) no-repeat 15px center;
+	color:#a21d21;
+	font:bold 14px Arial, Helvetica, sans-serif;
+	padding: 8px 44px;
+}
+.sfSuccessmsg .sfMessagebox {
+	background:url(../images/success.png) no-repeat 10px center;
+	padding: 8px 44px;
+	color:#090;
+}
+.sfAlertmsg .sfMessagebox {
+	background:#fcffe5 url(../images/error.png) no-repeat 10px 50%;
+	color:#ad3435;
+	color:#a21d21;
+	font:bold 11px/18px Arial, Helvetica, sans-serif;
+	padding: 8px 44px;
+}
+.sfLogin p.sfError, .sfMessagebox .sfError {
+	color:#d41f1e;
+	font-size:14px;
+	background:url(../images/error.png) no-repeat;
+	padding:3px 3px 3px 25px;
+}
+/* login page */
+.sfLogin .sfFormlabel, .sfForgetPasswordInfo .sfFormlabel {
+	padding-top:5px;
+	display:inline-block;
+}
+.sfLogin .sfInputbox {
+	width:245px;
+	margin:0 0 5px;
+}
+.cssClassForgetPass {
+	padding-top:5px;
+}
+/* forget password */
+.sfForgetPasswordPage {
+	width:350px;
+}
+.sfRecoverPasswordPage {
+	width:450px;
+}
+.sfAllrequired {
+	color:#bf6b6b !important;
+	font:bold 11px/18px Arial, Helvetica, sans-serif;
+	display:inline-block;
+	margin-top:5px;
+}
+.sfForgetYourPassWordTopInfo b {
+	font-size:11px;
+	margin:0;
+	color: #545454;
+	text-shadow: 0 1px 0 #FFFFFF;
+	line-height:16px;
+	padding:0;
+}
+.sfForgetPasswordPage .sfButtonwrapper {
+	float:left;
+	margin-top:15px;
+}
+.sfForgetPasswordPage .sfError {
+}
+/* user registration */
+.sfUserRegistrationPage {
+	width:490px;
+	margin-bottom:10px;
+}
+.sfUserRegistrationPage img {
+	border-right:1px solid #999 !important;
+	border-bottom:1px solid #999 !important;
+}
+.sfUserRegistrationPage .sfInputbox {
+	margin:5px 0;
+}
+/* fallback */
+.sfFallback {
+	margin:8% auto;
+}
+.sfFallbackHolder {
+	margin-top:30px;
+	width:60%
+}
+.sfFallback h3 {
+	color:#ea8905;
+	font:normal 16px Arial, Helvetica, sans-serif;
+	letter-spacing:0.5px;
+}
+.sfFallback h4 {
+	color:#666;
+	font-size:13px;
+}
+.sfStatement {
+}
+.sfTemplateerror {
+	background-color:#f6fbfd;
+	padding:10px;
+	border:1px dashed #aaa;
+}
+.sfTemplateerror p {
+	font:bold 12px/20px Arial, Helvetica, sans-serif;
+	color:#777;
+}
+.sfFallback .sfButtonWrapper {
+	overflow:hidden;
+}
+.sfException {
+	color:#bb2804;
+	display:none;
+}
+.sfExceptionHead {
+	color:#0999d2;
+	font:bold 12px Arial, Helvetica, sans-serif;
+	cursor:pointer;
+}
+.sfExceptionHead:hover {
+	color:#069;
+}
+.sfButtonWrapper span {
+	display:inline-block;
+}
+/* 404 page */
+.sfPageNotFound {
+	margin:0 auto;
+	width:330px;
+}
+.sfPageNotFound h1 {
+	display:block;
+	background:url(../images/404.png) no-repeat;
+	width:317px;
+	height:187px;
+	text-indent:-9999px;
+}
+p.sfPNFArrow {
+	background:url(../images/Arrow1.gif) no-repeat 5px 5px;
+	padding-left:20px;
+	font:12px/18px Arial, Helvetica, sans-serif;
+}
+.sfPageNotFound .sfButtonWrapper a, .sfPagenotAccesibleInfo .sfButtonWrapper a {
+	position:relative;
+	margin-left:21px;
+	-webkit-border-top-right-radius: 4px;
+	-webkit-border-bottom-right-radius: 4px;
+	-moz-border-radius-topright: 4px;
+	-moz-border-radius-bottomright: 4px;
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+.sfPageNotFound .sfButtonWrapper a:after, .sfPagenotAccesibleInfo .sfButtonWrapper a:after {
+	border-bottom: 20px solid transparent;
+	border-right: 20px solid #0073A0;
+	border-top: 20px solid transparent;
+	content: " ";
+	display: block;
+	height: 0;
+	right:95%;
+	margin-top: -20px;
+	position: absolute;
+	top: 50%;
+	width: 0;
+	z-index: 2;
+}
+.sfPageNotFound .sfButtonWrapper a:hover:after, .sfPagenotAccesibleInfo .sfButtonWrapper a:hover:after {
+	border-right:20px solid #069;
+}
+/* page not accesible */
+.sfPagenotAccesibleInfo {
+	overflow:hidden;
+	padding-bottom:20px;
+}
+.sfPagenotAccesibleInfo h3 {
+	background:url(../images/noaccess.png) no-repeat;
+	min-height:193px;
+	width:238px;
+	margin:0 auto;
+	text-indent:-9999px;
+}
+.sfPagenotAccesibleInfo p {
+	margin-bottom:15px;
+}
+/* loading */
+#ajaxBusy, .sfLoadingdiv {
+	bottom: 0;
+	display: block;
+	font:bold 17px/30px Arial, Helvetica, sans-serif;
+	position: fixed;
+	text-align: center;
+	width: 100%;
+	z-index:9999;
+	color:#333;
+	border-top:1px solid #84c0e1;
+	padding:5px 0;
+	background: #cbf2ff;
+	background: -moz-linear-gradient(top, #cbf2ff 0%, #99dbff 71%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #cbf2ff), color-stop(71%, #99dbff));
+	background: -webkit-linear-gradient(top, #cbf2ff 0%, #99dbff 71%);
+	background: -o-linear-gradient(top, #cbf2ff 0%, #99dbff 71%);
+	background: -ms-linear-gradient(top, #cbf2ff 0%, #99dbff 71%);
+	background: linear-gradient(top, #cbf2ff 0%, #99dbff 71%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cbf2ff', endColorstr='#99dbff', GradientType=0 );
+}
+#ajaxBusy img {
+	margin-right:5px;
+}
+.sfModulecontent a.sfBtnlogin {
+	margin:0 auto;
+	width:40px;
+	display:block;
+}
+.pstrength-minchar {
+	font:12px Arial, Helvetica, sans-serif;
+	color:#777777;
+}
+.cssClassUserActivation {
+	text-align:center;
+}
+.pstrength-info span {
+	font-size:12px !important;
+}
+/*---- user profile---*/
+.sfEditprofile {
+	background:url(../images/lines.png) repeat;
+	padding:5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+.sfUserprofile {
+	overflow:hidden;
+	background:#f9f9f9 url(../images/loginBg.png) no-repeat right 115%;
+	border:5px solid rgba(0, 0, 0, 0.1);
+	padding:10px 15px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	box-shadow:0 0 3px rgba(0, 0, 0, 0.5), 0 0 30px #E7E7E7 inset;
+	-moz-transition:background 0.2s linear;
+}
+.sfUserprofile .sfProfileimage {
+	float:right;
+	width:18%;
+	text-align:center;
+}
+.sfUserprofile .sfViewprofile {
+	float:left;
+	width:80%;
+}
+.sfUserprofile .sfViewprofile td {
+	padding:4px 0;
+	color:#555;
+	font:bold 12px Arial, Helvetica, sans-serif;
+}
+.sfUserprofile .sfViewprofile span.sfFormlabel {
+	font:bold 12px Arial, Helvetica, sans-serif;
+}
+.sfUserprofile .sfViewprofile textarea.sfTextarea {
+	background:#fff;
+	border: 1px solid #6FB2D0;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	color: #999;
+	font: 12px Arial, Helvetica, sans-serif;
+	padding:7px 5px;
+	margin:3px 0 0 0;
+	width: 200px;
+	outline:none;
+}
+.sfUserprofile .sfViewprofile textarea.sfTextarea:focus {
+	-moz-transition: all 0.3s ease-out 0s;
+	-moz-box-shadow:0 0 2px 1px #84B3CB;
+	-webkit-box-shadow:0 0 2px 1px #84B3CB;
+	box-shadow:0 0 2px 1px #84B3CB;
+}

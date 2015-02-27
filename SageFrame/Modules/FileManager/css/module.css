@@ -1,0 +1,117 @@
+#divControls {
+	border-bottom:1px dotted #ccc;
+	padding:0 0 10px 0;
+	margin:0 0 10px 0
+}
+#divControls ul {
+	float:right;
+}
+#divControls ul li {
+	float:left;
+	font-weight:bold;
+	margin:0 10px 0 0;
+	padding:4px 0 0 20px;
+	text-shadow:1px 1px 0 #fff;
+	cursor:pointer;
+	color:#0073A0;
+}
+#divControls ul li:hover {
+	color:#0094DE;
+}
+#divControls ul li.sfUpload {
+	background: url(../images/addfile.png) no-repeat 0 50%;
+}
+#divControls ul li.sfDelete {
+	background: url(../images/deletefile.png) no-repeat 0 50%;
+}
+#divControls ul li.sfAddfolder {
+	background: url(../images/addfolder.png) no-repeat 0 50%;
+}
+#divControls ul li.sfDeletefolder {
+	background: url(../images/deletefolder.png) no-repeat 0 50%;
+}
+#divControls ul li.sfCopy {
+	background: url(../images/copy.png) no-repeat 0 50%;
+}
+#divControls ul li.sfMove {
+	background: url(../images/move.png) no-repeat 0 50%;
+}
+#divControls ul li.sfRefresh {
+	background: url(../images/refresh.png) no-repeat 0 50%;
+}
+#divControls ul li.sfSync {
+	background: url(../images/sync.png) no-repeat 0 50%;
+}
+#divSearch {
+}
+#divSearch input {
+	width:150px;
+}
+#divSearch input.sfAuto {
+	width:80px !important;
+}
+#divSearch table td {
+	padding-top:0;
+	padding-bottom:0;
+}
+.sfFilemanageholder #divFileTreeOuter {
+	float:left;
+	border: 1px solid #a6c9e2;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	float: left;
+	font-weight: bold;
+	padding:10px 0;
+	width: 21%;
+	color: #4C4C4C;
+	background:#e8f5ff;
+	min-height:150px;
+	margin:0 20px 0 0;
+-webkit-box-shadow:inset 0 0 0 1px #fff;
+-moz-box-shadow:inset 0 0 0 1px #fff;
+box-shadow:inset 0 0 0 1px #fff;
+}
+.sfFilemanageholder .sfRightcol {
+	overflow:hidden;
+}
+.sfFilemanageholder #divFileTreeOuter li {
+	color: #136686;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	line-height: 20px;
+	list-style-type: none;
+	text-shadow: 0px 1px 0 #FFFFFF;
+	padding:5px 0px;
+	border-bottom:1px solid #b9daf4;
+	border-top:1px solid #FFFFFF;
+}
+#divPagerNav {
+	margin:10px 0;
+}
+.currentPage a {
+	background:#4692C3 !important;
+	border:1px solid #4692C3 !important;
+	color:#fff !important;
+	cursor:default;
+}
+#divFileTreeOuter UL.jqueryFileTree Li:first-child {
+	border-top:none;
+}
+#divFileTreeOuter UL.jqueryFileTree li:last-child {
+	border-bottom:none;
+}
+th span.fileName img {
+	margin-left:10px;
+	vertical-align:middle;
+	cursor:pointer;
+}
+#imbSearch {
+	cursor:pointer;
+}
+#divSearch .sfLeftdiv {
+	float:left;
+}
+#divSearch .sfRightdiv {
+	float:right;
+}

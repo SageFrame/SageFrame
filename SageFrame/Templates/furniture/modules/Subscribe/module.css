@@ -1,0 +1,43 @@
+.sfNewsletter .sfInputbox {
+	border:none;
+	background:#fff;
+	width:95%;
+	padding:10px 5px;
+	-moz-box-shadow:0 1px 2px #aaa inset;
+	-webkit-box-shadow:0 1px 2px #aaa inset;
+	box-shadow:0 1px 2px #aaa inset;
+	margin-top:10px;
+}
+.sfNewsletter p.sfValidator {
+	padding:1px 0 3px 0px;
+	color:red;
+}
+.sfNewsletter p.sfValidator span {
+	padding:0px 0 3px 0px;
+	font:11px/10px Arial, Helvetica, sans-serif;
+	color:red;
+}
+.sfNewsletter p span {
+	display:block;
+}
+input.sfBtn {
+	background:url(images/btn-bg.gif) repeat-x;
+	color:#fff;
+	font:bold 12px/25px Arial, Helvetica, sans-serif;
+	border:1px solid #741111;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	text-shadow:none;
+	margin:0;
+	-webkit-box-shadow:none;
+	-moz-box-shadow:none;
+	box-shadow:none;
+	padding:0 10px;
+	height:25px;
+	line-height:25px;
+}
+input.sfBtn:hover {
+	background:url(images/btn-bg-hover.gif) repeat-x;
+	color:#fff;
+}

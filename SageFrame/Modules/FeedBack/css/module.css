@@ -1,0 +1,26 @@
+﻿.sfContactform .sfFormwrapper .sfFormlabel {
+	font-weight:bold;
+}
+.sfContactform .sfFormwrapper .sfContactfield {
+	overflow:hidden;
+}
+.sfContactform input.sfInputbox, .sfContactform textarea.sfTextarea ,.sfContactform  select.sfListmenu{
+	border:1px solid #c8c8c8;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding:4px 8px;
+	background:#fff;
+	width:280px;
+}
+.sfContactform select.sfListmenu { width:298px;}
+
+.sfContactform input.sfInputbox:hover, .sfContactform .sfTextarea:hover,.sfContactform  select.sfListmenu:hover {
+	background: #f2f2f2;
+}
+.sfContactform .sfInputbox:focus, .sfContactform .sfTextarea:focus, .sfContactform  select.sfListmenu:focus {
+	border:1px solid #999;
+}
+.sfContactform .sfBtn {
+	padding:4px 26px;
+}

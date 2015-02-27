@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+ <SageFrameMessage>
+      <BannerSavedsuccesfully>Banner Content Saved Successfully</BannerSavedsuccesfully>
+      <ImageEditedSuccesfully>Image Edited Succesfully</ImageEditedSuccesfully>
+      <DeletedSucessfully>Banner Deleted Sucessfully</DeletedSucessfully>
+      <BannerEditedSuccesfully>Banner Edited Succesfully</BannerEditedSuccesfully>
+   <BannerHTMLContentSavedSuccessfully>Banner HTML Content Saved Successfully</BannerHTMLContentSavedSuccessfully>
+   <BannerImageDeletedsuccesfully>Banner Image Deleted succesfully</BannerImageDeletedsuccesfully>
+   <PleaseEnterSomeContent>Please enter some content</PleaseEnterSomeContent>
+   <SettingSavedSucessfully>Setting Saved Sucessfully</SettingSavedSucessfully>
+</SageFrameMessage>
+

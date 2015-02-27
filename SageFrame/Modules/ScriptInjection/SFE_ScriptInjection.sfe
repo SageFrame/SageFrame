@@ -1,0 +1,56 @@
+﻿<sageframe version="1.0.0.0" type="Module">
+  <folders>
+    <folder>
+      <name>ScriptInjection</name>
+      <friendlyname>ScriptInjection</friendlyname>
+      <foldername>ScriptInjection</foldername>
+      <modulename>ScriptInjection</modulename>
+      <description>ScriptInjection for sageframe</description>
+      <version>01.00.00</version>
+      <businesscontrollerclass>Modules.ScriptInjection.EventController, SageFrame.Modules.ScriptInjection</businesscontrollerclass>
+      <compatibleversions>^[0]?[4-9]{1}\.[0-9]{1}[7-9]{1}\.[0-9]{1}[0-9]{1}$</compatibleversions>
+      <owner>Sageframe Pvt. Ltd.</owner>
+      <organization>Sageframe Pvt. Ltd</organization>
+      <url>www.sageframe.com</url>
+      <email>info@sageframe.com</email>
+      <releasenotes>This is test release notes for SageFrame ScriptInjection Application</releasenotes>
+      <license>This is test license copy for SageFrame ScriptInjection Application</license>
+      <modules>
+        <module>
+          <friendlyname>ScriptInjection</friendlyname>
+          <cachetime>-1</cachetime>
+          <controls>
+            <control>
+			  <key>ScriptInjection</key>
+              <title>ScriptInjection</title>
+              <src>Modules/ScriptInjection/EditScriptInjection.ascx</src>
+              <type>Edit</type>
+              <helpurl>http://www.sageframe.com/default.aspx</helpurl>
+              <supportspartialrendering>false</supportspartialrendering>
+            </control> 
+            <control>
+			  <key>ScriptInjection</key>
+              <title>ScriptInjection</title>
+              <src>Modules/ScriptInjection/ViewScriptInjection.ascx</src>
+              <type>View</type>
+              <helpurl>http://www.sageframe.com/default.aspx</helpurl>
+              <supportspartialrendering>false</supportspartialrendering>
+            </control> 			
+			 </controls>
+        </module>
+      </modules>
+      <files>
+        <file>
+          <name>01.00.00.SqlDataProvider</name>
+        </file>   
+        <file>
+          <name>SageFrame.ScriptInjection.dll</name>
+        </file>        
+             
+        <file>
+          <name>Uninstall.SqlDataProvider</name>
+        </file> 
+      </files>
+    </folder>
+  </folders>
+</sageframe>

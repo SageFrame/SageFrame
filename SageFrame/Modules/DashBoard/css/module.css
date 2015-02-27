@@ -1,0 +1,79 @@
+﻿.sfTabLeftDiv .sfAddQuickLink, .sfAddSidebar {
+	width:40%;
+	float:left;
+}
+.sfTabLeftDiv .sfQuicklinklist, .sfTabLeftDiv .sfSidebarItems {
+	float:right;
+	width:60%
+}
+.sfQuicklinklist ul {
+	float:right;
+}
+.sfQuicklinklist li, ul.ui-sortable li {
+	text-shadow:1px 1px 0 #EFF9FF;
+	margin:2px 5px;
+	font-weight:bold;
+	border:1px solid #a6d0e7;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	padding:6px;
+	cursor:move;
+	line-height:16px;
+	float:left;
+	width:44%;
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #e8e8e8 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #e8e8e8)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #ffffff 0%, #e8e8e8 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #ffffff 0%, #e8e8e8 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #ffffff 0%, #e8e8e8 100%); /* IE10+ */
+	background: linear-gradient(top, #ffffff 0%, #e8e8e8 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e8e8e8', GradientType=0 ); /* IE6-9 */
+	border:1px solid #cccccc;
+	list-style:decimal inside;
+}
+.sfQuicklinklist li:hover, ul.ui-sortable li:hover {
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #c3e4f7 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(100%, #c3e4f7)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #ffffff 0%, #c3e4f7 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #ffffff 0%, #c3e4f7 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #ffffff 0%, #c3e4f7 100%); /* IE10+ */
+	background: linear-gradient(top, #ffffff 0%, #c3e4f7 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#c3e4f7', GradientType=0 ); /* IE6-9 */
+}
+.sfQuicklinklist li img, ul.ui-sortable li img {
+	display:none;
+}
+.sfQuicklinklist li:hover img, ul.ui-sortable li:hover img {
+	display:block;
+}
+.sfQuicklinklist li img, ul.ui-sortable li img {
+	float:right;
+	margin-left:3px;
+	cursor:pointer;
+}
+.sfSidebarItems ul.ui-sortable li {
+	width:97%;
+	display:block;
+}
+.sfSidebarItems ul.ui-sortable li ul {
+	display:none;
+}
+.sfSidebarItems ul.ui-sortable li ul.ui-sortable li {
+	width:95%;
+	margin:10px 0 0;
+}
+.sfHighlight {
+	background:#fff !important;
+	height:30px;
+	display:block;
+	border:1px dashed #ccc !important;
+}
+.sfSidebarItems li span {
+	float:left;
+}
+img.sfIcon {
+	max-height:40px;
+}

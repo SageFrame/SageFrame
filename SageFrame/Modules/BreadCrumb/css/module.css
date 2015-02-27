@@ -1,0 +1,20 @@
+﻿#sfBreadcrumb .sfModule {
+	margin:0;
+	padding:0;
+}
+.sfBreadcrumb ul {
+	margin:0;
+	padding:0;
+}
+.sfBreadcrumb li {
+	float:left;
+	padding:0 14px 0 10px;
+	background:url(../images/black-arrow.png) no-repeat right 50%;
+}
+.sfBreadcrumb li.sfFirst {
+	padding-left:0;
+}
+.sfBreadcrumb li.sfLast {
+	padding-right:0;
+	background:none;
+}
