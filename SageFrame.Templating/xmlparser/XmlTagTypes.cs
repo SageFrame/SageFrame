@@ -13,6 +13,9 @@ using System.Text;
 
 namespace SageFrame.Templating.xmlparser
 {
+    /// <summary>
+    /// Enum for XML tag types.
+    /// </summary>
     public enum XmlTagTypes
     {
         Layout=0,

@@ -12,9 +12,23 @@ using System.Text;
 #endregion
 
 namespace SageFrame.SEOExtension
-{
+{   
+    /// <summary>
+    /// Business logic class for SEO.
+    /// </summary>
     public class SiteMapController
-    {
+    {  
+        /// <summary>
+        /// Returns SiteMapInfo list for given PortalID.
+        /// </summary>
+        /// <param name="prefix">prefix</param>
+        /// <param name="IsActive">IsActive</param>
+        /// <param name="IsDeleted">IsDeleted</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="Username">Username</param>
+        /// <param name="IsVisible">IsVisible</param>
+        /// <param name="IsRequiredPage">IsRequiredPage</param>
+        /// <returns>Returns list </returns>
         public static List<SiteMapInfo> GetSiteMap(string prefix, bool IsActive, bool IsDeleted, int PortalID, string Username, bool IsVisible, bool IsRequiredPage)
         {
             try

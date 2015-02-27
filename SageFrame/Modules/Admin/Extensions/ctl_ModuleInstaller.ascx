@@ -17,10 +17,11 @@
         <NavigationButtonStyle CssClass="CommandButton" BorderStyle="None" BackColor="Transparent" />--%>
         <FinishNavigationTemplate>
             <div class="sfButtonwrapper">
-            <label class="icon-complet sfBtn"> Finish
-                <asp:Button ID="FinishButton" runat="server" AlternateText="Finish" CausesValidation="False"
-                    CommandName="MoveComplete"   meta:resourcekey="FinishButtonResource1" />
-                    </label>
+                <label class="icon-complete sfBtn">
+                    Finish
+                    <asp:Button ID="FinishButton" runat="server" AlternateText="Finish" CausesValidation="False"
+                        CommandName="MoveComplete" meta:resourcekey="FinishButtonResource1" />
+                </label>
             </div>
         </FinishNavigationTemplate>
         <StartNavigationTemplate>
@@ -33,7 +34,7 @@
                 <label class="icon-close sfBtn">
                     Cancel
                     <asp:Button ID="CancelButton" runat="server" AlternateText="Cancel" CausesValidation="False"
-                        CommandName="Cancel" Text="Cancel" meta:resourcekey="CancelButtonResource1" />
+                        CommandName="Cancel" meta:resourcekey="CancelButtonResource1" />
                 </label>
             </div>
         </StartNavigationTemplate>
@@ -52,7 +53,7 @@
                         <td>
                             <%--<BD:ToolTipLabelControl ID="lblModulebrowse" Text="Select zip module:" ToolTip="Select zip module"
                             runat="server" CssClass="AdminLable" ToolTipImage="~/Templates/darkOrange/images/ico-help.gif" />
-                        --%>
+                            --%>
                             &nbsp;
                             <asp:FileUpload ID="fileModule" runat="server" meta:resourcekey="fileModuleResource1" />
                         </td>
@@ -166,16 +167,16 @@
         </WizardSteps>
         <StepNavigationTemplate>
             <div class="sfButtonwrapper">
-            <label class="sfBtn">
+                <label class="sfBtn">
                     Next <i class="icon-arrow-slim-e sfTxtOrange"></i>
-                <asp:Button ID="StepNextButton" runat="server" AlternateText="Next" CausesValidation="False"
-                    CommandName="MoveNext" CssClass="sfBtn" Text="Next" meta:resourcekey="StepNextButtonResource1" />
-                    </label>
-                      <label class="icon-close sfBtn">
+                    <asp:Button ID="StepNextButton" runat="server" AlternateText="Next" CausesValidation="False"
+                        CommandName="MoveNext" CssClass="sfBtn" meta:resourcekey="StepNextButtonResource1" />
+                </label>
+                <label class="icon-close sfBtn">
                     Cancel
-                <asp:Button ID="CancelButton" runat="server" AlternateText="Cancel" CausesValidation="False"
-                    CommandName="Cancel" CssClass="sfBtn" Text="Cancel" meta:resourcekey="CancelButtonResource2" />
-                    </label>
+                    <asp:Button ID="CancelButton" runat="server" AlternateText="Cancel" CausesValidation="False"
+                        CommandName="Cancel" CssClass="sfBtn" meta:resourcekey="CancelButtonResource2" />
+                </label>
             </div>
         </StepNavigationTemplate>
     </asp:Wizard>

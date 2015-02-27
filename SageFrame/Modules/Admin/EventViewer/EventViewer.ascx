@@ -1,9 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="EventViewer.ascx.cs" Inherits="SageFrame.Modules.Admin.EventViewer.EventViewer" %>
 <%@ Register Src="~/Controls/sectionheadcontrol.ascx" TagName="sectionheadcontrol"
     TagPrefix="sfe" %>
-
 <script language="javascript" type="text/javascript">
-    //<![CDATA[ 
+    //<![CDATA[
     function flipFlopException(eTarget) {
         if (document.getElementById(eTarget).style.display == 'none') {
             document.getElementById(eTarget).style.display = '';
@@ -15,10 +14,10 @@
     }
     BindEvents();
 
-    $(function() {
+    $(function () {
 
         var userGrid = '#' + '<%=gdvLog.ClientID%>';
-        $(userGrid).find("tr:first input:checkbox").bind("click", function() {
+        $(userGrid).find("tr:first input:checkbox").bind("click", function () {
             if ($(this).prop("checked")) {
                 $(userGrid).find("tr input:checkbox").prop("checked", true);
             }
@@ -29,7 +28,7 @@
 
 
         var gridid = '#' + '<%=gdvLog.ClientID%>';
-        $(gridid).find("tr.sfEven>td:gt(0),tr.sfOdd>td:gt(0)").bind("click", function() {
+        $(gridid).find("tr.sfEven>td:gt(0),tr.sfOdd>td:gt(0)").bind("click", function () {
             var self = $(this).parent("tr");
             if (!$(self).hasClass("sfEventdetail")) {
                 $(self).parent().find("tr.sfEventdetail").hide();
@@ -46,16 +45,15 @@
 
     });
     function BindEvents() {
-        $(function() {
+        $(function () {
             var logGrid = '#' + '<%=gdvLog.ClientID%>';
-            $(logGrid).find('input[id*="imbDelete"]').on("click", function(e) {
+            $(logGrid).find('input[id*="imbDelete"]').on("click", function (e) {
                 return ConfirmDialog($(this), 'Confirmation', 'Are you sure you want to delete this event log?');
             });
         });
     }
     //]]>	            
 </script>
-
 <h1>
     <asp:Label ID="lblEventViewerManagement" runat="server" Text="Event Viewer Management"
         meta:resourcekey="lblEventViewerManagementResource1"></asp:Label>
@@ -70,13 +68,18 @@
         <asp:Button ID="imgLogDelete" runat="server" ToolTip="Delete Selected Logs" CausesValidation="False"
             OnClick="imgLogDelete_Click" meta:resourcekey="imgLogDeleteResource1" />
     </label>
+    <label class="sfLocale icon-page-preview sfBtn">
+        Export Event Logs to Excel
+        <asp:Button ID="btnExportToExcel" runat="server" ToolTip=" Export Event Logs to Excel"
+            CausesValidation="False" OnClick="btnExportToExcel_Click" />
+    </label>
 </div>
 <div class="sfFormwrapper sfPadding sfTableOption">
     <table id="tblEventViewer" cellspacing="0" cellpadding="0" runat="server" width="100%">
         <tr>
             <td>
                 <p class="sfNote">
-                    <i class="icon-info" ></i>
+                    <i class="icon-info"></i>
                     <asp:Label ID="lblClickRow" runat="server" Text="Click on row for details" meta:resourcekey="lblClickRowResource1" /></p>
             </td>
             <td class="sfTxtAlignRgt">
@@ -105,13 +108,11 @@
         </tr>
     </table>
 </div>
-
 <script type="text/javascript">
     //<![CDATA[
     Sys.Application.add_load(BindEvents);
     //]]>	
 </script>
-
 <div class="sfGridwrapper sfEventview">
     <asp:GridView Width="100%" runat="server" ID="gdvLog" OnSelectedIndexChanged="gdvLog_SelectedIndexChanged"
         GridLines="None" AutoGenerateColumns="False" AllowPaging="True" EmptyDataText="..........LogType Not Found.........."
@@ -168,24 +169,24 @@
                 <ItemTemplate>
                     <tr class="sfEventdetail" style="display: none">
                         <td colspan="8">
-                            <div class="sfEventinfo">
-                                <asp:Panel ID="pnlClientIP" runat="server" Width="100%" meta:resourcekey="pnlClientIPResource1">
-                            </div>
-                            <p>
-                                <asp:Label ID="lblClientIP1" runat="server" CssClass="sfFormlabel" Text="Client IP:"
-                                    meta:resourcekey="lblClientIP1Resource1"></asp:Label>
-                                <asp:Literal ID="ltrClientIP" runat="server" Text='<%# Eval("ClientIPAddress") %>'></asp:Literal>
-                            </p>
-                            <p>
-                                <asp:Label ID="lblPageUrl1" runat="server" Text="PageUrl:" class="sfFormlabel" meta:resourcekey="lblPageUrl1Resource1"></asp:Label>
-                                <asp:Literal ID="ltrPageUrl" runat="server" Text='<%# Eval("PageUrl") %>'></asp:Literal>
-                            </p>
-                            <p>
-                                <asp:Label ID="lblException1" runat="server" Text="Exception:" class="cssClassBoldText"
-                                    meta:resourcekey="lblException1Resource1"></asp:Label>
-                                <asp:Literal ID="ltrException" runat="server" Text='<%# Eval("Exception") %>'></asp:Literal>
-                            </p>
+                            <div class="sfEventinfo">                            
+                            <asp:Panel ID="pnlClientIP" runat="server" Width="100%" meta:resourcekey="pnlClientIPResource1">
+                                <p>
+                                    <asp:Label ID="lblClientIP1" runat="server" CssClass="sfFormlabel" Text="Client IP:"
+                                        meta:resourcekey="lblClientIP1Resource1"></asp:Label>
+                                    <asp:Literal ID="ltrClientIP" runat="server" Text='<%# Eval("ClientIPAddress") %>'></asp:Literal>
+                                </p>
+                                <p>
+                                    <asp:Label ID="lblPageUrl1" runat="server" Text="PageUrl:" class="sfFormlabel" meta:resourcekey="lblPageUrl1Resource1"></asp:Label>
+                                    <asp:Literal ID="ltrPageUrl" runat="server" Text='<%# Eval("PageUrl") %>'></asp:Literal>
+                                </p>
+                                <p>
+                                    <asp:Label ID="lblException1" runat="server" Text="Exception:" class="cssClassBoldText"
+                                        meta:resourcekey="lblException1Resource1"></asp:Label>
+                                    <asp:Literal ID="ltrException" runat="server" Text='<%# Eval("Exception") %>'></asp:Literal>
+                                </p>
                             </asp:Panel>
+                            </div>
                         </td>
                     </tr>
                 </ItemTemplate>

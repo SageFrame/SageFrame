@@ -18,9 +18,18 @@ using SageFrame.Common;
 using SageFrame.Localization;
 #endregion
 
-
+/// <summary>
+/// Package writer base.
+/// </summary>
 public class PackageWriterBase
     {
+    /// <summary>
+    /// Writes zip file.
+    /// </summary>
+        /// <param name="filesToZip"> List of objects of FileDetails class. </param>
+        /// <param name="path">path</param>
+        /// <param name="manifestPath">manifestPath</param>
+        /// <param name="manifest">manifest</param>
         public static void WriteZipFile(List<FileDetails> filesToZip, string path,string manifestPath,string manifest )
         {
             int compression = 9;
@@ -64,7 +73,13 @@ public class PackageWriterBase
             }
            
         }
-
+         /// <summary>
+         /// Writes manifest.
+         /// </summary>
+        /// <param name="path">path</param>
+        /// <param name="filename">filename</param>
+        /// <param name="selectedResxFiles">List of object of FileDetails class. </param>
+        /// <param name="package">Objects of PackageInfo class.</param>
         public static void WriteManifest(string path,string filename,List<FileDetails> selectedResxFiles,PackageInfo package)
         {
             XmlWriter writer = XmlWriter.Create(path + @"/" + filename + ".sfe",XMLUtils.GetXmlWriterSettings());
@@ -78,7 +93,12 @@ public class PackageWriterBase
             writer.Close();
            
         }
-
+          /// <summary>
+          /// Writes package details.
+         /// </summary>
+        /// <param name="writer">Object of XmlWriter class.</param>
+        /// <param name="selectedResxFiles">selectedResxFiles</param>
+        /// <param name="package">Object of PackageInfo class. </param>
         private static void WritePackageDetails(XmlWriter writer, List<FileDetails> selectedResxFiles,PackageInfo package)
         {
             writer.WriteStartElement("package");
@@ -108,6 +128,11 @@ public class PackageWriterBase
            
 
         }
+    /// <summary>
+    /// Writes package resources.
+    /// </summary>
+        /// <param name="writer">Object of XmlWriter class.</param>
+        /// <param name="selectedResxFiles">List of objects of FileDetails class.</param>
         public static void WritePackageResources(XmlWriter writer, List<FileDetails> selectedResxFiles)
         {
             foreach (FileDetails fd in selectedResxFiles)
@@ -118,7 +143,10 @@ public class PackageWriterBase
                 writer.WriteEndElement();
             }
         }
-
+    /// <summary>
+    /// Writes package end element.
+    /// </summary>
+        /// <param name="writer">Object of XmlWriter. </param>
         public static void WritePackageEndElements(XmlWriter writer)
         {
            
@@ -127,7 +155,10 @@ public class PackageWriterBase
             writer.WriteEndElement();
             writer.WriteEndElement();
         }
-
+    /// <summary>
+    /// Deletes manifest.
+    /// </summary>
+        /// <param name="manifest">manifest</param>
         public static void DeleteManifest(string manifest)
         {
             if(File.Exists(manifest))

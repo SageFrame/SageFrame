@@ -61,7 +61,6 @@
         //<![CDATA[
        
         $(function() {
-
             $(this).LoadFirst('<%=templatefavicon%>');
             $(".sfLocalee").SystemLocalize();
         });

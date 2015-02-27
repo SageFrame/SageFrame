@@ -17,6 +17,9 @@ using System.Text;
 
 namespace SageFrame.Framework
 {
+    /// <summary>
+    /// Application keys
+    /// </summary>
     public static partial class ApplicationKeys
     {
         /// <summary>

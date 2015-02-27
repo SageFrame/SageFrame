@@ -15,10 +15,13 @@ using System.Text.RegularExpressions;
 
 namespace SageFrame.Localization
 {
+    /// <summary>
+    /// Localization helper class.
+    /// </summary>
     public class LocalizationHelper
     {
         /// <summary>
-        /// Replace the backslash
+        /// Replace the backslash in string with front slash.
         /// </summary>
         /// <param name="filepath"></param>
         /// <returns></returns>
@@ -30,7 +33,11 @@ namespace SageFrame.Localization
             }
             return filepath;
         }
-
+        /// <summary>
+        /// Obtains default file name.
+        /// </summary>
+        /// <param name="filepath">filepath</param>
+        /// <returns>Default file name for matched regex.</returns>
         public static string GetDefaultFileName(string filepath)
         {
             string fileName = Path.GetFileName(filepath);
@@ -39,6 +46,11 @@ namespace SageFrame.Localization
             return defaultFileName;
 
         }
+        /// <summary>
+        /// Obtains default file name and file path.
+        /// </summary>
+        /// <param name="filepath"></param>
+        /// <returns>File path and default file name for matched regex.</returns>
         public static string GetDefaultFilePath(string filepath)
         {
             string fileName = Path.GetFileName(filepath);
@@ -48,6 +60,11 @@ namespace SageFrame.Localization
             return Path.Combine(filepath, defaultFileName);
 
         }
+        /// <summary>
+        /// Checks for default file path for given filepath.
+        /// </summary>
+        /// <param name="filepath">filepath</param>
+        /// <returns>True for matched file path with new file path and default file name.</returns>
         public static bool IsDefaultFile(string filepath)
         {
             bool status = false;

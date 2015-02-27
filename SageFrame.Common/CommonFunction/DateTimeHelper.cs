@@ -10,12 +10,13 @@ using System.Collections.Generic;
 using System.Web;
 #endregion
 
-/// <summary>
-/// Summary description for DateTimeHelper
-/// </summary>
-/// 
+
 namespace SageFrame.Web
 {
+    /// <summary>
+    /// Description for DateTimeHelper
+    /// </summary>
+    /// 
     public static class DateTimeHelper
     {
 
@@ -42,7 +43,12 @@ namespace SageFrame.Web
         public static string UniversalSortableDateTimePattern = "u"; //Pattern value (for en-US culture) "yyyy'-'MM'-'dd HH':'mm':'ss'Z'"
         public static string SortableDateTimePattern = "s"; //Pattern value (for en-US culture) "yyyy'-'MM'-'dd'T'HH':'mm':'ss"
         public static string RFC1123Pattern = "R";//Pattern value (for en-US culture) "ddd, dd MMM yyyy HH':'mm':'ss 'GMT'" // r, R
-
+        /// <summary>
+        /// Get culture independent date time.
+        /// </summary>
+        /// <param name="dateortime">DateTime</param>
+        /// <param name="outputformat">Output DateTime format.</param>
+        /// <returns>Formated date time.</returns>
         public static string GetCultureIndependentDateTime(string dateortime, string outputformat)
         {
             string ret = "";
@@ -57,7 +63,11 @@ namespace SageFrame.Web
             }
             return ret;
         }
-
+        /// <summary>
+        /// Convert short date.
+        /// </summary>
+        /// <param name="str">DateTime</param>
+        /// <returns>Formated short date.</returns>
         public static string ConvertToShortDate(string str)
         {
             if (!string.IsNullOrEmpty(str))
@@ -67,7 +77,11 @@ namespace SageFrame.Web
             }
             return str;
         }
-
+        /// <summary>
+        /// Convert Long Date
+        /// </summary>
+        /// <param name="str">DateTime</param>
+        /// <returns>Formated short date.</returns>
         public static string ConvertToLongDate(string str)
         {
             if (!string.IsNullOrEmpty(str))

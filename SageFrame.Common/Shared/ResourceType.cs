@@ -12,6 +12,9 @@ using System.Text;
 
 namespace SageFrame.Common
 {
+    /// <summary>
+    /// Application resource type.
+    /// </summary>
     public enum ResourceType
     {
         CSS = 1,

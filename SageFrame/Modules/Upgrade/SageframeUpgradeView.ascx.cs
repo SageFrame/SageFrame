@@ -50,30 +50,51 @@ public partial class Modules_Upgrade_SageframeUpgrade : BaseAdministrationUserCo
 
     protected void btnUpload_Click(object sender, EventArgs e)
     {
-        if (this.fuUpgrade.HasFile && this.fuUpgrade.FileName.ToLower().EndsWith(".zip"))
+        try
         {
-            string fileName = this.fuUpgrade.FileName;
-
-            string tempFolder = HostingEnvironment.ApplicationPhysicalPath + "Upload\\UploadedFiles";
-            string savePath = tempFolder + "\\" + fileName;
-            if (!Directory.Exists(tempFolder))
-                Directory.CreateDirectory(tempFolder);
-            this.fuUpgrade.SaveAs(savePath);
-            if (!IsValidVersion(savePath))
+            if (this.fuUpgrade.HasFile && this.fuUpgrade.FileName.ToLower().EndsWith(".zip"))
             {
-                this.lblErrorMsg.Text = "Your site is already Upgraded with this Version!! Try Another version";
+                string fileName = this.fuUpgrade.FileName;
+                long filesize = fuUpgrade.PostedFile.ContentLength;
+
+                if (filesize < 1048000)
+                {
+                    string tempFolder = HostingEnvironment.ApplicationPhysicalPath + "Upgrade";
+                    string savePath = tempFolder + "\\" + fileName;
+                    if (!Directory.Exists(tempFolder))
+                        Directory.CreateDirectory(tempFolder);
+                    this.fuUpgrade.SaveAs(savePath);
+                    string errorMessage = string.Empty;
+                    if (!IsZipValid(savePath, ref errorMessage))
+                    {
+                        this.lblErrorMsg.Text = errorMessage;
+                    }
+                    else
+                    {
+                        Server.Transfer(ResolveUrl("~/Modules/Upgrade/upgrade.aspx?zip=" + fileName));
+                    }
+                }
+                else
+                {
+                    this.lblErrorMsg.Text = "The zip file size exceed 10 MB";
+                }
             }
             else
             {
-                Server.Transfer(ResolveUrl("~/Modules/Upgrade/upgrade.aspx?zip=" + fileName));
+                this.lblErrorMsg.Text = "Please select Zip File";
             }
         }
-        else
+        catch (Exception ex)
         {
-            this.lblErrorMsg.Text = "Please select Zip File";
+            ShowMessage("", ex.ToString(), "", SageMessageType.Error);
         }
     }
 
+    /// <summary>
+    /// Compares the version of the uploading zip and existing application version.
+    /// </summary>
+    /// <param name="configFilePath">Config file path.</param>
+    /// <returns>True if the uploading version is higher then the current application version.</returns>
     public static bool IsNewVersion(string configFilePath)
     {
         bool flag = false;
@@ -82,7 +103,6 @@ public partial class Modules_Upgrade_SageframeUpgrade : BaseAdministrationUserCo
         XmlNode versionNode = doc.SelectSingleNode("/CONFIG/SAGEFRAME");
         string installerVersion = versionNode.Attributes["VERSION"].Value;
         string prevVersion = Config.GetSetting("SageFrameVersion");
-
         if (Convert.ToDecimal(installerVersion) >= Convert.ToDecimal(prevVersion))
         {
             flag = true;
@@ -90,154 +110,33 @@ public partial class Modules_Upgrade_SageframeUpgrade : BaseAdministrationUserCo
         return flag;
     }
 
-    public static bool IsValidVersion(string filePath)
+    /// <summary>
+    /// Compares the version of the zip being uploaded to the existing application. Also checks if the zip is valid upgrader zip.
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <param name="errormessage"></param>
+    /// <returns></returns>
+    public static bool IsZipValid(string filePath, ref string errormessage)
     {
         bool IsValid = false;
-        string outputFolder = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, @"Modules\Upgrade\UploadedFiles");
+        string outputFolder = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, @"Upgrade\UploadedFiles");
+        if (!Directory.Exists(outputFolder))
+            Directory.CreateDirectory(outputFolder);
         string extractPath = string.Empty;
-        bool isConfigFileFound = ZipUtil.UnZipConfigFile(filePath, outputFolder, ref extractPath, "", true, "config.xml");
-
+        string configFileName = "config.xml";
+        bool isConfigFileFound = ZipUtil.UnZipConfigFile(filePath, outputFolder, ref extractPath, "", true, configFileName);
         if (isConfigFileFound)
         {
-            IsValid = IsNewVersion(extractPath + @"\SystemFiles\config.xml");
+            IsValid = IsNewVersion(extractPath + @"\SystemFiles\" + configFileName);
+            if (!IsValid)
+            {
+                errormessage = "Your site is already Upgraded with this Version!! Try Another version";
+            }
         }
-
+        else
+        {
+            errormessage = "This is not a valid upgrader zip";
+        }
         return IsValid;
     }
-
-
-    #region Script Loader
-
-    public static void BackupDatabase(String databaseName, String destinationPath, SqlConnection connection)
-    {
-        Backup sqlBackup = new Backup();
-
-        sqlBackup.Action = BackupActionType.Database;
-        sqlBackup.BackupSetDescription = "ArchiveDataBase:" +
-                                         DateTime.Now.ToShortDateString();
-        sqlBackup.BackupSetName = "Archive";
-
-        sqlBackup.Database = databaseName;
-
-        BackupDeviceItem deviceItem = new BackupDeviceItem(destinationPath, DeviceType.File);
-
-        ServerConnection serverConn = new ServerConnection(connection);
-        Server sqlServer = new Server(serverConn);
-
-        //Database db = sqlServer.Databases[databaseName];
-
-        sqlBackup.Initialize = true;
-        sqlBackup.Checksum = true;
-        sqlBackup.ContinueAfterError = true;
-        sqlBackup.Devices.Add(deviceItem);
-        sqlBackup.Incremental = false;
-
-        sqlBackup.ExpirationDate = DateTime.Now.AddDays(3);
-        sqlBackup.LogTruncation = BackupTruncateLogType.Truncate;
-
-        sqlBackup.FormatMedia = false;
-
-        sqlBackup.SqlBackup(sqlServer);
-    }
-
-    public void RunSqlScript(string connectionString1, string actualpath, int Counter)
-    {
-        lock (this)
-        {
-            try
-            {
-                switch (Counter)
-                {
-                    case 0:
-                        string[] ScriptFiles = System.IO.Directory.GetFiles(actualpath);
-                        ArrayList arrColl = new ArrayList();
-                        foreach (string scriptFile in ScriptFiles)
-                        {
-                            arrColl.Add(scriptFile);
-                        }
-                        Session["_SageScriptFile"] = arrColl;
-                        break;
-                    default:
-                        ArrayList arrC = (ArrayList)Session["_SageScriptFile"];
-                        string strFile = arrC[0].ToString();
-                        RunGivenSQLScript(strFile, connectionString1);
-
-                        if (arrC.Count != 0)
-                        {
-                            arrC.RemoveAt(0);
-                        }
-                        Session["_SageScriptFile"] = arrC;
-                        break;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                string sss = ex.Message;
-            }
-        }
-    }
-
-    private void RunGivenSQLScript(string scriptFile, string conn)
-    {
-        SqlConnection sqlcon = new SqlConnection(conn);
-        sqlcon.Open();
-        SqlCommand sqlcmd = new SqlCommand();
-        sqlcmd.Connection = sqlcon;
-        sqlcmd.CommandType = CommandType.Text;
-        StreamReader reader = null;
-        reader = new StreamReader(scriptFile);
-        string script = reader.ReadToEnd();
-        try
-        {
-            ExecuteLongSql(sqlcon, script);
-
-        }
-        catch (Exception)
-        {
-
-            throw;
-        }
-        finally
-        {
-            reader.Close();
-            sqlcon.Close();
-        }
-
-    }
-
-    public void ExecuteLongSql(SqlConnection connection, string Script)
-    {
-        string sql = "";
-        sql = Script;
-        Regex regex = new Regex("^GO", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-        string[] lines = regex.Split(sql);
-        SqlTransaction transaction = connection.BeginTransaction();
-        using (SqlCommand cmd = connection.CreateCommand())
-        {
-            cmd.Connection = connection;
-            cmd.Transaction = transaction;
-            foreach (string line in lines)
-            {
-
-                if (line.Length > 0)
-                {
-                    cmd.CommandText = line;
-                    cmd.CommandType = CommandType.Text;
-                    try
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                    catch
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
-            }
-        }
-        transaction.Commit();
-    }
-
-    #endregion
 }

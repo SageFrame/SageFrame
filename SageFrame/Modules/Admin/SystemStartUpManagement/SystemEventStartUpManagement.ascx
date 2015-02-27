@@ -4,7 +4,7 @@
     <label id="lblSystemEventManagement">
         System Event StartUp Management</label></h2>
 <asp:Panel ID="pnlEventStartUp" runat="server">
-    <div class="sfFormwrapper sfPadding">
+    <div class="sfFormwrapper">
         <h2>
             <asp:Label ID="lblAddEditSystemEventStartUp" runat="server" Text="Add/Edit System Event StartUp"></asp:Label>
         </h2>
@@ -14,96 +14,91 @@
                 <td width="140">
                     <asp:Label ID="lblControlUrl" runat="server" CssClass="sfFormlabel" Text="Control Url"></asp:Label>
                 </td>
-                <td width="30">
-                    :
+                <td width="30">:
                 </td>
                 <td>
                     <asp:DropDownList ID="ddlControlUrl" ToolTip="Select Control Url"
-                        runat="server" 
+                        runat="server"
                         AutoPostBack="False" CssClass="sfListmenu">
-                    </asp:DropDownList>                    
+                    </asp:DropDownList>
                 </td>
-                <td>
-                </td>
-            </tr>            
+                <td></td>
+            </tr>
             <tr>
                 <td>
                     <asp:Label ID="lblEventLocation" runat="server" CssClass="sfFormlabel" Text="Event Location"></asp:Label>
                 </td>
-                <td>
-                    :
+                <td>:
                 </td>
                 <td>
-                     <asp:DropDownList ID="ddlEventLocation" ToolTip="Select Event Type"
-                        runat="server" 
+                    <asp:DropDownList ID="ddlEventLocation" ToolTip="Select Event Type"
+                        runat="server"
                         AutoPostBack="False" CssClass="sfListmenu">
-                    </asp:DropDownList> 
+                    </asp:DropDownList>
                 </td>
-                <td>
-                </td>
-            </tr>  
+                <td></td>
+            </tr>
             <tr>
                 <td>
                     <asp:Label ID="lblIsAdmin" runat="server" CssClass="sfFormlabel" Text="Is Admin"></asp:Label>
                 </td>
-                <td>
-                    :
+                <td>:
                 </td>
                 <td>
                     <asp:CheckBox ID="chkIsAdmin" runat="server" CssClass="sfCheckbox" />
                 </td>
-                <td>
-                </td>
+                <td></td>
             </tr>
             <tr>
                 <td>
                     <asp:Label ID="lblIsControlUrl" runat="server" CssClass="sfFormlabel" Text="Is ControlUrl"></asp:Label>
                 </td>
-                <td>
-                    :
+                <td>:
                 </td>
                 <td>
                     <asp:CheckBox ID="chkIsControlUrl" runat="server" CssClass="sfCheckbox" />
                 </td>
-                <td>
-                </td>
-            </tr>         
+                <td></td>
+            </tr>
             <tr>
                 <td>
                     <asp:Label ID="lblIsActive" runat="server" CssClass="sfFormlabel" Text="Is Active"></asp:Label>
                 </td>
-                <td>
-                    :
+                <td>:
                 </td>
                 <td>
                     <asp:CheckBox ID="chkIsActive" runat="server" CssClass="sfCheckbox" />
                 </td>
-                <td>
-                </td>
+                <td></td>
             </tr>
         </table>
     </div>
     <div class="sfButtonwrapper">
-        <asp:ImageButton ID="imbSave" runat="server" OnClick="imbSave_Click" ToolTip="Click to save"/>
-        <asp:Label ID="lblSave" runat="server" Text="Save" AssociatedControlID="imbSave"
-            Style="cursor: pointer;"></asp:Label>
-        <asp:ImageButton ID="imbCancel" runat="server" OnClick="imbCancel_Click" ToolTip="Click to cancel"
+        <label id="lblSave" class="sfBtn icon-save" runat="server">
+            Save
+        <asp:Button ID="imbSave" runat="server" OnClick="imbSave_Click" />
+        </label>
+        <label id="lblCancel" class="sfBtn icon-close" runat="server">
+            Cancel
+        <asp:Button ID="imbCancel" runat="server" OnClick="imbCancel_Click"
             CausesValidation="False" />
-        <asp:Label ID="lblCancel" runat="server" Text="Cancel" AssociatedControlID="imbCancel"
-            Style="cursor: pointer;"></asp:Label>
+        </label>
+
     </div>
 </asp:Panel>
 <asp:Panel ID="pnlSystemEventStartUpList" runat="server">
     <div class="sfButtonwrapper">
-        <asp:ImageButton ID="imbAddNew" runat="server" OnClick="imbAddNew_Click" ToolTip="Click to add System Event StartUp" />
-        <asp:Label ID="lblAddNew" runat="server" Text="Add New System Event StartUp" AssociatedControlID="imbAddNew"
-            Style="cursor: pointer;"></asp:Label>
+        <label id="lblAddNew" class="sfBtn icon-addnew" runat="server">
+            Add System Event StartUp
+       <asp:Button ID="imbAddNew" runat="server" OnClick="imbAddNew_Click" />
+        </label>
+
     </div>
     <div class="sfGridwrapper">
         <asp:GridView ID="grdList" runat="server" AutoGenerateColumns="False" EmptyDataText="No Record to Show..."
             GridLines="None" AllowPaging="True" PageSize="15" BorderColor="White" BorderWidth="0px"
             OnPageIndexChanging="grdList_PageIndexChanging" OnRowCommand="grdList_RowCommand" OnRowDataBound="gdvList_RowDataBound"
-             Width="100%">
+            Width="100%">
             <Columns>
                 <asp:TemplateField HeaderText="ControlUrl">
                     <ItemTemplate>
@@ -113,7 +108,7 @@
                     </ItemTemplate>
                     <ItemStyle HorizontalAlign="Left" VerticalAlign="Top" />
                     <HeaderStyle HorizontalAlign="Left" />
-                </asp:TemplateField>                
+                </asp:TemplateField>
                 <asp:TemplateField HeaderText="Event Location">
                     <ItemTemplate>
                         <asp:Label ID="lblEventLocation" runat="server" Text='<%# Eval("EventLocationName") %>'></asp:Label>
@@ -126,9 +121,9 @@
                 </asp:BoundField>
                 <asp:BoundField DataField="IsControlUrl" HeaderText="Is ControlUrl">
                     <HeaderStyle CssClass="sfColumnIsActive" />
-                </asp:BoundField> 
-                 <asp:BoundField DataField="IsSystem" HeaderText="Is System">
-                    <HeaderStyle CssClass="sfColumnIsActive" />                    
+                </asp:BoundField>
+                <asp:BoundField DataField="IsSystem" HeaderText="Is System">
+                    <HeaderStyle CssClass="sfColumnIsActive" />
                 </asp:BoundField>
                 <asp:BoundField DataField="IsActive" HeaderText="Is Active">
                     <HeaderStyle CssClass="sfColumnIsActive" />
@@ -164,7 +159,7 @@
                     </ItemTemplate>
                     <HeaderStyle VerticalAlign="Top" />
                     <ItemStyle VerticalAlign="Top" />
-                </asp:TemplateField>               
+                </asp:TemplateField>
             </Columns>
             <PagerStyle CssClass="sfPagination" />
             <HeaderStyle CssClass="sfClassHeadingOne" />

@@ -23,56 +23,68 @@ using SageFrame.Web;
 
 namespace SageFrame
 {
-    public class SageFrameRouteHandler: IRouteHandler
+    /// <summary>
+    /// SageFrame's routing handler that inherits IRouteHandler.
+    /// </summary>
+    public class SageFrameRouteHandler : IRouteHandler
     {
+        /// <summary>
+        /// Initializes an instance of SageFrmeRouteHandler class
+        /// </summary>
+        /// <param name="virtualPath">Virtual path.</param>
         public SageFrameRouteHandler(string virtualPath)
         {
             this.VirtualPath = virtualPath;
         }
 
-    public string VirtualPath { get; private set; }
+        /// <summary>
+        /// Returns virtual path.
+        /// </summary>
+        public string VirtualPath { get; private set; }
 
-    public IHttpHandler GetHttpHandler(RequestContext requestContext)
-    {
-        var page = BuildManager.CreateInstanceFromVirtualPath(VirtualPath, typeof(Page)) as SageFrameRoute;
-        if (requestContext.RouteData.Values["PagePath"] != null)
+        /// <summary>
+        /// Returns IHttpHandler object for current requested url.
+        /// </summary>
+        /// <param name="requestContext">RequestContext object.</param>
+        /// <returns>IHttpHandler object</returns>
+        public IHttpHandler GetHttpHandler(RequestContext requestContext)
         {
-            page.PagePath = requestContext.RouteData.Values["PagePath"].ToString();
-        }
-        if (requestContext.RouteData.Values["Param"] != null)
-        {
-
-
-            try
+            var page = BuildManager.CreateInstanceFromVirtualPath(VirtualPath, typeof(Page)) as SageFrameRoute;
+            if (requestContext.RouteData.Values["PagePath"] != null)
             {
-                var Param = requestContext.RouteData.Values["Param"].ToString().Split('/');
-                int count = Param.Length;
-                for (int i = 0; i < count; i++)
-                {
-                    if (Param[i + 1] != null)
-                    {
-
-                        requestContext.HttpContext.Items.Add(Param[i], Param[i + 1]);
-                    }
-                    i = i + 1;
-                }
+                page.PagePath = requestContext.RouteData.Values["PagePath"].ToString();
             }
-            catch (Exception e)
-            { throw; }
-        }
+            if (requestContext.RouteData.Values["Param"] != null)
+            {
+                try
+                {
+                    var Param = requestContext.RouteData.Values["Param"].ToString().Split('/');
+                    int count = Param.Length;
+                    for (int i = 0; i < count; i++)
+                    {
+                        if (Param[i + 1] != null)
+                        {
+                            requestContext.HttpContext.Items.Add(Param[i], Param[i + 1]);
+                        }
+                        i = i + 1;
+                    }
+                }
+                catch (Exception e)
+                { throw; }
+            }
 
-        if (requestContext.RouteData.Values["PortalSEOName"] != null)
-        {
-            page.PortalSEOName = requestContext.RouteData.Values["PortalSEOName"].ToString();
-        }
-        if (requestContext.RouteData.Values["UserModuleID"] != null)
-        {
-            page.UserModuleID = requestContext.RouteData.Values["UserModuleID"].ToString();
-        }
-        if (requestContext.RouteData.Values["ControlType"] != null)
-        {
-            page.ControlType = requestContext.RouteData.Values["ControlType"].ToString();
-        }
+            if (requestContext.RouteData.Values["PortalSEOName"] != null)
+            {
+                page.PortalSEOName = requestContext.RouteData.Values["PortalSEOName"].ToString();
+            }
+            if (requestContext.RouteData.Values["UserModuleID"] != null)
+            {
+                page.UserModuleID = requestContext.RouteData.Values["UserModuleID"].ToString();
+            }
+            if (requestContext.RouteData.Values["ControlType"] != null)
+            {
+                page.ControlType = requestContext.RouteData.Values["ControlType"].ToString();
+            }
             if (requestContext.RouteData.Values["uniqueWord"] != null)
             {
                 Route route = (Route)requestContext.RouteData.Route;
@@ -119,8 +131,8 @@ namespace SageFrame
                     pageName = page.PagePath;
                 }
             }
-        return page;
-    }
+            return page;
+        }
 
     }
 }

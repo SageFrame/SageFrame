@@ -139,7 +139,7 @@
                     <div class="sftype1">
                         <label id="imgAddLayout" class="icon-addnew sfBtn">
                             Create Layout</label>
-                        <label id="imgEditLayout_Visual" class="icon-update sfBtn">
+                        <label id="imgEditLayout_Visual" class="icon-edit sfBtn">
                             Edit</label>
                         <label id="btnDeleteLayout" class="icon-close sfBtn">
                             Delete</label>
@@ -166,7 +166,7 @@
             <div class="sflayoutbuilderhead">
                 Create Layout Markup</div>
             <div class="sfFormwrapper sfBuilder">
-                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <%--<table width="100%" border="0" cellspacing="0" cellpadding="0" >
                     <tr>
                         <td width="20%">
                             <label class="sfFormlabel">
@@ -180,7 +180,7 @@
                             </select>
                         </td>
                     </tr>
-                </table>
+                </table>--%>
                 <table id="tblPch" style="display: none" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
                         <td width="20%">

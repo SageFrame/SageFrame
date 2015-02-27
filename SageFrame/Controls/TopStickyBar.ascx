@@ -79,9 +79,6 @@
                 top: divHeight
             });
         });
-        if (ValidTemplate == "False")
-            $('.myProfileDrop').remove();
-
         $('.myProfile').on('click', function () {
             if ($('.myProfileDrop').hasClass('Off')) {
                 $('.myProfileDrop').removeClass('Off');

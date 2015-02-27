@@ -19,6 +19,9 @@ using SageFrame.ProfileManagement;
 
 namespace SageFrame.Profile
 {
+    /// <summary>
+    /// Profile comparer
+    /// </summary>
     public class ProfilePropertyDefinitionComparer : System.Collections.IComparer
     {
 

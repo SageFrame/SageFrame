@@ -7,6 +7,9 @@ using System.Text;
 
 namespace SFE.GoogleAdUnit
 {
+    /// <summary>
+    /// Internal class for Adverisement unit globals.
+    /// </summary>
     internal class AdUnitGlobals
     {
         internal static readonly String m_strAdUnitUrl = "http://pagead2.googlesyndication.com/pagead/show_ads.js";
@@ -16,6 +19,9 @@ namespace SFE.GoogleAdUnit
         internal static StringBuilder g_strLinkUnitDesigntimeRender_V;
         internal static StringBuilder g_strLinkUnitDesigntimeRender_H;
 
+        /// <summary>
+        /// Initializes an instance of AdUnitGlobals class.
+        /// </summary>
         static AdUnitGlobals()
         {
             g_AdUnitDimensions = new Dictionary<AdUnitFormat, UnitDimensions>();

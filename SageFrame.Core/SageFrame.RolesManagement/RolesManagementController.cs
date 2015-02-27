@@ -18,8 +18,16 @@ using System.Text;
 
 namespace SageFrame.RolesManagement
 {
+    /// <summary>
+    /// Business logic for roles.
+    /// </summary>
     public class RolesManagementController
     {
+        /// <summary>
+        /// Returns roles details by role name.
+        /// </summary>
+        /// <param name="RoleName">Role name.</param>
+        /// <returns>Role details.</returns>
         public RolesManagementInfo GetRoleIDByRoleName(string RoleName)
         {
             try
@@ -33,6 +41,14 @@ namespace SageFrame.RolesManagement
                 throw;
             }
         }
+
+        /// <summary>
+        /// Returns all the portal role list.
+        /// </summary>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="IsAll">set true if all the role is to be return.</param>
+        /// <param name="Username">User's name.</param>
+        /// <returns></returns>
         public List<RolesManagementInfo> PortalRoleList(int PortalID, bool IsAll, string Username)
         {
             try
@@ -46,7 +62,13 @@ namespace SageFrame.RolesManagement
                 throw;
             }
         }
-
+        
+        /// <summary>
+        /// Returns portal selected roles.
+        /// </summary>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="Username">User's name.</param>
+        /// <returns>List of roles details</returns>
         public List<RolesManagementInfo> GetPortalRoleSelectedList(int PortalID, string Username)
         {
             try
@@ -59,6 +81,24 @@ namespace SageFrame.RolesManagement
 
                 throw;
             }
+        }
+        /// <summary>
+        /// Returns list of portal roles.
+        /// </summary>
+        /// <returns>List of portal roles</returns>
+        public List<RolesManagementInfo> GetSageFramePortalList()
+        {
+            try
+            {
+                RolesManagementProvider objProvider = new RolesManagementProvider();
+                return objProvider.GetSageFramePortalList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
 
     }

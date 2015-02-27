@@ -13,6 +13,9 @@ using System.Web;
 
 namespace SageFrame.Common
 {
+    /// <summary>
+    /// Cache helper.
+    /// </summary>
     public static class CacheHelper
     {
         /// <summary>

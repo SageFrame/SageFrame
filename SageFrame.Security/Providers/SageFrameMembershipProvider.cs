@@ -24,6 +24,9 @@ using SageFrame.Security.Enums;
 
 namespace SageFrame.Security
 {
+    /// <summary>
+    /// Abstract modifier for SageFrameMembershipProvider.
+    /// </summary>
     public abstract class SageFrameMembershipProvider
     {
         public abstract bool RequireUniqueEmail{ get; }

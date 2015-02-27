@@ -14,8 +14,20 @@ using SageFrame.Web.Utilities;
 
 namespace SageFrame.PortalManagement
 {
+    /// <summary>
+    /// Manupulates data for PortalMgrDataProvider.
+    /// </summary>
     public class PortalMgrDataProvider
     {
+        /// <summary>
+        /// Connect to database and add new portal.
+        /// </summary>
+        /// <param name="PortalName">Portal name.</param>
+        /// <param name="IsParent">True for parent portal.</param>
+        /// <param name="UserName">User name.</param>
+        /// <param name="TemplateName">template name.</param>
+        /// <param name="ParentPortal">Parent portal ID.</param>
+        /// <param name="PSEOName">Page SEO name.</param>
         public static void AddPortal(string PortalName, bool IsParent, string UserName, string TemplateName,int ParentPortal,string PSEOName)
         {
 
@@ -30,9 +42,15 @@ namespace SageFrame.PortalManagement
 
             SQLHandler sagesql = new SQLHandler();
             sagesql.ExecuteNonQuery("sp_PortalAdd", ParaMeterCollection);
-
-
         }
+        /// <summary>
+        /// Connect to database and update existing portal.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="PortalName">Portal name.</param>
+        /// <param name="IsParent">True for parent.</param>
+        /// <param name="UserName">User name.</param>
+        /// <param name="TemplateName">Template name.</param>
         public static void UpdatePortal(int PortalID, string PortalName, bool IsParent, string UserName, string TemplateName)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
@@ -47,6 +65,22 @@ namespace SageFrame.PortalManagement
 
 
         }
+        /// <summary>
+        ///  Connect to database and create portal for AspxCommerce.
+        /// </summary>
+        /// <param name="storeName">Store name.</param>
+        /// <param name="firstName">First name.</param>
+        /// <param name="lastName">Last name.</param>
+        /// <param name="email">Email.</param>
+        /// <param name="companyName">Company name.</param>
+        /// <param name="contact">Contact.</param>
+        /// <param name="isParent">True for parent.</param>
+        /// <param name="username">User name.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="passwordSalt">Password salt.</param>
+        /// <param name="passwordFormat">Password format.</param>
+        /// <param name="isFromFront">True if  portal creation request is from demo user.</param>
+        /// <returns>Newly created store ID.</returns>
         public int AddStoreSubscriber(string storeName, string firstName, string lastName, string email, string companyName, bool? contact, bool? isParent, string username,
            string password, string passwordSalt, int? passwordFormat, bool? isFromFront)
         {

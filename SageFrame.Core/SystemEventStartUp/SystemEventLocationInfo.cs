@@ -18,9 +18,19 @@ using System.Text;
 
 namespace SageFrame.Core
 {
+    /// <summary>
+    /// Enities class for system event start up.
+    /// </summary>
     public class SystemEventLocationInfo
     {
+        /// <summary>
+        /// Gets or sets event location name.
+        /// </summary>
         public string EventLocationName { get; set; }
+
+        /// <summary>
+        /// Initializes an instance of SystemLocatoinInfo.
+        /// </summary>
         public SystemEventLocationInfo()
         {
         }

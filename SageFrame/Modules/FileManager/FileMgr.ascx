@@ -249,6 +249,10 @@
 
                 $('span.sfClosepopup').bind("click", function () {
                     $('#fade , #popuprel , #popuprel2 , #popuprel3,#newFolderPopUp,#uploadFilePopUp,#divMessagePopUp,#divEditPopUp,#divSuccessPopUp,#divConfirmPopUp,#divCopyFiles,#divEditMode').fadeOut();
+                    if ($('#divFileTree').find('a.cssClassTreeSelected').length > 0) {
+                        $('#divFileTree').find('a.cssClassTreeSelected').trigger('click');
+                        $('#divFileTree').find('a.cssClassTreeSelected').trigger('click');
+                    }
                     //jcrop_api.release();
                 });
 
@@ -1282,7 +1286,7 @@
                     }
                     if (navCount > 15) {
                         var html = "<ul class='simplePagerNav'>";
-                        html += '<li class="prev"><a href="#">Prev</a></li>';
+                        html += '<li class="prev"><a href="#"><</a></li>';
                         html += '<li class="nav"><a href="#">1</a></li>';
                         html += '<li class="nav"><a href="#">2</a></li>';
                         for (var i = 3; i <= 15; i++) {
@@ -1291,16 +1295,16 @@
                         html += '<li  class="MoreNav"><a href="#">.........</a></li>';
                         html += '<li class="nav"><a href="#">' + parseInt(navCount - 2) + '</a></li>';
                         html += '<li class="nav"><a href="#">' + parseInt(navCount - 1) + '</a></li>';
-                        html += '<li class="next"><a href="#">Next</a></li>';
+                        html += '<li class="next"><a href="#">></a></li>';
                         html += '</ul>';
                     }
                     else {
                         var html = "<ul class='simplePagerNav'>";
-                        html += '<li class="prev"><a href="#">Prev</a></li>';
+                        html += '<li class="prev"><a href="#"><</a></li>';
                         for (var i = 1; i <= navCount; i++) {
                             html += '<li class="nav"><a href="#">' + i + '</a></li>';
                         }
-                        html += '<li class="next"><a href="#">Next</a></li>';
+                        html += '<li class="next"><a href="#">></a></li>';
                         html += '</ul>';
                     }
 
@@ -1324,7 +1328,7 @@
                     var startIndex = currentPage - 5;
                     var endIndex = parseInt(currentPage) + 5;
                     var html = "<ul class='simplePagerNav'>";
-                    html += '<li class="prev"><a href="#">Prev</a></li>';
+                    html += '<li class="prev"><a href="#"><</a></li>';
                     html += '<li class="nav"><a href="#">1</a></li>';
                     html += '<li class="nav"><a href="#">2</a></li>';
                     html += '<li  class="MoreNav"><a href="#">.........</a></li>';
@@ -1334,7 +1338,7 @@
                     html += '<li  class="MoreNav"><a href="#">.........</a></li>';
                     html += '<li class="nav"><a href="#">' + parseInt(navCount - 2) + '</a></li>';
                     html += '<li class="nav"><a href="#">' + parseInt(navCount - 1) + '</a></li>';
-                    html += '<li class="next"><a href="#">Next</a></li>';
+                    html += '<li class="next"><a href="#">></a></li>';
                     html += '</ul>';
 
 
@@ -1360,7 +1364,7 @@
                     var endIndex = navCount;
 
                     var html = "<ul class='simplePagerNav'>";
-                    html += '<li class="prev"><a href="#">Prev</a></li>';
+                    html += '<li class="prev"><a href="#"><</a></li>';
                     html += '<li class="nav"><a href="#">1</a></li>';
                     html += '<li class="nav"><a href="#">2</a></li>';
                     html += '<li  class="MoreNav"><a href="#">.........</a></li>';
@@ -1368,7 +1372,7 @@
                         html += '<li class="nav"><a href="#">' + i + '</a></li>';
                     }
 
-                    html += '<li class="next"><a href="#">Next</a></li>';
+                    html += '<li class="next"><a href="#">></a></li>';
                     html += '</ul>';
                     $('#divPagerNav').append(html);
 

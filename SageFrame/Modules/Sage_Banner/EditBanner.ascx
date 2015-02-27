@@ -425,7 +425,7 @@
                 <div class="sfButtonwrapper">
                     <label class="sfLocale icon-addnew sfBtn">
                         Add
-                        <asp:Button ID="imbSaveBanner" runat="server" CssClass="icon-addnew sfBtn" ValidationGroup="bannername"
+                        <asp:Button ID="imbSaveBanner" runat="server" ValidationGroup="bannername"
                             OnClick="imbSaveBanner_Click" /></label>
                 </div>
             </td>

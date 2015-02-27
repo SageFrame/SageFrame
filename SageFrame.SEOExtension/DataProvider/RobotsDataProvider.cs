@@ -14,10 +14,17 @@ using SageFrame.Web.Utilities;
 #endregion
 
 namespace SageFrame.SEOExtension
-{
+{ 
+    /// <summary>
+    /// Manupulates data for RobotsController Class.
+    /// </summary>
     public class RobotsDataProvider
     {
-
+        /// <summary>
+        /// Connects to database and returns RobotsInfo list for given PortalID.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>RobotsInfo List</returns>
         public static List<RobotsInfo> GetRobots(int PortalID)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
@@ -49,8 +56,12 @@ namespace SageFrame.SEOExtension
             }
 
         }
+        /// <summary>
+        /// Connects to database and deletes existing robots for given PortalID.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
         public static void DeleteExistingRobots(int PortalID)
-        {
+        {  
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
             try
@@ -64,6 +75,12 @@ namespace SageFrame.SEOExtension
                 throw;
             }
         }
+          /// <summary>
+          ///  Connets to database and saves robots.
+          /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserAgent">UserAgent(Crawler)</param>
+          /// <param name="PagePath">Page path</param>
         public static void SaveRobotsPage(int PortalID, string UserAgent, string PagePath)
         {
            
@@ -82,6 +99,12 @@ namespace SageFrame.SEOExtension
                     throw;
                 }
         }
+
+         /// <summary>
+        /// Connects to database and returns RobotsInfo list.
+         /// </summary>
+         /// <param name="UserAgent">UserAgent(Crawler)</param>
+        /// <returns>RobotsInfo list</returns>
         public static List<RobotsInfo> GenerateRobots(string UserAgent)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();

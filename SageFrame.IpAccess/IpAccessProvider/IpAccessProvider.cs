@@ -14,12 +14,20 @@ using SageFrame.Web.Utilities;
 
 namespace SageFrame.IpAccess
 {
+    /// <summary>
+    /// Manupulates data for IpAccessController.
+    /// </summary>
     public class IpAccessProvider
     {
-        public IpAccessProvider()
-        {
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the IpAccessProvider.
+        /// </summary>
+        public IpAccessProvider() { }
+        /// <summary>
+        ///  Connects to database  and return List of access IP list.
+        /// </summary>
+        /// <param name="portalId">PortalID</param>
+        /// <returns>Access IP list.</returns>
         public List<IpRangeInfo> GetAccessIpList(int portalId)
         {
             try
@@ -33,7 +41,12 @@ namespace SageFrame.IpAccess
                 throw (ex);
             }
         }
-
+        /// <summary>
+        ///  Connects to database  and save access IP list.
+        /// </summary>
+        /// <param name="ipinfo">Object of IpRangeInfo.</param>
+        /// <param name="portalId">PortalID</param>
+        /// <param name="userName">User name.</param>
         public void SaveIpToAccess(IpRangeInfo ipinfo, int portalId, string userName)
         {
             try
@@ -56,7 +69,12 @@ namespace SageFrame.IpAccess
                 throw (ex);
             }
         }
-
+        /// <summary>
+        /// Connects to database abd delete access IP list.
+        /// </summary>
+        /// <param name="ids">Multiple ids with comma separator.</param>
+        /// <param name="portalId">PortalID</param>
+        /// <param name="userName">User name.</param>
         public void DeleteAccessIp(string ids, int portalId, string userName)
         {
             try
@@ -75,6 +93,13 @@ namespace SageFrame.IpAccess
                 throw (ex);
             }
         }
+        /// <summary>
+        ///  Connects to database  return true if given IP range is exist.
+        /// </summary>
+        /// <param name="ipfrom">Ip rnge from.</param>
+        /// <param name="ipTo">IP range to.</param>
+        /// <param name="portalId">PortalID</param>
+        /// <returns> True if given IP range is exist</returns>
         public bool IsExistIpRange(string ipfrom, string ipTo, int portalId)
         {
             try

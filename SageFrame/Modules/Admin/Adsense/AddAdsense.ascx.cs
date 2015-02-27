@@ -64,9 +64,9 @@ namespace SageFrame.Modules.Admin.Adsense
             imbText.ImageUrl = GetTemplateImageUrl("imgcolorpicker.png", true);
             imbURL.ImageUrl = GetTemplateImageUrl("imgcolorpicker.png", true);
             imbSolidFill.ImageUrl = GetTemplateImageUrl("imgcolor.png", true);
-            ImbPreview.ImageUrl = GetTemplateImageUrl("imgpreview.png", true);
-            ImbSave.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
-            imbDelete.ImageUrl = GetTemplateImageUrl("imgdelete.png", true);
+            //ImbPreview.ImageUrl = GetTemplateImageUrl("imgpreview.png", true);
+            //ImbSave.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
+            //imbDelete.ImageUrl = GetTemplateImageUrl("imgdelete.png", true);
             imbSolidFill.ImageUrl = GetTemplateImageUrl("imgcolorpicker.png", true);
         }
 
@@ -180,7 +180,7 @@ namespace SageFrame.Modules.Admin.Adsense
                 ProcessException(ex);
             }
             imbDelete.Visible = true;
-            lblDelete.Visible = true;
+            //lblDelete.Visible = true;
 
         }
 
@@ -348,7 +348,7 @@ namespace SageFrame.Modules.Admin.Adsense
             }
         }
 
-        protected void imbDelete_Click(object sender, ImageClickEventArgs e)
+        protected void imbDelete_Click(object sender, EventArgs e)
         {
             try
             {
@@ -387,7 +387,7 @@ namespace SageFrame.Modules.Admin.Adsense
             BindDropDowns();
             AdUnit1.Visible = false;
             imbDelete.Visible = false;
-            lblDelete.Visible = false;
+            //lblDelete.Visible = false;
             solidFill.Visible = false;
             txtChannelID.Text = "";
             txtBorder.Text = "";
@@ -401,12 +401,12 @@ namespace SageFrame.Modules.Admin.Adsense
             chkActive.Checked = true;
         }
 
-        protected void Preview_Click(object sender, ImageClickEventArgs e)
+        protected void Preview_Click(object sender, EventArgs e)
         {
             PreviewAds();
         }
 
-        protected void btnSave_Click(object sender, ImageClickEventArgs e)
+        protected void btnSave_Click(object sender, EventArgs e)
         {
             bool IsActive = false;
             bool UpdateFlag = false;

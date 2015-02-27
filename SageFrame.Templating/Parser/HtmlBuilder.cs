@@ -17,43 +17,66 @@ namespace SageFrame.Templating
     public class HtmlBuilder
     {
         const string sfCol = "sfCol_";
+        /// <summary>
+        ///Obtain starting placeholder.
+        ///1.Check for classes like no-wrap and no-main.
+        ///2.Check for wrap-inner and main-inner classes.
+        ///3.If Wrap-inner is not defined simply create a wrap class and a id from the key.
+        ///4.Check for main inner and other wrappers.
+        ///5.If we are using special markup tags this is the place to begin the markups.
+        ///6.Generate main-inner wrappers if present.
+        /// </summary>
+        /// <param name="placeholder">Object of XmlTag class.</param>
+        /// <returns>String format of placeholder markup.</returns>
         public static string GeneratePlaceholderStart(XmlTag placeholder)
         {
-            //1.Check for classes like no-wrap and no-main
-            //2.Check for wrap-inner and main-inner classes
-            //3.If Wrap-inner is not defined simply create a wrap class and a id from the key
-            //4.Check for main inner and other wrappers
-            //5.If we are using special markup tags this is the place to begin the markups
-            //6.Generate main-inner wrappers if present
+
 
             StringBuilder sb = new StringBuilder();
             sb.Append(String.Format("<div id=\"id-{0}\" class=\"sf{1}\">", Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.NAME), Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.NAME)));
             return sb.ToString();
         }
-
-
+        /// <summary>
+        /// Obtain placeholder ending markup.
+        /// </summary>
+        /// <returns>Empty string.</returns>
         public static string GeneratePlaceholderEnd()
         {
+
             //1.Check the above conditions and generate closing divs
             return "";
         }
+        /// <summary>
+        /// Obtain middle default markup.
+        /// </summary>
+        /// <returns>Empty string.</returns>
         public static string GetMiddleDefaultMarkup()
         {
             return "";
         }
-
+        /// <summary>
+        /// Obtain ending middle block.
+        /// </summary>
+        /// <returns>Empty string.</returns>
         public static string GenerateMiddleBlockEnd()
         {
+
             return "";
         }
-
+        /// <summary>
+        /// Generate starting middle wrapper markup.
+        /// </summary>
+        /// <returns>String format of middle wrapper markup.</returns>
         public static string GetMiddleWrappersBegin()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("<div id='sfBodyContent' class='sfOuterwrapper sfCurve clearfix'><div class='sfInnerwrapper clearfix'>");
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Obtain default top block markup.
+        /// </summary>
+        /// <returns>String format of top block markup.</returns>
         public static string GetTopBlockMarkupDefault()
         {
             StringBuilder sb = new StringBuilder();
@@ -62,6 +85,11 @@ namespace SageFrame.Templating
             sb.Append("</div></div>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain common wrapper.
+        /// </summary>
+        /// <param name="position">Position</param>
+        /// <returns>String format of wrapper holder.</returns>
         public static string GetCommonWrapper(string position)
         {
             StringBuilder sb = new StringBuilder();
@@ -71,6 +99,10 @@ namespace SageFrame.Templating
 
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain default bottom block markup.
+        /// </summary>
+        /// <returns>String format of buttom block markup.</returns>
         public static string GetBottomBlockMarkupDefault()
         {
             StringBuilder sb = new StringBuilder();
@@ -81,21 +113,31 @@ namespace SageFrame.Templating
         }
         #region LeftBlocks
         //Get the Left Blocks
-
+        /// <summary>
+        /// Obtain starting left markup.
+        /// </summary>
+        /// <param name="Left">Class to recognize for left markup.</param>
+        /// <returns>String format of starting left markup.</returns>
         public static string GetLeftBegin(string Left)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("<div id='sfLeft' class='" + sfCol + Left + "'><div class='sfContainer sfCurve'>");
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Obtain ending left markup.
+        /// </summary>
+        /// <returns>String format of ending left markup.</returns>
         public static string GetLeftEnd()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("</div></div>");
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Obtain top left markup.
+        /// </summary>
+        /// <returns>String format of top left markup.</returns>
         public static string GetLeftTop(int Mode, string position)
         {
             StringBuilder sb = new StringBuilder();
@@ -104,13 +146,32 @@ namespace SageFrame.Templating
             sb.Append("</div>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain side markups.
+        /// </summary>
+        /// <param name="Mode">Mode</param>
+        /// <param name="lstWrapper">List of CustomWrapper class.</param>
+        /// <param name="middleblock">Object of XmlTag class.</param>
+        /// <param name="placeholder">Placeholders <see cref="T:SageFrame.Templating.Placeholders"/> </param>
+        /// <returns>String format of side markup.</returns>
         public static string GetLeftRightTopBottom(int Mode, List<CustomWrapper> lstWrapper, XmlTag middleblock, Placeholders placeholder)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(BlockParser.ProcessMiddlePlaceholders(placeholder, middleblock, lstWrapper, Mode));
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Obtain left markup with wrapper class.
+        /// </summary>
+        /// <param name="LeftA">Panename LeftA's class.</param>
+        /// <param name="LeftB">Panename LeftB's class.</param>
+        /// <param name="Left">Optional parameter.</param>
+        /// <param name="Mode">Mode</param>
+        /// <param name="leftapos">LeftA position.</param>
+        /// <param name="leftbpos">LeftB postition.</param>
+        /// <param name="lstWrapper">List of CustomWrapper class.</param>
+        /// <param name="middleblock">Object of XmlTag class.</param>
+        /// <returns>String format of left markup with wrapper class.</returns>
         public static string GetLeftColsWrap(string LeftA, string LeftB, string Left, int Mode, string leftapos, string leftbpos, List<CustomWrapper> lstWrapper, XmlTag middleblock)
         {
             StringBuilder sb = new StringBuilder();
@@ -120,7 +181,15 @@ namespace SageFrame.Templating
             sb.Append("</div>");
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Obtain left right column markup. 
+        /// </summary>
+        /// <param name="width">Width</param>
+        /// <param name="Mode">Mode</param>
+        /// <param name="placeholder">Placeholders <see cref="T:SageFrame.Templating.Placeholders"/> </param>
+        /// <param name="lstWrapper">List of CustomWrapper class.</param>
+        /// <param name="middleblock">Object of XmlTag class.</param>
+        /// <returns>String format of left right column markup. </returns>
         public static string GetLeftRightCol(string width, int Mode, Placeholders placeholder, List<CustomWrapper> lstWrapper, XmlTag middleblock)
         {
             StringBuilder sb = new StringBuilder();
@@ -129,6 +198,14 @@ namespace SageFrame.Templating
             sb.Append("</div>");
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Obtain LeftB.
+        /// </summary>
+        /// <param name="LeftB"></param>
+        /// <param name="Mode">Mode</param>
+        /// <param name="position">Position</param>
+        /// <returns>String format of markup with LeftB's class.</returns>
         public static string GetLeftB(string LeftB, int Mode, string position)
         {
             StringBuilder sb = new StringBuilder();
@@ -140,21 +217,33 @@ namespace SageFrame.Templating
         #endregion
 
         #region RightBlocks
-
+        /// <summary>
+        /// Obtain starting right markup.
+        /// </summary>
+        /// <param name="Right">Class to recognize for right markup.</param>
+        /// <returns>String format of starting right markup.</returns>
         public static string GetRightBegin(string Right)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("<div id='sfRight' class='" + sfCol + Right + "'><div class='sfContainer sfCurve'>");
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Obtain ending right markup.
+        /// </summary>
+        /// <returns>String format of ending right markup.</returns>
         public static string GetRightEnd()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("</div></div>");
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Obtain top right markup.
+        /// </summary>
+        /// <param name="Mode">Mode</param>
+        /// <param name="position">Position</param>
+        /// <returns>String format of top right markup.</returns>
         public static string GetRightTop(int Mode, string position)
         {
             StringBuilder sb = new StringBuilder();
@@ -163,6 +252,12 @@ namespace SageFrame.Templating
             sb.Append("</div>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain bottom right markup.
+        /// </summary>
+        /// <param name="Mode">Mode</param>
+        /// <param name="position">Position</param>
+        /// <returns>String format of bottom right markup.</returns>
         public static string GetRightBottom(int Mode, string position)
         {
             StringBuilder sb = new StringBuilder();
@@ -172,7 +267,16 @@ namespace SageFrame.Templating
             return sb.ToString();
         }
 
-
+        /// <summary>
+        /// Obtain right markup with wrapper class.
+        /// </summary>
+        /// <param name="RightA">Panename RightA's class.</param>
+        /// <param name="RightB">Panename RightB's class.</param>
+        /// <param name="Right">Optional parameter</param>
+        /// <param name="Mode">Mode</param>
+        /// <param name="lstWrapper">List of CustomWrapper class.</param>
+        /// <param name="middleblock">Object of XmlTag class.</param>
+        /// <returns>String format of right markup with wrapper class.</returns>
         public static string GetRightColsWrap(string RightA, string RightB, string Right, int Mode, List<CustomWrapper> lstWrapper, XmlTag middleblock)
         {
             StringBuilder sb = new StringBuilder();
@@ -182,8 +286,13 @@ namespace SageFrame.Templating
             sb.Append("</div>");
             return sb.ToString();
         }
-
-
+        /// <summary>
+        /// Obtain RightA markup.
+        /// </summary>
+        /// <param name="RightA">Panename RightA's class.</param>
+        /// <param name="Mode">Mode</param>
+        /// <param name="position">Position</param>
+        /// <returns>String format of RightA markup.</returns>
         public static string GetRightA(string RightA, int Mode, string position)
         {
             StringBuilder sb = new StringBuilder();
@@ -192,6 +301,13 @@ namespace SageFrame.Templating
             sb.Append("</div></div></div>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain RightB markup.
+        /// </summary>
+        /// <param name="RightA">Panename RightB's class.</param>
+        /// <param name="Mode">Mode</param>
+        /// <param name="position">Position</param>
+        /// <returns>String format of RightB markup.</returns>
         public static string GetRightB(string RightB, int Mode, string position)
         {
             StringBuilder sb = new StringBuilder();
@@ -203,6 +319,12 @@ namespace SageFrame.Templating
         #endregion
 
         #region MiddleBlocks
+        /// <summary>
+        /// Obtain default middle block.
+        /// </summary>
+        /// <param name="Center">Optional parameter.</param>
+        /// <param name="Mode">Mode</param>
+        /// <returns>String format of middle block.</returns>
         public static string GetMiddleDefaultBlock(string Center, int Mode)
         {
             StringBuilder sb = new StringBuilder();
@@ -211,6 +333,11 @@ namespace SageFrame.Templating
             sb.Append("</div></div>");
             return sb.ToString();
         }
+        /// <summary>
+        ///  Obtain top middle markup.
+        /// </summary>
+        /// <param name="Mode">Mode.</param>
+        /// <returns>String format of top middle markup.</returns>
         public static string GetMiddleTopContent(int Mode)
         {
             StringBuilder sb = new StringBuilder();
@@ -219,18 +346,32 @@ namespace SageFrame.Templating
             sb.Append("</div>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain middle markup with wrapper class.
+        /// </summary>
+        /// <param name="Center">Wrapper class.</param>
+        /// <returns>String format of middle markup with wrapper class.</returns>
         public static string GetMiddleWrapperBegin(string Center)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("<div id='sfMainWrapper'  class='" + sfCol + Center + "'><div class='sfContainer sfCurve'>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain ending middle block markup.
+        /// </summary>
+        /// <returns>String format of ending markup.</returns>
         public static string GetMiddleWrapperEnd()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("</div></div>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain bottom middle markup.
+        /// </summary>
+        /// <param name="Mode">Mode.</param>
+        /// <returns>String format of bottom middle markup.</returns>
         public static string GetMiddleBottomContent(int Mode)
         {
             StringBuilder sb = new StringBuilder();
@@ -239,24 +380,41 @@ namespace SageFrame.Templating
             sb.Append("</div>");
             return sb.ToString();
         }
+        /// <summary>
+        ///  Obtain starting middlemain content markup.
+        /// </summary>
+        /// <returns>String format of middlemain content markup.</returns>
         public static string GetMiddleMainContentBegin()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("<div class='sfMainContent sfCurve'>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain ending middlemain content markup.
+        /// </summary>
+        /// <returns>String format of ending middlemain content markup.</returns>
         public static string GetMiddleMainContentEnd()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("</div>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Ending of single div.
+        /// </summary>
+        /// <returns>String format of closing div.</returns>
         public static string EndSingleDiv()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("</div>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain middlemain top block.
+        /// </summary>
+        /// <param name="Mode">Mode</param>
+        /// <returns>String format of maiddle main top markup.</returns>
         public static string GetMiddleMainTop(int Mode)
         {
             StringBuilder sb = new StringBuilder();
@@ -265,6 +423,11 @@ namespace SageFrame.Templating
             sb.Append("</div>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain middlemain current block.
+        /// </summary>
+        /// <param name="Mode">Mode</param>
+        /// <returns>String format of middlemain current block.</returns>
         public static string GetMiddleMainCurrent(int Mode)
         {
             StringBuilder sb = new StringBuilder();
@@ -273,6 +436,11 @@ namespace SageFrame.Templating
             sb.Append("</div>");
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain middle main bottom.
+        /// </summary>
+        /// <param name="Mode">Mode</param>
+        /// <returns>String format of middlemain bottom markup.</returns>
         public static string GetMiddleMainBottom(int Mode)
         {
             StringBuilder sb = new StringBuilder();
@@ -281,7 +449,10 @@ namespace SageFrame.Templating
             sb.Append("</div>");
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Obtain seprate div row for layout purpose.
+        /// </summary>
+        /// <returns>String format of seprate div row . </returns>
         public static string GetClearFix()
         {
             StringBuilder sb = new StringBuilder();
@@ -290,6 +461,11 @@ namespace SageFrame.Templating
         }
 
         #endregion
+        /// <summary>
+        /// Obtain ending block wrapper.
+        /// </summary>
+        /// <param name="wrapperdepth">List of wrapper depth.</param>
+        /// <returns>String format of ending block wrapper.</returns>
         public static string GenerateBlockWrappersEnd(List<int> wrapperdepth)
         {
             StringBuilder sb = new StringBuilder();
@@ -308,7 +484,11 @@ namespace SageFrame.Templating
             return sb.ToString();
 
         }
-
+        /// <summary>
+        /// Append droppable area.
+        /// </summary>
+        /// <param name="position">Appending position.</param>
+        /// <returns>String format of droppable area markup.</returns>
         public static string AppendDroppableArea(string position)
         {
             StringBuilder sb = new StringBuilder();
@@ -316,7 +496,12 @@ namespace SageFrame.Templating
             sb.Append("<div class='sfblocks'></div>");
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Add placeholder.
+        /// </summary>
+        /// <param name="position">Position</param>
+        /// <param name="_Mode">Mode</param>
+        /// <returns>String format of placeholder markup.</returns>
         public static string AddPlaceholder(string position, int _Mode)
         {
             StringBuilder sb = new StringBuilder();
@@ -336,7 +521,11 @@ namespace SageFrame.Templating
             }
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Append placeholder.
+        /// </summary>
+        /// <param name="position">Placeholder position.</param>
+        /// <returns>String format of placeholder markup.</returns>
         public static string AppendPlaceHolder(string position)
         {
             string PlaceHolderID = "pch_" + position;
@@ -344,7 +533,14 @@ namespace SageFrame.Templating
             sb.Append("<asp:PlaceHolder ID=" + PlaceHolderID + " runat=\"server\">");
             return sb.ToString();
         }
-
+         
+        /// <summary>
+        ///  Generate starting middle block.
+        /// </summary>
+        /// <param name="middleBlock">Object of XmlTag class.</param>
+        /// <param name="lstWrappers">List of CustomWrapper class.</param>
+        /// <param name="Mode">Mode</param>
+        /// <returns>String format of middle block markup.</returns>
         public static string GenerateMiddleBlockStart(XmlTag middleBlock, List<CustomWrapper> lstWrappers, int Mode)
         {
             StringBuilder sb = new StringBuilder();

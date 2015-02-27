@@ -28,8 +28,17 @@ using System.Drawing.Design;
 
 namespace SFE.GoogleAdUnit
 {
+    /// <summary>
+    /// Class that containd utilities for drawing.
+    /// </summary>
 	public class DrawingUtil
 	{
+        /// <summary>
+        /// Returns hexa decimal value of color.
+        /// </summary>
+        /// <param name="clr">Color object.</param>
+        /// <param name="bRemovePound">Set true if '#' has to be remove.</param>
+        /// <returns></returns>
 		public static String GetColorHexFormat(Color clr, Boolean bRemovePound)
         {
 			String strHexValue = String.Empty;
@@ -54,6 +63,11 @@ namespace SFE.GoogleAdUnit
 			return strHexValue.ToUpper();
         }
 
+        /// <summary>
+        /// Returns hexadecimal values for any double value.
+        /// </summary>
+        /// <param name="val">Double value</param>
+        /// <returns>Hexadecimal value in terms of string.</returns>
 		public static String GiveHexValue(double val)
 		{
 			string strHexValue = "";

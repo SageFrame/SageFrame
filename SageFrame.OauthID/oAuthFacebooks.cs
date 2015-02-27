@@ -16,12 +16,13 @@ using System.Configuration;
 using SageFrame.Web;
 #endregion
 
-/// <summary>
-/// Summary description for oAuthFacebooks
-/// </summary>
-/// 
+
 namespace SageFrame.OauthID
 {
+    /// <summary>
+    /// Summary description for oAuthFacebooks
+    /// </summary>
+    /// 
     public class oAuthFacebooks
     {
         #region "Declaration"
@@ -37,7 +38,9 @@ namespace SageFrame.OauthID
         #endregion
 
         #region Properties
-
+        /// <summary>
+        /// Get or set consumer key.
+        /// </summary>
         public string ConsumerKey
         {
             get
@@ -51,7 +54,9 @@ namespace SageFrame.OauthID
             set { _consumerKey = value; }
         }
 
-
+        /// <summary>
+        /// Get or set consumer secret.
+        /// </summary>
         public string ConsumerSecret
         {
             get
@@ -64,7 +69,9 @@ namespace SageFrame.OauthID
             }
             set { _consumerSecret = value; }
         }
-
+        /// <summary>
+        /// Get or set token.
+        /// </summary>
         public string Token { get { return _token; } set { _token = value; } }
 
         #endregion
@@ -99,6 +106,12 @@ namespace SageFrame.OauthID
                 }
             }
         }
+
+        /// <summary>
+        /// Obtain access token
+        /// </summary>
+        /// <param name="authToken">Authentication token</param>
+        /// <param name="URL">Full url to the web resource.</param>
         public void AccessTokenGet(string authToken, string URL)
         {
             this.Token = authToken;

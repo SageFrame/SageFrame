@@ -8,8 +8,16 @@ using SageFrame.Web;
 
 namespace SageFrame.Dashboard
 {
+    /// <summary>
+    /// Business logic for Dashboard.
+    /// </summary>
     public class DashboardController
     {
+        /// <summary>
+        /// Add quick links.
+        /// </summary>
+        /// <param name="linkObj">QuickLink object.</param>
+        /// <returns>Returns true if inserted successfully.</returns>
         public static bool AddQuickLink(QuickLink linkObj)
         {
             try
@@ -22,6 +30,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Get admin pages for given PortalID.
+        /// </summary>
+        /// <param name="PortalID">Portal id.</param>
+        /// <returns>Link list.</returns>
         public static List<Link> GetAdminPages(int PortalID)
         {
             try
@@ -34,6 +47,12 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Get quick links for given PortalID.
+        /// </summary>
+        /// <param name="UserName">UserName.</param>
+        /// <param name="PortalID">PortalID.</param>
+        /// <returns>QuickLink list.</returns>
         public static List<QuickLink> GetQuickLinks(string UserName,int PortalID)
         {
             try
@@ -46,6 +65,12 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Get all quick links for given PortalID.
+        /// </summary>
+        /// <param name="UserName">UserName.</param>
+        /// <param name="PortalID">PortalID.</param>
+        /// <returns>QuickLink list.</returns>
         public static List<QuickLink> GetQuickLinksAll(string UserName, int PortalID)
         {
             try
@@ -59,7 +84,10 @@ namespace SageFrame.Dashboard
             }
         }
 
-
+        /// <summary>
+        /// Delete quick link for given QuickLinkID.
+        /// </summary>
+        /// <param name="QuickLinkID">Quick link id.</param>
         public static void DeleteQuickLink(int QuickLinkID)
         {
             try
@@ -72,6 +100,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Add side bar.
+        /// </summary>
+        /// <param name="sbObj">Sidebar object.</param>
+        /// <returns>Returns true if inserted successfully.</returns>
         public static bool AddSidebar(Sidebar sbObj)
         {
             try
@@ -84,7 +117,12 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Get side bar for given PortalID.
+        /// </summary>
+        /// <param name="UserName">UserName.</param>
+        /// <param name="PortalID">PortalID.</param>
+        /// <returns>Sidebar list.</returns>
         public static List<Sidebar> GetSidebar(string UserName,int PortalID)
         {
             try
@@ -98,6 +136,12 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Get all side bar for given PortalID.
+        /// </summary>
+        /// <param name="UserName">UserName.</param>
+        /// <param name="PortalID">PortalID.</param>
+        /// <returns>Sidebar list.</returns>
         public static List<Sidebar> GetSidebarAll(string UserName, int PortalID)
         {
             try
@@ -111,6 +155,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Update quick link.
+        /// </summary>
+        /// <param name="linkObj">QuickLink objects.</param>
         public static void UpdateLink(QuickLink linkObj)
         {
             try
@@ -123,6 +171,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Get parent links.
+        /// </summary>
+        /// <param name="SidebarItemID">Sidebar item id.</param>
+        /// <returns>Sidebar objects.</returns>
         public static List<Sidebar> GetParentLinks(int SidebarItemID)
         {
             try
@@ -139,6 +192,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Delete side bar for given Sidebar item id.
+        /// </summary>
+        /// <param name="SidebarItemID">Sidebar item id.</param>
         public static void DeleteSidebarItem(int SidebarItemID)
         {
             try
@@ -151,14 +208,28 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Get side bar details for given Sidebar item id.
+        /// </summary>
+        /// <param name="SidebarItemID">Sidebar item id.</param>
+        /// <returns>side bar details for given Sidebar item id.</returns>
         public static Sidebar GetSidebarDetails(int SidebarItemID)
         {
             return (DashboardDataProvider.GetSidebarDetails(SidebarItemID));
         }
+        /// <summary>
+        /// Obtains quick link details.
+        /// </summary>
+        /// <param name="SidebarItemID">Sidebar item id.</param>
+        /// <returns>Quick link details for given Sidebar item id.</returns>
         public static QuickLink GetQuickLinkDetails(int SidebarItemID)
         {
             return (DashboardDataProvider.GetQuickLinkDetails(SidebarItemID));
         }
+        /// <summary>
+        /// Reorder side bar link.
+        /// </summary>
+        /// <param name="lstOrder">List of object of DashboardKeyValue class.</param>
         public static void ReorderSidebarLink(List<DashboardKeyValue> lstOrder)
         {
             try
@@ -171,7 +242,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Reorder quick links.
+        /// </summary>
+        /// <param name="lstOrder">DashboardKeyValue list</param>
         public static void ReorderQuickLinks(List<DashboardKeyValue> lstOrder)
         {
             try
@@ -184,7 +258,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Update side bar.
+        /// </summary>
+        /// <param name="sbObj">Sidebar objects</param>
+        /// <returns>Returns true if updated successfully</returns>
         public static bool UpdateSidebar(Sidebar sbObj)
         {
             try
@@ -197,7 +275,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Add dashboard settings.
+        /// </summary>
+        /// <param name="objSetting">DashbordSettingInfo object</param>
         public static void AddUpdateDashboardSettings(DashbordSettingInfo objSetting)
         {
             try
@@ -210,7 +291,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Obtain setting key.
+        /// </summary>
+        /// <param name="objSetting">DashbordSettingInfo objects</param>
+        /// <returns>DashbordSettingInfo object</returns>
         public static DashbordSettingInfo GetSettingByKey(DashbordSettingInfo objSetting)
         {
             try
@@ -223,7 +308,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Obtain online user count.
+        /// </summary>
+        /// <returns>Total online count.</returns>
         public static CountUserInfo GetOnlineUserCount()
         {
             try
@@ -236,6 +324,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Obtain modules.
+        /// </summary>
+        /// <param name="TotalCount">Total count.</param>
+        /// <returns>ModuleInfo list.</returns>
         public static List<ModuleInfo> GetModules(int TotalCount)
         {
             try
@@ -248,7 +341,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Obtain module web info.
+        /// </summary>
+        /// <returns>ModuleWebInfo list.</returns>
         public static List<ModuleWebInfo> GetModuleWebInfo()
         {
             try
@@ -262,7 +358,10 @@ namespace SageFrame.Dashboard
             }
         }
 
-
+        /// <summary>
+        /// Add module web info.
+        /// </summary>
+        /// <param name="list"> List of object of ModuleWebInfo class.</param>
         public static void AddModuleWebInfo(List<ModuleWebInfo> list)
         {
             try
@@ -275,7 +374,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Search modules.
+        /// </summary>
+        /// <param name="keyword">Keyword.</param>
+        /// <returns>ModuleInfo list.</returns>
         public static List<ModuleInfo> SearchModules(string keyword)
         {
             try
@@ -288,7 +391,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Update blog content.
+        /// </summary>
+        /// <param name="content">Content.</param>
         public static void UpdateBlogContent(string content)
         {
             try
@@ -301,7 +407,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Obtain blog content.
+        /// </summary>
+        /// <returns>Content.</returns>
         public static string GetBlogContent()
         {
 
@@ -315,7 +424,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Update tutorial content.
+        /// </summary>
+        /// <param name="content">Content.</param>
         public static void UpdateTutorialContent(string content)
         {
             try
@@ -328,7 +440,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Obtain tutorial content.
+        /// </summary>
+        /// <returns>Content.</returns>
         public static string GetTutorialContent()
         {
             try
@@ -340,7 +455,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Update news content.
+        /// </summary>
+        /// <param name="content">Content.</param>
         public static void UpdateNewsContent(string content)
         {
             try
@@ -352,7 +470,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Obtain news content.
+        /// </summary>
+        /// <returns>News content.</returns>
         public static string GetNewsContent()
         {
             try
@@ -364,7 +485,13 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Pages visible in dashboard.
+        /// </summary>
+        /// <param name="PageSEOName">Page seo name.</param>
+        /// <param name="UserName">UserName</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>DashboardInfo list</returns>
         public List<DashboardInfo> DashBoardView(string PageSEOName, string UserName, int PortalID)
         {
             try

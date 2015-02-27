@@ -142,6 +142,22 @@ namespace SageFrame.Scheduler
                 //this instanciation of the ProcessGroup
                 numberOfProcessesInQueue -= 1;
                 processesCompleted += 1;
+                
+                if (Process != null)
+                {
+                    try
+                    {
+                        Process.Completed();
+                        ((IDisposable)Process).Dispose();
+                        Process = null;
+                    }
+                    catch (Exception)
+                    {
+                        Process.Completed();
+                        Process = null;
+                    }
+                    
+                }  
             }
         }
 

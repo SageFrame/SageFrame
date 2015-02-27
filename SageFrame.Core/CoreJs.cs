@@ -181,7 +181,11 @@ namespace SageFrame.Core
             return jsList;
         }
 
-
+        /// <summary>
+        /// Returns the list of .js files for given template.
+        /// </summary>
+        /// <param name="TemplateName">Template name.</param>
+        /// <returns>List of template paths.</returns>
         public static List<CssScriptInfo> GetTemplateJs(string TemplateName)
         {
             string templatePath = TemplateName.ToLower().Equals("default") ? Utils.GetTemplatePath_Default(TemplateName) : Utils.GetTemplatePath(TemplateName);
@@ -208,6 +212,11 @@ namespace SageFrame.Core
             return lstJs;
 
         }
+
+        /// <summary>
+        /// Writes the list of links of js to the responding page.
+        /// </summary>
+        /// <param name="sfPage">System.Web.UI.Page object</param>
         public static void IncludeLanguageCoreJs(Page sfPage)
         {
             Literal LitLangResc = sfPage.FindControl("LitLangResc") as Literal;

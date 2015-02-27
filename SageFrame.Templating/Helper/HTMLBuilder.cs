@@ -16,17 +16,31 @@ using System.Web;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Helper class for HTML.
+    /// </summary>
     public class HTMLBuilder:IHTMLBuilder
     {
+        /// <summary>
+        /// Obtain outer wrapper.
+        /// </summary>
+        /// <returns>String format of HTMl markup.</returns>
         public string GenerateOuterWrappers(){
             return (GetHTMLContent("OuterWrappers.htm","outerwrapper"));
         }
-
+        /// <summary>
+        /// Generate default section wrapper.
+        /// </summary>
+        /// <returns>Empty string.</returns>
         public string GenerateDefaultSectionWrappers()
         {
             return "";
         }
-
+        /// <summary>
+        /// Generate block wrappers.
+        /// </summary>
+        /// <param name="placeholder">Placeholder name.</param>
+        /// <returns>String format of wrapped HTML markup.</returns>
         public string GenerateBlockWrappers(string placeholder)
         {
             string html = "";
@@ -86,7 +100,12 @@ namespace SageFrame.Templating
             }
             return html;
         }
-
+        /// <summary>
+        /// Obtain html contains.
+        /// </summary>
+        /// <param name="htmlfile">Html file name.</param>
+        /// <param name="placeholder">Placeholder name.</param>
+        /// <returns>String format of wrapped HTML markup.</returns>
         public string GetHTMLContent(string htmlfile,string placeholder)
         {
             string path = HttpContext.Current.Server.MapPath("~/") + "//Modules//LayoutManager//Sections//" + htmlfile;
@@ -98,7 +117,12 @@ namespace SageFrame.Templating
             }
             return html;
         }
-
+        /// <summary>
+        /// Add placeholder.
+        /// </summary>
+        /// <param name="name">File name .</param>
+        /// <param name="html">HTML content.</param>
+        /// <param name="placeholder">Placeholder ID.</param>
         public void PutPlaceHolders(string name, ref string html,string placeholder)
         {
             string id = placeholder;
@@ -109,7 +133,11 @@ namespace SageFrame.Templating
                 html=html.Insert(index, String.Format(@"<asp:PlaceHolder runat='server' ID='{0}'></asp:PlaceHolder>",id));
             }
         }
-
+        /// <summary>
+        /// Read and return HTML contain.
+        /// </summary>
+        /// <param name="htmlfile">HTML file for read.</param>
+        /// <returns>String format of HTML .</returns>
         public string ReadHTML(string htmlfile)
         {
            

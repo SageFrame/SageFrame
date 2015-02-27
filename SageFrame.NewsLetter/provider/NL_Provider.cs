@@ -6,9 +6,20 @@ using SageFrame.Web.Utilities;
 using SageFrame.Message;
 
 namespace SageFrame.NewsLetter
-{
+{  
+    /// <summary>
+    /// Manipulates data for NL_Controller class.
+    /// </summary>
     public class NL_Provider
     {
+        /// <summary>
+        /// Connects to database and save email for subscribing.
+        /// </summary>
+        /// <param name="Email">Email</param>
+        /// <param name="UsermoduleID">UsermoduleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">UserName</param>
+        /// <param name="clientIP">clientIP</param>
         public void SaveEmailSubscriber(string Email, int UsermoduleID, int PortalID,string UserName,string clientIP)
         {
             try
@@ -27,6 +38,14 @@ namespace SageFrame.NewsLetter
                 throw ex;
             }
         }
+        /// <summary>
+        /// Connects to database and saves mobile number for subscribing.
+        /// </summary>
+        /// <param name="Phone">Phone</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">UserName</param>
+        /// <param name="clientIP">clientIP</param>
         public void SaveMobileSubscriber(Int64 Phone, int UserModuleID, int PortalID, string UserName, string clientIP)
         {
             try
@@ -47,6 +66,13 @@ namespace SageFrame.NewsLetter
                 throw ex;
             }
         }
+        /// <summary>
+        /// Connects to database and saves settings.
+        /// </summary>
+        /// <param name="SettingKey">SettingKey</param>
+        /// <param name="SettingValue">SettingValue</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
         public void SaveNLSetting(string SettingKey, string SettingValue, int UserModuleID, int PortalID)
         {
             try
@@ -65,6 +91,12 @@ namespace SageFrame.NewsLetter
                 throw ex;
             }
         }
+        /// <summary>
+        /// Connects to database and returns NL_SettingInfo list containing settings.
+        /// </summary>
+        /// <param name="UsermoduleID">UsermoduleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>NL_SettingInfo list</returns>
         public List<NL_SettingInfo> GetNLSetting(int UsermoduleID, int PortalID)
         {
             try
@@ -95,6 +127,10 @@ namespace SageFrame.NewsLetter
                 throw ex;
             }
         }
+        /// <summary>
+        /// Connects to database and retruns NL_SettingInfo list containing settings for unsubscribe.
+        /// </summary>
+        /// <returns>NL_SettingInfo list</returns>
         public List<NL_SettingInfo> GetNLSettingForUnSubscribe()
         {
             try
@@ -108,6 +144,10 @@ namespace SageFrame.NewsLetter
                 throw ex;
             }
         }
+        /// <summary>
+        /// Connects to database and unsubscribe user by email.
+        /// </summary>
+        /// <param name="Email">Email</param>
         public void UnSubscribeUserByEmail(string Email)
         {
             try
@@ -122,6 +162,10 @@ namespace SageFrame.NewsLetter
                 throw ex;
             }
         }
+        /// <summary>
+        /// Connects to database and unsubscribe user by phone number.
+        /// </summary>
+        /// <param name="Phone"></param>
         public void UnSubscribeUserByMobile(Int64 Phone)
         {
             try
@@ -136,6 +180,18 @@ namespace SageFrame.NewsLetter
                 throw ex;
             }
         }
+
+        /// <summary>
+        /// Connects to database and returns MessageManagementInfo list containing message template list for subscribe.
+        /// </summary>
+        /// <param name="current">current</param>
+        /// <param name="pagesize">pagesize</param>
+        /// <param name="IsActive">IsActive</param>
+        /// <param name="IsDeleted">IsDeleted</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">UserName</param>
+        /// <param name="CultureName">CultureName</param>
+        /// <returns>MessageManagementInfo list</returns>
         public List<MessageManagementInfo> GetMessageTemplateListForSubscribe(int current, int pagesize, bool IsActive,bool IsDeleted, int PortalID, string UserName, string CultureName)
         {
             try
@@ -156,6 +212,11 @@ namespace SageFrame.NewsLetter
                 throw ex;
             }
         }
+        /// <summary>
+        /// Connects to database and returns MessageManagementInfo list containing message info by message template id.
+        /// </summary>
+        /// <param name="messageTemplateID">messageTemplateID</param>
+        /// <returns>MessageManagementInfo list</returns>
         public List<MessageManagementInfo> GetMessageInfoByMessageTemplateID(int messageTemplateID)
         {
             try
@@ -171,6 +232,10 @@ namespace SageFrame.NewsLetter
                 throw ex;
             }
         }
+        /// <summary>
+        /// Connects to database and unsubscribe by email link.
+        /// </summary>
+        /// <param name="subscriberID">subscriberID</param>
         public void UnSubscribeByEmailLink(int subscriberID)
         {
             try
@@ -186,6 +251,11 @@ namespace SageFrame.NewsLetter
                 throw ex;
             }
         }
+        /// <summary>
+        /// Connects to database and returns NL_Info list containing subscriber list.
+        /// </summary>
+        /// <param name="index">index</param>
+        /// <returns>NL_Info list</returns>
         public List<NL_Info>  GetSubscriberList(int index) 
         {
             try
@@ -200,6 +270,11 @@ namespace SageFrame.NewsLetter
                 throw ex;
             }
         }
+        /// <summary>
+        /// Connects to database and returns list containing subscriber email list for given portal id.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>NL_Info list</returns>
         public List<NL_Info> GetSubscriberEmailList(int PortalID)
         {
             try
@@ -215,6 +290,13 @@ namespace SageFrame.NewsLetter
                 throw ex;
             }
         }
+        /// <summary>
+        /// Connects to database and saves newsletter.
+        /// </summary>
+        /// <param name="Subject">Subject</param>
+        /// <param name="BodyMsg">BodyMsg</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
         public void SaveNewsLetter(string Subject, string BodyMsg, int UserModuleID, int PortalID)
         {
             try
@@ -233,6 +315,13 @@ namespace SageFrame.NewsLetter
             }
 
         }
+        /// <summary>
+        /// Connects to database and returns MessageManagementInfo list containing message template by id.
+        /// </summary>
+        /// <param name="MessageTemplateTypeID">MessageTemplateTypeID</param>
+        /// <param name="CultureName">CultureName</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>MessageManagementInfo list.</returns>
         public List<MessageManagementInfo> GetMessageTemplateByTypeID(int MessageTemplateTypeID, string CultureName, int PortalID)
         {
             try

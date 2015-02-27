@@ -17,147 +17,152 @@
 </head>
 <body>
     <form runat="server" id="form1">
-    <asp:ScriptManager ID="ScriptManager1" runat="server">
-    </asp:ScriptManager>
-    <div class="sfFormwrapper">
-        <asp:PlaceHolder ID="message" runat="server"></asp:PlaceHolder>
-        <ajax:TabContainer ID="TabContainerManagePages" runat="server" ActiveTabIndex="0"
-            meta:resourcekey="TabContainerManagePagesResource1">
-            <ajax:TabPanel ID="TabPanelEdit" runat="server" HeaderText="Edit">
-                <ContentTemplate>
-                    <asp:PlaceHolder ID="pchEdit" runat="server"></asp:PlaceHolder>
-                </ContentTemplate>
-            </ajax:TabPanel>
-            <ajax:TabPanel ID="TabPanelSettings" runat="server" HeaderText="Settings">
-                <ContentTemplate>
-                    <asp:PlaceHolder ID="pchSetting" runat="server"></asp:PlaceHolder>
-                </ContentTemplate>
-            </ajax:TabPanel>
-        </ajax:TabContainer>
-    </div>
-    <asp:Literal ID="LitSageScript" runat="server"></asp:Literal>
+        <asp:ScriptManager ID="ScriptManager1" runat="server">
+        </asp:ScriptManager>
+        <div class="sfFormwrapper">
+            <asp:PlaceHolder ID="message" runat="server"></asp:PlaceHolder>
+            <ajax:TabContainer ID="TabContainerManagePages" runat="server" ActiveTabIndex="0"
+                meta:resourcekey="TabContainerManagePagesResource1">
+                <ajax:TabPanel ID="TabPanelEdit" runat="server" HeaderText="Edit">
+                    <ContentTemplate>
+                        <asp:PlaceHolder ID="pchEdit" runat="server"></asp:PlaceHolder>
+                    </ContentTemplate>
+                </ajax:TabPanel>
+                <ajax:TabPanel ID="TabPanelSettings" runat="server" HeaderText="Settings">
+                    <ContentTemplate>
+                        <asp:PlaceHolder ID="pchSetting" runat="server"></asp:PlaceHolder>
+                    </ContentTemplate>
+                </ajax:TabPanel>
+            </ajax:TabContainer>
+        </div>
+        <asp:Literal ID="LitSageScript" runat="server"></asp:Literal>
 
-    <script type="text/javascript">
-        //<![CDATA[
+        <script type="text/javascript">
+            //<![CDATA[
 
 
-        $(function() {
-            if ($('.ajax__tab_outer').length === 1)
-                $($('.ajax__tab_outer')).hide();
-        });
-        String.Format = function() {
-            var s = arguments[0];
-            for (var i = 0; i < arguments.length - 1; i++) {
-                var reg = new RegExp("\\{" + i + "\\}", "gm");
-                s = s.replace(reg, arguments[i + 1]);
-            }
-            return s;
-        }
-        var dialogConfirmed = false;
-        function ConfirmDialog(obj, title, dialogText) {
-            if (!dialogConfirmed) {
-                $('body').append(String.Format("<div id='dialog-confirm' title='{0}'><p>{1}</p></div>",
-                    title, dialogText));
-                if (title == "message") {
-                    $('#dialog-confirm').dialog
-                    ({
-                        height: 150,
-                        width: 350,
-                        modal: true,
-                        resizable: false,
-                        draggable: false,
-                        close: function(event, ui) { $('body').find('#dialog-confirm').remove(); },
-                        buttons:
-                        {
-                            'OK': function() {
-                                $(this).dialog('close');
-                            }
-                        }
-                    });
+            $(function () {
+                if ($('.ajax__tab_outer').length === 1)
+                    $($('.ajax__tab_outer')).hide();
+            });
+            String.Format = function () {
+                var s = arguments[0];
+                for (var i = 0; i < arguments.length - 1; i++) {
+                    var reg = new RegExp("\\{" + i + "\\}", "gm");
+                    s = s.replace(reg, arguments[i + 1]);
                 }
-                else {
-                    $('#dialog-confirm').dialog
-                    ({
-                        height: 110,
-                        modal: true,
-                        resizable: false,
-                        draggable: false,
-                        close: function(event, ui) { $('body').find('#dialog-confirm').remove(); },
-                        buttons:
-                        {
-                            'Yes': function() {
-                                $(this).dialog('close');
-                                dialogConfirmed = true;
-                                if (obj) obj.click();
-                            },
-                            'No': function() {
-                                $(this).dialog('close');
-                            }
-                        }
-                    });
-                }
+                return s;
             }
-            return dialogConfirmed;
-        }
-        function pageLoad(sender, args) {
-            if (args.get_isPartialLoad()) {
-                String.Format = function() {
-                    var s = arguments[0];
-                    for (var i = 0; i < arguments.length - 1; i++) {
-                        var reg = new RegExp("\\{" + i + "\\}", "gm");
-                        s = s.replace(reg, arguments[i + 1]);
+            var dialogConfirmed = false;
+            function ConfirmDialog(obj, title, dialogText) {
+                if (!dialogConfirmed) {
+                    $('body').append(String.Format("<div id='dialog-confirm' title='{0}'><p>{1}</p></div>",
+                        title, dialogText));
+                    if (title == "message") {
+                        $('#dialog-confirm').dialog
+                        ({
+                            height: 150,
+                            width: 350,
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            close: function (event, ui) { $('body').find('#dialog-confirm').remove(); },
+                            buttons:
+                            {
+                                'OK': function () {
+                                    $(this).dialog('close');
+                                }
+                            }
+                        });
                     }
-                    return s;
-                }
-                var dialogConfirmed = false;
-                function ConfirmDialog(obj, title, dialogText) {
-                    if (!dialogConfirmed) {
-                        $('body').append(String.Format("<div id='dialog-confirm' title='{0}'><p>{1}</p></div>",
-                    title, dialogText));
-                        if (title == "message") {
-                            $('#dialog-confirm').dialog
-                    ({
-                        height: 110,
-                        modal: true,
-                        resizable: false,
-                        draggable: false,
-                        close: function(event, ui) { $('body').find('#dialog-confirm').remove(); },
-                        buttons:
-                        {
-                            'OK': function() {
-                                $(this).dialog('close');
+                    else {
+                        $('#dialog-confirm').dialog
+                        ({
+                            height: 110,
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            close: function (event, ui) { $('body').find('#dialog-confirm').remove(); },
+                            buttons:
+                            {
+                                'Yes': function () {
+                                    $(this).dialog('close');
+                                    dialogConfirmed = true;
+                                    if (obj) obj.click();
+                                },
+                                'No': function () {
+                                    $(this).dialog('close');
+                                }
                             }
-                        }
-                    });
-                        }
-                        else {
-                            $('#dialog-confirm').dialog
-                    ({
-                        height: 110,
-                        modal: true,
-                        resizable: false,
-                        draggable: false,
-                        close: function(event, ui) { $('body').find('#dialog-confirm').remove(); },
-                        buttons:
-                        {
-                            'Yes': function() {
-                                $(this).dialog('close');
-                                dialogConfirmed = true;
-                                if (obj) obj.click();
-                            },
-                            'No': function() {
-                                $(this).dialog('close');
-                            }
-                        }
-                    });
-                        }
+                        });
                     }
-                    return dialogConfirmed;
+                }
+                return dialogConfirmed;
+            }
+            function pageLoad(sender, args) {
+                if (args.get_isPartialLoad()) {
+                    String.Format = function () {
+                        var s = arguments[0];
+                        for (var i = 0; i < arguments.length - 1; i++) {
+                            var reg = new RegExp("\\{" + i + "\\}", "gm");
+                            s = s.replace(reg, arguments[i + 1]);
+                        }
+                        return s;
+                    }
+                    var dialogConfirmed = false;
+                    function ConfirmDialog(obj, title, dialogText) {
+                        if (!dialogConfirmed) {
+                            $('body').append(String.Format("<div id='dialog-confirm' title='{0}'><p>{1}</p></div>",
+                        title, dialogText));
+                            if (title == "message") {
+                                $('#dialog-confirm').dialog
+                        ({
+                            height: 110,
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            close: function (event, ui) { $('body').find('#dialog-confirm').remove(); },
+                            buttons:
+                            {
+                                'OK': function () {
+                                    $(this).dialog('close');
+                                }
+                            }
+                        });
+                            }
+                            else {
+                                $('#dialog-confirm').dialog
+                        ({
+                            height: 110,
+                            modal: true,
+                            resizable: false,
+                            draggable: false,
+                            close: function (event, ui) { $('body').find('#dialog-confirm').remove(); },
+                            buttons:
+                            {
+                                'Yes': function () {
+                                    $(this).dialog('close');
+                                    dialogConfirmed = true;
+                                    if (obj) obj.click();
+                                },
+                                'No': function () {
+                                    $(this).dialog('close');
+                                }
+                            }
+                        });
+                            }
+                        }
+                        return dialogConfirmed;
+                    }
                 }
             }
-        }
-        //]]>	
-    </script>
+            //]]>	
+        </script>
+
+        <div id="dialog" title="Confirmation Required">
+            <label id="sf_lblConfirmation">
+            </label>
+        </div>
 
     </form>
 </body>

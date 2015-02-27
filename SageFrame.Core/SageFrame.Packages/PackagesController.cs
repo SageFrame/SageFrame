@@ -18,8 +18,18 @@ using System.Text;
 
 namespace SageFrame.Packages
 {
+    /// <summary>
+    /// Business logic for packages
+    /// </summary>
     public class PackagesController
     {
+
+        /// <summary>
+        /// Updates packages change.
+        /// </summary>
+        /// <param name="ModuleIDs">Module ID</param>
+        /// <param name="IsActives">Set true if the respective modules are active.</param>
+        /// <param name="UpdatedBy">Change updated user's name.</param>
         public void UpdatePackagesChange(string ModuleIDs, string IsActives, string UpdatedBy)
         {
             try
@@ -32,6 +42,13 @@ namespace SageFrame.Packages
                 throw;
             }
         }
+
+        /// <summary>
+        /// Returns package by portal ID
+        /// </summary>
+        /// <param name="PortalID">Portal ID</param>
+        /// <param name="SearchText">Search Text</param>
+        /// <returns>List of packages</returns>
         public static List<PackagesInfo> GetPackagesByPortalID(int PortalID, string SearchText)
         {
             try

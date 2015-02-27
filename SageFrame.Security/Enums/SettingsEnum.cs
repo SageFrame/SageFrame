@@ -13,6 +13,9 @@ using System.Text;
 
 namespace SageFrame.Security.Entities
 {
+    /// <summary>
+    /// Enum for application settings.
+    /// </summary>
     public enum SettingsEnum
     {
         DUPLICATE_USERS_ACROSS_PORTALS=2,

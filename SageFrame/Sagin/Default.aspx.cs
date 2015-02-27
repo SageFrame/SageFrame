@@ -55,8 +55,8 @@ namespace SageFrame
         #region "Event Handlers"
 
         protected void Page_Init(object sender, EventArgs e)
-        {            
-            SetPageInitPart();            
+        {
+            SetPageInitPart();
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -67,7 +67,7 @@ namespace SageFrame
             Response.Cache.SetExpires(DateTime.Now.AddSeconds(-1));
             Response.Cache.SetNoStore();
             Response.AppendHeader("pragma", "no-cache");
-            SageFrame.Application.Application app = new SageFrame.Application.Application();
+            SageFrame.Version.SageFrameVersion app = new SageFrame.Version.SageFrameVersion();
             lblVersion.Text = string.Format("V {0}", app.FormatShortVersion(app.Version, true));
         }
 
@@ -77,7 +77,7 @@ namespace SageFrame
 
         public void LoadMessageControl()
         {
-           
+
 
             PlaceHolder phdPlaceHolder = Page.FindControl("message") as PlaceHolder;
             if (phdPlaceHolder != null)
@@ -117,7 +117,7 @@ namespace SageFrame
             if (PageName != null)
             {
                 SecurityPolicy objSecurity = new SecurityPolicy();
-                
+
                 userName = objSecurity.GetUser(GetPortalID);
                 templateFavicon = SetFavIcon(GetActiveTemplate);
                 Extension = SageFrameSettingKeys.PageExtension;
@@ -318,7 +318,7 @@ namespace SageFrame
                 {
                     sageNavigateUrl = GetParentURL + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage).Replace(" ", "-") + SageFrameSettingKeys.PageExtension;
                 }
-                hypHome.NavigateUrl = GetHostURL + "/Admin/Admin" + Extension;
+                hypHome.NavigateUrl = sageNavigateUrl;//GetHostURL + "/Admin/Admin" + Extension;
                 // hypHome.Text = sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage);
                 //hypHome.ImageUrl = GetAdminImageUrl("home.png", true);
                 hypPreview.NavigateUrl = sageNavigateUrl;
@@ -337,11 +337,11 @@ namespace SageFrame
                     if (ticket.Name != ApplicationKeys.anonymousUser)
                     {
                         string[] sysRoles = SystemSetting.SYSTEM_SUPER_ROLES;
-                        this.hypUpgrade.Visible = Roles.IsUserInRole(ticket.Name, sysRoles[0]) ? true : false;
+                        this.hypUpgrade.Visible = IsParent ? (Roles.IsUserInRole(ticket.Name, sysRoles[1]) ? true : false) : false;
+
                         if (GetPortalID == LoggedInPortalID || Roles.IsUserInRole(ticket.Name, sysRoles[0]))
                         {
                             RoleController _role = new RoleController();
-                            bool isDashboardAccessible = _role.IsDashboardAccesible(GetUsername, GetPortalID);
                             string userinroles = _role.GetRoleNames(GetUsername, LoggedInPortalID);
                             if (userinroles != "" || userinroles != null)
                             {

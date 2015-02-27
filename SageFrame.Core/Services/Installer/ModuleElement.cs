@@ -15,14 +15,25 @@ using System.Text;
 
 #endregion
 
+/// <summary>
+/// Class that contains method for module elements.
+/// </summary>
+[Serializable]
+public class ModuleElement
+{
+    /// <summary>
+    /// Gets or sets module's friendly name.
+    /// </summary>
+    public string FriendlyName { get; set; }
 
- [Serializable]
-    public class ModuleElement
-    {
-        public string FriendlyName { get; set; }
-        public string CacheTime { get; set; }
-       public  List<ControlInfo> Controls { get; set; }
+    /// <summary>
+    /// Gets or sets module's cache time.
+    /// </summary>
+    public string CacheTime { get; set; }
 
-
-    }
+    /// <summary>
+    /// Gets or sets list of object of ControlInfo class.
+    /// </summary>
+    public List<ControlInfo> Controls { get; set; }
+}
 

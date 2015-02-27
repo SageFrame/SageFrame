@@ -24,12 +24,19 @@ using System.Collections;
 
 namespace SageFrame.Localization
 {
+    /// <summary>
+    /// ResXHelper class for Localization
+    /// </summary>
     [Serializable]
     public class ResXHelper
     {
         protected string baseFileName;
         protected string basePath;
         protected object lck = new object();
+        /// <summary>
+        /// Initializes a new instance of the ResXHelper class.
+        /// </summary>
+        /// <param name="filePath">filePath</param>
         public ResXHelper(string filePath)
 		{
 			List<string> siblings = FindResXSiblings(filePath);
@@ -38,6 +45,12 @@ namespace SageFrame.Localization
 			baseFileName = GetBaseName(filePath);
 			basePath = Path.GetDirectoryName(filePath);
 		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="basePath"></param>
+        /// <param name="display"></param>
+        /// <returns></returns>
         public static SortedList<string, string> GetResXInDirectory(string basePath, string display)
         {
             DirectoryInfo dir = new DirectoryInfo(basePath);

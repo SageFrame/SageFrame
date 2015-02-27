@@ -26,8 +26,15 @@ using SageFrame.UserManagement;
 
 namespace SageFrameClass.MessageManagement
 {
+    /// <summary>
+    /// Handles  message token
+    /// </summary>
     public class MessageToken
     {
+        /// <summary>
+        /// Returns list of all the tokens from the message token.xml.
+        /// </summary>
+        /// <returns>list of tokens.</returns>
         public static NameValueCollection GetListOfAllowedTokens()
         {
             NameValueCollection allowedTokens = new NameValueCollection();
@@ -48,10 +55,15 @@ namespace SageFrameClass.MessageManagement
                 throw ex;
             }
             return allowedTokens;
-        }
+        }       
 
-       
-
+        /// <summary>
+        /// Replaces all the messagetoken in a messagetemple with  their respective values.
+        /// </summary>
+        /// <param name="messageTemplate">Message template.</param>
+        /// <param name="username">User's name.</param>
+        /// <param name="PortalID">portalID.</param>
+        /// <returns>Replaced message template.</returns>
         public static string ReplaceAllMessageToken(string messageTemplate, string username, Int32 PortalID)
         {
             string[] tokens = GetAllToken(messageTemplate);
@@ -84,11 +96,16 @@ namespace SageFrameClass.MessageManagement
             return messageTemplate;
         }
 
+        /// <summary>
+        /// Replaces all the message token in messagetemplate
+        /// </summary>
+        /// <param name="messageTemplate">Message template.</param>
+        /// <param name="messageTokenValueDT">Message token values.</param>
+        /// <returns>Replacef message template.</returns>
         public static string ReplaceAllMessageToken(string messageTemplate, DataTable messageTokenValueDT)
         {
             string messageToken = string.Empty;
             string messateTokenValue = string.Empty;
-
             for (int i = 0; i < messageTokenValueDT.Columns.Count; i++)
             {
                 messageToken = messageTokenValueDT.Columns[i].ColumnName.ToString().Replace('_', '%');
@@ -103,11 +120,25 @@ namespace SageFrameClass.MessageManagement
             }
             return messageTemplate;
         }
+
+        /// <summary>
+        /// Replaces token from template.
+        /// </summary>
+        /// <param name="template">Template.</param>
+        /// <param name="token">Token.</param>
+        /// <param name="value">Value to be replace.</param>
+        /// <returns>Token replaced value</returns>
         public static string ReplaceToken(string template, string token, string value)
         {
             return template.Replace(token, value);
         }
 
+        /// <summary>
+        /// Returs user' First name.
+        /// </summary>
+        /// <param name="username">Username.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <returns>User's first name.</returns>
         public static string GetUserFirstName(string username, Int32 PortalID)
         {
             MessageManagementController objController = new MessageManagementController();
@@ -115,6 +146,12 @@ namespace SageFrameClass.MessageManagement
             return objInfo.FirstName;
         }
 
+        /// <summary>
+        /// Returns user's last name.
+        /// </summary>
+        /// <param name="username">User's name.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <returns>last name.</returns>
         public static string GetUserLastName(string username, Int32 PortalID)
         {
             MessageManagementController objController = new MessageManagementController();
@@ -122,6 +159,12 @@ namespace SageFrameClass.MessageManagement
             return objInfo.LastName;
         }
 
+        /// <summary>
+        /// Returns user's email by user's name.
+        /// </summary>
+        /// <param name="username">User's name.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <returns>User's last name.</returns>
         public static string GetUserEmail(string username, Int32 PortalID)
         {
             MessageManagementController objController = new MessageManagementController();
@@ -129,14 +172,24 @@ namespace SageFrameClass.MessageManagement
             return objInfo.Email;
         }
 
+        /// <summary>
+        /// Returns user's activation code.
+        /// </summary>
+        /// <param name="username">User's name.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <returns>User's activation code.</returns>
         public static string GetUserActivationCode(string username, Int32 PortalID)
         {
             MessageManagementController objController = new MessageManagementController();
             MessageManagementInfo objInfo = objController.GetUserActivationCode(username, PortalID);
             return objInfo.UserId.ToString();
-
         }
-
+        
+        /// <summary>
+        /// Returns first token from the template.
+        /// </summary>
+        /// <param name="template">Template</param>
+        /// <returns>First token</returns>
         public static string GetFirstToken(string template)
         {
             int preIndex = template.IndexOf('%', 0);
@@ -145,6 +198,11 @@ namespace SageFrameClass.MessageManagement
             return string.Empty;
         }
 
+        /// <summary>
+        /// Returns all the token from template.
+        /// </summary>
+        /// <param name="template">Template</param>
+        /// <returns>Array of tokens</returns>
         public static string[] GetAllToken(string template)
         {
             List<string> returnValue = new List<string> { };

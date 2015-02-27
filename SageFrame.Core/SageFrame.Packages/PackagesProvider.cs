@@ -19,9 +19,18 @@ using SageFrame.Web.Utilities;
 
 namespace SageFrame.Packages
 {
+    /// <summary>
+    /// Manupulates data for PackagesProvider
+    /// </summary>
     public class PackagesProvider
     {
    
+        /// <summary>
+        /// Connects to database and updates packages change.
+        /// </summary>
+        /// <param name="ModuleIDs">Module ID</param>
+        /// <param name="IsActives">Set true if the respective modules are active.</param>
+        /// <param name="UpdatedBy">Change updated user's name.</param>
         public static void UpdatePackagesChange(string ModuleIDs, string IsActives, string UpdatedBy)
         {
             string sp = "[dbo].[sp_PackagesUpdateChanges]";
@@ -42,6 +51,13 @@ namespace SageFrame.Packages
                 throw;
             }
         }
+
+        /// <summary>
+        /// Connects to database and returns package by portal ID
+        /// </summary>
+        /// <param name="PortalID">Portal ID</param>
+        /// <param name="SearchText">Search Text</param>
+        /// <returns>List of packages</returns>
         public static List<PackagesInfo> GetPackagesByPortalID(int PortalID, string SearchText)
         {
             try

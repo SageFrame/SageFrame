@@ -13,62 +13,139 @@ using System.Text;
 
 namespace SageFrame.Core.ListManagement
 {
+    /// <summary>
+    /// List management entity class
+    /// </summary>
     public class ListManagementInfo
     {
+        /// <summary>
+        /// Gets or sets the list's entry ID
+        /// </summary>
         public int EntryID { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's name
+        /// </summary>
         public string ListName { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's value
+        /// </summary>
         public string Value { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's text
+        /// </summary>
         public string Text { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's level
+        /// </summary>
         public int Level { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's currency code
+        /// </summary>
         public string CurrencyCode { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's localize value
+        /// </summary>
         public string DisplayLocale { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's display order
+        /// </summary>
         public int DisplayOrder { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's defination ID
+        /// </summary>
         public int DefinitionID { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's parent ID
+        /// </summary>
         public int ParentID { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's decription
+        /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets portalID
+        /// </summary>
         public int PortalID { get; set; }
+
+        /// <summary>
+        /// Returns or retains true if the list of system
+        /// </summary>
         public bool SystemList { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's culture name
+        /// </summary>
         public string Culture { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's parent key
+        /// </summary>
         public string ParentKey { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's parent
+        /// </summary>
         public string Parent { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's parent list
+        /// </summary>
         public string ParentList { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's maimum order
+        /// </summary>
         public int MaxSortOrder { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's entry count
+        /// </summary>
         public int EntryCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's children name
+        /// </summary>
         public int HasChildren { get; set; }
+
+        /// <summary>
+        /// Returns or retains true if the list is active
+        /// </summary>
         public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's added user's name
+        /// </summary>
         public string AddedBy { get; set; }
+
+        /// <summary>
+        /// Gets or sets list added date
+        /// </summary>
         public DateTime AddedOn { get; set; }
+
+        /// <summary>
+        /// Gets or sets list's updated user's name
+        /// </summary>
         public string UpdatedBy { get; set; }
-        public DateTime UpdatedOn { get; set; }      
-        public bool EnableDisplayOrder { get; set; }
 
-        //public ListManagementInfo() { }
-        
-	
-        //public ListManagementInfo(string ListName,string Value,int EntryID,string Culture) 
-        //{
-        //    this.ListName = ListName;
-        //    this.Value = Value;
-        //    this.EntryID = EntryID;
-        //    this.Culture = Culture;
-        //}
+        /// <summary>
+        /// Gets or sets list updated date
+        /// </summary>
+        public DateTime UpdatedOn { get; set; }
 
-        //public ListManagementInfo(string _ListName, string _Value, string _Text, int _ParentID, int _Level, string _CurrencyCode, string _DisplayLocale, bool _EnableDisplayOrder, int _DefinitionID, string _Description, int _PortalID, bool _IsActive, string _AddedBy, string _Culture)
-        //{
-        //    this.ListName = _ListName;
-        //    this.Value = _Value;
-        //    this.Text = _Text;
-        //    this.ParentID = _ParentID;
-        //    this.Level = _Level;
-        //    this.CurrencyCode = _CurrencyCode;
-        //    this.DisplayLocale = _DisplayLocale;
-        //    this.EnableDisplayOrder = _EnableDisplayOrder;
-        //    this.DefinitionID = _DefinitionID;
-        //    this.Description = _Description;
-        //    this.PortalID = _PortalID;
-        //    this.IsActive = _IsActive;
-        //    this.AddedBy = _AddedBy;
-        //    this.Culture = _Culture;
-        //}
+        /// <summary>
+        /// Returns or retains true if the display order is enabled
+        /// </summary>
+        public bool EnableDisplayOrder { get; set; }   
     }
 }

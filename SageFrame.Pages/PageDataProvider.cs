@@ -19,8 +19,17 @@ using SageFrame.Common;
 
 namespace SageFrame.Pages
 {
+    /// <summary>
+    /// Manupulates data for PageDataProvider
+    /// </summary>
     public class PageDataProvider
     {
+        /// <summary>
+        /// Connect to database and obtain front end menu.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="isAdmin">true for admin.</param>
+        /// <returns></returns>
         public List<PageEntity> GetMenuFront(int PortalID, bool isAdmin)
         {
             try
@@ -38,7 +47,10 @@ namespace SageFrame.Pages
                 throw e;
             }
         }
-
+        /// <summary>
+        /// Connect to database and add update pages.
+        /// </summary>
+        /// <param name="objPage">Object of PageEntity class.</param>
         public void AddUpdatePages(PageEntity objPage)
         {
             SQLHandler sqlH = new SQLHandler();
@@ -70,9 +82,9 @@ namespace SageFrame.Pages
                                                                                 new KeyValuePair<string, object>(
                                                                                     "@Url", objPage.Url.ToString()),
                                                                                 new KeyValuePair<string, object>(
-                                                                                    "@StartDate", objPage.StartDate.ToString()),
+                                                                                    "@StartDate", DateTime.Now),
                                                                                 new KeyValuePair<string, object>(
-                                                                                    "@EndDate", objPage.EndDate.ToString()),
+                                                                                    "@EndDate", DateTime.Now),
                                                                                 new KeyValuePair<string, object>(
                                                                                     "@RefreshInterval",
                                                                                     objPage.RefreshInterval),
@@ -131,7 +143,12 @@ namespace SageFrame.Pages
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Connect to data base and obtain pages.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="isAdmin">true for admin pages.</param>
+        /// <returns></returns>
         public List<PageEntity> GetPages(int PortalID, bool isAdmin)
         {
             List<PageEntity> lstPages = new List<PageEntity>();
@@ -150,7 +167,15 @@ namespace SageFrame.Pages
                 throw e;
             }
         }
-
+        /// <summary>
+        /// Connect to database and add update page permission.
+        /// </summary>
+        /// <param name="lstPPI">List of PagePermissionInfo class.</param>
+        /// <param name="tran">Object of SqlTransaction class.</param>
+        /// <param name="pageID">pageID</param>
+        /// <param name="portalID">portalID</param>
+        /// <param name="addedBy">User name.</param>
+        /// <param name="isAdmin">true for admin pages.</param>
         public void AddUpdatePagePermission(List<PagePermissionInfo> lstPPI, SqlTransaction tran, int pageID, int portalID, string addedBy, bool isAdmin)
         {
             try
@@ -206,7 +231,17 @@ namespace SageFrame.Pages
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and add updated selected menu.
+        /// </summary>
+        /// <param name="SelectedMenu">Selected menu with comma separator.</param>
+        /// <param name="tran">Object of SqlTransaction class.</param>
+        /// <param name="pageID">pageID</param>
+        /// <param name="ParentID">ParentID</param>
+        /// <param name="Mode">Mode for add or update.</param>
+        /// <param name="Caption">Caption.</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UpdateLabel">Update label.</param>
         public void AddUpdateSelectedMenu(string SelectedMenu, SqlTransaction tran, int pageID, int ParentID, string Mode, string Caption, int PortalID, string UpdateLabel)
         {
             try
@@ -245,7 +280,12 @@ namespace SageFrame.Pages
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and update menu pages.
+        /// </summary>
+        /// <param name="MenuIDs">Menu's ID with comma separator.</param>
+        /// <param name="tran">Object of SqlTransaction class.</param>
+        /// <param name="pageID">pageID</param>
         public void MenuPageUpdate(string MenuIDs, SqlTransaction tran, int pageID)
         {
             try
@@ -270,7 +310,11 @@ namespace SageFrame.Pages
             }
 
         }
-
+        /// <summary>
+        /// Connect to database abd obtain page details based on page ID.
+        /// </summary>
+        /// <param name="pageID">pageID</param>
+        /// <returns>Object of PageEntity class.</returns>
         public PageEntity GetPageDetails(int pageID)
         {
             try
@@ -289,7 +333,11 @@ namespace SageFrame.Pages
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Connect to database and obtain page permission details.
+        /// </summary>
+        /// <param name="obj">Object of PageEntity class.</param>
+        /// <returns>List of PagePermissionInfo class.</returns>
         public List<PagePermissionInfo> GetPagePermissionDetails(PageEntity obj)
         {
             SqlDataReader reader = null;
@@ -343,7 +391,16 @@ namespace SageFrame.Pages
                 }
             }
         }
-
+        /// <summary>
+        /// Connect to database and Obtain child pages.
+        /// </summary>
+        /// <param name="parentID">Page parent ID.</param>
+        /// <param name="isActive">true for active.</param>
+        /// <param name="isVisiable">true for visible.</param>
+        /// <param name="isRequiredPage">true for required page.</param>
+        /// <param name="userName">User name.</param>
+        /// <param name="portalID">PortalID</param>
+        /// <returns>List of PageEntity class.</returns>
         public List<PageEntity> GetChildPage(int parentID, bool? isActive, bool? isVisiable, bool? isRequiredPage, string userName, int portalID)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
@@ -365,7 +422,12 @@ namespace SageFrame.Pages
             SQLHandler sqlH = new SQLHandler();
             return sqlH.ExecuteAsList<PageEntity>("[dbo].[sp_PageGetByParentID]", ParaMeterCollection);
         }
-
+        /// <summary>
+        /// Connect to database and obtain page modules.
+        /// </summary>
+        /// <param name="pageID">PageID</param>
+        /// <param name="portalID">PortalID</param>
+        /// <returns>List of PageModuleInfo class.</returns>
         public List<PageModuleInfo> GetPageModules(int pageID, int portalID)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
@@ -382,7 +444,12 @@ namespace SageFrame.Pages
 
 
         }
-
+        /// <summary>
+        /// Connect to database and delete page modules.
+        /// </summary>
+        /// <param name="moduleID">ModuleID</param>
+        /// <param name="deletedBY">User name.</param>
+        /// <param name="portalID">PortalID</param>
         public void DeletePageModule(int moduleID, string deletedBY, int portalID)
         {
             List<KeyValuePair<string, object>> ParaMeterColl = new List<KeyValuePair<string, object>>
@@ -398,7 +465,12 @@ namespace SageFrame.Pages
             sql.ExecuteNonQuery("[dbo].[sp_ModulesDelete]", ParaMeterColl);
 
         }
-
+        /// <summary>
+        /// Connect to database and delete child pages.
+        /// </summary>
+        /// <param name="pageID">PageID</param>
+        /// <param name="deletedBY">User name.</param>
+        /// <param name="portalID">PortalID.</param>
         public void DeleteChildPage(int pageID, string deletedBY, int portalID)
         {
             List<KeyValuePair<string, object>> ParaMeterColl = new List<KeyValuePair<string, object>>
@@ -414,7 +486,15 @@ namespace SageFrame.Pages
             sql.ExecuteNonQuery("[dbo].[sp_PagesDelete]", ParaMeterColl);
 
         }
-
+        /// <summary>
+        /// Connenct to database and update page as context menu.
+        /// </summary>
+        /// <param name="pageID">PageID</param>
+        /// <param name="isVisiable">true for visible.</param>
+        /// <param name="isPublished">true for publis.</param>
+        /// <param name="portalID">PortalID</param>
+        /// <param name="userName">User name.</param>
+        /// <param name="updateFor">Update for visible or active.</param>
         public void UpdatePageAsContextMenu(int pageID, bool? isVisiable, bool? isPublished, int portalID, string userName, string updateFor)
         {
             SQLHandler sqlH = new SQLHandler();
@@ -444,7 +524,16 @@ namespace SageFrame.Pages
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Connect to database and sort front end menu.
+        /// </summary>
+        /// <param name="pageID">pageID</param>
+        /// <param name="parentID">parentID</param>
+        /// <param name="pageName">Page name.</param>
+        /// <param name="BeforeID">BeforeID</param>
+        /// <param name="AfterID">AfterID</param>
+        /// <param name="portalID">PortalID</param>
+        /// <param name="userName">User name.</param>
         public void SortFrontEndMenu(int pageID, int parentID, string pageName, int BeforeID, int AfterID, int portalID, string userName)
         {
             SQLHandler sqlH = new SQLHandler();
@@ -476,7 +565,10 @@ namespace SageFrame.Pages
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Connect to database and sort admin pages.
+        /// </summary>
+        /// <param name="lstPages">List of PageEntity class.</param>
         public void SortAdminPages(List<PageEntity> lstPages)
         {
             SQLHandler sqlH = new SQLHandler();
@@ -504,7 +596,17 @@ namespace SageFrame.Pages
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Connect to database and obtain portal pages.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">User name.</param>
+        /// <param name="prefix">Page prefix.</param>
+        /// <param name="IsActive">true for active.</param>
+        /// <param name="IsDeleted">true for deleated.</param>
+        /// <param name="IsVisible">true for visible.</param>
+        /// <param name="IsRequiredPage">true for required page.</param>
+        /// <returns>List of PageEntity info class.</returns>
         public List<PageEntity> GetPortalPages(int PortalID, string UserName, string prefix, bool IsActive, bool IsDeleted, object IsVisible, object IsRequiredPage)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
@@ -529,7 +631,17 @@ namespace SageFrame.Pages
             return sqlH.ExecuteAsList<PageEntity>("[dbo].[sp_PagePortalGetByCustomPrefix]", ParaMeterCollection);
 
         }
-
+        /// <summary>
+        /// Connect to database and obtain active portal page.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">User name.</param>
+        /// <param name="prefix">Page prefix.</param>
+        /// <param name="IsActive">true for active.</param>
+        /// <param name="IsDeleted">true fro deleted.</param>
+        /// <param name="IsVisible">true for visible. </param>
+        /// <param name="IsRequiredPage">true for required page.</param>
+        /// <returns>List of PageEntity class.</returns>
         public List<PageEntity> GetActivePortalPages(int PortalID, string UserName, string prefix, bool IsActive, bool IsDeleted, object IsVisible, object IsRequiredPage)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
@@ -554,7 +666,11 @@ namespace SageFrame.Pages
             return sqlH.ExecuteAsList<PageEntity>("[dbo].[usp_PagePortalGetByCustomPrefix]", ParaMeterCollection);
 
         }
-
+        /// <summary>
+        /// Connect to database and update application setting key value.
+        /// </summary>
+        /// <param name="PageName">Page name.</param>
+        /// <param name="PortalID">PortalID</param>
         public void UpdSettingKeyValue(string PageName, int PortalID)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
@@ -563,7 +679,12 @@ namespace SageFrame.Pages
             SQLHandler sageSQL = new SQLHandler();
             sageSQL.ExecuteNonQuery("dbo.usp_PageMgr_UpdSettingKeyValue", ParaMeterCollection);
         }
-
+        /// <summary>
+        /// Connect to database and obtain secure page.
+        /// </summary>
+        /// <param name="portalID">PortalID</param>
+        /// <param name="culture">Culture code.</param>
+        /// <returns>List of SecurePageInfo class.</returns>
         public List<SecurePageInfo> GetSecurePage(int portalID, string culture)
         {
             try

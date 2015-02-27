@@ -15,8 +15,18 @@ using System.Data;
 
 namespace SageFrame.ExtractTemplate
 {
+    /// <summary>
+    /// Manipulates data related for extracting templates.
+    /// </summary>
     public class ExtractTemplateDataProvider
     {
+
+        /// <summary>
+        /// Connects to database and returns list of ExtractInfo object containing the detail of Modules
+        /// </summary>
+        /// <param name="PaneName">Pane name.</param>
+        /// <param name="portalID">Portal ID.</param>
+        /// <returns>List of ExtractInfo object containing the detail of Modules</returns>
         public List<ExtractInfo> GetTemplateDetails(string PaneName, int portalID)
         {
             //getBasicMarkUp
@@ -37,6 +47,12 @@ namespace SageFrame.ExtractTemplate
             }
             return lstTemplate;
         }
+
+        /// <summary>
+        /// Connects to database and returns template permission by usermoduelID. 
+        /// </summary>
+        /// <param name="userModuleID">User module ID.</param>
+        /// <returns>List of template permissions.</returns>
         public List<TemplatePermission> GetTemplatePermission(string userModuleID)
         {
             SQLHandler sagesql = new SQLHandler();
@@ -53,6 +69,12 @@ namespace SageFrame.ExtractTemplate
             }
             return lstpermission;
         }
+
+        /// <summary>
+        /// Connects to database and returns HTML module details
+        /// </summary>
+        /// <param name="HtmlUserModuleID">HtmlUserModuleID</param>
+        /// <returns>Dataset containg the details of html modules.</returns>
         public DataSet MakeHtmlDataSet(string HtmlUserModuleID)
         {
             SQLHandler sagesql = new SQLHandler();
@@ -69,6 +91,13 @@ namespace SageFrame.ExtractTemplate
             }
             return objDataSet;
         }
+
+        /// <summary>
+        /// Connects to database and returns menu details
+        /// </summary>
+        /// <param name="portalID">Portal ID</param>
+        /// <param name="menuUserModuleID">Menu's usermodule ID.</param>
+        /// <returns>Dataset containing menu details.</returns>
         public DataSet GetMenuDetail(int portalID, string menuUserModuleID)
         {
             SQLHandler sagesql = new SQLHandler();
@@ -86,6 +115,12 @@ namespace SageFrame.ExtractTemplate
             }
             return objDataSet;
         }
+
+        /// <summary>
+        /// Connects to database and returns List of page permission.
+        /// </summary>
+        /// <param name="pageID">Page ID.</param>
+        /// <returns>List of page permission.</returns>
         public List<PagePermission> GetPagePermission(string pageID)
         {
             SQLHandler sagesql = new SQLHandler();
@@ -103,6 +138,13 @@ namespace SageFrame.ExtractTemplate
                 throw ex;
             }
         }
+
+        /// <summary>
+        /// Connects to database and inserts template details.
+        /// </summary>
+        /// <param name="lstPageList">List of page extracted from XML.</param>
+        /// <param name="objTemplateMenuall">List of menu extracted from XML.</param>
+        /// <param name="portalID">Portal ID.</param>
         public void InsertTemplate(List<ExtractPageInfo> lstPageList, List<TemplateMenuAll> objTemplateMenuall, int portalID)
         {
             SQLHandler sagesql = new SQLHandler();
@@ -403,6 +445,14 @@ namespace SageFrame.ExtractTemplate
             {
             }
         }
+
+        /// <summary>
+        /// Changes the newly generated menu item.
+        /// </summary>
+        /// <param name="ParentID">Old menu parent ID to be change.</param>
+        /// <param name="extractedPageIDLst">List of extracted page ID.</param>
+        /// <param name="newPageID">List of new page ID.</param>
+        /// <returns>Returns new menu parent ID.</returns>
         public int ChangeMenuItemParentID(int ParentID, List<int> extractedPageIDLst, List<int> newPageID)
         {
 
@@ -415,6 +465,14 @@ namespace SageFrame.ExtractTemplate
             }
             return ParentID;
         }
+
+        /// <summary>
+        /// Changes old use rmodule ID with new user module ID.
+        /// </summary>
+        /// <param name="newUserModuleIDLst">List  of new userModuleID.</param>
+        /// <param name="oldUserModuleIDList">List of old usermoduelID.</param>
+        /// <param name="userModule">Old user module to be change.</param>
+        /// <returns>Returns new usermodule ID.</returns>
         public int ChangeUserModuleID(List<int> newUserModuleIDLst, List<int> oldUserModuleIDList, int userModule)
         {
             foreach (int i in oldUserModuleIDList)
@@ -426,6 +484,14 @@ namespace SageFrame.ExtractTemplate
             }
             return userModule;
         }
+
+        /// <summary>
+        /// Connects to database and inserts module to database, updates new usermoduleID and maps page with usermodule.
+        /// </summary>
+        /// <param name="objExtract">ExtractModuleInfo containing the module details.</param>
+        /// <param name="portalID">Portal ID.</param>
+        /// <param name="showInpages">Set true if the module is showin in many pages.</param>
+        /// <param name="newUserModuleID">New usermodule ID.</param>
         public void InsertModules(ExtractModuleInfo objExtract, int portalID, out string showInpages, out int newUserModuleID)
         {
             string roleName = "";

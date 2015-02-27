@@ -18,8 +18,14 @@ using System.Web;
 
 namespace SageFrame.Core.TemplateManagement
 {
+    /// <summary>
+    /// Setting class  for template.
+    /// </summary>
     public static class TemplateSettings
     {
+        /// <summary>
+        /// Returns base director path for template.
+        /// </summary>
         public static string BaseDir
         {
             get {
@@ -30,6 +36,9 @@ namespace SageFrame.Core.TemplateManagement
             
         }
 
+        /// <summary>
+        /// Retuns template paths.
+        /// </summary>
         public static string TemplatePath = "\\"+BaseDir + "\\Templates\\";
     }
 }

@@ -22,13 +22,19 @@ using SageFrame.Application;
 
 namespace SageFrame.Web
 {
+    /// <summary>
+    /// Summary about application configuration.
+    /// </summary>
     [Serializable]
     public class SageFrameConfig
     {
-        public SageFrameConfig()
-        {
-        }
-
+        /// <summary>
+        /// Initializes a new instance of SageFrameConfig.
+        /// </summary>
+        public SageFrameConfig() { }
+        /// <summary>
+        /// Get application user name.
+        /// </summary>
         public string GetUsername
         {
             get
@@ -44,7 +50,12 @@ namespace SageFrame.Web
                 }
             }
         }
-
+        /// <summary>
+        /// Return application page settings.
+        /// </summary>
+        /// <param name="controlType">Application control type.</param>
+        /// <param name="pageID">PageID</param>
+        /// <returns>Page settings.</returns>
         public DataSet GetPageSettings(string controlType, string pageID)
         {
             try
@@ -65,7 +76,13 @@ namespace SageFrame.Web
                 throw e;
             }
         }
-
+        /// <summary>
+        /// Return application page settings based on page name.
+        /// </summary>
+        /// <param name="controlType">Application control type.</param>
+        /// <param name="pageSEOName">Page name.</param>
+        /// <param name="userName">User name.</param>
+        /// <returns></returns>
         public DataSet GetPageSettingsByPageSEOName(string controlType, string pageSEOName, string userName)
         {
             try
@@ -86,6 +103,16 @@ namespace SageFrame.Web
                 throw e;
             }
         }
+        /// <summary>
+        /// Return modules assigne with page.
+        /// </summary>
+        /// <param name="controlType">Application control type.</param>
+        /// <param name="pageSEOName">Page name.</param>
+        /// <param name="userName">User name.</param>
+        /// <param name="cultureCode">Culture code.</param>
+        /// <param name="isPreview">"true" for availablity of preview .</param>
+        /// <param name="previewCode">Preview code.</param>
+        /// <returns>UserModuleInfo list.</returns>
         public List<UserModuleInfo> GetPageModules(string controlType, string pageSEOName, string userName, string cultureCode, bool isPreview, string previewCode)
         {
             try
@@ -109,6 +136,14 @@ namespace SageFrame.Web
                 throw e;
             }
         }
+        /// <summary>
+        /// Return modules assigne with page for anonymous user.
+        /// </summary>
+        /// <param name="controlType">Application control type.</param>
+        /// <param name="pageSEOName">Page name.</param>
+        /// <param name="userName">User name.</param>
+        /// <param name="cultureCode">Culture code.</param>
+        /// <returns>UserModuleInfo list.</returns>
         public List<UserModuleInfo> GetPageModules_Anonymous(string controlType, string pageSEOName, string userName, string cultureCode)
         {
             try
@@ -129,7 +164,16 @@ namespace SageFrame.Web
                 throw e;
             }
         }
-
+        /// <summary>
+        /// Return modules assigne with page for superuser.
+        /// </summary>
+        /// <param name="controlType">Application control type.</param>
+        /// <param name="pageSEOName">Page name.</param>
+        ///  <param name="GetUsername">User name.</param>
+        /// <param name="cultureCode">Culture code.</param>
+        /// <param name="isPreview">"true" for availablity of preview .</param>
+        /// <param name="previewCode">Preview code.</param>
+        /// <returns>UserModuleInfo list.</returns>
         public List<UserModuleInfo> GetPageModules_Superuser(string controlType, string pageSEOName, string GetUsername, string cultureCode, bool isPreview, string previewCode)
         {
             try
@@ -152,6 +196,13 @@ namespace SageFrame.Web
                 throw e;
             }
         }
+        /// <summary>
+        /// Page setting based on page name for Admin.
+        /// </summary>
+        /// <param name="controlType">Application control type.</param>
+        /// <param name="pageSEOName">Page name.</param>
+        /// <param name="userName">User name.</param>
+        /// <returns>Return page setting based on page name for Admin.</returns>
         public DataSet GetPageSettingsByPageSEONameForAdmin(string controlType, string pageSEOName, string userName)
         {
             try
@@ -173,7 +224,9 @@ namespace SageFrame.Web
             }
         }
 
-
+        /// <summary>
+        /// Get "true" if page is parent.
+        /// </summary>
         public bool IsParent
         {
             get
@@ -200,7 +253,11 @@ namespace SageFrame.Web
                 }
             }
         }
-
+        /// <summary>
+        /// Initializes a new instance of DecideIsParent.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>Return "true" if page is parent.</returns>
         public bool DecideIsParent(int PortalID)
         {
 
@@ -219,7 +276,7 @@ namespace SageFrame.Web
 
         }
         /// <summary>
-        ///Get Portal Parent URL
+        ///Get portal parent URL
         /// </summary>
         public string GetParentURL
         {
@@ -252,7 +309,11 @@ namespace SageFrame.Web
                 }
             }
         }
-
+        /// <summary>
+        /// Initializes a new instance of GetPortalParentURL.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>Return portal parent URL</returns>
         public string GetPortalParentURL(int PortalID)
         {
 
@@ -271,7 +332,9 @@ namespace SageFrame.Web
 
         }
 
-
+        /// <summary>
+        /// Get current portal ID.
+        /// </summary>
         public int GetPortalID
         {
             get
@@ -336,7 +399,11 @@ namespace SageFrame.Web
             return hstAll;
         }
 
-
+        /// <summary>
+        /// Settings based on application key.
+        /// </summary>
+        /// <param name="Key">Application key.</param>
+        /// <returns>Return settings based on application key.</returns>
         public string GetSettingsByKey(string Key)
         {
             try
@@ -371,6 +438,11 @@ namespace SageFrame.Web
                 throw e;
             }
         }
+        /// <summary>
+        ///Individual setting based on application key.
+        /// </summary>
+        /// <param name="Key">Application key.</param>
+        /// <returns>Return settings based on application key.</returns>
         public string GetSettingsByKeyIndividual(string Key)
         {
             try
@@ -404,7 +476,10 @@ namespace SageFrame.Web
                 throw e;
             }
         }
-
+        /// <summary>
+        /// Resetsetting keys based on portal ID.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
         public void ResetSettingKeys(int PortalID)
         {
             SettingProvider sep = new SettingProvider();
@@ -420,7 +495,9 @@ namespace SageFrame.Web
             //need to be cleared when any key is chnaged
             HttpRuntime.Cache.Insert(CacheKeys.SageSetting, hst);//
         }
-
+        /// <summary>
+        /// Get default portal.
+        /// </summary>
         private string SettingPortal
         {
             get
@@ -443,9 +520,9 @@ namespace SageFrame.Web
             }
         }
         /// <summary>
-        /// Get Default Portal Name By PortalID
+        /// Get default portal name by portalID
         /// </summary>
-        /// <param name="hstPortals">HashTable Containing PortalID and PortalName</param>
+        /// <param name="hstPortals">HashTable containing PortalID and PortalName</param>
         /// <param name="portalID">PortalID</param>
         /// <returns>PortalName</returns>
         public string GetDefaultPortalName(Hashtable hstPortals, int portalID)
@@ -462,10 +539,10 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Return Int SettingValue By Key From Cache
+        /// Return integer SettingValue based upon key from cache.
         /// </summary>
-        /// <param name="Key"></param>
-        /// <returns></returns>
+        /// <param name="Key">Application key.</param>
+        /// <returns>Integer SettingValue.</returns>
         public int GetSettingIntByKey(string Key)
         {
             try
@@ -479,10 +556,10 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Return Bool SettingValue By Key From Cache
+        /// Return Boolean SettingValue based upon key from cache.
         /// </summary>
-        /// <param name="Key"></param>
-        /// <returns></returns>
+        /// <param name="Key">Application key.</param>
+        /// <returns> Boolean SettingValue.</returns>
         public bool GetSettingBollByKey(string Key)
         {
             try
@@ -502,10 +579,10 @@ namespace SageFrame.Web
             }
         }
         /// <summary>
-        /// Return The Name of the Logged in User by PortalID
+        /// Return the name of the logged in user name based upon PortalID.
         /// </summary>
         /// <param name="PortalID">PortalID</param>
-        /// <returns>Logged In UserName</returns>
+        /// <returns>Logged in user name.</returns>
         public string GetUser(int portalID)
         {
             HttpCookie authCookie = HttpContext.Current.Request.Cookies[FormsCookieName(portalID)];
@@ -528,7 +605,11 @@ namespace SageFrame.Web
             }
             return user;
         }
-
+        /// <summary>
+        /// Return FormsAuthenticationTicket based upon portal ID.
+        /// </summary>
+        /// <param name="portalID">portalID</param>
+        /// <returns>FormsAuthenticationTicket</returns>
         public FormsAuthenticationTicket GetUserTicket(int portalID)
         {
             HttpCookie authCookie = HttpContext.Current.Request.Cookies[FormsCookieName(portalID)];
@@ -547,14 +628,20 @@ namespace SageFrame.Web
                 return ticket;
             }
         }
-
+        /// <summary>
+        /// Return forms cookies name.
+        /// </summary>
+        /// <param name="portalID">portalID</param>
+        /// <returns>Cookies name.</returns>
         public string FormsCookieName(int portalID)
         {
             string formName = string.Empty;
             formName = FormsAuthentication.FormsCookieName + HttpContext.Current.Session + portalID.ToString();
             return formName;
         }
-
+        /// <summary>
+        /// Get application name.
+        /// </summary>
         public static string GetApplicationName
         {
             get
@@ -564,10 +651,10 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Return String SettingValue By Key From Database
+        /// Return string SettingValue based on application setting key.
         /// </summary>
-        /// <param name="settingKey"></param>
-        /// <returns></returns>
+        /// <param name="settingKey">Application setting key.</param>
+        /// <returns>SettingValue based on application setting key.</returns>
         public string GetSettingValueByIndividualKey(string settingKey)
         {
             string value = string.Empty;
@@ -587,10 +674,10 @@ namespace SageFrame.Web
             return value;
         }
         /// <summary>
-        /// Return Bool SettingValue By Key From Database
+        /// Return boolean setting value based upon individual key. 
         /// </summary>
-        /// <param name="settingKey"></param>
-        /// <returns></returns>
+        /// <param name="settingKey">Application setting key.</param>
+        /// <returns>SettingValue based upon individual key.</returns>
         public bool GetSettingBoolValueByIndividualKey(string settingKey)
         {
             bool value = false;
@@ -611,10 +698,10 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Return Int SettingValue By Key From Database
+        /// Return integer setting value based upon application setting key.
         /// </summary>
-        /// <param name="settingKey"></param>
-        /// <returns></returns>
+        /// <param name="settingKey">Application setting key.</param>
+        /// <returns>setting value based upon application setting key.</returns>
         public int GetSettingIntValueByIndividualKey(string settingKey)
         {
             int value = 0;
@@ -633,7 +720,11 @@ namespace SageFrame.Web
             }
             return value;
         }
-
+        /// <summary>
+        /// Return application information.
+        /// </summary>
+        /// <param name="applicationName">Application name.</param>
+        /// <returns>Application information.</returns>
         public ApplicationInfo GetApplicationInfo(string applicationName)
         {
             List<KeyValuePair<string, string>> ParaMeterCollection = new List<KeyValuePair<string, string>>();

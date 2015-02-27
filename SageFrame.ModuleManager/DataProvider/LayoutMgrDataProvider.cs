@@ -18,8 +18,16 @@ using SageFrame.ModuleManager;
 
 namespace SageFrame.ModuleManager
 {
+    /// <summary>
+    /// Manupulates data for LayoutMgrDataProvider.
+    /// </summary>
     public class LayoutMgrDataProvider
     {
+        /// <summary>
+        /// Connect to database and get modules based on PortalID.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>List of LayoutMgrInfo class.</returns>
         public static List<LayoutMgrInfo> GetModules(int PortalID)
         {
             SQLHandler SQLH = new SQLHandler();
@@ -27,7 +35,11 @@ namespace SageFrame.ModuleManager
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
             return SQLH.ExecuteAsList<LayoutMgrInfo>("[usp_ModuleManagerGetPortalModules]",ParaMeterCollection);
         }
-
+        /// <summary>
+        /// Connect to database and obtain admin modules.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>List of LayoutMgrInfo.</returns>
         public static List<LayoutMgrInfo> GetAdminModules(int PortalID)
         {
             SQLHandler SQLH = new SQLHandler();
@@ -35,7 +47,11 @@ namespace SageFrame.ModuleManager
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
             return SQLH.ExecuteAsList<LayoutMgrInfo>("[dbo].[usp_ModuleManagerGetAdminModules]",ParaMeterCollection);
         }
-
+        /// <summary>
+        /// Connect to database and obtain module information based onmodule name.
+        /// </summary>
+        /// <param name="ModuleName">Module name.</param>
+        /// <returns>List of LayoutMgrInfo class.</returns>
         public static List<LayoutMgrInfo> GetModuleInformation(string ModuleName)
         {
             SQLHandler SQLH = new SQLHandler();
@@ -44,7 +60,13 @@ namespace SageFrame.ModuleManager
 
             return SQLH.ExecuteAsList<LayoutMgrInfo>("[dbo].[usp_GetModuleInformation]", ParaMeterCollection);
         }
-
+        /// <summary>
+        /// Connect to database and search module.
+        /// </summary>
+        /// <param name="search">Searching string.</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="IsAdmin">true if admin modules.</param>
+        /// <returns>List of LayoutMgrInfo class.</returns>
         public static List<LayoutMgrInfo> SearchModules(string search,int PortalID,bool IsAdmin)
         {
             SQLHandler SQLH = new SQLHandler();
@@ -54,7 +76,14 @@ namespace SageFrame.ModuleManager
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsAdmin", IsAdmin));
             return SQLH.ExecuteAsList<LayoutMgrInfo>("[dbo].[usp_ModuleManagerGetSearchModules]", ParaMeterCollection);
         }
-
+        /// <summary>
+        /// Connect to database and obtain sort modules.
+        /// </summary>
+        /// <param name="flag">flag</param>
+        /// <param name="isAdmin">true for admin.</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="IncludePortalModules">IncludePortalModules</param>
+        /// <returns>List of LayoutMgrInfo class.</returns>
         public static List<LayoutMgrInfo> GetSortModules(int flag, bool isAdmin, int PortalID, int IncludePortalModules)
         {
             SQLHandler SQLH = new SQLHandler();
@@ -74,9 +103,11 @@ namespace SageFrame.ModuleManager
             }
 
         }
-
-        
-
+        /// <summary>
+        /// Connect to database and add lay out.
+        /// </summary>
+        /// <param name="obj">Object of LayoutMgrInfo class.</param>
+        /// <returns>Newly added ID.</returns>
         public static int AddLayOutMgr(LayoutMgrInfo obj)
         {
             try

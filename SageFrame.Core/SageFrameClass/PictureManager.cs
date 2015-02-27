@@ -23,14 +23,21 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-/// <summary>
-/// Summary description for PictureManager
-/// </summary>
-/// 
+
 namespace SageFrame.Web
 {
+    /// <summary>
+    /// PictureManager class provides properties for  image manipulation
+    /// </summary>
     public static class PictureManager
     {
+        /// <summary>
+        /// Returns image path including file name which is formed by combining image name with prefix provided.
+        /// </summary>
+        /// <param name="imageType">Image type.</param>
+        /// <param name="prefix">File name prefix.</param>
+        /// <param name="localImagePath">Local image Path.</param>
+        /// <returns>New image path.</returns>
         public static string GetImagePathWithFileName(int imageType, string prefix, string localImagePath)
         {
             string SavePath = string.Empty;
@@ -56,13 +63,25 @@ namespace SageFrame.Web
             return SavePath;
         }
 
+        /// <summary>
+        /// Returns unique File name for any give file name in the application.
+        /// </summary>
+        /// <param name="prefix">Prefix.</param>
+        /// <returns>unique file name.</returns>
         public static string GetFileName(string prefix)
         {
             string strFileName = string.Empty;
-            strFileName = prefix + "_" + DateTime.Now.ToString().Replace(" ","").Replace("/","").Replace(":","");            
+            strFileName = prefix + "_" + DateTime.Now.ToString().Replace(" ", "").Replace("/", "").Replace(":", "");
             return strFileName;
         }
 
+        /// <summary>
+        /// Saves image for the given location.
+        /// </summary>
+        /// <param name="Fu">File Uploader.</param>
+        /// <param name="prefix">Image prefix.</param>
+        /// <param name="localImagePath">Local file path.</param>
+        /// <returns>Returns the saved file path.</returns>
         public static string SaveImage(FileUpload Fu, string prefix, string localImagePath)
         {
             if (!Directory.Exists(localImagePath))
@@ -70,7 +89,7 @@ namespace SageFrame.Web
             string strImage = string.Empty;
             string SavePath = string.Empty;
             //SavePath = GetImagePathWithFileName(3, prefix, localImagePath);
-            SavePath = localImagePath;            
+            SavePath = localImagePath;
             SavePath += '\\' + prefix;
             Fu.SaveAs(SavePath);
             Fu.FileContent.Dispose();
@@ -79,6 +98,12 @@ namespace SageFrame.Web
             return strImage;
         }
 
+        /// <summary>
+        /// Creats thumbnail for any image and returns 
+        /// </summary>
+        /// <param name="strImage">Local image full path upto image.</param>
+        /// <param name="TargetSize">Targeted  file size.</param>
+        /// <param name="SavePath">Save Path.</param>
         public static void CreateThmnail(string strImage, int TargetSize, string SavePath)
         {
             Bitmap b = new Bitmap(strImage);
@@ -99,9 +124,18 @@ namespace SageFrame.Web
             var imageRectangle = new Rectangle(0, 0, newWidth, newHeight);
             thumbGraph.DrawImage(image, imageRectangle);
             thumbnailImg.Save(SavePath, image.RawFormat);
+            thumbnailImg.Dispose();
+            thumbGraph.Dispose();
+            image.Dispose();
+            
         }
 
-
+        /// <summary>
+        /// Calculates the targeted dimension of the image. The new size will be in proportion to targeted size.
+        /// </summary>
+        /// <param name="OriginalSize">Original size of the image.</param>
+        /// <param name="TargetSize">Targeted size of the image</param>
+        /// <returns></returns>
         public static Size CalculateDimensions(Size OriginalSize, int TargetSize)
         {
             Size newSize = new Size();
@@ -118,6 +152,13 @@ namespace SageFrame.Web
             return newSize;
         }
 
+        /// <summary>
+        /// Crop the image in the given height and width.
+        /// </summary>
+        /// <param name="strImage">Image full path.</param>
+        /// <param name="dblImgHt">New image height.</param>
+        /// <param name="dblImgWd">New image width.</param>
+        /// <returns>Image in bitmap format.</returns>
         public static System.Drawing.Image ScaleByPercent(string strImage, double dblImgHt, double dblImgWd)
         {
             Bitmap imgRetPhoto = null;
@@ -154,7 +195,11 @@ namespace SageFrame.Web
             }
         }
 
-
+        /// <summary>
+        /// Checks the extenstion of the icon
+        /// </summary>
+        /// <param name="extension">Extension.</param>
+        /// <returns>True if the extension is valid icon extension.</returns>
         public static bool IsValidIconContentType(string extension)
         {
             // array of allowed file type extensions
@@ -172,20 +217,30 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Check the image Extension if it is valid to upload
+        /// Checks the image extension if it is valid to upload
         /// </summary>
-        /// <param name="filename"></param>
-        /// <returns></returns>
+        /// <param name="filename">Image name.</param>
+        /// <returns>True if the file has valid extension.</returns>
         public static bool ValidImageExtension(string fileName)
         {
             return Regex.IsMatch(fileName.ToLower(), @"^.*\.(jpg|gif|jpeg|swf|ico|png|bmp)$");
         }
 
+        /// <summary>
+        /// Checks the file extension if it is valid to upload
+        /// </summary>
+        /// <param name="fileName">File name.</param>
+        /// <returns>True if the file extension is valid.</returns>
         public static bool ValidFileExtension(string fileName)
         {
             return Regex.IsMatch(fileName.ToLower(), @"^.*\.(css|html|xml|ascx|js|config)$");
         }
 
+        /// <summary>
+        /// Checks the image mime type if the mime type is valid.
+        /// </summary>
+        /// <param name="extension">Mime type.</param>
+        /// <returns>True if the mime type is valid.</returns>
         public static bool IsValidIImageTypeWitMime(string extension)
         {
             // array of allowed file type extensions
@@ -202,7 +257,11 @@ namespace SageFrame.Web
             return flag;
         }
 
-
+        /// <summary>
+        ///  Checks if the image path has valid file extension.
+        /// </summary>
+        /// <param name="imagePath">Image path.</param>
+        /// <returns>True if the image has valid extesion.</returns>
         public static bool IsVAlidImageContentType(string imagePath)
         {
             // extract and store the file extension into another variable
@@ -212,7 +271,7 @@ namespace SageFrame.Web
             //String fileExtension = imagePath.Substring(imagePath.Length - 3, 3);
             if (imagePath.Contains("."))
             {
-                String fileExtension = imagePath.Substring(imagePath.LastIndexOf(".") + 1);               
+                String fileExtension = imagePath.Substring(imagePath.LastIndexOf(".") + 1);
                 // loop over the valid file extensions to compare them with uploaded file
                 for (var index = 0; index < validFileExtensions.Length; index++)
                 {
@@ -226,7 +285,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Gets a local thumb image path
+        /// Gets a local medium thumb image path
         /// </summary>
         /// 
         public static string LocalMediumThumbImagePath
@@ -237,6 +296,10 @@ namespace SageFrame.Web
                 return path;
             }
         }
+
+        /// <summary>
+        /// Gets a local small thumb image path
+        /// </summary>
         public static string LocalSmallThumbImagePath
         {
             get
@@ -258,11 +321,20 @@ namespace SageFrame.Web
             }
             set
             {
-                string path = value;                
+                string path = value;
 
             }
         }
 
+        /// <summary>
+        /// Creates medium thumbnail.
+        /// </summary>
+        /// <param name="strImage">Image name.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="prefix">Image Prefix.</param>
+        /// <param name="localImagePath">Local image path.</param>
+        /// <param name="imageSize">Image size.</param>
+        /// <returns>Saved medium thumbnail path.</returns>
         public static string CreateMediumThumnail(string strImage, int PortalID, string prefix, string localImagePath, int imageSize)
         {
             if (!Directory.Exists(localImagePath))
@@ -276,6 +348,15 @@ namespace SageFrame.Web
             return SavePath;
         }
 
+        /// <summary>
+        /// Creates small thumbnail.
+        /// </summary>
+        /// <param name="strImage">Image name.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="prefix">Image Prefix.</param>
+        /// <param name="localImagePath">Local image path.</param>
+        /// <param name="imageSize">Image size.</param>
+        /// <returns>Saved medium thumbnail path.</returns>
         public static string CreateSmallThumnail(string strImage, int PortalID, string prefix, string localImagePath, int imageSize)
         {
             if (!Directory.Exists(localImagePath))

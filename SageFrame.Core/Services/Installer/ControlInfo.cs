@@ -16,14 +16,40 @@ using System.Text;
 #endregion
 
 
-   [Serializable]
-    public class ControlInfo
-    {
-        public string Key { get; set; }
-        public string Title { get; set; }
-        public string Type { get; set; }
-        public string HelpUrl { get; set; }
-        public string SupportSpatial { get; set; }
-        public string Src { get; set; }
-    }
+/// <summary>
+/// Entity class  of control information.
+/// </summary>
+[Serializable]
+public class ControlInfo
+{
+    /// <summary>
+    /// Gets or sets control key.
+    /// </summary>
+    public string Key { get; set; }
+
+    /// <summary>
+    /// Gets or sets control's title.
+    /// </summary>
+    public string Title { get; set; }
+
+    /// <summary>
+    /// Gets or sets control type.
+    /// </summary>
+    public string Type { get; set; }
+
+    /// <summary>
+    /// Gets or sets control's help URL.
+    /// </summary>
+    public string HelpUrl { get; set; }
+
+    /// <summary>
+    /// Gets or sets controls partial supports
+    /// </summary>
+    public string SupportSpatial { get; set; }
+    
+    /// <summary>
+    /// Gets or sets control's src.
+    /// </summary>
+    public string Src { get; set; }
+}
 

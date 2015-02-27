@@ -15,15 +15,22 @@ using System.IO;
 
 namespace SageFrame.Templating.xmlparser
 {
+    /// <summary>
+    /// Class that contains properties for XML helper.
+    /// </summary>
     public class XmlHelper
     {
+        /// <summary>
+        /// loads xml documents from the path provided.
+        /// </summary>
+        /// <param name="filePath">File path for the XML.</param>
+        /// <returns>XmlDocument object containing the XML file's string in memory.</returns>
         public static XmlDocument LoadXMLDocument(string filePath)
         {
             XmlTextReader reader = new XmlTextReader(filePath);
             XmlDocument xmlDoc = new XmlDocument();
             try
             {
-
                 reader.WhitespaceHandling = WhitespaceHandling.None;
                 //Load the file into the XmlDocument
                 xmlDoc.Load(reader);
@@ -40,12 +47,23 @@ namespace SageFrame.Templating.xmlparser
             return xmlDoc;
         }
 
+        /// <summary>
+        /// Returns XML nodes from XML documents from the selected node.
+        /// </summary>
+        /// <param name="doc">XmlDocument object containing the xml document.</param>
+        /// <param name="selectednode">Node to be selected.</param>
+        /// <returns>XML nodes list inside the provided node.</returns>
         public static XmlNodeList GetXMLNodes(XmlDocument doc, string selectednode)
         {
             XmlNodeList xnLst = doc.SelectNodes(selectednode);
             return xnLst;
         }
 
+        /// <summary>
+        /// Returns XML in string format.
+        /// </summary>
+        /// <param name="filePath">XML file path.</param>
+        /// <returns>String containing xml string.</returns>
         public static string GetXMLString(string filePath)
         {
 

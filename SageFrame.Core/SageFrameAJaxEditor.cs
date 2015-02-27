@@ -54,6 +54,9 @@ using AjaxControlToolkit.HTMLEditor.ToolbarButton;
 [assembly: WebResource("App_Scripts.HTMLEditor.scripts.InsertDate.js", "application/x-javascript")]
 namespace AjaxControlToolkit.HTMLEditor.CustomToolbarButton
 {
+    /// <summary>
+    /// Class that inserts icon image.
+    /// </summary>
     [ParseChildren(true)]
     [PersistChildren(false)]
     [RequiredScript(typeof(OkCancelPopupButton))]
@@ -63,6 +66,9 @@ namespace AjaxControlToolkit.HTMLEditor.CustomToolbarButton
 
         #region [ Properties ]
 
+        /// <summary>
+        /// Gets or sets icon in row.
+        /// </summary>
         [DefaultValue(10)]
         [Category("Appearance")]
         [Description("Icons in one row of the ralated popup")]
@@ -72,6 +78,9 @@ namespace AjaxControlToolkit.HTMLEditor.CustomToolbarButton
             set { ViewState["IconsInRow"] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets Icons Folder.
+        /// </summary>
         [DefaultValue("~/App_Images/HTMLEditor.icons/")]
         [Category("Appearance")]
         [Description("Folder used for icons")]
@@ -104,11 +113,17 @@ namespace AjaxControlToolkit.HTMLEditor.CustomToolbarButton
             get { return "AjaxControlToolkit.HTMLEditor.CustomToolbarButton.InsertIcon"; }
         }
 
+        /// <summary>
+        /// Gets  script path.
+        /// </summary>
         public override string ScriptPath
         {
             get { return "~/App_Scripts/HTMLEditor.scripts/InsertIcon.js"; }
         }
 
+        /// <summary>
+        /// Gets tooltip.
+        /// </summary>
         public override string ToolTip
         {
             get { return "Insert predefined icon"; }
@@ -117,6 +132,9 @@ namespace AjaxControlToolkit.HTMLEditor.CustomToolbarButton
         #endregion
     }
 
+    /// <summary>
+    /// Class that inset date.
+    /// </summary>
     [ParseChildren(true)]
     [PersistChildren(false)]
     [RequiredScript(typeof(MethodButton))]
@@ -136,11 +154,17 @@ namespace AjaxControlToolkit.HTMLEditor.CustomToolbarButton
             get { return "AjaxControlToolkit.HTMLEditor.CustomToolbarButton.InsertDate"; }
         }
 
+        /// <summary>
+        /// Gets the script path.
+        /// </summary>
         public override string ScriptPath
         {
             get { return "~/App_Scripts/HTMLEditor.scripts/InsertDate.js"; }
         }
 
+        /// <summary>
+        /// Gets the tooltip.
+        /// </summary>
         public override string ToolTip
         {
             get { return "Insert current date"; }
@@ -160,6 +184,9 @@ namespace AjaxControlToolkit.HTMLEditor.CustomPopups
 
         #region [ Properties ]
 
+        /// <summary>
+        /// Gets or sets the icon in row.
+        /// </summary>
         [DefaultValue(10)]
         [Category("Appearance")]
         [Description("Icons in one row")]
@@ -169,6 +196,9 @@ namespace AjaxControlToolkit.HTMLEditor.CustomPopups
             set { ViewState["IconsInRow"] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets icon folder name.
+        /// </summary>
         [DefaultValue("~/App_Images/HTMLEditor.icons/")]
         [Category("Appearance")]
         [Description("Folder used for icons")]
@@ -248,6 +278,9 @@ namespace AjaxControlToolkit.HTMLEditor.CustomPopups
 
 namespace SageFrameAJaxEditorControls
 {
+    /// <summary>
+    /// SageFrame ajax editor class.
+    /// </summary>
     public class SageFrameAJaxEditor : Editor
     {
         protected override void FillTopToolbar()
@@ -263,6 +296,9 @@ namespace SageFrameAJaxEditorControls
         }
     }
 
+    /// <summary>
+    /// SageFrame custom ajax editor class.
+    /// </summary>
     public class SageFrameAJaxEditorCustom : Editor
     {
         protected override void FillTopToolbar()
@@ -280,10 +316,13 @@ namespace SageFrameAJaxEditorControls
             BottomToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.PreviewMode());
         }
     }
-//}
+    //}
 
-//namespace SageFrameAJaxEditorControls
-//{
+    //namespace SageFrameAJaxEditorControls
+    //{
+    /// <summary>
+    /// SageFrame lite class.
+    /// </summary>
     public class Lite : AjaxControlToolkit.HTMLEditor.Editor
     {
         protected override void FillBottomToolbar()
@@ -387,6 +426,9 @@ namespace SageFrameAJaxEditorControls
         }
     }
 
+    /// <summary>
+    /// Class that inherits Lite and fills element at bottom.
+    /// </summary>
     public class LiteNoBottom : Lite
     {
         protected override void FillBottomToolbar()
@@ -394,6 +436,9 @@ namespace SageFrameAJaxEditorControls
         }
     }
 
+    /// <summary>
+    /// Class that inherits AjaxControlToolkit.HTMLEditor.Editor and fills element at bottom.
+    /// </summary>
     public class FullNoBottom : AjaxControlToolkit.HTMLEditor.Editor
     {
         protected override void FillBottomToolbar()
@@ -401,6 +446,9 @@ namespace SageFrameAJaxEditorControls
         }
     }
 
+    /// <summary>
+    /// Class that inherits AjaxControlToolkit.HTMLEditor.Editor and overrides FillBottomToolbar method to fills element at bottom.
+    /// </summary>
     public class FullWithRightBottom : AjaxControlToolkit.HTMLEditor.Editor
     {
         protected override void FillBottomToolbar()
@@ -412,6 +460,9 @@ namespace SageFrameAJaxEditorControls
         }
     }
 
+    /// <summary>
+    /// Class that inherits AjaxControlToolkit.HTMLEditor.Editor and overrides FillBottomToolbar method to fills element at bottom.
+    /// </summary>
     public class EditorWithCustomButtons : AjaxControlToolkit.HTMLEditor.Editor
     {
         protected override void FillTopToolbar()
@@ -422,6 +473,9 @@ namespace SageFrameAJaxEditorControls
             TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.CustomToolbarButton.InsertIcon());
         }
 
+        /// <summary>
+        /// Returns button's image folder.
+        /// </summary>
         public override string ButtonImagesFolder
         {
             get
@@ -431,22 +485,28 @@ namespace SageFrameAJaxEditorControls
         }
     }
 
+    /// <summary>
+    /// Editor with custom emotions buttons class.
+    /// </summary>
     public class EditorWithCustomEmotionsButtons : AjaxControlToolkit.HTMLEditor.Editor
     {
         protected override void FillTopToolbar()
         {
             //base.FillTopToolbar();
             TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.InsertLink());
-            TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.ForeColor());            
+            TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.ForeColor());
             TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.Bold());
             TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.Italic());
             TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.Underline());
             TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.OrderedList());
             TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.BulletedList());
-            TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.HorizontalSeparator());            
+            TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.HorizontalSeparator());
             TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.CustomToolbarButton.InsertIcon());
         }
 
+        /// <summary>
+        /// Returns button image folder.
+        /// </summary>
         public override string ButtonImagesFolder
         {
             get
@@ -465,6 +525,9 @@ namespace SageFrameAJaxEditorControls
     }
 
 
+    /// <summary>
+    /// Editor without custom emotions buttons
+    /// </summary>
     public class EditorWithoutCustomEmotionsButtons : AjaxControlToolkit.HTMLEditor.Editor
     {
         protected override void FillTopToolbar()
@@ -477,9 +540,12 @@ namespace SageFrameAJaxEditorControls
             TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.Underline());
             TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.OrderedList());
             TopToolbar.Buttons.Add(new AjaxControlToolkit.HTMLEditor.ToolbarButton.BulletedList());
-            
+
         }
 
+        /// <summary>
+        /// Returns button's image folder.
+        /// </summary>
         public override string ButtonImagesFolder
         {
             get

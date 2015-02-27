@@ -30,6 +30,7 @@
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
 }
+.sfBannerDesc h1 { color:#fff; margin-bottom:10px;}
 
 .sfBannerDesc h2 {
 	color:#fff;
@@ -47,11 +48,11 @@
 	text-indent: -9999px; opacity: 0.7;
 	background: url(../images/banner-nav.png) no-repeat;
 }
-.bx-next { right:5%; background-position:right top;}
+.bx-next { right:8%; background-position:right top;}
 
 .bx-prev:hover, .bx-next:hover { opacity: 1;}
 
-.bx-prev { left: 5%;}
+.bx-prev { left: 8%;}
 
 
 .sfInnerwrapper  .bx-prev { left: -10%;}

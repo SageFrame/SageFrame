@@ -77,7 +77,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                     string rolePrefix = GetPortalSEOName + "_";
                     RoleInfo objRole = new RoleInfo();
                     objRole.ApplicationName =Membership.ApplicationName;
-                    objRole.RoleName = txtRole.Text;
+                    objRole.RoleName = txtRole.Text.Trim();
                     objRole.PortalID = GetPortalID;
                     objRole.IsActive = 1;
                     objRole.AddedOn = DateTime.Now;

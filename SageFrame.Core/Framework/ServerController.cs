@@ -17,12 +17,19 @@ using System.Web;
 
 namespace SageFrame.Framework
 {
+    /// <summary>
+    /// Server Controller class
+    /// </summary>
     public class ServerController
     {
         public ServerController()
         {
+
         }
 
+        /// <summary>
+        /// Returns true if the application is web farm
+        /// </summary>
         public bool IsWebFarm
         {
             get
@@ -30,6 +37,10 @@ namespace SageFrame.Framework
                 return false;
             }
         }
+
+        /// <summary>
+        /// Retruns true if the application is Sagever
+        /// </summary>
         public bool IsSagever
         {
             get

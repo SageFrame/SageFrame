@@ -25,14 +25,16 @@
                 LangSwitchContainerID: p.LangSwitchContainerID,
                 PortalID: p.PortalID,
                 UserModuleID: p.UserModuleID,
-                LanguageSwitchSettings: ""
+                LanguageSwitchSettings: "",
+                newCulture: ''
             },
             init: function() {
                 //this.GetCultureInfo();
                // LanguageSwitch.GetLanguageSettings();
                 LanguageSwitch.BindFlagClickEvent();
                 this.InitializeCarousel();
-              
+                $('#ddlFlaggedLocales_' + LanguageSwitch.config.UserModuleID + '').msDropDown().data("dd");
+                $('div.dd').removeAttr("style");
             },
             BindEvents: function() {
                 $(LanguageSwitch.config.ContainerClientID + " ul li").on('click', function () {                
@@ -42,7 +44,21 @@
             },
             ajaxFailure: function() {
             },
-            ajaxCall: function(config) {
+
+            ajaxSuccess: function (data) {
+                switch (LanguageSwitch.config.ajaxCallMode) {
+                    case 3:
+                        if (LanguageSwitch.config.newCulture != "en-US") {
+                            window.location = SageFrameHostURL + "/Home.aspx/lan/" + LanguageSwitch.config.newCulture;
+                        }
+                        else {
+                            window.location = SageFrameHostURL;
+                        }
+                        break;
+                }
+            },
+
+            ajaxCall: function (config) {
                 $.ajax({
                     type: LanguageSwitch.config.type,
                     contentType: LanguageSwitch.config.contentType,
@@ -267,12 +283,13 @@
                     var code = $(this).attr("code");
                     LanguageSwitch.SetCulture(code);
                 });
-                $(LanguageSwitch.config.LangSwitchContainerID + ' #ddlFlaggedLocales_' + LanguageSwitch.config.UserModuleID + '').bind("change", function() {
+                $('#ddlFlaggedLocales_' + LanguageSwitch.config.UserModuleID + '').on("change", function () {
                     var code = $('#ddlFlaggedLocales_' + LanguageSwitch.config.UserModuleID + ' option:selected').text();
                     LanguageSwitch.SetCulture(code);
                 });
-                $(LanguageSwitch.config.LangSwitchContainerID + ' #ddlLocales_' + LanguageSwitch.config.UserModuleID + '').bind("change", function() {
-                    var code = $(LanguageSwitch.config.LangSwitchContainerID + ' #ddlLocales_' + LanguageSwitch.config.UserModuleID + ' option:selected').text();
+
+                $('#ddlLocales_' + LanguageSwitch.config.UserModuleID + '').on("change", function () {
+                    var code = $(' #ddlLocales_' + LanguageSwitch.config.UserModuleID + ' option:selected').text();
                     LanguageSwitch.SetCulture(code);
                 });
                 LanguageSwitch.InitializeToolTip();
@@ -328,11 +345,13 @@
                 $(LanguageSwitch.config.LangSwitchContainerID + ' img.imgLeftScroll').attr("src", LanguageSwitchFilePath + "images/left.png");
                 $(LanguageSwitch.config.LangSwitchContainerID + ' img.imgRightScroll').attr("src", LanguageSwitchFilePath + "images/right.png");
             },
-            SetCulture: function(code) {
+            SetCulture: function (code) {
+                LanguageSwitch.config.newCulture = code;
                 this.config.method = "SetCultureInfo";
                 this.config.url = this.config.baseURL + this.config.method;
                 this.config.data = JSON2.stringify({ CultureCode: code });
-                this.ajaxSuccess = location.reload(true);
+                //  this.ajaxSuccess = location.reload(true);
+                this.config.ajaxCallMode = 3;
                 this.ajaxCall(this.config);
             }
         };

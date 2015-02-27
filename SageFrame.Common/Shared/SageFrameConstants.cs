@@ -12,6 +12,9 @@ using System.Text;
 
 namespace SageFrame.Common
 {
+   /// <summary>
+   /// Application constants.
+   /// </summary>
     public class SageFrameConstants
     {
         public static string OptimizedResourcePath = "~/Optimized/";

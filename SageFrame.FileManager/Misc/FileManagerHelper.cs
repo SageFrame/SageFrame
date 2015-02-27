@@ -28,6 +28,11 @@ namespace SageFrame.FileManager
 
     public class FileManagerHelper
     {
+        /// <summary>
+        /// Returns file type for given input fileExtension.
+        /// </summary>
+        /// <param name="fileExtension"></param>
+        /// <returns>File type</returns>
         public static string ReturnExtension(string fileExtension)
         {
             switch (fileExtension)
@@ -93,6 +98,13 @@ namespace SageFrame.FileManager
                     return "application/octet-stream";
             }
         }
+        /// <summary>
+        /// Checks for the valid file extensions.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="ext">ext</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>True if fie extension is valid.</returns>
         public static bool CheckForValidExtensions(int UserModuleID, string ext, int PortalID)
         {
             string extension = "";
@@ -105,6 +117,16 @@ namespace SageFrame.FileManager
 
 
         }
+        /// <summary>
+        /// Unzip files for given zip file and after unzip deletes zip file.
+        /// </summary>
+        /// <param name="zipPathAndFile">zipPathAndFile</param>
+        /// <param name="outputFolder">outputFolder</param>
+        /// <param name="ExtractedPath">ExtractedPath</param>
+        /// <param name="password">password</param>
+        /// <param name="deleteZipFile">deleteZipFile</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
         public static void UnZipFiles(string zipPathAndFile, string outputFolder, ref string ExtractedPath, string password, bool deleteZipFile, int UserModuleID, int PortalID)
         {
             ZipInputStream s = new ZipInputStream(File.OpenRead(zipPathAndFile));
@@ -157,6 +179,11 @@ namespace SageFrame.FileManager
                 File.Delete(zipPathAndFile);
             }
         }
+        /// <summary>
+        /// Removes resource extension.
+        /// </summary>
+        /// <param name="fileName">fileName</param>
+        /// <returns>File without extension</returns>
         public static string RemoveResourceExtension(string fileName)
         {
             return (fileName.Substring(0, fileName.LastIndexOf('.')));
@@ -200,10 +227,10 @@ namespace SageFrame.FileManager
             return _Buffer;
         }
         /// <summary>
-        /// Set the file attributes
+        /// Set the file attributes.
         /// </summary>
-        /// <param name="filePath"></param>
-        /// <param name="settingString"></param>
+        /// <param name="filePath">filePath</param>
+        /// <param name="settingString">settingString</param>
         public static void SetFileAttributes(string filePath, string settingString)
         {
             if (settingString != "")
@@ -247,10 +274,10 @@ namespace SageFrame.FileManager
 
         }
         /// <summary>
-        /// Get the file attributes
+        /// Obtains the file attributes.
         /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
+        /// <param name="filePath">filePath</param>
+        /// <returns>File attribute.</returns>
         public static string GetAttributeString(string filePath)
         {
 
@@ -282,6 +309,12 @@ namespace SageFrame.FileManager
 
             return strResult;
         }
+        /// <summary>
+        /// Obtains valid extensions.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>Valid Extension.</returns>
         public static string GetValidExtensions(int UserModuleID, int PortalID)
         {
             string extension = "";
@@ -297,6 +330,11 @@ namespace SageFrame.FileManager
             }
             return extension;
         }
+        /// <summary>
+        /// Obtain attribute key.
+        /// </summary>
+        /// <param name="key">key</param>
+        /// <returns>File attribute</returns>
         public static System.IO.FileAttributes GetAttributeKey(string key)
         {
             FileAttributes fa = new FileAttributes();
@@ -318,6 +356,11 @@ namespace SageFrame.FileManager
             }
             return fa;
         }
+        /// <summary>
+        /// Returns file without extension.
+        /// </summary>
+        /// <param name="filepath">filepath.</param>
+        /// <returns> Returns file without extension.</returns>
 
         public static string GetFilePathWithoutExtension(string filepath)
         {
@@ -327,8 +370,8 @@ namespace SageFrame.FileManager
         /// <summary>
         /// Replace the backslash
         /// </summary>
-        /// <param name="filepath"></param>
-        /// <returns></returns>
+        /// <param name="filepath">filepath</param>
+        /// <returns>File path.</returns>
         public static string ReplaceBackSlash(string filepath)
         {
             if (filepath != null)
@@ -341,8 +384,8 @@ namespace SageFrame.FileManager
         /// <summary>
         /// Write the byte content to the file
         /// </summary>
-        /// <param name="FilePath"></param>
-        /// <param name="FileContent"></param>
+        /// <param name="FilePath">FilePath</param>
+        /// <param name="FileContent">FileContent</param>
         public static void WriteBinaryFile(string FilePath, byte[] FileContent)
         {
             try
@@ -361,16 +404,16 @@ namespace SageFrame.FileManager
         /// <summary>
         /// Copy or Move the file to the fullToPath location
         /// </summary>
-        /// <param name="filePath"></param>
-        /// <param name="fileId"></param>
-        /// <param name="toFolderId"></param>
-        /// <param name="toPath"></param>
-        /// <param name="action"></param>
-        /// <param name="mode"></param>
-        /// <param name="fullFilePath"></param>
-        /// <param name="fullFromPath"></param>
-        /// <param name="fullToPath"></param>
-        /// 
+        /// <param name="filePath">filePath</param>
+        /// <param name="fileId">fileId</param>
+        /// <param name="toFolderId">toFolderId</param>
+        /// <param name="toPath">toPath</param>
+        /// <param name="action">action</param>
+        /// <param name="mode">mode</param>
+        /// <param name="fullFilePath">fullFilePath</param>
+        /// <param name="fullFromPath">fullFromPath</param>
+        /// <param name="fullToPath">fullToPath</param>
+       
         public static void TransferFile(string filePath, string toPath, int action, int mode, string fullFilePath, string fullFromPath, string fullToPath)
         {
 
@@ -422,19 +465,19 @@ namespace SageFrame.FileManager
         /// <summary>
         /// Creates a html string to be rendered based upon the dynamic conditions
         /// </summary>
-        /// <param name="IsZip"></param>
-        /// <param name="IsImg"></param>
-        /// <param name="StorageLocation"></param>
-        /// <param name="ext"></param>
-        /// <param name="urlPath"></param>
-        /// <param name="absolutePath"></param>
-        /// <param name="downloadPath"></param>
-        /// <param name="checkId"></param>
-        /// <param name="folderId"></param>
-        /// <param name="file"></param>
-        /// <param name="sb"></param>
-        /// <param name="permission"></param>
-        /// <param name="dictImages"></param>
+        /// <param name="IsZip">IsZip</param>
+        /// <param name="IsImg">IsImg</param>
+        /// <param name="StorageLocation">StorageLocation</param>
+        /// <param name="ext">ext</param>
+        /// <param name="urlPath">urlPath</param>
+        /// <param name="absolutePath">absolutePath</param>
+        /// <param name="downloadPath">downloadPath</param>
+        /// <param name="checkId">checkId</param>
+        /// <param name="folderId">folderId</param>
+        /// <param name="file">file</param>
+        /// <param name="sb">sb</param>
+        /// <param name="permission">permission</param>
+        /// <param name="dictImages">dictImages</param>
         public static void ConstructHTMLString(bool IsZip, bool IsImg, int StorageLocation, string ext, string urlPath, string absolutePath, string downloadPath, string checkId, int folderId, ATTFile file, ref StringBuilder sb, string permission, Dictionary<string, string> dictImages, int index)
         {
             switch (StorageLocation)
@@ -513,15 +556,35 @@ namespace SageFrame.FileManager
         }
 
         #region HTMLConstructerHelper
+        /// <summary>
+        /// Return table row for desire class.
+        /// </summary>
+        /// <param name="extension">extension</param>
+        /// <param name="index">index</param>
+        /// <returns>Return table row for desire class.</returns>
         public static string AddExtension(string extension, int index)
         {
             extension = string.Format("{0}", index % 2 == 0 ? "sfEven" : "sfOdd");
             return ("<tr class=\"" + extension + "\">");
         }
+        /// <summary>
+        /// Return table column for desire class.
+        /// </summary>
+        /// <param name="checkId">checkId</param>
+        /// <returns>Return table column for desire class.</returns>
         public static string AddCheckBox(string checkId)
         {
             return ("<td><span class=\"check\"><input type=\"checkbox\" id=" + checkId + "></span></td>");
         }
+        /// <summary>
+        /// Return table column for desire class.
+        /// </summary>
+        /// <param name="filePath">filePath</param>
+        /// <param name="folderId">folderId</param>
+        /// <param name="file">file</param>
+        /// <param name="permission">permission</param>
+        /// <param name="extension">extension</param>
+        /// <returns>Return table column for desire class.</returns>
         public static string AddDownloadLink(string filePath, int folderId, ATTFile file, string permission, string extension)
         {
             extension = string.Format("ext_{0}", extension);
@@ -536,6 +599,15 @@ namespace SageFrame.FileManager
                 return ("<td class='" + extension + "' width='30%'><a class=\"download_link\" href=\"#\" rel=" + file.FileName + ">" + file.FileName + "</a></td>");
 
         }
+        /// <summary>
+        /// Return table column for desire class.
+        /// </summary>
+        /// <param name="filePath">filePath</param>
+        /// <param name="folderId">folderId</param>
+        /// <param name="file">file</param>
+        /// <param name="permission">permission</param>
+        /// <param name="extension">extension</param>
+        /// <returns>Return table column for desire class.</returns>
         public static string AddPopupLink(string filePath, int folderId, ATTFile file, string permission, string extension)
         {
             extension = string.Format("icon-{0}", extension);
@@ -554,6 +626,13 @@ namespace SageFrame.FileManager
 
 
         }
+        /// <summary>
+        /// Return table column for desire class.
+        /// </summary>
+        /// <param name="file">file</param>
+        /// <param name="attributeString">attributeString</param>
+        /// <param name="mode">mode</param>
+        /// <returns>Return table column for desire class.</returns>
 
         public static string AddInfoSpan(ATTFile file, string attributeString, int mode)
         {
@@ -570,6 +649,13 @@ namespace SageFrame.FileManager
             }
             return html;
         }
+        /// <summary>
+        /// Return table column for desire class.
+        /// </summary>
+        /// <param name="filePath">filePath</param>
+        /// <param name="image">image</param>
+        /// <param name="permission">permission</param>
+        /// <returns>Return table column for desire class.</returns>
         public static string AddDeleteButton(string filePath, string image, string permission)
         {
             if (permission == "edit")
@@ -578,6 +664,13 @@ namespace SageFrame.FileManager
                 return ("");
 
         }
+        /// <summary>
+        /// Return table column for desire class.
+        /// </summary>
+        /// <param name="filePath">filePath</param>
+        /// <param name="image">image</param>
+        /// <param name="permission">permission</param>
+        /// <returns>Return table column for desire class.</returns>
         public static string AddEditButton(string filePath, string image, string permission)
         {
             if (permission == "edit")
@@ -585,12 +678,25 @@ namespace SageFrame.FileManager
             else
                 return ("");
         }
+        /// <summary>
+        /// Return table column for desire class.
+        /// </summary>
+        /// <param name="filePath">filePath</param>
+        /// <param name="image">image</param>
+        /// <returns>Return table column for desire class.</returns>
         public static string AddPreviewButton(string filePath, string image)
         {
 
             return ("<td><span class=\"preview\"><a class=\"preview icon-preview\" href=\"" + filePath + "\" title=\"Preview\" rel=\"" + filePath + "\"></a></span></td>");
 
         }
+        /// <summary>
+        /// Return table column for desire class.
+        /// </summary>
+        /// <param name="filePath">filePath</param>
+        /// <param name="image">image</param>
+        /// <param name="permission">permission</param>
+        /// <returns>Return table column for desire class.</returns>
         public static string AddExtractButton(string filePath, string image, string permission)
         {
             if (permission == "edit")
@@ -598,6 +704,10 @@ namespace SageFrame.FileManager
             else
                 return ("<td><span class=\"decompress\"></span></td>");
         }
+        /// <summary>
+        /// Return table column for desire class.
+        /// </summary>
+        /// <returns>Return table column for desire class.</returns>
         public static string AddBlankSpan()
         {
             return ("<td><span class=\"decompress\"></span></td>");

@@ -6,9 +6,20 @@ using DashBoardControl.Info;
 using System.Data.SqlClient;
 
 namespace DashBoardControl
-{
+{   
+    /// <summary>
+    /// Manipulates data for DashBoardController class.
+    /// </summary>
     public class DashBoardDataProvider
-    {
+    {  
+        /// <summary>
+        /// Connects to database and returns DashBoardSettingInfo list(Top browser).
+        /// </summary>
+        /// <param name="StartDate">Start date.</param>
+        /// <param name="EndDate">End date.</param>
+        /// <param name="pageNo">Page no.</param>
+        /// <param name="range">Range.</param>
+        /// <returns>DashBoardSettingInfo list.</returns>
         public static List<DashBoardSettingInfo> GetTopBrowser(string StartDate, string EndDate, int pageNo, int range)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
@@ -20,6 +31,12 @@ namespace DashBoardControl
             SQLHandler SQLH = new SQLHandler();
             return SQLH.ExecuteAsList<DashBoardSettingInfo>("[dbo].[usp_GetTopBrowser]",ParaMeterCollection);
         }
+        /// <summary>
+        /// Connects to database and returns DashBoardSettingInfo list(Top five broswer).
+        /// </summary>
+        /// <param name="StartDate">Start date.</param>
+        /// <param name="EndDate">End date.</param>
+        /// <returns>DashBoardSettingInfo list.</returns>
         public static List<DashBoardSettingInfo> GetTopFiveBrowser(string StartDate, string EndDate)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
@@ -29,7 +46,14 @@ namespace DashBoardControl
             SQLHandler SQLH = new SQLHandler();
             return SQLH.ExecuteAsList<DashBoardSettingInfo>("[dbo].[usp_GetTopFiveBrowser]",ParaMeterCollection);
         }
-
+        /// <summary>
+        /// Connects to database and returns dashboardsettinginfo list(Top visited page).
+        /// </summary>
+        /// <param name="StartDate">Start date.</param>
+        /// <param name="EndDate">End date.</param>
+        /// <param name="pageNo">Page no.</param>
+        /// <param name="range">Range.</param>
+        /// <returns>DashBoardSettingInfo list.</returns>
         public static List<DashBoardSettingInfo> GetTopVisitedPage(string StartDate, string EndDate, int pageNo, int range)
         {
             
@@ -41,7 +65,12 @@ namespace DashBoardControl
             SQLHandler SQLH = new SQLHandler();
             return SQLH.ExecuteAsList<DashBoardSettingInfo>("[dbo].[usp_GetTopVisitedPage]", ParaMeterCollection);
         }
-
+        /// <summary>
+        /// Connects to database and returns dashboardsettinginfo list(Top five visit).
+        /// </summary>
+        /// <param name="StartDate">Start date.</param>
+        /// <param name="EndDate">End date.</param>
+        /// <returns>DashBoardSettingInfo list.</returns>
         public static List<DashBoardSettingInfo> GetTopFiveVisitedPage(string StartDate, string EndDate)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
@@ -50,7 +79,14 @@ namespace DashBoardControl
             SQLHandler SQLH = new SQLHandler();
             return SQLH.ExecuteAsList<DashBoardSettingInfo>("[dbo].[usp_GetTopFivevisitedPage]", ParaMeterCollection);
         }
-
+        /// <summary>
+        /// Connects to database and returns dashboardsettinginfo list(Top country visit).
+        /// </summary>
+        /// <param name="StartDate">Start date.</param>
+        /// <param name="EndDate">End date.</param>
+        /// <param name="pageNo">Page no.</param>
+        /// <param name="range">Range.</param>
+        /// <returns>DashBoardSettingInfo list.</returns>
         public static List<DashBoardSettingInfo> GetTopVisitedCountry(string StartDate, string EndDate, int pageNo, int range)
         {
          
@@ -62,7 +98,12 @@ namespace DashBoardControl
             SQLHandler SQLH = new SQLHandler();
             return SQLH.ExecuteAsList<DashBoardSettingInfo>("[dbo].[usp_GetTopvisitCountry]", ParaMeterCollection);
         }
-
+        /// <summary>
+        /// Connects to database and returns dashboardsettinginfo list(Top five country visit).
+        /// </summary>
+        /// <param name="StartDate">Start date.</param>
+        /// <param name="EndDate">End date.</param>
+        /// <returns>DashBoardSettingInfo list.</returns>
         public static List<DashBoardSettingInfo> GetTopFiveVisitedCountry(string StartDate, string EndDate)
         {
                         
@@ -75,7 +116,10 @@ namespace DashBoardControl
         }
 
 
-
+        /// <summary>
+        /// Connects to database and returns monthly wise visit.
+        /// </summary>
+        /// <returns>monthly wise visit.</returns>
         public static int GetMonthlyVisit()
         {
             
@@ -84,7 +128,10 @@ namespace DashBoardControl
         }
         
         #region Setting
-
+        /// <summary>
+        /// Connects to database and add dashboard setting.
+        /// </summary>
+        /// <param name="lstDashBoardSetting">List of DashBoardSettingInfo class.</param>
         public static void AddDashBoardSetting(List<DashBoardSettingInfo> lstDashBoardSetting)
         {
             foreach (DashBoardSettingInfo obj in lstDashBoardSetting)
@@ -112,6 +159,12 @@ namespace DashBoardControl
             }
 
         }
+        /// <summary>
+        /// Connects to database and obtain dashboard setting for given User module id and portal id.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID.</param>
+        /// <param name="PortalID">PortalID.</param>
+        /// <returns>List of DashBoardSettingInfo.</returns>
         public static List<DashBoardSettingInfo> GetDashBoardSetting(int UserModuleID, int PortalID)
         {
 
@@ -147,7 +200,12 @@ namespace DashBoardControl
         }
 
 
-
+        /// <summary>
+        /// Connects to database and obtain dashboard setting for view for given user module id and portal id.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID.</param>
+        /// <param name="PortalID">PortalID.</param>
+        /// <returns>List of DashBoardSettingInfo. </returns>
 
         public static List<DashBoardSettingInfo> ListDashBoardSettingForView(int UserModuleID, int PortalID)
         {
@@ -188,7 +246,12 @@ namespace DashBoardControl
         #endregion
 
 
-
+        /// <summary>
+        /// Connects to database and returns dashboardsettinginfo list(Daily visit).
+        /// </summary>
+        /// <param name="StartDate">Start date</param>
+        /// <param name="EndDate">End date</param>
+        /// <returns>DashBoardSettingInfo list</returns>
         public static List<DashBoardSettingInfo> GetDailyVisit(string StartDate, string EndDate)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
@@ -198,7 +261,14 @@ namespace DashBoardControl
             SQLHandler SQLH = new SQLHandler();
             return SQLH.ExecuteAsList<DashBoardSettingInfo>("[dbo].[usp_GetDailyVisit]", ParaMeterCollection);
         }
-
+        /// <summary>
+        /// Connects to database and returns dashboard setting info list(Get Referrer page).
+        /// </summary>
+        /// <param name="StartDate">Start date</param>
+        /// <param name="EndDate">End date</param>
+        /// <param name="pageNo">PageNo</param>
+        /// <param name="range">Range</param>
+        /// <returns>DashBoardSettingInfo list</returns>
         public static List<DashBoardSettingInfo> GetRefSite(string StartDate, string EndDate, int pageNo, int range)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
@@ -211,7 +281,12 @@ namespace DashBoardControl
             return SQLH.ExecuteAsList<DashBoardSettingInfo>("[dbo].[usp_GetRefPage]", ParaMeterCollection);
         }
         #region Generate Report
-
+        /// <summary>
+        /// Connects to database and obtain top visited page.
+        /// </summary>
+        /// <param name="StartDate">Start Date</param>
+        /// <param name="EndDate">End Date</param>
+        /// <returns>List of DashBoardSettingInfo.</returns>
 
         public static List<DashBoardSettingInfo> GetTopVisitedPage_Report(string StartDate, string EndDate)
         {
@@ -223,6 +298,12 @@ namespace DashBoardControl
             SQLHandler SQLH = new SQLHandler();
             return SQLH.ExecuteAsList<DashBoardSettingInfo>("[dbo].[usp_GetVisitedPage_Report]", ParaMeterCollection);
         }
+        /// <summary>
+        /// Connects to database and obtain top browser
+        /// </summary>
+        /// <param name="StartDate">Start Date</param>
+        /// <param name="EndDate">End Date</param>
+        /// <returns>List of DashBoardSettingInfo.</returns>
         public static List<DashBoardSettingInfo> GetTopBrowser_Report(string StartDate, string EndDate)
         {
 
@@ -234,6 +315,12 @@ namespace DashBoardControl
             SQLHandler SQLH = new SQLHandler();
             return SQLH.ExecuteAsList<DashBoardSettingInfo>("[dbo].[usp_GetBrowser_Report]", ParaMeterCollection);
         }
+        /// <summary>
+        /// Connects to database and obtain top visited country.
+        /// </summary>
+        /// <param name="StartDate">Start Date</param>
+        /// <param name="EndDate">End Date</param>
+        /// <returns>List of DashBoardSettingInfo class.</returns>
         public static List<DashBoardSettingInfo> GetTopVisitedCountry_Report(string StartDate, string EndDate)
         {
 
@@ -243,6 +330,12 @@ namespace DashBoardControl
             SQLHandler SQLH = new SQLHandler();
             return SQLH.ExecuteAsList<DashBoardSettingInfo>("[dbo].[usp_GetCountry_Report]", ParaMeterCollection);
         }
+        /// <summary>
+        /// Connects database and obtain referrer site.
+        /// </summary>
+        /// <param name="StartDate">Start Date</param>
+        /// <param name="EndDate">End Date</param>
+        /// <returns>List of DashBoardSettingInfo class.</returns>
         public static List<DashBoardSettingInfo> GetRefSite_Report(string StartDate, string EndDate)
         {
 
@@ -254,7 +347,12 @@ namespace DashBoardControl
             return SQLH.ExecuteAsList<DashBoardSettingInfo>("[dbo].[usp_GetRefPage_Report]", ParaMeterCollection);
         }
         #endregion
-
+        /// <summary>
+        /// Connects to database and returns dashboardsettinginfo list(Top visited page search).
+        /// </summary>
+        /// <param name="StartDate">Start date</param>
+        /// <param name="EndDate">End date</param>
+        /// <returns>DashBoardSettingInfo list</returns>
         public static List<DashBoardSettingInfo> GetSearchPage(string StartDate, string EndDate)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();

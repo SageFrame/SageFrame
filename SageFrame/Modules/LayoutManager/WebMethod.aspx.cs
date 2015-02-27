@@ -433,7 +433,7 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         }
     }
 
-    public static int last;
+    public static int last = 0;
     public static string ParselinkedInXMl(string xml, string nodeStart, int sectionIndex)
     {
         string nodeLast = "</section>";
@@ -579,7 +579,8 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
 
             using (StreamWriter sw = new StreamWriter(filePath))
             {
-                sw.Write(Xml);
+                XDocument doc = XDocument.Parse(Xml);
+                sw.Write(doc.ToString());
             }
             CreateLayoutControls(TemplateName, filePath);
         }

@@ -3,7 +3,7 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajax" %>
 <script language="javascript" type="text/javascript">
     //<![CDATA[
-   
+
     function ValidationRules() {
         $("#form1").validate({
             ignore: ':hidden',
@@ -36,7 +36,7 @@
             }
         });
         if (!valid)
-            return ConfirmDialog(obj, 'Message', 'Please select at least one user.');
+            jAlert('Please select at least one user.');
         else {
             return ConfirmDialog(obj, 'Confirmation', 'Are you sure you want to delete the users?');
         }
@@ -218,14 +218,13 @@
                             <td runat="server">
                                 <asp:CheckBox ID="chkIsActive" runat="server" />
                             </td>
-                            <td colspan="3" runat="server">&nbsp;
+                            <td colspan="2" runat="server">&nbsp;
                                 
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                            </td>
-                            <td>
+                        <tr runat="server">
+                            <td runat="server"></td>
+                            <td runat="server">
                                 <div class="sfButtonwrapper">
                                     <asp:LinkButton Text="Update" CssClass="icon-update sfBtn" ID="imgUserInfoSave" runat="server"
                                         OnClick="imgUserInfoSave_Click" ToolTip="Update" ValidationGroup="vgManageUserInfo"
@@ -248,16 +247,14 @@
                             <td width="18%" runat="server">
                                 <asp:Label ID="lblUnselected" runat="server" CssClass="sfFormlabel" Text="Unselected"></asp:Label>
                             </td>
-                            <td width="1%" runat="server">
-                            </td>
+                            <td width="1%" runat="server"></td>
                             <td runat="server">
                                 <asp:Label ID="lblSelected" runat="server" CssClass="sfFormlabel" Text="Selected"></asp:Label>
                             </td>
                         </tr>
                         <tr runat="server">
                             <td valign="top" runat="server">
-                                <asp:ListBox ID="lstUnselectedRoles" runat="server" SelectionMode="Multiple" CssClass="sfListmenubig">
-                                </asp:ListBox>
+                                <asp:ListBox ID="lstUnselectedRoles" runat="server" SelectionMode="Multiple" CssClass="sfListmenubig"></asp:ListBox>
                             </td>
                             <td class="sfSelectarrow" runat="server">
                                 <label class="icon-arrow-slimdouble-e">
@@ -271,13 +268,11 @@
                                     <asp:Button ID="btnRemoveAllRole" runat="server" CausesValidation="False" OnClick="btnRemoveAllRole_Click" /></label>
                             </td>
                             <td valign="top" runat="server">
-                                <asp:ListBox ID="lstSelectedRoles" runat="server" SelectionMode="Multiple" CssClass="sfListmenubig">
-                                </asp:ListBox>
+                                <asp:ListBox ID="lstSelectedRoles" runat="server" SelectionMode="Multiple" CssClass="sfListmenubig"></asp:ListBox>
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                            </td>
+                            <td></td>
                             <td>
                                 <div class="sfButtonwrapper">
                                     <asp:LinkButton ID="imgManageRoleSave" runat="server" OnClick="imgManageRoleSave_Click"
@@ -308,7 +303,7 @@
                             <td runat="server">
                                 <div class="sfPassword">
                                     <asp:TextBox ID="txtNewPassword" runat="server" MaxLength="20" CssClass="sfInputbox password"
-                                        TextMode="Password" ValidationGroup="vgManagePassword"></asp:TextBox>
+                                        TextMode="Password" ValidationGroup="vgManagePassword" oncopy="return false" onpaste="return false" oncut="return false"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtNewPassword"
                                         ErrorMessage="Password is required." CssClass="sfRequired" ValidationGroup="vgManagePassword"></asp:RequiredFieldValidator>
                                 </div>
@@ -320,7 +315,7 @@
                             </td>
                             <td runat="server">
                                 <asp:TextBox ID="txtRetypeNewPassword" runat="server" MaxLength="20" CssClass="sfInputbox"
-                                    TextMode="Password" ValidationGroup="vgManagePassword"></asp:TextBox>
+                                    TextMode="Password" ValidationGroup="vgManagePassword" oncopy="return false" onpaste="return false" oncut="return false"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="txtRetypeNewPassword"
                                     ErrorMessage="Type password again." CssClass="sfRequired" ValidationGroup="vgManagePassword"></asp:RequiredFieldValidator>
                                 <label id="lblValidationmsg" class="sfRequired">
@@ -328,20 +323,17 @@
                             </td>
                         </tr>
                         <tr runat="server">
-                            <td runat="server">
-                            </td>
+                            <td runat="server"></td>
                             <td runat="server">
                                 <div class="sfButtonwrapper">
-                                    <asp:LinkButton ID="btnManagePasswordSave" runat="server" ValidationGroup="vgManagePassword"
-                                        CssClass="icon-save sfBtn" Text="Save" OnClick="btnManagePasswordSave_Click" />
+                                    <asp:LinkButton ID="btnManagePasswordSave" runat="server" CssClass="icon-save sfBtn" OnClick="btnManagePasswordSave_Click" Text="Save" ValidationGroup="vgManagePassword" />
                                 </div>
                                 <div class="sfValidationsummary">
                                     <label id="lblChangepwdval" class="sfError">
                                     </label>
                                 </div>
                             </td>
-                            <td runat="server">
-                            </td>
+                            <td runat="server"></td>
                         </tr>
                     </table>
                 </div>
@@ -357,8 +349,7 @@
                         <table id="tblEditProfile" width="100%" cellpadding="0" cellspacing="0" runat="server">
                             <tr runat="server">
                                 <td runat="server" colspan="4">
-                                    <h2>
-                                        User Info</h2>
+                                    <h2>User Info</h2>
                                 </td>
                             </tr>
                             <tr runat="server">
@@ -444,8 +435,7 @@
                             </tr>
                             <tr runat="server">
                                 <td runat="server" colspan="3">
-                                    <h3>
-                                        Contacts</h3>
+                                    <h3>Contacts</h3>
                                 </td>
                             </tr>
                             <tr runat="server">
@@ -464,8 +454,7 @@
                                 </td>
                             </tr>
                             <tr runat="server">
-                                <td runat="server">
-                                </td>
+                                <td runat="server"></td>
                                 <td runat="server">
                                     <asp:TextBox ID="txtEmail2" runat="server" CssClass="sfInputbox"></asp:TextBox>
                                     <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ControlToValidate="txtEmail2"
@@ -475,11 +464,10 @@
                                 </td>
                             </tr>
                             <tr runat="server">
-                                <td runat="server">
-                                </td>
+                                <td runat="server"></td>
                                 <td runat="server">
                                     <asp:TextBox ID="txtEmail3" runat="server" CssClass="sfInputbox"></asp:TextBox>
-                                    
+
                                     <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" ControlToValidate="txtEmail3"
                                         Display="Dynamic" ErrorMessage="Enter valid email." CssClass="sfRequired" Text="Enter valid email."
                                         ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" ValidationGroup="rfvUser"
@@ -492,7 +480,7 @@
                                 </td>
                                 <td runat="server">
                                     <asp:TextBox ID="txtResPhone" runat="server" CssClass="sfInputbox"></asp:TextBox>
-                                      <asp:RegularExpressionValidator ID="RegularExpressionValidator6" runat="server" ControlToValidate="txtResPhone"
+                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator6" runat="server" ControlToValidate="txtResPhone"
                                         Display="Dynamic" ErrorMessage="Please give Valid Phone No." CssClass="sfRequired" Text="Please give Valid Phone No."
                                         ValidationExpression="^[0-9][0-9 ]*$" ValidationGroup="rfvUser"
                                         meta:resourcekey="revEmailResource1"></asp:RegularExpressionValidator>
@@ -515,18 +503,18 @@
                                     <asp:Label ID="lblOthers" runat="server" CssClass="sfFormlabel" Text="Others"></asp:Label>
                                 </td>
                                 <td runat="server">
-                                    <asp:TextBox ID="txtOthers" runat="server" CssClass="sfInputbox" OnTextChanged="txtOthers_TextChanged"
+                                    <asp:TextBox ID="txtOthers" runat="server" CssClass="sfInputbox" 
                                         TextMode="MultiLine"></asp:TextBox>
                                 </td>
                             </tr>
                             <tr runat="server">
-                                <td>
-                                </td>
+                                <td></td>
                                 <td runat="server">
                                     <div class="sfButtonwrapper">
-                                    <label class="icon-save sfBtn sfLocale">Save
+                                        <label class="icon-save sfBtn sfLocale">
+                                            Save
                                         <asp:Button ID="btnSave" runat="server" CssClass="icon-save sfBtn" OnClick="btnSave_Click"
-                                              ValidationGroup="rfvUser" /></label>
+                                            ValidationGroup="rfvUser" /></label>
                                     </div>
                                 </td>
                             </tr>
@@ -543,8 +531,7 @@
                             <table id="tblViewProfile" cellpadding="0" cellspacing="0" width="100%" runat="server">
                                 <tr runat="server">
                                     <td runat="server" colspan="4">
-                                        <h2>
-                                            User Info</h2>
+                                        <h2>User Info</h2>
                                     </td>
                                 </tr>
                                 <tr runat="server" class="sfOdd">
@@ -554,8 +541,7 @@
                                     <td runat="server">
                                         <asp:Label ID="lblViewUserName" runat="server" CssClass="sfFormlabel"></asp:Label>
                                     </td>
-                                    <td runat="server">
-                                    </td>
+                                    <td runat="server"></td>
                                 </tr>
                                 <tr runat="server" class="sfEven">
                                     <td runat="server">
@@ -615,8 +601,7 @@
                                 </tr>
                                 <tr runat="server">
                                     <td runat="server" colspan="4">
-                                        <h2>
-                                            Contacts</h2>
+                                        <h2>Contacts</h2>
                                     </td>
                                 </tr>
                                 <tr id="trViewEmail" runat="server" class="sfOdd">
@@ -654,8 +639,7 @@
                                     </td>
                                 </tr>
                                 <tr runat="server">
-                                    <td>
-                                    </td>
+                                    <td></td>
                                     <td runat="server">
                                         <div class="sfButtonwrapper">
                                             <asp:LinkButton ID="btnEdit" runat="server" CssClass="icon-edit sfBtn" OnClick="btnEdit_Click"
@@ -687,7 +671,8 @@
         </h2>
         <p class="sfInformation">
             <i class="icon-info sfNote"></i>&nbsp; All <span class="sfRequired">* </span>are
-            required fields</p>
+            required fields
+        </p>
         <div class="sfCol_50">
             <table>
                 <tr>
@@ -881,6 +866,13 @@
             meta:resourcekey="imgBtnSaveChangesResource1" />
         <asp:LinkButton ID="imgBtnSettings" CssClass="icon-user-setting sfBtn" Text="User Settings"
             runat="server" ToolTip="UserSettings" OnClick="imgBtnSettings_Click" meta:resourcekey="imgBtnSettingsResource1" />
+
+        <asp:LinkButton ID="imgBtnExportUser" CssClass="icon-excel sfBtn" Text="User Export"
+            runat="server" ToolTip="UserExport" OnClick="imgBtnExportUser_Click" />
+        <asp:LinkButton ID="imgBtnImportUser" CssClass="icon-excel sfBtn" Text="User Import"
+            runat="server" ToolTip="UserImport" OnClick="imgBtnImportUser_Click" />
+
+
     </div>
     <div class="sfFormwrapper sfUsersearch sfTableOption">
         <table cellpadding="0" cellspacing="0" border="0" width="100%" class="sfTableOption1">
@@ -1107,9 +1099,164 @@
     <div class="sfButtonwrapper">
         <label class="sfLocale icon-save sfBtn">
             Save
-            <asp:Button ID="btnSaveSetting" runat="server" OnClick="btnSaveSetting_Click" CssClass="icon-save sfBtn"
+            <asp:Button ID="btnSaveSetting" runat="server" OnClick="btnSaveSetting_Click"
                 ToolTip="Save" meta:resourcekey="btnSaveSettingResource1" /></label>
         <asp:LinkButton ID="btnCancel" runat="server" Text="Cancel" OnClick="btnCancel_Click"
             ToolTip="Cancel" meta:resourcekey="btnCancelResource1" CssClass="icon-close sfBtn" />
+    </div>
+</asp:Panel>
+<asp:Panel ID="pnlUserImport" runat="server">
+    <div class="sfFormwrapper">
+        <h2>User Import</h2>
+        <table cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td>
+                    <label class="sfFormlabel">
+                        User Import File</label>
+                </td>
+                <td>
+                    <asp:FileUpload ID="fuUserImport" runat="server" CssClass="sfUploadfile" />
+                    <asp:Label ID="lblUserImport" runat="server"></asp:Label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label ID="lblImportUserName" runat="server" CssClass="sfFormlabel">UserName</asp:Label>
+                </td>
+                <td>:
+                </td>
+                <td>
+                    <asp:TextBox ID="txtImportUserName" runat="server" CssClass="sfInputbox" Text="UserName"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvImportUserNameRequired" runat="server" ControlToValidate="txtImportUserName"
+                        Display="Dynamic" ErrorMessage="*" ValidationGroup="ImportUserValidation" CssClass="sfError"></asp:RequiredFieldValidator>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label ID="lblImportFirstName" runat="server" CssClass="sfFormlabel">First Name</asp:Label>
+                </td>
+                <td>:
+                </td>
+                <td>
+                    <asp:TextBox ID="txtImportFirstName" runat="server" CssClass="sfInputbox" Text="FirstName"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvImportFirstNameRequired" runat="server" ControlToValidate="txtImportFirstName"
+                        Display="Dynamic" ErrorMessage="*" ValidationGroup="ImportUserValidation" CssClass="sfError"></asp:RequiredFieldValidator>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label ID="lblImportLastName" runat="server" CssClass="sfFormlabel">Last Name</asp:Label>
+                </td>
+                <td>:
+                </td>
+                <td>
+                    <asp:TextBox ID="txtImportLastName" runat="server" CssClass="sfInputbox" Text="LastName"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvImportLastNameRequired" runat="server" ControlToValidate="txtImportLastName"
+                        Display="Dynamic" ErrorMessage="*" ValidationGroup="ImportUserValidation" CssClass="sfError"></asp:RequiredFieldValidator>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label ID="lblImportEmail" runat="server" CssClass="sfFormlabel">Email</asp:Label>
+                </td>
+                <td>:
+                </td>
+                <td>
+                    <asp:TextBox ID="txtImportEmail" runat="server" CssClass="sfInputbox" Text="Email"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvImportEmailRequired" runat="server" ControlToValidate="txtImportEmail"
+                        Display="Dynamic" ErrorMessage="*" ValidationGroup="ImportUserValidation" CssClass="sfError"></asp:RequiredFieldValidator>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label ID="lblImportPassword" runat="server" CssClass="sfFormlabel">Password</asp:Label>
+                </td>
+                <td>:
+                </td>
+                <td>
+                    <asp:TextBox ID="txtImportPassword" runat="server" CssClass="sfInputbox" Text="Password"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvImportPasswordRequired" runat="server" ControlToValidate="txtImportPassword"
+                        Display="Dynamic" ErrorMessage="*" ValidationGroup="ImportUserValidation" CssClass="sfError"></asp:RequiredFieldValidator>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label ID="lblImportPasswordSalt" runat="server" CssClass="sfFormlabel">Password Salt</asp:Label>
+                </td>
+                <td>:
+                </td>
+                <td>
+                    <asp:TextBox ID="txtImportPasswordSalt" runat="server" CssClass="sfInputbox" Text="PasswordSalt"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvImportPasswordSaltRequired" runat="server" ControlToValidate="txtImportPasswordSalt"
+                        Display="Dynamic" ErrorMessage="*" ValidationGroup="ImportUserValidation" CssClass="sfError"></asp:RequiredFieldValidator>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label ID="lblImportPasswordFormat" runat="server" CssClass="sfFormlabel">Password Format</asp:Label>
+                </td>
+                <td>:
+                </td>
+                <td>
+                    <asp:TextBox ID="txtImportPasswordFormat" runat="server" CssClass="sfInputbox" Text="PasswordFormat"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvImportPasswordFormatRequired" runat="server" ControlToValidate="txtImportPasswordFormat"
+                        Display="Dynamic" ErrorMessage="*" ValidationGroup="ImportUserValidation" CssClass="sfError"></asp:RequiredFieldValidator>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label ID="lblImportRoleName" runat="server" CssClass="sfFormlabel">Role Name</asp:Label>
+                </td>
+                <td>:
+                </td>
+                <td>
+                    <asp:TextBox ID="txtImportRoleName" runat="server" CssClass="sfInputbox" Text="RoleName"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvImportRoleNameRequired" runat="server" ControlToValidate="txtImportRoleName"
+                        Display="Dynamic" ErrorMessage="*" ValidationGroup="ImportUserValidation" CssClass="sfError"></asp:RequiredFieldValidator>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label ID="lblImportPortalID" runat="server" CssClass="sfFormlabel">PortalID</asp:Label>
+                </td>
+                <td>:
+                </td>
+                <td>
+                    <asp:TextBox ID="txtImportPortalID" runat="server" CssClass="sfInputbox" Text="PortalID"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvImportPortalIDRequired" runat="server" ControlToValidate="txtImportPortalID"
+                        Display="Dynamic" ErrorMessage="*" ValidationGroup="ImportUserValidation" CssClass="sfError"></asp:RequiredFieldValidator>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <asp:Label ID="lblImportIsApproved" runat="server" CssClass="sfFormlabel">IsActive</asp:Label>
+                </td>
+                <td>:
+                </td>
+                <td>
+                    <asp:TextBox ID="txtImportIsApproved" runat="server" CssClass="sfInputbox" Text="IsActive"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvImportIsApprovedRequired" runat="server" ControlToValidate="txtImportIsApproved"
+                        Display="Dynamic" ErrorMessage="*" ValidationGroup="ImportUserValidation" CssClass="sfError"></asp:RequiredFieldValidator>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label id="lblImport" class="sfLocale icon-save sfBtn">
+                        Import
+            <asp:Button runat="server" ID="btnUserImport" OnClick="btnUserImport_Click" ValidationGroup="ImportUserValidation" />
+                    </label>
+                    <label id="lblCancel" class="sfLocale icon-close sfBtn">
+                        Cancel
+            <asp:Button runat="server" ID="btnImportCancel" OnClick="btnImportCancel_Click" />
+                    </label>
+                    <label id="lblDuplicateUser" class="sfLocale icon-excel sfBtn" runat="server">
+                        Export Duplicate User
+            <asp:Button runat="server" ID="btnDuplicateUser" OnClick="btnDuplicateUser_Click" />
+                    </label>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
     </div>
 </asp:Panel>

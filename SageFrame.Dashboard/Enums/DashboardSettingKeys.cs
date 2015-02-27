@@ -7,6 +7,9 @@ using System.Text;
 
 namespace SageFrame.Dashboard
 {
+    /// <summary>
+    /// Description for DashboardSettingKeys Enums.
+    /// </summary>
     public enum DashboardSettingKeys
     {
         SIDEBAR_MODE,

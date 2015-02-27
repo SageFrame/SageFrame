@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <SageFrameMessage>
   <UserManagement>
+    <ConflictInUserNameRoleName>Conflict  of UserName with RoleName so  please enter another UserName.</ConflictInUserNameRoleName>
+    <NoDuplicateList>No any duplicate user list.</NoDuplicateList>
+    <ColumnMappingError>Incorrect Column mapping.</ColumnMappingError>
+    <UsersNotAdded>Users import process is cancelled because the users or users' email in the excel file already exist in the system. Export the  duplicate user report by clicking in "Export Duplicate User" button.</UsersNotAdded>
+    <InvalidUserFileExtension>Invalid File extension, please upload .csv file</InvalidUserFileExtension>
+    <PleaseSelectUserFile>Please select .csv file.</PleaseSelectUserFile>
+    <UsersAddedSuccessfully>User List Added Successfully.</UsersAddedSuccessfully>
+    <UsersAddedSuccessfullyWithDuplicateUserReport>User List Added Successfully. Export the  duplicate user report by clicking in "Export Duplicate User" button.</UsersAddedSuccessfullyWithDuplicateUserReport>
+    <DuplicateUsers>Duplicate users found in your User List.</DuplicateUsers>
     <RoleSavedSuccessfully>Role has been saved successfully.</RoleSavedSuccessfully>
     <ThisRoleAlreadyExists>Please enter a new role. This Role already exists!</ThisRoleAlreadyExists>
     <ThisIsSystemRoleAndCannotBeDeleted>System role cannot be deleted.</ThisIsSystemRoleAndCannotBeDeleted>
@@ -158,6 +167,7 @@
     <ServerCookieExpiration>Server Cookie Expiration should be a number </ServerCookieExpiration>
   </PortalSettings>
   <Extensions>
+    <ModuleAlreadyInstall>Module already installed.</ModuleAlreadyInstall>
     <ModuleControlAlreadyExists>The control type you specified already exists in this module.</ModuleControlAlreadyExists>
     <ModuleControlIsAddedSuccessfully>Module control has been added successfully.</ModuleControlIsAddedSuccessfully>
     <ModuleControlIsDeletedSuccessfully>Module control has been deleted successfully.</ModuleControlIsDeletedSuccessfully>

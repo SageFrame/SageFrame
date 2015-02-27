@@ -13,6 +13,9 @@ using System.Text;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Enum for section type.
+    /// </summary>
     public enum SectionTypes
     {
         SFHEADER=1,

@@ -19,14 +19,18 @@ using System.Collections;
 #endregion
 
 
-/// <summary>
-/// Summary description for SessionLog
-/// </summary>
 namespace SageFrame.Web
 {
+
+    /// <summary>
+    /// Summary description for SessionLog
+    /// </summary>
     [Serializable]
     public class SessionLog
     {
+        /// <summary>
+        /// Initializes an instance of SessionLog class.
+        /// </summary>
         public SessionLog()
         {
             //
@@ -34,6 +38,12 @@ namespace SageFrame.Web
             //
         }
 
+        /// <summary>
+        /// Connects to database and updates session tracker's details.
+        /// </summary>
+        /// <param name="sessionTracker">Object of SessionTracker.</param>
+        /// <param name="GetUsername">User's name./param>
+        /// <param name="GetPortalID">Portal ID.</param>
         public void SessionTrackerUpdateUsername(SessionTracker sessionTracker, string GetUsername, string GetPortalID)
         {
             try
@@ -51,6 +61,12 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Connects to database and stores serssion tracker details.
+        /// </summary>
+        /// <param name="sessionTracker">SessioTracker Details.</param>
+        /// <param name="StoreID">Store ID.</param>
+        /// <param name="PortalID">Portal ID.</param>
         public void StoreSessionTrackerAdd(SessionTracker sessionTracker, int StoreID, int PortalID)
         {
             try
@@ -68,6 +84,10 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Connects to database and inserts session log's details.
+        /// </summary>
+        /// <param name="tracker">SessionTracker containaining session detail</param>
         public void SessionLogStart(SessionTracker tracker)
         {
             try
@@ -105,6 +125,10 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Connects to datbase and insert seeion endding details
+        /// </summary>
+        /// <param name="tracker">SessionTracker object containing session detail.</param>
         public void SessionLogEnd(SessionTracker tracker)
         {
             try

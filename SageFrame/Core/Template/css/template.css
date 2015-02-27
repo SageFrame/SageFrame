@@ -19,7 +19,7 @@ input, button, select, textarea {
 	line-height: inherit;
 }
 a {
-	color: #428bca;
+	color: #2E5CAE;
 	text-decoration: none;
 }
 a:hover, a:focus {
@@ -216,7 +216,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 	font-family:"Raleway-Medium",sans-serif;
 	font-weight: 500;
 	line-height: 1.1;
-	color: inherit;
+	color:#313131;
 }
 h1, h2, h3 {
 	margin-top: 20px;
@@ -251,7 +251,7 @@ h1, .h1 {
 	font-size: 36px;
 }
 h2, .h2 {
-	font-size: 30px;
+	font-size: 34px; margin-bottom:26px;
 }
 h3, .h3 {
 	font-size: 26px;
@@ -593,7 +593,6 @@ input[type="checkbox"][disabled],
 
 
 select {
-  -webkit-appearance: none !important;
   background: #fafafa;
   background-position-x: 97%;
   background-position-y: center;
@@ -765,6 +764,9 @@ input.sfWarning {
   color: #ffffff;
   background-color: #5cb85c;
   border-color: #4cae4c;
+  padding: 10px 20px;
+margin: 10px;
+font-size: 20px;
 }
 
 .sfSuccessBtn:hover,
@@ -1093,12 +1095,12 @@ html, body, body >form {
 
 
 /* Navigation */
-.sf-menu { float:right;background-color:#2f2f2f; color:red;}
+.sf-menu { float:right;}
 .sfNavigation, .sfNavigation li.sfActive a { background:none;}
 .sfNavigation > ul > li > a { border-bottom: 1px solid transparent;}
-.sfNavigation li.sfActive > a { border-bottom:1px solid #ddd; position:relative;}
-.sfNavigation li.sfActive > a:after { position: absolute; width: 2px; height:15px; content: ""; display: inline-block; left: 50%; background: #1f9bee;
-top:100%; margin-top: -7px;}
+.sfNavigation li.sfActive > a { border-bottom:1px solid #797979; position:relative;}
+.sfNavigation li.sfActive > a:after { position: absolute; width:100%; height:1px; content: ""; display: inline-block; left:0; background:#bcbcbc;
+top:100%; margin-top: -3px;}
 .sf-menu a { font:16px "Raleway-Regular", sans-serif;}
 .sf-menu > li > a { padding-left:0; padding-right:0; }
 .sf-menu > li { padding:0 20px;}
@@ -1109,7 +1111,7 @@ h3.sfMediaHeading { font:20px "Raleway-regular",sans-serif;}
 
 
  /* HEADER */
-#sfHeaders { padding:20px 0;}
+#sfHeaders { padding:40px 0;}
 
 /*  GRID SYSTEM */
 .sfInnerwrapper [class*="sfCol_"].sfFloatNone { float: none; margin:0 auto;}
@@ -1117,7 +1119,7 @@ h3.sfMediaHeading { font:20px "Raleway-regular",sans-serif;}
 
 
 /* Login Status */
-.sfLogininfo li { list-style:none; float:left; margin-right:10px;}
+.sfLogininfo li { list-style:none; float:left; }
 a:focus { outline:none;}
 .sfLoggedTopBar { margin-top:45px;}
 .sfLogininfo ul { float: right;}
@@ -1125,11 +1127,23 @@ a:focus { outline:none;}
 .sfLogininfo ul li:first-child { border-right:none; margin-right: 0;}
 .sfLogininfo ul li a { padding: 5px 20px; text-indent:-9999px; display: inline-block;}
 .sfLogininfo ul li.sfLogin a { background:#f5f5f5 url(../images/login.png) no-repeat center;}
+.sfLogininfo ul li.sfRegister {   border-right:none;}
 .sfLogininfo ul li.sfRegister a { background:#f5f5f5 url(../images/register.png) no-repeat center;}
+.sfLogininfo ul li.sfLoginCredInfo a{ background:#fff url(../images/login-cred-info.png) no-repeat center;}
 .sfLogininfo ul li a:hover { background-color:#e5e5e5;}
+.sfLogininfo ul li.sfLoginCredInfo a:hover { background-color:#fff; cursor:help;}
+.sfLoginCredInfo .sfLoginCredInfoBox:before {content: ""; display: block;  height: 16px; margin-top: -32px;  width: 100%;}
 .sfLogininfo ul li.sfWelcomeMsg { border:none; display: none;}
 
-
+.sfLoginCredInfo { position:relative;}
+.sfLoginCredInfo .sfLoginCredInfoBox { display:none; width:245px; border:1px solid #c9c9c9; background:#f2f2f2; padding:15px 20px; border-radius:2px; position:absolute; top:50px; right:-65px; z-index: 99;}
+.sfLoginCredInfo:hover .sfLoginCredInfoBox { display:block; }
+.sfLoginCredInfo .sfLoginCredInfoBox h6 { margin-bottom:20px;     font-size:14px;}
+.sfSuperUserInfo { padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid #c2c2c2;}
+.sfAdminInfo { margin-bottom:8px;}
+.sfSuperUserInfo p, .sfAdminInfo p { margin:0px;font-size:13px;}
+.sfLoginCredInfo span { font-weight:bold;}
+.triangle { border-width: 10px; border-style: solid; border-color: transparent transparent #c9c9c9; position:absolute; top:-21px; right:74px;}
 
 /* BANNER */
 #sfBanner { margin-bottom:40px;}
@@ -1142,8 +1156,8 @@ transform: translateX(-50%) translateY(-50%);}
 
 #sfSlider .sfContent h1 { font:34px "Raleway-Light", sans-serif; text-shadow:0 0 5px rgba(0, 0, 0, 0.5);}
 #sfSlider p { font-size:22px; font-family:"Raleway-Light", sans-serif;  text-shadow:0 0 5px rgba(0, 0, 0, 0.5);}
-.sfInnerBanner { height:150px; background: url(../images/banner_bg_02.jpg) no-repeat center top !important; text-align: center; color:#eee; position: relative;}
- .sfInnerBanner h1 { margin:0; text-shadow: 0 2px 5px rgba(0,0,0,.5); width:90%; font-size: 42px; position: absolute; top:50%; left:50%;
+.sfInnerBanner { height:150px; background: url(../images/sfbanner-inner.jpg) no-repeat center top !important; text-align: center; color:#eee; position: relative;}
+ .sfInnerBanner h1 { margin:0; width:90%; font-size: 42px; position: absolute; top:50%; left:50%; color:#fff;
   -webkit-transform: translateY(-50%)  translateX(-50%) ;
  -moz-transform: translateY(-50%)  translateX(-50%) ;
  -ms-transform: translateY(-50%)  translateX(-50%) ;
@@ -1248,7 +1262,7 @@ input.sfRequired, input.sfRequired:focus { border-color:#C33D4A; color:#C33D4A;}
 .sfTwoColumn > li { float:left; width:50%; padding:0 25px 40px; list-style:none;}
 .sfTwoColumn > li > h4 { clear:both;}
 
-.numberStyle { background:#dde4e8; padding:3px; float:left; margin-right:10px;}
+.numberStyle { color: #bbb; font-size: 49px; margin-right: 10px; padding: 3px;}
 
 .solution span[class*="icon-"] { float:left; margin-right:40px; font-size:100px; color:#e4e9ed; }
 .solution .sfCol_50 { margin-bottom: 40px;}
@@ -1300,3 +1314,5 @@ transform: translateX(-50%);}
 -o-transform: translate(0%);
 transform: translate(0%);}
 
+
+riangle { border-width: 10px; border-style: solid; border-color: transparent transparent #c9c9c9; position:absolute; top:-21px; right:74px;}

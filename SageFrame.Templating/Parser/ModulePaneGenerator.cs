@@ -17,6 +17,13 @@ namespace SageFrame.Templating
 {
     public class ModulePaneGenerator
     {
+        /// <summary>
+        /// Generates HTML from list of tags and wrappers.
+        /// </summary>
+        /// <param name="lstTags">List of tags.</param>
+        /// <param name="lstWrappers">List of  wrppers.</param>
+        /// <param name="Mode">Mode.</param>
+        /// <returns>HTML format string.</returns>
         public string GenerateHTML(List<XmlTag> lstTags, List<XmlTag> lstWrappers, int Mode)
         {
             string markup = "";
@@ -64,13 +71,16 @@ namespace SageFrame.Templating
                         }
                     }
                 }
-
             }
-
-
             return (GenerateExternalWrapper(markup));
         }
 
+        /// <summary>
+        /// Returns list of custom wrapper.
+        /// </summary>
+        /// <param name="lstTags">List of tags.</param>
+        /// <param name="lstWrappers">List of wrappers.</param>
+        /// <returns>List of custom wrapper.</returns>
         public List<CustomWrapper> ProcessWrappers(List<XmlTag> lstTags, List<XmlTag> lstWrappers)
         {
             List<CustomWrapper> lstCustomWrappers = new List<CustomWrapper>();
@@ -147,6 +157,11 @@ namespace SageFrame.Templating
             return lstCustomWrappers;
         }
 
+        /// <summary>
+        /// Generates place holder mark ups.
+        /// </summary>
+        /// <param name="Section">XmlTag class object</param>
+        /// <returns>Empty string.</returns>
         public string GeneratePlaceHolderMarkup(XmlTag Section)
         {
             foreach (XmlTag tag in Section.LSTChildNodes)
@@ -155,6 +170,13 @@ namespace SageFrame.Templating
             return "";
         }
 
+        /// <summary>
+        /// Generates section markup
+        /// </summary>
+        /// <param name="section">Section.</param>
+        /// <param name="lstWrapper">List of custom wrapper.</param>
+        /// <param name="Mode">Moede.</param>
+        /// <returns>Section markup.</returns>
         public string GenerateSectionMarkup(XmlTag section, List<CustomWrapper> lstWrapper, int Mode)
         {
             string markup = "";
@@ -178,6 +200,14 @@ namespace SageFrame.Templating
         }
 
 
+        /// <summary>
+        /// Returns section markups.
+        /// </summary>
+        /// <param name="name">Name of the sections.</param>
+        /// <param name="section">XmlTag class object containing section.</param>
+        /// <param name="lstWrapper">List of custom wrappers</param>
+        /// <param name="Mode">Mode.</param>
+        /// <returns>Section markup.</returns>
         public string GetSectionMarkup(string name, XmlTag section, List<CustomWrapper> lstWrapper, int Mode)
         {
             string html = "";
@@ -206,11 +236,8 @@ namespace SageFrame.Templating
                 }
                 catch (Exception ex)
                 {
-
                     throw ex;
-
                 }
-
             }
             else
             {
@@ -219,6 +246,11 @@ namespace SageFrame.Templating
             return html;
         }
 
+        /// <summary>
+        /// Generates external wrappers  of given markup.
+        /// </summary>
+        /// <param name="markup">Markup to be wrapped.</param>
+        /// <returns>Wrapped markups.</returns>
         public string GenerateExternalWrapper(string markup)
         {
             StringBuilder sb = new StringBuilder();
@@ -228,6 +260,13 @@ namespace SageFrame.Templating
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Returns top markup 
+        /// </summary>
+        /// <param name="section">Section name.</param>
+        /// <param name="lstWrappers">List of wrappers.</param>
+        /// <param name="Mode">Mode.</param>
+        /// <returns>Top markup.</returns>
         public string GetTopMarkup(XmlTag section, List<CustomWrapper> lstWrappers, int Mode)
         {
             StringBuilder sb = new StringBuilder();
@@ -235,6 +274,13 @@ namespace SageFrame.Templating
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Returns middle wrapper for any list of wrapper, content and mode.
+        /// </summary>
+        /// <param name="section">Section name.</param>
+        /// <param name="lstWrappers">List of wrapper.</param>
+        /// <param name="Mode">Mode.</param>
+        /// <returns>Middle wrapper.</returns>
         public string GetMiddleWrapper(XmlTag section, List<CustomWrapper> lstWrappers, int Mode)
         {
             StringBuilder sb = new StringBuilder();
@@ -242,6 +288,14 @@ namespace SageFrame.Templating
             sb.Append(layout);
             return sb.ToString(); ;
         }
+
+        /// <summary>
+        /// Returns buttom markups.
+        /// </summary>
+        /// <param name="section">Section name.</param>
+        /// <param name="lstWrappers">List of wrappers.</param>
+        /// <param name="Mode">Mode.</param>
+        /// <returns>Bottom markup.</returns>
         public string GetBottomMarkup(XmlTag section, List<CustomWrapper> lstWrappers, int Mode)
         {
             StringBuilder sb = new StringBuilder();
@@ -250,7 +304,11 @@ namespace SageFrame.Templating
         }
 
 
-
+        /// <summary>
+        /// Return prefix for the panename.
+        /// </summary>
+        /// <param name="count">Ingteger value for depth.</param>
+        /// <returns>Prefix for the string.</returns>
         public string GetPrefix(int count)
         {
             string prefix = "";
@@ -261,6 +319,11 @@ namespace SageFrame.Templating
             return prefix;
         }
 
+        /// <summary>
+        /// Returns attribute in concatinated from list of attributes.
+        /// </summary>
+        /// <param name="lstAttr">List of attributes.</param>
+        /// <returns>Attributes list  in string.</returns>
         public string GetAttributeString(List<LayoutAttribute> lstAttr)
         {
             StringBuilder sb = new StringBuilder();

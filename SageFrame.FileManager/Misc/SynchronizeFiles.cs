@@ -21,9 +21,15 @@ namespace SageFrame.FileManager
         /// </summary>
         public static List<Folder> lstFolders { get; set; }
         
-        
+        /// <summary>
+        /// Gets or sets file extensions.
+        /// </summary>
         public static string extensions { get; set; }
-
+        /// <summary>
+        /// Gets or sets for valid extension.
+        /// </summary>
+        /// <param name="ext">ext</param>
+        /// <returns>True if extension is valid.</returns>
         public static bool IsExtensionValid(string ext)
         {
             string[] arrExt = extensions.Split(',');
@@ -84,7 +90,12 @@ namespace SageFrame.FileManager
                 }
             }
         }
-
+        /// <summary>
+        ///Search file recursively on folder.
+        /// </summary>
+        /// <param name="di">DirectoryInfo object.</param>
+        /// <param name="folderId">folderId</param>
+        /// <param name="folderType">folderType</param>
         public static void RecurseThroughDirectory(DirectoryInfo di,int folderId,int folderType)
         {
             FileInfo[] files = di.GetFiles();
@@ -168,7 +179,11 @@ namespace SageFrame.FileManager
             }
             
         }
-
+        /// <summary>
+        /// Obtains folder path.
+        /// </summary>
+        /// <param name="folderPath">folderPath</param>
+        /// <returns>Absolute path.</returns>
         public  static string GetFolderPath(string folderPath)
         {
             return(FileManagerHelper.ReplaceBackSlash(folderPath.Replace(absolutePath,"")));

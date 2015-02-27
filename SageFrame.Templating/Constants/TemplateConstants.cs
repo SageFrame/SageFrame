@@ -13,6 +13,9 @@ using System.Text;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// This class holds template constants.
+    /// </summary>
     public static class TemplateConstants
     {
         public static string ThumbPath = "/screenshots/_Thumbs";

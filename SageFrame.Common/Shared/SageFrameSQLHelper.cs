@@ -15,12 +15,23 @@ using System.Data;
 
 namespace SageFrame.Common
 {
+    /// <summary>
+    /// Application helper class inherited from SQLHandler.
+    /// </summary>
     public class SageFrameSQLHelper:SQLHandler
     {
-        public SageFrameSQLHelper():base()
-        {
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the SageFrameSQLHelper.
+        /// </summary>
+        public SageFrameSQLHelper() : base() { }
+       
+        /// <summary>
+        /// Executes non query with multipal output.
+        /// </summary>
+        /// <param name="StroredProcedureName">Strored procedure name.</param>
+        /// <param name="InputParamColl">Accept Key Value collection for parameters.</param>
+        /// <param name="OutPutParamColl">Output Key Value collection for parameters.</param>
+        /// <returns>List Key Value collection</returns>
         public List<KeyValuePair<int, string>> ExecuteNonQueryWithMultipleOutput(string StroredProcedureName, List<KeyValuePair<string, object>> InputParamColl, List<KeyValuePair<string, object>> OutPutParamColl)
         {
             SqlConnection SQLConn = new SqlConnection(base.connectionString);
@@ -68,6 +79,15 @@ namespace SageFrame.Common
                 SQLConn.Close();
             }
         }
+        /// <summary>
+        /// Executes non query with multipal output.
+        /// </summary>
+        /// <param name="transaction"> Transact-SQL transaction </param>
+        /// <param name="commandType">Command type</param>
+        /// <param name="StroredProcedureName">Strored procedure name.</param>
+        /// <param name="InputParamColl">Accept Key Value collection for parameters.</param>
+        /// <param name="OutPutParamColl">Output Key Value collection for parameters.</param>
+        /// <returns>List Key Value collection</returns>
         public List<KeyValuePair<int, string>> ExecuteNonQueryWithMultipleOutput(SqlTransaction transaction, CommandType commandType, string StroredProcedureName, List<KeyValuePair<string, object>> InputParamColl, List<KeyValuePair<string, object>> OutPutParamColl)
         {
             try

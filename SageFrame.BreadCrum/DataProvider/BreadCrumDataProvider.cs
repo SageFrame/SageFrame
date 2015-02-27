@@ -8,10 +8,20 @@ using System.Text;
 using SageFrame.Web.Utilities;
 
 namespace SageFrame.BreadCrum
-{
+{   
+    /// <summary>
+    ///  Manipulates data for BreadCrumbController Class.
+    /// </summary>
     public class BreadCrumDataProvider
     {
-
+        /// <summary>
+        /// Connects to database and gets breadcrumb.
+        /// </summary>
+        /// <param name="SEOName">SEOName</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="MenuId">MenuId</param>
+        /// <param name="CultureCode">CultureCode</param>
+        /// <returns>Returns BreadCrumInfo list </returns>
         public List<BreadCrumInfo> GetBreadCrumb(string SEOName, int PortalID, int MenuId, string CultureCode)
         {
             try

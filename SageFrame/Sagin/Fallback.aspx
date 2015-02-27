@@ -61,13 +61,13 @@
                         <asp:Literal ID="ltrErrorMessage" runat="server"></asp:Literal>
                     </div>
                 </div>
-                <div class="sfButtonWrapper">
+               <%-- <div class="sfButtonWrapper">
                     <h4>
                         Do you want to switch to the default template?</h4>
-<%--                    <span id="btnActivate" class="sfBtn">Yes, Switch to default</span>--%>
+                   <span id="btnActivate" class="sfBtn">Yes, Switch to default</span>
                     <asp:Button runat="server" ID="btnFallback" Text="Yes, Switch to Default" 
                         CssClass="sfBtn" onclick="btnFallback_Click" />
-                </div>
+                </div>--%>
             </div>
         </div>
     </div>

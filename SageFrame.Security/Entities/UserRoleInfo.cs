@@ -13,7 +13,12 @@ using System.Text;
 
 namespace SageFrame.Security.Entities
 {
+    /// <summary>
+    /// This class holds the properties of UserRoleInfo.
+    /// </summary>
     public class UserRoleInfo
     {
+      
     }
+
 }

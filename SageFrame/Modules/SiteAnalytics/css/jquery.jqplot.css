@@ -274,3 +274,6 @@ border-radius: 6px 6px 6px 6px; -o-border-radius: 6px 6px 6px 6px; -ms-border-ra
 -webkit-border-radius: 0 0 3px 3px;
 border-radius: 0 0 3px 3px;}
 .sfCountryHolder div.jqplot-target { width:300px !important;}
+
+
+.jqplot-grid-canvas div shape { visibility:hidden !important; display:none !important;}

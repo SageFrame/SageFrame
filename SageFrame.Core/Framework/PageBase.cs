@@ -45,6 +45,9 @@ using System.Management;
 
 namespace SageFrame.Framework
 {
+    /// <summary>
+    /// The base class which  initializes all the properties and method for the page Load
+    /// </summary>
     [Serializable]
     public partial class PageBase : System.Web.UI.Page
     {
@@ -75,6 +78,12 @@ namespace SageFrame.Framework
 
         #region "Private Methods"
 
+        /// <summary>
+        /// Returns color css path based on active template
+        /// </summary>
+        /// <param name="activeTemplate"> active template name</param>
+        /// <param name="preset">PresetInfo object</param>
+        /// <returns>Returns color css path</returns>
         private string cssColorTemplate(string activeTemplate, PresetInfo preset)
         {
             string cssColorTemplate = !IsHandheld() ? Decide.IsTemplateDefault(activeTemplate)
@@ -84,6 +93,10 @@ namespace SageFrame.Framework
             return cssColorTemplate;
         }
 
+        /// <summary>
+        /// Generates uniqueID based on date
+        /// </summary>
+        /// <returns>Unique ID</returns>
         private string GenerateUniqueId()
         {
             long i = 1;
@@ -93,6 +106,11 @@ namespace SageFrame.Framework
             }
             return string.Format("{0:x}", i - DateTime.Now.Ticks);
         }
+        /// <summary>
+        /// Optmizes collection of js into one
+        /// </summary>
+        /// <param name="lstJsColl">list of js script to be optimize</param>
+        /// <param name="Mode">set 1 for the first call </param>
 
         private void OptimizeJs(List<CssScriptInfo> lstJsColl, int Mode)
         {
@@ -292,11 +310,18 @@ namespace SageFrame.Framework
             #endregion
         }
 
+        /// <summary>
+        /// Returns js files
+        /// </summary>
+        /// <returns>Returns js files</returns>
         private List<CssScriptInfo> GetCorejsFiles()
         {
             return (CoreJs.GetList(IsAdmin(), IsUserLoggedIn(), IsHandheld(), GetPortalID));
         }
 
+        /// <summary>
+        /// Set google analytics
+        /// </summary>
         private void SetGoogleAnalytics()
         {
             try
@@ -337,7 +362,9 @@ namespace SageFrame.Framework
             {
             }
         }
-
+        /// <summary>
+        /// Sets portalseo name
+        /// </summary>
         private string SettingPortal
         {
             get
@@ -388,6 +415,9 @@ namespace SageFrame.Framework
         //    base.InitializeCulture();
         //}
 
+        /// <summary>
+        /// Initialize Culture
+        /// </summary>
         protected override void InitializeCulture()
         {
             ApplicationController objAppController = new ApplicationController();
@@ -424,9 +454,9 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// 
+        /// Set culture to the current thread and session
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name"> culture name</param>
         /// <param name="locale"></param>
         protected void SetCulture(string name, string locale)
         {
@@ -437,27 +467,27 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// 
+        /// Returns current UI Culture from thread
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns UI current Culture </returns>
         protected string GetCurrentUICulture()
         {
             return Thread.CurrentThread.CurrentUICulture.ToString();
         }
 
         /// <summary>
-        /// 
+        /// Returns current UI Culture from thread
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns UI current Culture</returns>
         protected string GetCurrentCulture()
         {
             return Thread.CurrentThread.CurrentCulture.ToString();
         }
 
         /// <summary>
-        /// 
+        /// Executes on prerendering of the page
         /// </summary>
-        /// <param name="e"></param>
+        /// <param name="e">EventArgs e</param>
         protected override void OnPreRender(EventArgs e)
         {
             ApplicationController objAppController = new ApplicationController();
@@ -473,7 +503,7 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// 
+        ///  Returns portalSEO name
         /// </summary>
         protected string GetPortalSEOName
         {
@@ -489,9 +519,9 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// 
+        /// Registers exception to the error log
         /// </summary>
-        /// <param name="exc"></param>
+        /// <param name="exc">Exception</param>
         protected void ProcessException(Exception exc)
         {
             int inID = 0;
@@ -502,12 +532,12 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// 
+        /// Displays the message with provided message, title, complete message and message type.
         /// </summary>
-        /// <param name="MessageTitle"></param>
-        /// <param name="Message"></param>
-        /// <param name="CompleteMessage"></param>
-        /// <param name="MessageType"></param>
+        /// <param name="MessageTitle">Message tittle</param>
+        /// <param name="Message">Message</param>
+        /// <param name="CompleteMessage">Complete message</param>
+        /// <param name="MessageType">Message type</param>
         protected void ShowMessage(string MessageTitle, string Message, string CompleteMessage, SageMessageType MessageType)
         {
             ScriptManager scp = (ScriptManager)this.Page.FindControl("ScriptManager1");
@@ -532,6 +562,9 @@ namespace SageFrame.Framework
             }
         }
 
+        /// <summary>
+        /// Displays HttpRequest validation exception
+        /// </summary>
         protected void ProcessHttpRequestValidationException()
         {
             if (HttpContext.Current.Request.QueryString["sagealert"] != null && HttpContext.Current.Request.QueryString["sagealert"].ToString() != string.Empty)
@@ -697,7 +730,7 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// 
+        /// Initialize pae Meta tags
         /// </summary>
         public void InitializePage()
         {
@@ -739,7 +772,7 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Set Cureent Template Css
+        /// Set Current Template Css
         /// </summary>
         public void SetTemplateCss()
         {
@@ -824,7 +857,7 @@ namespace SageFrame.Framework
         /// <summary>
         /// Get Current Responsive Css path
         /// </summary>
-        /// <returns>Current Template Path</returns>
+        /// <returns>Returns current template path</returns>
         public string GetResponsiveCssPath()
         {
             string activeTemplate = GetActiveTemplate;
@@ -933,7 +966,7 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Compress All The Css Of All The Modules At Once And Load It
+        /// Compress all the css of all the modules at once and load it
         /// </summary>
         public void LoadModuleCss()
         {
@@ -1319,9 +1352,9 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        ///  Check Whether Is User Is LoggedIn or Not
+        ///  Check whether is user is loggedIn or not
         /// </summary>
-        /// <returns>True If The User Is LoggedIn</returns>
+        /// <returns>Retunrs true if the user is loggedIn</returns>
         public bool IsUserLoggedIn()
         {
             bool IsLoggedIn = false;
@@ -1341,8 +1374,6 @@ namespace SageFrame.Framework
             }
             return IsLoggedIn;
         }
-
-
 
         /// <summary>
         /// Loads All The Module Js At Once
@@ -1430,7 +1461,7 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Get message Css Class By Message type
+        /// Get message css class by message type
         /// </summary>
         /// <param name="MessageType"> Messsage Type (Enum) SageMessageType</param>
         /// <returns>Css Class </returns>
@@ -1452,7 +1483,7 @@ namespace SageFrame.Framework
             return cssClass;
         }
         /// <summary>
-        /// Get Current PortalID
+        /// Get current PortalID
         /// </summary>
         public int GetPortalID
         {
@@ -1500,9 +1531,8 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Get Current Active Template Name
+        /// Get current active template name
         /// </summary>
-        /// 
         public string GetActiveTemplate
         {
             get
@@ -1537,7 +1567,7 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Get Current Active Preset Information
+        /// Get current active preset information
         /// </summary>
         public PresetInfo GetPresetDetails
         {
@@ -1563,7 +1593,7 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Get Current Active Admin Theme
+        /// Get current active admin theme
         /// </summary>
         public string GetActiveAdminTheme
         {
@@ -1695,21 +1725,21 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// 
+        /// Loads user control to the Page.
         /// </summary>
-        /// <param name="UpdatePanelIDPrefix"></param>
-        /// <param name="IsPartialRendring"></param>
-        /// <param name="ContainerControl"></param>
-        /// <param name="ControlSrc"></param>
-        /// <param name="PaneName"></param>
-        /// <param name="strUserModuleID"></param>
-        /// <param name="suffixClass"></param>
-        /// <param name="HeaderText"></param>
-        /// <param name="IsUserAdmin"></param>
-        /// <param name="divControl"></param>
-        /// <param name="paneControl"></param>
-        /// <param name="IsEdit"></param>
-        /// <returns></returns>
+        /// <param name="UpdatePanelIDPrefix">Update panel Prefix</param>
+        /// <param name="IsPartialRendring">Set true if partial rendering is needed</param>
+        /// <param name="ContainerControl">Placeholder name</param>
+        /// <param name="ControlSrc">UserControl source</param>
+        /// <param name="PaneName">Pane name</param>
+        /// <param name="strUserModuleID">UserModuleID</param>
+        /// <param name="suffixClass">Suffix class</param>
+        /// <param name="HeaderText">Header text</param>
+        /// <param name="IsUserAdmin">Set true if the module is admin </param>
+        /// <param name="divControl">HtmlGenericControl</param>
+        /// <param name="paneControl">HtmlGenericControl</param>
+        /// <param name="IsEdit">true when user cotrol have edit permission </param>
+        /// <returns>Returns PlaceHolder object</returns>
         public PlaceHolder LoadControl(string UpdatePanelIDPrefix, bool IsPartialRendring, PlaceHolder ContainerControl, string ControlSrc, string PaneName, string strUserModuleID, string suffixClass, string HeaderText, bool IsUserAdmin, HtmlGenericControl divControl, HtmlGenericControl paneControl, bool IsEdit)
         {
             try
@@ -1760,12 +1790,9 @@ namespace SageFrame.Framework
                         {
                             HtmlGenericControl header = new HtmlGenericControl("h2");
                             header.InnerText = HeaderText;
-
                             HtmlGenericControl divInner = new HtmlGenericControl("div");
                             divInner.Attributes.Add("class", "sfModulecontent clearfix");
                             divInner.Controls.Add(ctl);
-
-
                             HtmlGenericControl div = new HtmlGenericControl("div");
                             div.Attributes.Add("class", suffixClass);
                             if (HeaderText != "")
@@ -1775,11 +1802,8 @@ namespace SageFrame.Framework
                             if (IsUserAdmin)
                             {
                                 div.Controls.Add(divControl); div.Controls.Add(paneControl);
-
                             }
-
                             div.Controls.Add(divInner);
-
                             ContainerControl.Controls.Add(div);
                         }
                         else
@@ -1801,12 +1825,12 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// 
+        /// Builds update panel 
         /// </summary>
-        /// <param name="Prefix"></param>
-        /// <param name="Upm"></param>
+        /// <param name="Prefix">panel prefix</param>
+        /// <param name="Upm">Update panel Update Mode</param>
         /// <param name="PaneUpdatePanelCount"></param>
-        /// <returns></returns>
+        /// <returns>Returns UpdatePanel object</returns>
         public UpdatePanel CreateUpdatePanel(string Prefix, UpdatePanelUpdateMode Upm, int PaneUpdatePanelCount)
         {
             UpdatePanel udp = new UpdatePanel();
@@ -1832,10 +1856,10 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Get Page SEO Name By Page Path
+        /// Returns pageSEO name by page path
         /// </summary>
-        /// <param name="pagePath"> Page Path</param>
-        /// <returns> Page SEO Name</returns>
+        /// <param name="pagePath"> opage path</param>
+        /// <returns> Returns pageSEO name</returns>
         public string GetPageSEOName(string pagePath)
         {
             string SEOName = string.Empty;
@@ -1858,9 +1882,9 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Override page Information
+        /// Override page information
         /// </summary>
-        /// <param name="dt">Page Information (Enum)DataTable</param>
+        /// <param name="dt">Page information (Enum)DataTable</param>
         public void OverridePageInfo(DataTable dt)
         {
             if (dt != null && dt.Rows != null && dt.Rows.Count > 0)
@@ -1910,9 +1934,9 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Override Page Information By UserModule
+        /// Override page information by userModule
         /// </summary>
-        /// <param name="usermodule">UserModule Information (Enum) UserModuleInfo</param>
+        /// <param name="usermodule">UserModule information (Enum) userModuleInfo</param>
         public void OverridePageInfo(UserModuleInfo usermodule)
         {
             if (usermodule != null)
@@ -1962,10 +1986,10 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Add Module Css To Page By Control Path
+        /// Add module css to page by control path
         /// </summary>
-        /// <param name="ControlSrc">Module Control root Source</param>
-        /// <param name="IsModuleFolerName">Set True IF Path Is of Folder Name</param>
+        /// <param name="ControlSrc">Module control root source</param>
+        /// <param name="IsModuleFolerName">Set true if path is of folder name</param>
         public void AddModuleCssToPage(string ControlSrc, bool IsModuleFolerName)
         {
             string ModuleRootLocation = string.Empty;
@@ -2105,11 +2129,11 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// For Page Load Events iteration
+        /// Registers startup events
         /// </summary>
-        /// <param name="PortalID"></param>
-        /// <param name="pchWhole"></param>
-        /// 
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="pchWhole">Placeholder name</param>
+        /// <param name="IsAdmin">Set true for admin part</param>
         public void IncludeStartup(int PortalID, PlaceHolder pchWhole, bool IsAdmin)
         {
             try
@@ -2117,15 +2141,6 @@ namespace SageFrame.Framework
                 IncludeStartupEvents(SystemEventLocation.Top, PortalID, pchWhole, IsAdmin);
                 IncludeStartupEvents(SystemEventLocation.Middle, PortalID, pchWhole, IsAdmin);
                 IncludeStartupEvents(SystemEventLocation.Bottom, PortalID, pchWhole, IsAdmin);
-                if (HttpRuntime.Cache[CacheKeys.SetLayout] == null || HttpRuntime.Cache[CacheKeys.SetLayout].ToString() != string.Empty)
-                {
-                    SetLayout obj = new SetLayout();
-                    obj.IncludeStartup("default");
-                }
-                if (HttpRuntime.Cache[CacheKeys.SetLayout] != null && HttpRuntime.Cache[CacheKeys.SetLayout].ToString() != string.Empty && HttpRuntime.Cache[CacheKeys.SetLayout].ToString() == "False")
-                {
-                    SetLayout.BuildLayoutMessage();
-                }
             }
             catch (Exception ex)
             {
@@ -2134,11 +2149,12 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Added for the sys startup events
+        /// Registers startup events
         /// </summary>
-        /// <param name="EventLocation"></param>
-        /// <param name="PortalID"></param>
-        /// <param name="phdContainer"></param>
+        /// <param name="EventLocation"> Event locations</param>
+        /// <param name="PortalID">portalID</param>
+        /// <param name="phdContainer">Placeholder name</param>  
+        /// <param name="IsAdmin">Set true for admin part</param>
         public void IncludeStartupEvents(SystemEventLocation EventLocation, int PortalID, PlaceHolder phdContainer, bool IsAdmin)
         {
             SystemStartupController obj = new SystemStartupController();
@@ -2202,17 +2218,21 @@ namespace SageFrame.Framework
             }
         }
 
+        /// <summary>
+        /// Returns favicon path
+        /// </summary>
+        /// <param name="activeTemplate">active template name</param>
+        /// <returns>Returns favicon absolute Path</returns>
         public string SetFavIcon(string activeTemplate)
         {
             return Decide.IsTemplateDefault(activeTemplate) ? ResolveUrl("~/favicon.ico") : ResolveUrl(string.Format("~/Templates/{0}/favicon.ico", activeTemplate));
         }
 
-
         /// <summary>
         /// Return the host path
         /// for eg: http://sageframe.com/ or http://localhost:2511/SageFrame/
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns HostURL</returns>
         public string GetHostURL
         {
             get

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace DashBoardControl.Info
-{
+{  
+    /// <summary>
+    /// Description for DashBoard Setting Enums.
+    /// </summary>
     public enum DashBoardSetting
     {
         START_DATE =1,

@@ -257,9 +257,9 @@
                 $('#divLstMenu').on("click", 'span.ui-tree-title', function () {
                     var ids = $(this).parent('li').prop('id').split('_');
                     MenuMgr.config.MenuItemID = ids[0];
-                    MenuMgr.LoadMenuItemDetails(ids[0]);
                     $('#imgAddmenuItem').text("Save Menu Item");
                     MenuMgr.LoadParentPages($("#menuList ").find("ul li.sfSelected").prop("id"));
+                    MenuMgr.LoadMenuItemDetails(ids[0]);
                     $(this).parent().find('.ui-tree-title').each(function () {
                         var self = $(this).text();
                         $("#selMenuItem > option").each(function () {
@@ -336,7 +336,7 @@
                     $('#MenuMgrView,#MenuMgrPermissiom').hide();
                     $('#tblSideMenu').hide();
                     MenuMgr.LoadMenuSettings();
-                    if ($('#chkCaption').prop("checked", true)) {
+                    if ($('#chkCaption').prop("checked") == true) {
                         $('#divCaption').hide();
                     }
                     else {
@@ -457,7 +457,7 @@
                             $('#lblError').hide();
                         }
                         else {
-                            SageFrame.messaging.show("Please Choose Unique menu Name", "Success");
+                            SageFrame.messaging.show("Please Choose Unique menu Name", "Error");
                             $('.sfDivFlying').hide();
                         }
                     }
@@ -541,7 +541,7 @@
                             $('#spnUnique').remove();
                         }
                         else {
-                            SageFrame.messaging.show("Please Choose Unique menu Name", "Success");
+                            SageFrame.messaging.show("Please Choose Unique menu Name", "Error");
                             $('.sfDivFlying').hide();
                         }
                     }
@@ -553,20 +553,25 @@
                 $('#rdbDropdown').on('click', function () {
                     MenuMgr.ChangeRdbActiveClass($(this));
                 });
-
+                MenuMgr.SelectMenuOnClick();
                 $('#txtMenuName').keyup(function (event) {
                     if (event.keyCode == 13) {
                         $('#imgAdd').click();
                         $('.sfDivFlyingClose').click();
                     }
                 });
-                $('.sfMenuChecked').on('click', function (index, value) {
-                    var menuid = $(this).parents('li').attr('id');
-                    activeMenuID = menuid;
-                    MenuMgr.UpdateSelectedMenu(menuid);
-                });
+               
                 $('#menuList').find('#' + activeMenuID).find('.sfMenuname').trigger('click');
                 $("#my-dialog").dialogExtend("maximize");
+            },
+
+            SelectMenuOnClick: function()
+            {
+                 $('.sfMenuChecked').on('click', function (index, value) {
+                     var menuid = $(this).parents('li').attr('id');
+                     activeMenuID = menuid;
+                     MenuMgr.UpdateSelectedMenu(menuid);
+                 });
             },
             LoadDefaultMenuFromSetting: function () {
                 this.config.method = "GetSageMenu";
@@ -697,6 +702,7 @@
                 if (LstMenu.length == 0)
                     menulist = SageFrame.messaging.showdivmessage(MenuMgr.messages.nomenucreated);
                 $('#menuList').html(menulist);
+                MenuMgr.SelectMenuOnClick();
             },
 
             UpdateSelectedMenu: function (menuID) {
@@ -707,7 +713,8 @@
                     SettingKey: 'MenuID',
                     SettingValue: menuID,
                     UserName: SageFrameUserName,
-                    secureToken: SageFrameSecureToken
+                    secureToken: SageFrameSecureToken,
+                    CultureCode: p.CultureCode
                 });
                 MenuMgr.config.url = MenuMgr.config.baseURL + MenuMgr.config.method;
                 MenuMgr.config.ajaxCallMode = 14;
@@ -945,7 +952,9 @@
                         html += '<label>' + item.SEOName.replace(new RegExp("-", "g"), ' ') + '</label>';
                         if (item.ChildCount > 0) {
                             itemPath += item.SEOName;
+                            html += "<ul>";
                             html += MenuMgr.BindChildCategory(pages, PageID);
+                            html += "</ul>";
                         }
                         html += '</li>';
                     }
@@ -1669,7 +1678,7 @@
                     drop: function (event, ui) {
                         var draggebleSpanID = $('#pageTree').find('li.ui-draggable-dragging');
                         var dropableSpanID = $('#' + $(this).find('li span.ui-tree-droppable').parents('li').attr("id"));
-                        var mouseTopPosition = event.pageY - dropableSpanID.offset().top;
+                        var mouseTopPosition = event.pageY - draggebleSpanID.offset().top;
 
                         var dropableSpanHeight = $(this).find('li span.ui-tree-droppable').parents('li').height();
                         var portionOne = dropableSpanHeight / 4;
@@ -1783,7 +1792,8 @@
                     PortalID: SageFramePortalID,
                     UserModuleID: MenuMgr.config.UserModuleID,
                     UserName: SageFrameUserName,
-                    secureToken: SageFrameSecureToken
+                    secureToken: SageFrameSecureToken,
+                    CultureCode: p.CultureCode
                 });
                 this.config.ajaxCallMode = 11;
                 this.ajaxCall(this.config);
@@ -1802,7 +1812,8 @@
                         PortalID: portalid,
                         userModuleId: MenuMgr.config.UserModuleID,
                         UserName: SageFrameUserName,
-                        secureToken: SageFrameSecureToken
+                        secureToken: SageFrameSecureToken,
+                        cultureCode: p.CultureCode
                     }),
                     dataType: MenuMgr.config.dataType,
                     success: function (msg) {
@@ -1833,7 +1844,8 @@
                     PortalID: SageFramePortalID,
                     UserModuleID: MenuMgr.config.UserModuleID,
                     UserName: SageFrameUserName,
-                    secureToken: SageFrameSecureToken
+                    secureToken: SageFrameSecureToken,
+                    CultureCode: p.CultureCode
                 };
                 $.each(SettingKeys, function (index, item) {
                     _SettingValue = SettingValues[index];

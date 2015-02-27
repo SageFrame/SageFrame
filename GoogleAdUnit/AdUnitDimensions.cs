@@ -26,11 +26,19 @@ using System.Text;
 
 namespace SFE.GoogleAdUnit
 {
+    /// <summary>
+    /// Internal class that contains unit dimensions.
+    /// </summary>
     internal class UnitDimensions
     {
         internal Int16 HEIGHT;
         internal Int16 WIDTH;
 
+        /// <summary>
+        /// Initializes an instance of UnitDimensions class.
+        /// </summary>
+        /// <param name="iWidth">Width to be initialize.</param>
+        /// <param name="iHeight">Height to be initialize.</param>
 		internal UnitDimensions(Int16 iWidth, Int16 iHeight)
         {
             HEIGHT = iHeight;

@@ -12,6 +12,9 @@ using System.Text;
 
 namespace SageFrame.Common
 {
+    /// <summary>
+    /// This class holds the properties for UserModuleInfo.
+    /// </summary>
     public class UserModuleInfo
     {
         public int PageID { get; set; }
@@ -34,7 +37,9 @@ namespace SageFrame.Common
         public string KeyWords { get; set; }
         public string Description { get; set; }
         public string UserModuleTitle { get; set; }
-
+        /// <summary>
+        /// Initializes a new instance of the UserModuleInfo.
+        /// </summary>
         public UserModuleInfo() { }
 
     }

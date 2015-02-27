@@ -1,37 +1,39 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SageFrame.Web.Utilities;
 
+#endregion
+
+
 namespace SageFrame.NewLetterSubscriber
 {
+    /// <summary>
+    /// Manupulates data for user NewLetterSubscriberProvider.
+    /// </summary>
     public class NewLetterSubscriberProvider
-
     {
-        
+        /// <summary>
+        /// Connects to database and adds news letter subscribers detail.
+        /// </summary>
+        /// <param name="Email">Subscriber email ID.</param>
+        /// <param name="ClientIP">Subscriber IP.</param>
+        /// <param name="IsActive">Set true if subscriber is active.</param>
+        /// <param name="AddedBy">Subscribe added user's name.</param>
+        /// <param name="AddedOn">Subscribe added date.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <returns>Returns NewLetterSubscribersID.</returns>
         public static int AddNewLetterSubscribers(string Email, string ClientIP, bool IsActive, string AddedBy, DateTime AddedOn, int PortalID)
         {
             string sp = "[dbo].[sp_NewLetterSubscribersAdd]";
@@ -59,6 +61,18 @@ namespace SageFrame.NewLetterSubscriber
                 throw;
             }
         }
+
+        /// <summary>
+        /// Connect to database and updates news letter settings.
+        /// </summary>
+        /// <param name="UserModuleID">User module ID.</param>
+        /// <param name="SettingKey">Setting key.</param>
+        /// <param name="SettingValue">Setting value.</param>
+        /// <param name="IsActive">Set true if the setting is active.</param>
+        /// <param name="PortalID">PortalID.</param>
+        /// <param name="UpdatedBy">Setting updated user's name.</param>
+        /// <param name="AddedBy">Setting added user's name.</param>
+        /// <returns>Returns NewsLetterSettingValueID</returns>
         public static int UpdateNewLetterSettings(int UserModuleID, string SettingKey, string SettingValue, bool IsActive, int PortalID, string UpdatedBy, string AddedBy)
         {
 
@@ -86,6 +100,29 @@ namespace SageFrame.NewLetterSubscriber
                 throw;
             }
         }
- 
+
+        /// <summary>
+        /// Connects to database and returns news letter's setting
+        /// </summary>
+        /// <param name="usermoduleIDControl">User module ID</param>
+        /// <param name="portalID">Portal ID</param>
+        /// <returns>News letter setting</returns>
+        public NewsLetterSettingsInfo GetNewsLetterSetting(int usermoduleIDControl,int portalID)
+        {
+            try
+            {
+                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserModuleID", usermoduleIDControl));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", portalID));
+                SQLHandler objSql = new SQLHandler();
+                NewsLetterSettingsInfo newsLetterSettingObj = new NewsLetterSettingsInfo();
+                newsLetterSettingObj = objSql.ExecuteAsObject<NewsLetterSettingsInfo>("dbo.sp_NewsLetterSettingsGetAll", ParaMeterCollection);
+                return newsLetterSettingObj;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        } 
     }
 }

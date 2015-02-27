@@ -24,8 +24,18 @@ using SageFrame.Web;
 
 namespace SageFrame.SageFrameClass.MessageManagement
 {
+    /// <summary>
+    ///  MailHelper class consists of all the mail sending  methods along with attachments.
+    /// </summary>
     public class MailHelper
     {
+        /// <summary>
+        /// Sends multiple email.
+        /// </summary>
+        /// <param name="From">Email sending from.</param>
+        /// <param name="sendTo">Email sending to.</param>
+        /// <param name="Subject">Email's subject.</param>
+        /// <param name="Body">Email's body.</param>
         public static void SendMultipleEmail(string From, string sendTo, string Subject, string Body)
         {
             SageFrameConfig sfConfig = new SageFrameConfig();
@@ -84,6 +94,16 @@ namespace SageFrame.SageFrameClass.MessageManagement
                 throw ex;
             }
         }
+
+        /// <summary>
+        /// Sends multiple emails.
+        /// </summary>
+        /// <param name="From">Email sending from.</param>
+        /// <param name="sendTo">Email sending to</param>
+        /// <param name="Subject">Email's subject</param>
+        /// <param name="Body">Email's body</param>
+        /// <param name="Identifiers">Email's identifiers</param>
+        /// <param name="pageName">Page name</param>
         public static void SendMultipleEmail(string From, string sendTo, string Subject, string Body, string Identifiers, string pageName)
         {
             SageFrameConfig sfConfig = new SageFrameConfig();
@@ -162,13 +182,31 @@ namespace SageFrame.SageFrameClass.MessageManagement
             }
         }
 
+        /// <summary>
+        /// Sends mail with no attachment.
+        /// </summary>
+        /// <param name="From">Email from.</param>
+        /// <param name="sendTo">Email to.</param>
+        /// <param name="Subject">Email's subject.</param>
+        /// <param name="Body">Email's body.</param>
+        /// <param name="CC">Email CC to</param>
+        /// <param name="BCC">EMail BCC to</param>
         public static void SendMailNoAttachment(string From, string sendTo, string Subject, string Body, string CC,
                                                 string BCC)
         {
             SendEMail(From, sendTo, Subject, Body, CC, BCC);
         }
 
-
+        /// <summary>
+        /// Sends mail with one attachment
+        /// </summary>       
+        /// <param name="From">Email from.</param>
+        /// <param name="sendTo">Email to.</param>
+        /// <param name="Subject">Email's subject.</param>
+        /// <param name="Body">Email's body.</param>
+        /// <param name="AttachmentFile">Attachment file path.</param>
+        /// <param name="CC">Email CC to.</param>
+        /// <param name="BCC">EMail BCC to.</param>
         public static void SendMailOneAttachment(string From, string sendTo, string Subject, string Body,
                                                  string AttachmentFile, string CC, string BCC)
         {
@@ -176,12 +214,31 @@ namespace SageFrame.SageFrameClass.MessageManagement
         }
 
 
+        /// <summary>
+        /// Sends mail with multiple attachment files
+        /// </summary>       
+        /// <param name="From">Email from.</param>
+        /// <param name="sendTo">Email to.</param>
+        /// <param name="Subject">Email's subject.</param>
+        /// <param name="Body">Email's body.</param>
+        /// <param name="AttachmentFiles">Array of attachment files path.</param>
+        /// <param name="CC">Email CC to.</param>
+        /// <param name="BCC">EMail BCC to.</param>
         public static void SendMailMultipleAttachments(string From, string sendTo, string Subject, string Body,
                                                        ArrayList AttachmentFiles, string CC, string BCC)
         {
             SendEMail(From, sendTo, Subject, Body, AttachmentFiles, CC, BCC);
         }
 
+        /// <summary>
+        /// Sends mail.
+        /// </summary>
+        /// <param name="From">Email from.</param>
+        /// <param name="sendTo">Email to.</param>
+        /// <param name="Subject">Email's subject.</param>
+        /// <param name="Body">Email's body.</param>
+        /// <param name="CC">Email CC to</param>
+        /// <param name="BCC">EMail BCC to</param>
         public static void SendEMail(string From, string sendTo, string Subject, string Body, string CC, string BCC)
         {
             ArrayList AttachmentFiles;
@@ -189,16 +246,25 @@ namespace SageFrame.SageFrameClass.MessageManagement
             SendEMail(From, sendTo, Subject, Body, AttachmentFiles, CC, BCC);
         }
 
+
+        /// <summary>
+        /// Sends mail with attachment
+        /// </summary>
+        /// <param name="From">Email from.</param>
+        /// <param name="sendTo">Email to.</param>
+        /// <param name="Subject">Email's subject.</param>
+        /// <param name="Body">Email's body.</param>
+        /// <param name="AttachmentFile"></param>
+        /// <param name="CC">Email CC to</param>
+        /// <param name="BCC">EMail BCC to</param>
         public static void SendEMail(string From, string sendTo, string Subject, string Body, string AttachmentFile,
                                      string CC, string BCC)
         {
             ArrayList AttachmentFiles = new ArrayList();
-
             if (AttachmentFile != null && AttachmentFile.Length != 0)
             {
                 AttachmentFiles.Add(AttachmentFile);
             }
-
             else
             {
                 AttachmentFiles = null;
@@ -206,12 +272,34 @@ namespace SageFrame.SageFrameClass.MessageManagement
             SendEMail(From, sendTo, Subject, Body, AttachmentFiles, CC, BCC);
         }
 
+        /// <summary>
+        /// Sends mail with multiple attachment files
+        /// </summary>       
+        /// <param name="From">Email from.</param>
+        /// <param name="sendTo">Email to.</param>
+        /// <param name="Subject">Email's subject.</param>
+        /// <param name="Body">Email's body.</param>
+        /// <param name="AttachmentFiles">Array of attachment files path.</param>
+        /// <param name="CC">Email CC to.</param>
+        /// <param name="BCC">EMail BCC to.</param>
         public static void SendEMail(string From, string sendTo, string Subject, string Body, ArrayList AttachmentFiles,
                                      string CC, string BCC)
         {
             SendEMail(From, sendTo, Subject, Body, AttachmentFiles, CC, BCC, true);
         }
 
+
+        /// <summary>
+        /// Sends mail with multiple attachment files
+        /// </summary>       
+        /// <param name="From">Email from.</param>
+        /// <param name="sendTo">Email to.</param>
+        /// <param name="Subject">Email's subject.</param>
+        /// <param name="Body">Email's body.</param>
+        /// <param name="AttachmentFiles">Array of attachment files path.</param>
+        /// <param name="CC">Email CC to.</param>
+        /// <param name="BCC">EMail BCC to.</param>
+        /// <param name="IsHtmlFormat">Set true if the body must be in HTML format.</param>
         public static void SendEMail(string From, string sendTo, string Subject, string Body, ArrayList AttachmentFiles, string CC, string BCC, bool IsHtmlFormat)
         {
             SageFrameConfig sfConfig = new SageFrameConfig();
@@ -281,6 +369,11 @@ namespace SageFrame.SageFrameClass.MessageManagement
             }
         }
 
+        /// <summary>
+        /// Formats email into javascript file
+        /// </summary>
+        /// <param name="email">Email to be formatted</param>
+        /// <returns>Scripted email.</returns>
         public static string FormatEmail(string email)
         {
             string user = email.Substring(0, email.IndexOf('@'));

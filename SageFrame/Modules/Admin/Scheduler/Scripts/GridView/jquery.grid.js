@@ -78,9 +78,7 @@
                         if (p.onError) {
                             g.clearAll();
                             $(this).text(xhr.responseText);
-
                         }
-
                     });
 
                     $.ajax({
@@ -109,6 +107,7 @@
                                 //$(t).update();
                             }
                             $(t).show();
+                            $(t).wrap("<div class='cssTableGridWrapper'></div>");
                             if (p.SuccessPara != null) {
                                 jQuery.facebox(p.SuccessPara);
 
@@ -148,7 +147,7 @@
                 var PageWrapper = document.createElement('div');
                 var PageOf = document.createElement('div');
                 var Pages = document.createElement('div');
-                $(Pages).addClass("cssClassPageNumber");
+                $(Pages).addClass("cssClassPageNumber clearfix");
 
 
                 // Call Pagination Class
@@ -176,8 +175,7 @@
 					    p.current = 1;
 					    g.wcf();
 					}
-				);
-
+				);               
                 $(Pages).prepend(sagePaging.nav);
                 $(Pages).prependTo(PageWrapper);
                 $(PageOf).prependTo(PageWrapper);

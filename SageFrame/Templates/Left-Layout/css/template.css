@@ -1166,8 +1166,8 @@ h3.sfMediaHeading { font:20px serif;}
 /* BANNER */
 .bx-wrapper { margin-bottom:40px;}
 
-#sfBanner { margin-bottom:40px;}
-.sfBannerDesc { width:550px; padding: 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); margin:0 auto;
+/*#sfBanner { margin-bottom:40px;}
+*/.sfBannerDesc { width:550px; padding: 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); margin:0 auto;
  position:absolute; top:50%; left:50%; text-align:center;
 -webkit-transform:translateX(-50%) translateY(-50%);
 -moz-transform: translateX(-50%) translateY(-50%);
@@ -1180,8 +1180,8 @@ transform: translateX(-50%) translateY(-50%);}
 .sfBanner p { font-size:18px; font-family: serif;}
 .sfInnerwrapper .bx-prev { left: 15px;}
 .sfInnerwrapper .bx-next { right: 15px;}
- .sfInnerBanner { height:150px; margin-bottom: 40px; background: url(../../../Core/Template/images/banner_bg_02.jpg) no-repeat center bottom; position: relative;}
- .sfInnerBanner h1 { margin:0; text-shadow: 0 2px 5px rgba(0,0,0,.5); width:90%; font-size: 42px; position: absolute; top:50%; left:50%;
+ .sfInnerBanner { height:150px; margin-bottom: 40px; background: url(../../../Core/Template/images/sfbanner-inner.jpg) no-repeat center bottom; position: relative;}
+ .sfInnerBanner h1 { margin:0; text-shadow: 0 2px 5px rgba(0,0,0,.5); width:90%; color:#fff; font-size: 42px; position: absolute; top:50%; left:50%;
   -webkit-transform: translateY(-50%)  translateX(-50%) ;
  -moz-transform: translateY(-50%)  translateX(-50%) ;
  -ms-transform: translateY(-50%)  translateX(-50%) ;

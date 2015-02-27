@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Timers;
 using System.Net;
+using System.Threading.Tasks;
 #endregion
 
 namespace SageFrame.Scheduler
@@ -673,7 +674,7 @@ namespace SageFrame.Scheduler
                             if (refreshQueueSchedule == false)
                             {
                                 SetScheduleStatus(ScheduleStatus.WAITING_FOR_OPEN_THREAD);
-                                Thread.Sleep(10000); //sleep for 10 seconds
+                                // Thread.Sleep(10000); //sleep for 10 seconds
                             }
                         }
                         else
@@ -686,7 +687,7 @@ namespace SageFrame.Scheduler
 
                         ErrorLogger.SchedulerProcessException(exc);
                         //sleep for 10 minutes
-                        Thread.Sleep(600000);
+                        //Thread.Sleep(600000);
                     }
                 }
             }

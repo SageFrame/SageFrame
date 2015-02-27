@@ -7,8 +7,15 @@ using SageFrame.Common;
 
 namespace SageFrame.Core
 {
+    /// <summary>
+    /// Provides the method that helps to clear the cache
+    /// </summary>
     public partial class AppErazer : System.Web.UI.Page
     {
+        /// <summary>
+        /// Clears hash cache for provided string
+        /// </summary>
+        /// <param name="key">cache name</param>
         public static void ClearSysHash(string key)
         {
             Hashtable sysHst = Globals.sysHst;
@@ -18,6 +25,9 @@ namespace SageFrame.Core
             }
         }
 
+        /// <summary>
+        /// Clears all the cache value  with in the system
+        /// </summary>
         public static void ClearSysCache()
         {            
             foreach (System.Collections.DictionaryEntry item in HttpRuntime.Cache)

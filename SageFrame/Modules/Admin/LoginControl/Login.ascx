@@ -27,7 +27,7 @@
                 </p>
                 <p class="sfPassword">
                     <asp:TextBox ID="Password" placeholder="Password" runat="server" TextMode="Password"
-                        meta:resourcekey="PasswordResource1" CssClass="sfInputbox"></asp:TextBox>
+                        meta:resourcekey="PasswordResource1" CssClass="sfInputbox" ></asp:TextBox>
                     <asp:RequiredFieldValidator ID="PasswordRequired" runat="server" ControlToValidate="Password"
                         ErrorMessage="Password is required." ToolTip="Password is required." ValidationGroup="Login1"
                         CssClass="sfErrorA" meta:resourcekey="PasswordRequiredResource1" Text="*"></asp:RequiredFieldValidator>

@@ -12,7 +12,9 @@ using System.Web;
 
 namespace SageFrame.Web
 {
-
+    /// <summary>
+    /// Application setting keys.
+    /// </summary>
     public static class SageFrameSettingKeys
     {
         public static string IconFile = "IconFile";
@@ -103,7 +105,7 @@ namespace SageFrame.Web
 
         public static string PortalUserProfilePage = "PortalUserProfilePage";
         public static string PortalDefaultPage = "PortalDefaultPage";
-       
+
         public static string PortalCurrency = "PortalCurrency";
         public static string PortalPaymentProcessor = "PortalPaymentProcessor";
         public static string PortalProcessorUserId = "PortalProcessorUserId";
@@ -113,7 +115,7 @@ namespace SageFrame.Web
         public static string PortalRegistrationPage = "PortalRegistrationPage";
         public static string PortalAnalyticsID = "PortalAnalyticsID";
         public static string PortalAnalyticsURLParameters = "PortalAnalyticsURLParameters";
-        
+
 
         /* New Keyes */
         public static string PortalShowProfileLink = "PortalShowProfileLink";
@@ -147,9 +149,12 @@ namespace SageFrame.Web
         public static string OptimizeCss = "OptimizeCss";
         public static string OptimizeJs = "OptimizeJs";
         public static string EnableLiveFeeds = "EnableLiveFeeds";
-        public static string ShowSideBar = "ShowSideBar";       
+        public static string ShowSideBar = "ShowSideBar";
         public static string SettingPageExtension = "PageExtension";
         private static string _PageExtension = string.Empty;
+        /// <summary>
+        /// Get or set application page extension.
+        /// </summary>
         public static string PageExtension
         {
             get { return _PageExtension; }
@@ -170,18 +175,28 @@ namespace SageFrame.Web
         public static string MessageTemplate = "MessageTemplate";
 
         //Enable Heavy Cache
+
+        /// <summary>
+        /// Get or set boolean  value for enable heavy cache for FrontMenu. 
+        /// </summary>
         private static bool _FrontMenu = true;
         public static bool FrontMenu
         {
             get { return _FrontMenu; }
             set { _FrontMenu = value; }
         }
+        /// <summary>
+        /// Get or set boolean  value for enable heavy cache for SideMenu.
+        /// </summary>
         private static bool _SideMenu = true;
         public static bool SideMenu
         {
             get { return _SideMenu; }
             set { _SideMenu = value; }
         }
+        /// <summary>
+        /// Get or set boolean  value for enable heavy cache for FooterMenu.
+        /// </summary>
         private static bool _FooterMenu = true;
         public static bool FooterMenu
         {
@@ -196,6 +211,6 @@ namespace SageFrame.Web
         public static string EnableCDN = "EnableCDN";
         public static string EnableDasboardHelp = "EnableDasboardHelp";
         public static string ServerCookieExpiration = "ServerCookieExpiration";
-        
+
     }
 }

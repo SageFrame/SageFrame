@@ -20,8 +20,17 @@ using System.Threading;
 
 namespace RegisterModule
 {
+    /// <summary>
+    /// Class that contains methods for archiving  files and folder.
+    /// </summary>
     public static class ZipUtil
     {
+        /// <summary>
+        /// Zips files of one folders and transfer the zip to the destination folder with password encryption if provided.
+        /// </summary>
+        /// <param name="inputFolderPath">Input folder path from where the files are to be zip.</param>
+        /// <param name="outputPathAndFile">Destination path where the zip is to be placed.</param>
+        /// <param name="password">Password to encrypt the zip.</param>
         public static void ZipFiles(string inputFolderPath, string outputPathAndFile, string password)
         {
             ArrayList ar = GenerateFileList(inputFolderPath); // generate file list
@@ -47,16 +56,19 @@ namespace RegisterModule
                     obuffer = new byte[ostream.Length];
                     ostream.Read(obuffer, 0, obuffer.Length);
                     oZipStream.Write(obuffer, 0, obuffer.Length);
+                    ostream.Close();
+                    ostream.Dispose();
                 }
             }
             oZipStream.Finish();
             oZipStream.Close();
             oZipStream.Dispose();
         }
-
-
-
-
+        /// <summary>
+        /// Generates files list from  specific folder.
+        /// </summary>
+        /// <param name="Dir">Folder path.</param>
+        /// <returns>Arraylist of files. </returns>
         private static ArrayList GenerateFileList(string Dir)
         {
             ArrayList fils = new ArrayList();
@@ -85,7 +97,14 @@ namespace RegisterModule
             }
             return fils; // return file list
         }
-
+        /// <summary>
+        /// Unzips the file from the folder provided into the destination folder.
+        /// </summary>
+        /// <param name="zipPathAndFile">Zip file path.</param>
+        /// <param name="outputFolder">Destination folder where the files are to be extracted.</param>
+        /// <param name="ExtractedPath">Destination folder name.</param>
+        /// <param name="password">Password for the zip to be unzippe if necessary.</param>
+        /// <param name="deleteZipFile">Set true if to delete the zip file.</param>
         public static void UnZipFiles(string zipPathAndFile, string outputFolder, ref string ExtractedPath, string password, bool deleteZipFile)
         {
             if (File.Exists(zipPathAndFile))
@@ -141,7 +160,13 @@ namespace RegisterModule
             }
         }
 
-
+        /// <summary>
+        /// Creates zip from list of zip file  into one.
+        /// </summary>
+        /// <param name="ZipFileList">List if string of zip name.</param>
+        /// <param name="Response">HttpResponse object response</param>
+        /// <param name="ZipFileName">Zip file name.</param>
+        /// <param name="TempFolder">Folder name containing the zips.</param>
         public static void CreateZipResponse(List<string> ZipFileList, HttpResponse Response, string ZipFileName, string TempFolder)
         {
             Response.Clear();
@@ -180,21 +205,23 @@ namespace RegisterModule
             }
         }
 
-
-        public static void CreateZipResponseOld(List<string> ZipFileList ,HttpResponse Response,string ZipFileName,string TempFolder)
+        /// <summary>
+        /// Is an old  method to creates zip from list of zip file  into one.
+        /// </summary>
+        /// <param name="ZipFileList">List if string of zip name.</param>
+        /// <param name="Response">HttpResponse object response</param>
+        /// <param name="ZipFileName">Zip file name.</param>
+        /// <param name="TempFolder">Folder name containing the zips.</param>
+        public static void CreateZipResponseOld(List<string> ZipFileList, HttpResponse Response, string ZipFileName, string TempFolder)
         {
 
             Response.Clear();
             Response.ContentType = "application/x-zip-compressed";
             Response.AppendHeader("content-disposition", "attachment; filename=\"" + ZipFileName + ".zip\"");
-
-
-
             ZipEntry entry = default(ZipEntry);
             const int size = 409600;
             byte[] bytes = new byte[size + 1];
             int numBytes = 0;
-
             FileStream fs = null;
             ZipOutputStream zipStream = new ZipOutputStream(Response.OutputStream);
             try
@@ -207,13 +234,11 @@ namespace RegisterModule
                     {
                         string folderName = ZipFileName + @"\";
                         entry =
-                            new ZipEntry(folderName +
-                                         ZipEntry.CleanName(file.Contains(ZipFileName + "\\")
+                            new ZipEntry(folderName + ZipEntry.CleanName(file.Contains(ZipFileName + "\\")
                                                                 ? file.Substring(file.LastIndexOf(ZipFileName + "\\") +
                                                                                  ZipFileName.Length + 1)
                                                                 : file.Substring(file.LastIndexOf("\\") + 1)));
                         zipStream.PutNextEntry(entry);
-
                         fs = System.IO.File.OpenRead(file);
                         numBytes = fs.Read(bytes, 0, size);
                         while (numBytes > 0)
@@ -258,6 +283,16 @@ namespace RegisterModule
             }
         }
 
+        /// <summary>
+        /// Unzips the config file from the zip path.
+        /// </summary>
+        /// <param name="zipPathAndFile">Zip file path</param>
+        /// <param name="outputFolder">Destination folder path.</param>
+        /// <param name="ExtractedPath">Zip extracted path.</param>
+        /// <param name="password">Password if needeed</param>
+        /// <param name="deleteZipFile">Set true to delete zip file.</param>
+        /// <param name="configFileName">Coonfig file name.</param>
+        /// <returns>Returns true if the config file is found.</returns>
         public static bool UnZipConfigFile(string zipPathAndFile, string outputFolder, ref string ExtractedPath, string password, bool deleteZipFile, string configFileName)
         {
             bool IsConfigFileFound = false;
@@ -313,7 +348,5 @@ namespace RegisterModule
 
             return IsConfigFileFound;
         }
-
     }
-    
 }

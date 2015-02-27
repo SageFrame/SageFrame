@@ -13,12 +13,23 @@ using System.Text;
 
 namespace SageFrame.ModuleMessage
 {
+    /// <summary>
+    /// Business logic for module message.
+    /// </summary>
     public class ModuleMessageController
     {
+        /// <summary>
+        /// Get all modules.
+        /// </summary>
+        /// <returns>List of ModuleMessageInfo class.</returns>
         public static List<ModuleMessageInfo> GetAllModules()
         {
             return (ModuleMessageDataProvider.GetAllModules());
         }
+        /// <summary>
+        /// Add module message.
+        /// </summary>
+        /// <param name="objModuleMessage">Object of ModuleMessageInfo class.</param>
         public static void AddModuleMessage(ModuleMessageInfo objModuleMessage)
         {
             try
@@ -31,6 +42,12 @@ namespace SageFrame.ModuleMessage
                 throw;
             }
         }
+        /// <summary>
+        /// Obtain module message.
+        /// </summary>
+        /// <param name="ModuleID">ModuleID</param>
+        /// <param name="Culture">Culture code.</param>
+        /// <returns>object of ModuleMessageInfo class.</returns>
         public static ModuleMessageInfo GetModuleMessage(int ModuleID, string Culture)
         {
             try
@@ -43,7 +60,12 @@ namespace SageFrame.ModuleMessage
                 throw;
             }
         }
-
+        /// <summary>
+        /// Obtain module message based on UserModuleID and culture.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="Culture">Culture code.</param>
+        /// <returns>Object of ModuleMessageInfo class.</returns>
         public static ModuleMessageInfo GetModuleMessageByUserModuleID(int UserModuleID, string Culture)
         {
             try
@@ -57,7 +79,11 @@ namespace SageFrame.ModuleMessage
             }
         }
 
-
+        /// <summary>
+        /// Update message status.
+        /// </summary>
+        /// <param name="ModuleID">ModuleID</param>
+        /// <param name="IsActive">true if active.</param>
         public static void UpdateMessageStatus(int ModuleID, bool IsActive)
         {
             try

@@ -20,10 +20,20 @@ using System.IO;
 
 namespace SageFrame.Core
 {
+    /// <summary>
+    /// Helps to encrypt or decrypt query string.
+    /// </summary>
     public class EncryptDecryptQueryString
     {
         private byte[] key = { };
         private byte[] IV = { 0x12, 0x34, 0x56, 0x78, 0x90, 0xab, 0xcd, 0xef };
+
+        /// <summary>
+        /// Decrypts the given string.
+        /// </summary>
+        /// <param name="stringToDecrypt">Query string to be decrypt.</param>
+        /// <param name="sEncryptionKey">Encryption key.</param>
+        /// <returns>Decrypted string.</returns>
         public string Decrypt(string stringToDecrypt, string sEncryptionKey)
         {
             byte[] inputByteArray = new byte[stringToDecrypt.Length + 1];
@@ -46,6 +56,12 @@ namespace SageFrame.Core
             }
         }
 
+        /// <summary>
+        /// Encrypts the given string.
+        /// </summary>
+        /// <param name="stringToDecrypt">Query string to be encrypt.</param>
+        /// <param name="sEncryptionKey">Encryption key.</param>
+        /// <returns>Encrypted string.</returns>
         public string Encrypt(string stringToEncrypt, string SEncryptionKey)
         {
             try

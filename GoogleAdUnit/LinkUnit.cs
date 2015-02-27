@@ -12,6 +12,9 @@ using System.ComponentModel;
 
 namespace SFE.GoogleAdUnit
 {
+    /// <summary>
+    /// Class that contains the basic properties and methods for advertisement.
+    /// </summary>
     [
         DefaultProperty("AffiliateId"),
         ToolboxData("<{0}:LinkUnit runat=\"server\"></{0}:LinkUnit>")
@@ -26,7 +29,7 @@ namespace SFE.GoogleAdUnit
 		#region Public Properties
 
  		/// <summary>
-		/// 
+		/// Gets or sets advertisement link's unit format.
 		/// </summary>
 		public LinkUnitFormat LinkUnitFormat
 		{
@@ -35,7 +38,7 @@ namespace SFE.GoogleAdUnit
 		}
 
         /// <summary>
-        /// 
+        /// Gets or sets advertisemt links per unit.
         /// </summary>
         public LinkAdsPerUnit AdsPerUnit
         {
@@ -46,6 +49,10 @@ namespace SFE.GoogleAdUnit
   		#endregion
 
 		#region Helper Methods
+        /// <summary>
+        /// Helps to design rendering time.
+        /// </summary>
+        /// <param name="writer"></param>
 		override protected void DesignTimeRender(System.Web.UI.HtmlTextWriter writer)
 		{
 			StringBuilder strStream = new StringBuilder();
@@ -66,6 +73,10 @@ namespace SFE.GoogleAdUnit
 			writer.Write(strStream.ToString());
 		}
 		
+        /// <summary>
+        /// Returns advertisement format.
+        /// </summary>
+        /// <returns></returns>
         override protected String GetAdFormat()
 		{
             String strFormat = String.Empty;
@@ -98,6 +109,10 @@ namespace SFE.GoogleAdUnit
             //return strFormat;
 		}
 
+        /// <summary>
+        /// Returns Unit dimension for the image in advertisement.
+        /// </summary>
+        /// <returns></returns>
         internal override UnitDimensions GetUnitDimensions()
         {
             return AdUnitGlobals.g_LinkUnitDimensions[this.LinkUnitFormat] as UnitDimensions;

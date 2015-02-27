@@ -12,8 +12,18 @@ using System.Text;
 
 namespace SageFrame.Common.Shared
 {
+    /// <summary>
+    /// Array helper.
+    /// </summary>
     public class ArrayHelper
     {
+        /// <summary>
+        /// Return "true" if array's are equal when compare two array. 
+        /// </summary>
+        /// <typeparam name="T">Type of the object implementing.</typeparam>
+        /// <param name="a1">First array.</param>
+        /// <param name="a2">Second array.</param>
+        /// <returns>Return "true" if array's are equal.</returns>
         public static bool ArraysEqual<T>(T[] a1, T[] a2)
         {
             Array.Sort(a1);

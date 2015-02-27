@@ -30,7 +30,7 @@ public partial class Modules_Logo_LogoView : SageUserControl
     protected void Page_Load(object sender, EventArgs e)
     {
         IncludeCss("Logo", "/Modules/Logo/css/module.css");
-       
+
         moduleID = UserModuleID;
         portalID = GetPortalID;
         resolvedUrl = ResolveUrl("~/");
@@ -99,4 +99,5 @@ public partial class Modules_Logo_LogoView : SageUserControl
             }
         }
     }
+   
 }

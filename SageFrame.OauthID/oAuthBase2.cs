@@ -12,6 +12,9 @@ using System.Web;
 
 namespace SageFrame.OauthID
 {
+    /// <summary>
+    ///  Description for oAuthBase2.
+    /// </summary>
     public class oAuthBase2
     {
 
@@ -352,7 +355,7 @@ namespace SageFrame.OauthID
         /// <summary>
         /// Generate the timestamp for the signature        
         /// </summary>
-        /// <returns></returns>
+        /// <returns>time in second.</returns>
 
         public virtual string GenerateTimeStamp()
         {
@@ -373,7 +376,7 @@ namespace SageFrame.OauthID
         /// <summary>
         /// Generate a nonce
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Random number.</returns>
         public virtual string GenerateNonce()
         {
             // Just a simple implementation of a random number between 123400 and 9999999

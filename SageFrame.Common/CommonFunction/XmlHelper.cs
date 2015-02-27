@@ -14,12 +14,13 @@ using System.Xml;
 using System.Xml.Serialization;
 #endregion
 
-/// <summary>
-/// Summary description for XmlHelper
-/// </summary>
-/// 
+
 namespace SageFrame.Web
 {
+    /// <summary>
+    /// Summary description for XmlHelper
+    /// </summary>
+    /// 
     public class XmlHelper
     {
         #region Methods
@@ -119,7 +120,11 @@ namespace SageFrame.Web
                 return (DateTime)objDate;
             }
         }
-
+        /// <summary>
+        /// Delete XML nodes.
+        /// </summary>
+        /// <param name="target_path">File path.</param>
+        /// <param name="nodeName">Node name.</param>
         public static void DeleteNodes(string target_path, string nodeName)
         {
             XmlDocument doc = new XmlDocument();

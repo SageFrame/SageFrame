@@ -22,7 +22,12 @@ namespace SageFrame.Framework
     {
         private static IList<IPv4Data> _dataList;
         private static object _syncObject = new object();
-
+        /// <summary>
+        /// A DateTimeOffset value is not tied to a particular time zone, but can originate from any of a variety of time zones. 
+        /// Return assigned DateTime.
+        /// </summary>
+        /// <param name="ipAddress">Object of IPAddress.</param>
+        /// <returns>Assigned DateTime</returns>
         public static DateTimeOffset? AssignedDateTime(this IPAddress ipAddress)
         {
             IPv4Data data = GetIPv4Data(ipAddress);
@@ -33,9 +38,14 @@ namespace SageFrame.Framework
             DateTimeOffset offset = new DateTimeOffset(0x7b2, 1, 1, 0, 0, 0, 0, new TimeSpan(0, 0, 0));
             return new DateTimeOffset?(offset.AddSeconds((double)data.Assigned));
         }
-
+        /// <summary>
+        /// Teturn country name.
+        /// </summary>
+        /// <param name="ipAddress">Object of IPAddress.</param>
+        /// <returns>Country name if exist.</returns>
         public static string Country(this IPAddress ipAddress)
         {
+            
             IPv4Data data = GetIPv4Data(ipAddress);
             if (data != null)
             {
@@ -43,7 +53,11 @@ namespace SageFrame.Framework
             }
             return null;
         }
-
+        /// <summary>
+        /// Return IPv4 information based on provided IPAddress.
+        /// </summary>
+        /// <param name="ipAddress">Object of IPAddress.</param>
+        /// <returns>Object of IPv4Data.</returns>
         private static IPv4Data GetIPv4Data(IPAddress ipAddress)
         {
             if (ipAddress == null)
@@ -65,7 +79,11 @@ namespace SageFrame.Framework
                 return ((d.IpFrom <= ipAddressLong) && (d.IpTo >= ipAddressLong));
             }).SingleOrDefault<IPv4Data>();
         }
-
+        /// <summary>
+        /// Return ISO 3166 three letter code(County name code eg. HKG -- Hong Kong, NPL -- Nepal) based upon provided IPAddress.
+        /// </summary>
+        /// <param name="ipAddress">Object of IPAddress.</param>
+        /// <returns>ISO 3166 three letter code.</returns>
         public static string Iso3166ThreeLetterCode(this IPAddress ipAddress)
         {
             IPv4Data data = GetIPv4Data(ipAddress);
@@ -75,7 +93,11 @@ namespace SageFrame.Framework
             }
             return null;
         }
-
+        /// <summary>
+        /// Return ISO 3166 two letter code(County name code eg. HK -- Hong Kong, NP -- Nepal) based upon provided IPAddress.
+        /// </summary>
+        /// <param name="ipAddress">Object of IPAddress.</param>
+        /// <returns>ISO 3166 two letter code</returns>
         public static string Iso3166TwoLetterCode(this IPAddress ipAddress)
         {
             IPv4Data data = GetIPv4Data(ipAddress);
@@ -85,7 +107,10 @@ namespace SageFrame.Framework
             }
             return null;
         }
-
+        /// <summary>
+        /// Return list of IPv4 URL information read from csv package. 
+        /// </summary>
+        /// <returns>List of IPv4 URL information </returns>
         private static IList<IPv4Data> ReadInCSVFile()
         {
             IList<IPv4Data> list = null;
@@ -131,7 +156,11 @@ namespace SageFrame.Framework
             }
             return null;
         }
-
+        /// <summary>
+        /// Return registry based on provided IPAddress.
+        /// </summary>
+        /// <param name="ipAddress">Object of IPAddress.</param>
+        /// <returns>Registry</returns>
         public static string Registry(this IPAddress ipAddress)
         {
             IPv4Data data = GetIPv4Data(ipAddress);
@@ -141,7 +170,9 @@ namespace SageFrame.Framework
             }
             return null;
         }
-
+        /// <summary>
+        /// Return list of IPv4Data.
+        /// </summary>
         private static IList<IPv4Data> DataList
         {
             get

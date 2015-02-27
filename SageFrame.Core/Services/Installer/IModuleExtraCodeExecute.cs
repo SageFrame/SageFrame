@@ -6,10 +6,13 @@ using System.Xml;
 
 namespace SageFrame.Core.Services
 {
-   public interface IModuleExtraCodeExecute
+    /// <summary>
+    /// Interface for installation.
+    /// </summary>
+    public interface IModuleExtraCodeExecute
     {
-       void ExecuteOnInstallation(XmlDocument doc, string tempFolderPath);
+        void ExecuteOnInstallation(XmlDocument doc, string tempFolderPath);
 
-       void ExecuteOnUnInstallation(XmlDocument doc);
-    }   
+        void ExecuteOnUnInstallation(XmlDocument doc);
+    }
 }

@@ -43,7 +43,7 @@
                 this.IconUploaderExtLink();
                 this.IconUploaderHtmlContent();
                 //SageFrame.tooltip.GetToolTip("imgToolTip", "#h3MenuType", "This is from where you can include items into your menu ");
-               // SageFrame.tooltip.GetToolTip("imgToolTip1", "#lblChoosePage", "List of pages that you can include in the menu ");
+                // SageFrame.tooltip.GetToolTip("imgToolTip1", "#lblChoosePage", "List of pages that you can include in the menu ");
                 $('#rdbDropdown').prop("checked", true);
                 $('#txtExternalLink').on("change", function () {
                     var ExternalLink = $(this).val();
@@ -255,10 +255,10 @@
                 });
                 $('#divLstMenu').on("click", 'span.ui-tree-title', function () {
                     var ids = $(this).parent('li').prop('id').split('_');
-                    MenuMgr.config.MenuItemID = ids[0];
-                    MenuMgr.LoadMenuItemDetails(ids[0]);
+                    MenuMgr.config.MenuItemID = ids[0];                   
                     $('#imgAddmenuItem').text("Save Menu Item");
                     MenuMgr.LoadParentPages($("#menuList ").find("ul li.sfSelected").prop("id"));
+                    MenuMgr.LoadMenuItemDetails(ids[0]);
                     $(this).parent().find('.ui-tree-title').each(function () {
                         var self = $(this).text();
                         $("#selMenuItem > option").each(function () {
@@ -335,7 +335,7 @@
                     $('#MenuMgrView,#MenuMgrPermissiom').hide();
                     $('#tblSideMenu').hide();
                     MenuMgr.LoadMenuSettings();
-                    if ($('#chkCaption').prop("checked", true)) {
+                    if ($('#chkCaption').prop("checked") == true) {
                         $('#divCaption').hide();
                     }
                     else {
@@ -456,7 +456,7 @@
                             $('#lblError').hide();
                         }
                         else {
-                            SageFrame.messaging.show("Please Choose Unique menu Name", "Success");
+                            SageFrame.messaging.show("Please Choose Unique menu Name", "Error");
                             $('.sfDivFlying').hide();
                         }
                     }
@@ -540,7 +540,7 @@
                             $('#spnUnique').remove();
                         }
                         else {
-                            SageFrame.messaging.show("Please Choose Unique menu Name", "Success");
+                            SageFrame.messaging.show("Please Choose Unique menu Name", "Error");
                             $('.sfDivFlying').hide();
                         }
                     }
@@ -903,7 +903,9 @@
                         html += '<label>' + item.SEOName.replace(new RegExp("-", "g"), ' ') + '</label>';
                         if (item.ChildCount > 0) {
                             itemPath += item.SEOName;
+                            html += "<ul>";
                             html += MenuMgr.BindChildCategory(pages, PageID);
+                            html += "</ul>";
                         }
                         html += '</li>';
                     }
@@ -1087,6 +1089,7 @@
                         MenuOrder: "1",
                         Mode: mode,
                         IsActive: $("#chkLinkActive").prop("checked") ? true : false,
+                        CultureCode: p.CultureCode,
                         IsVisible: $("#chkLinkVisible").prop("checked") ? true : false
                     },
                     PortalID: SageFramePortalID,
@@ -1464,6 +1467,7 @@
                         MenuMgr.BindMenuList(data);
                         break;
                     case 1:
+                        SageFrame.messaging.show("Setting successfully saved", "Success");
                         $('.sfDivFlying').hide();
                         break;
                     case 2:
@@ -1611,21 +1615,22 @@
             		                aroundLeft: 0,
             		                aroundRight: 0
             		            }
-            	            ],
+                    ],
                     drop: function (event, ui) {
+
                         var draggebleSpanID = $('#pageTree').find('li.ui-draggable-dragging');
                         var dropableSpanID = $('#' + $(this).find('li span.ui-tree-droppable').parents('li').attr("id"));
-                        var mouseTopPosition = event.pageY - dropableSpanID.offset().top;
-
+                        var mouseTopPosition = event.pageY - draggebleSpanID.offset().top;
                         var dropableSpanHeight = $(this).find('li span.ui-tree-droppable').parents('li').height();
                         var portionOne = dropableSpanHeight / 4;
                         var separateLevelOne = dropableSpanHeight - portionOne;
                         var separateLevelTwo = dropableSpanHeight - portionOne * 3;
-
                         var draggebleSpanTopPosition = draggebleSpanID.position().top;
                         var dropableSpanTopPosition = dropableSpanID.position().top;
                         var difference = draggebleSpanTopPosition + mouseTopPosition - dropableSpanTopPosition; // Math.abs(
                         var returnOverStatePosition = '';
+
+                        //alert("separateLevelOne: " + separateLevelOne + " separateLevelTwo: " + separateLevelTwo + " difference: " + difference + " draggebleSpanTopPosition: " + draggebleSpanTopPosition + " mouseTopPosition: " + mouseTopPosition + " dropableSpanTopPosition: " + dropableSpanTopPosition);
                         if ((separateLevelOne) < difference) {
                             returnOverStatePosition = 'bottom';
                         } else if ((separateLevelTwo) < difference) {
@@ -1638,7 +1643,6 @@
                             case 'top':
                                 ui.target.before(ui.sender.getJSON(ui.draggable), ui.droppable);
                                 ui.sender.remove(ui.draggable);
-
                                 var MenuItemID = $(ui.draggable).prop("id");
                                 var ParentID = $(ui.droppable).closest('ul').parent('li').prop('id');
                                 var BeforeID = $(ui.droppable).parent("li").prop("id");
@@ -1646,7 +1650,6 @@
                                 ParentID = ParentID == null ? 0 : ParentID;
                                 MenuMgr.SortMenu(MenuItemID, ParentID, BeforeID, AfterID, 1);
                                 break;
-
                             case 'bottom':
                                 ui.target.after(ui.sender.getJSON(ui.draggable), ui.droppable);
                                 ui.sender.remove(ui.draggable);
@@ -1715,7 +1718,6 @@
                                 arrVal = $(t).find('span.ui-tree-selected').parent('li').prop('id').split('_');
                                 $(t).find('span.ui-tree-selected').parent('li').remove();
                                 MenuMgr.DeleteLink(arrVal[0]);
-
                             }
                         }
                     });
@@ -1729,7 +1731,8 @@
                     PortalID: SageFramePortalID,
                     UserModuleID: MenuMgr.config.UserModuleID,
                     UserName: SageFrameUserName,
-                    secureToken: SageFrameSecureToken
+                    secureToken: SageFrameSecureToken,
+                    CultureCode: p.CultureCode
                 });
                 this.config.ajaxCallMode = 11;
                 this.ajaxCall(this.config);
@@ -1748,7 +1751,8 @@
                         PortalID: portalid,
                         userModuleId: MenuMgr.config.UserModuleID,
                         UserName: SageFrameUserName,
-                        secureToken: SageFrameSecureToken
+                        secureToken: SageFrameSecureToken,
+                        cultureCode: p.CultureCode
                     }),
                     dataType: MenuMgr.config.dataType,
                     success: function (msg) {
@@ -1763,7 +1767,6 @@
                 this.config.data = MenuMgr.GetSettingList(),
                 this.config.ajaxCallMode = 1;
                 this.ajaxCall(this.config);
-                SageFrame.messaging.show("Setting successfully saved", "Success");
             },
             GetSettingList: function () {
                 var _SettingValue = "";
@@ -1779,7 +1782,8 @@
                     PortalID: SageFramePortalID,
                     UserModuleID: MenuMgr.config.UserModuleID,
                     UserName: SageFrameUserName,
-                    secureToken: SageFrameSecureToken
+                    secureToken: SageFrameSecureToken,
+                    CultureCode: p.CultureCode
                 };
                 $.each(SettingKeys, function (index, item) {
                     _SettingValue = SettingValues[index];
@@ -1806,20 +1810,23 @@
                 }
             },
             BindMenuSettings: function (data) {
-                var settings = data.d;
+                var settings = data.d;                
                 switch (parseInt(settings.MenuType)) {
                     case 1:
                         $('#rdbHorizontalMenu').prop("checked", "checked");
+                        $('#rdbHorizontalMenu').trigger('click');
                         //$('#tblSideMenu').slideUp();
                         $('#tblTopClientMenu').slideDown();
                         break;
                     case 2:
                         $('#rdbSideMenu').prop("checked", "checked");
+                        $('#rdbSideMenu').trigger('click');
                         //$('#tblSideMenu').slideDown();
                         $('#tblTopClientMenu').slideUp();
                         break;
                     case 3:
                         $('#rdbFooter').prop("checked", "checked");
+                        $('#rdbFooter').trigger('click');
                         //$('#tblSideMenu').slideUp();
                         $('#tblTopClientMenu').slideUp();
                         break;
@@ -1857,6 +1864,7 @@
                         $('#chkShowText').prop("checked", true);
                         break;
                 }
+
                 switch (parseInt(settings.Caption)) {
                     case 0:
                         $('#chkCaption').prop("checked", false);

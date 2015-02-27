@@ -6,8 +6,17 @@ using SageFrame.Web.Utilities;
 
 namespace SageFrame.Core
 {
+    /// <summary>
+    /// Manipulates data for shorten URL.
+    /// </summary>
     public class ShortUrlProvider
     {
+        /// <summary>
+        /// Connects to database and encodes the url.
+        /// </summary>
+        /// <param name="url">User readable URL</param>
+        /// <param name="code">Encrpted url.</param>
+        /// <returns>Encrypted URL.</returns>
         public string EncodeUrl(string url, string code)
         {
             try
@@ -25,6 +34,11 @@ namespace SageFrame.Core
             }
         }
 
+        /// <summary>
+        /// Decodes the given encrpted URL to user friendly URL.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public string DecodeUrl(string key)
         {
             try
@@ -36,7 +50,6 @@ namespace SageFrame.Core
             }
             catch (Exception ex)
             {
-                //SageFrame.Web.ProcessException(ex);
                 throw;
             }
         }

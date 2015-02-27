@@ -27,6 +27,9 @@ using System;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Enum for AttributeTypes.
+    /// </summary>
 	public enum AttributeTypes
 	{
 		Attribute = 0,

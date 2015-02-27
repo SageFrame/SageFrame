@@ -28,8 +28,23 @@ using System.Xml.Linq;
 /// </summary>
 public class ImageFile
 {
-        public string ThumbImageFileName { get; set; }
-        public string FileName { get; set; }
-        public string Size { get; set; }
-        public string CreatedDate { get; set; }
+    /// <summary>
+    /// Gets or sets Image thumbnail file name.
+    /// </summary>
+    public string ThumbImageFileName { get; set; }
+
+    /// <summary>
+    /// Gets or sets file name.
+    /// </summary>
+    public string FileName { get; set; }
+
+    /// <summary>
+    /// Gets or sets image size.
+    /// </summary>
+    public string Size { get; set; }
+
+    /// <summary>
+    /// Gets or sets created date in string format.
+    /// </summary>
+    public string CreatedDate { get; set; }
 }

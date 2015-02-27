@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -16,24 +16,19 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
     [ScriptService]
     public partial class PackageCreator : BaseAdministrationUserControl
     {
+
         private void InitializeJS()
         {
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "GlobalVariable1", " var CancelURL='" + ResolveUrl("~/") + "Admin/Modules" + SageFrameSettingKeys.PageExtension + "';", true);
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "GlobalVariable2", " var sageRootPah='" + ResolveUrl("~/") + "';", true);
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "GlobalVariable1", " var sageRootPah='" + ResolveUrl("~/") + "';", true);
             Page.ClientScript.RegisterClientScriptInclude("Validater1", ResolveUrl(this.AppRelativeTemplateSourceDirectory + "Script/json2.js"));
             Page.ClientScript.RegisterClientScriptInclude("Validater3", ResolveUrl(this.AppRelativeTemplateSourceDirectory + "Script/jquery.validate.js"));
             Page.ClientScript.RegisterClientScriptInclude("AjaxUploader1", ResolveUrl(this.AppRelativeTemplateSourceDirectory + "Script/ajaxupload.js"));
-            Page.ClientScript.RegisterClientScriptInclude("SageFrameTreeView", ResolveUrl(this.AppRelativeTemplateSourceDirectory + "Script/jqueryFileTree.js"));
-
-            string modulePath = ResolveUrl(this.AppRelativeTemplateSourceDirectory);
-
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "FileManagerGlobalVariable1234", " var FileManagerPath123='" + ResolveUrl(modulePath) + "';", true);
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "FileMangerUserModuleID", " var FileMangerUserModuleID='" + SageUserModuleID + "';", true);
+            //Page.ClientScript.RegisterClientScriptInclude("packageCreater", ResolveUrl(this.AppRelativeTemplateSourceDirectory + "Script/PackageCreator.js"));
         }
+
         protected void Page_Init(object sender, EventArgs e)
         {
             InitializeJS();
-            IncludeCss("treeView", "/Modules/Admin/Extensions/Editors/Css/jqueryFileTree.css");
         }
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -43,12 +38,13 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 {
                     BindDropDown();
                     BindAssemblyDropDown();
+
                     this.tmpFoldName.Value = String.Format("{0}", DateTime.Now.ToString("dd-MMM-yyyy.hhmmssffff"));
+                    // string dirName = HostingEnvironment.ApplicationPhysicalPath + "Install\\TempResources\\" + this.tmpFoldName.Value;
                 }
             }
             catch (Exception ex)
             {
-
                 ProcessException(ex);
             }
 
@@ -56,18 +52,18 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
 
         protected void ImbAddRight_Click(object sender, EventArgs e)
         {
-            if (lbModulesList.Items.Count > 0) lbModulesList.Items.Clear();
-            string module = lbAvailableModules.SelectedItem.Value as string;
-            lbModulesList.Items.Add(new ListItem(module));
-            lbAvailableModules.Items.Remove(lbAvailableModules.SelectedItem);
-            BindFolderFilesDropDown(module);
+            //if (lbModulesList.Items.Count > 0) lbModulesList.Items.Clear();
+            //string module = lbAvailableModules.SelectedItem.Value as string;
+            //lbModulesList.Items.Add(new ListItem(module));
+            //lbAvailableModules.Items.Remove(lbAvailableModules.SelectedItem);
+            //BindFolderFilesDropDown(module);
         }
 
         protected void ImbAddLeft_Click(object sender, EventArgs e)
         {
-            string module = lbModulesList.SelectedItem.Value as string;
-            lbAvailableModules.Items.Add(new ListItem(module));
-            lbModulesList.Items.Remove(lbModulesList.SelectedItem);
+            //string module = lbModulesList.SelectedItem.Value as string;
+            //lbAvailableModules.Items.Add(new ListItem(module));
+            //lbModulesList.Items.Remove(lbModulesList.SelectedItem);
         }
 
         private void BindDropDown()
@@ -86,6 +82,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                         dirList.Add(dirName);
                     }
                 }
+
                 //adding folder in admin
                 foreach (string subdir in Directory.GetDirectories(folderpath + "\\Admin"))
                 {
@@ -100,6 +97,8 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 ProcessException(ex);
             }
         }
+
+
 
         private void BindFolderFilesDropDown(string path)
         {
@@ -122,6 +121,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                         }
                     }
                 }
+
                 //adding folder in admin
                 foreach (string subdir in Directory.GetDirectories(folderpath))
                 {
@@ -151,6 +151,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 ddlEditControlSrc.DataBind();
                 ddlViewControlSrc.DataBind();
                 ddlSettingControlSrc.DataBind();
+
             }
             catch (Exception ex)
             {
@@ -188,7 +189,9 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             try
             {
                 string folderpath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "bin");
+
                 List<string> dirList = new List<string>();
+
                 foreach (string subdir in Directory.GetFiles(folderpath))
                 {
                     string dirName = subdir.Substring(subdir.LastIndexOf("\\") + 1);
@@ -197,6 +200,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                         dirList.Add(dirName);
                     }
                 }
+
                 lstAssembly.DataSource = dirList;
                 lstAssembly.DataBind();
             }
@@ -205,32 +209,29 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 ProcessException(ex);
             }
         }
-
-        protected void Button1_Click(object sender, EventArgs e)
-        {
-
-        }
+   
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             ClientScriptManager script = Page.ClientScript;
             Button btn = sender as Button;
-            if (btn.Text == "Next")
+            if (btn.Text == "Next" || hdnPrev.Value == "0")
             {
                 string module = lbAvailableModules.SelectedItem.Value as string;
                 BindFolderFilesDropDown(module);
                 if (!script.IsClientScriptBlockRegistered(GetType(), "divShow1"))
                 {
                     script.RegisterClientScriptBlock(this.GetType(), "divShow1", "<script>$(function(){$('#div1').hide();$('#div2').show(); counter=1;$('#' + NewPackage.Settings.next).val('Next');});</script>");
+
                 }
                 btn.Text = "Submit";
             }
-            else
+            else if (btn.Text == "Submit" && hdnPrev.Value != "0")
             {
                 string rootPath = HostingEnvironment.ApplicationPhysicalPath;
                 ModuleInfoPackage package = new ModuleInfoPackage();
                 package.Description = this.PackageDetails1.Description;
-                package.Version = this.PackageDetails1.FirstVersion + "." + this.PackageDetails1.SecondVersion + ".";
+                package.Version = this.PackageDetails1.FirstVersion + "." + this.PackageDetails1.SecondVersion + "." + this.PackageDetails1.LastVersion;
                 package.ReleaseNotes = this.PackageDetails1.ReleaseNotes;
                 package.Owner = this.PackageDetails1.Owner;
                 package.Organization = this.PackageDetails1.Organization;
@@ -250,78 +251,72 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 moduleElement.Controls = GetControls();
                 package.ModuleElements.Add(moduleElement);
                 package.FileNames.AddRange(GetSelectedItems(this.lstAssembly, Path.Combine(rootPath, "bin\\")));
-
                 package.FileNames.AddRange(GetSelectedItems(this.lstFolderFiles, Path.Combine(rootPath, "Modules\\" + package.FolderName + "\\")));
                 string tempFolderPath = rootPath + GetTempPath();
                 if (this.hdnInstallScriptFileName.Value != null && this.hdnInstallScriptFileName.Value.Length > 0)
                 {
-                    package.FileNames.Add(Path.Combine(tempFolderPath, this.hdnInstallScriptFileName.Value));
+                    string InstalltempPath = Path.Combine(tempFolderPath, hdnInstallScriptFileName.Value);
+                    StreamReader reader = new StreamReader(InstalltempPath);
+                    string InstallScript = reader.ReadToEnd();
+                    reader.Close();
+                    string InstallfilePath = tempFolderPath + package.Version + ".SqlDataProvider";
+                    StreamWriter writer = File.CreateText(InstallfilePath);
+                    writer.Write(InstallScript);
+                    writer.Flush();
+                    writer.Close();
+                    writer.Dispose();
+                    package.FileNames.Add(InstallfilePath);
                 }
                 else if (!string.IsNullOrEmpty(this.InstallScriptTxt.Text))
                 {
-                    string filePath = tempFolderPath + package.Version + ddlOrder.SelectedValue + ".SqlDataProvider";
-                    StreamWriter writer = File.CreateText(filePath);
-                    writer.Write(this.InstallScriptTxt.Text);
-                    writer.Flush();
-                    writer.Close();
-                    writer.Dispose();
-                    package.FileNames.Add(filePath);
+                    try
+                    {
+                        string filePath = tempFolderPath + package.Version + ".SqlDataProvider";
+                        StreamWriter writer = File.CreateText(filePath);
+                        writer.Write(this.InstallScriptTxt.Text);
+                        writer.Flush();
+                        writer.Close();
+                        writer.Dispose();
+                        package.FileNames.Add(filePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
                 }
-
-                if (this.hdnInstallScriptFileName2.Value != null && this.hdnInstallScriptFileName2.Value.Length > 0)
-                {
-                    package.FileNames.Add(Path.Combine(tempFolderPath, this.hdnInstallScriptFileName2.Value));
-                }
-                else if (!string.IsNullOrEmpty(this.InstallScriptTxt2.Text))
-                {
-                    string filePath = tempFolderPath + package.Version + ddlOrder2.SelectedValue + ".SqlDataProvider";
-                    StreamWriter writer = File.CreateText(filePath);
-                    writer.Write(this.InstallScriptTxt2.Text);
-                    writer.Flush();
-                    writer.Close();
-                    writer.Dispose();
-                    package.FileNames.Add(filePath);
-                }
-
-                if (this.hdnInstallScriptFileName3.Value != null && this.hdnInstallScriptFileName3.Value.Length > 0)
-                {
-                    package.FileNames.Add(Path.Combine(tempFolderPath, this.hdnInstallScriptFileName3.Value));
-                }
-                else if (!string.IsNullOrEmpty(this.InstallScriptTxt3.Text))
-                {
-                    string filePath = tempFolderPath + package.Version + ddlOrder3.SelectedValue + ".SqlDataProvider";
-                    StreamWriter writer = File.CreateText(filePath);
-                    writer.Write(this.InstallScriptTxt3.Text);
-                    writer.Flush();
-                    writer.Close();
-                    writer.Dispose();
-                    package.FileNames.Add(filePath);
-                }
-
                 if (this.hdnUnInstallSQLFileName.Value != null && this.hdnUnInstallSQLFileName.Value.Length > 0)
-                {
-                    package.FileNames.Add(Path.Combine(tempFolderPath, this.hdnUnInstallSQLFileName.Value));
+                {                   
+                    string UnInstalltempPath = Path.Combine(tempFolderPath, hdnUnInstallSQLFileName.Value);
+                    StreamReader reader = new StreamReader(UnInstalltempPath);
+                    string UnInstallScript = reader.ReadToEnd();
+                    reader.Close();
+                    string UnInstallfilePath = tempFolderPath + "Uninstall.SqlDataProvider";
+                    StreamWriter writer = File.CreateText(UnInstallfilePath);
+                    writer.Write(UnInstallScript);
+                    writer.Flush();
+                    writer.Close();
+                    writer.Dispose();
+                    package.FileNames.Add(UnInstallfilePath);
                 }
                 else if (!string.IsNullOrEmpty(this.UnistallScriptTxt.Text))
                 {
-                    string filePath = tempFolderPath + package.Version + ddlUnInstallOrder.SelectedValue + ".SqlDataProvider";
+                    string filePath = tempFolderPath + "Uninstall.SqlDataProvider";
                     StreamWriter writer = File.CreateText(filePath);
-
                     writer.Write(this.UnistallScriptTxt.Text);
                     writer.Flush();
                     writer.Close();
                     writer.Dispose();
                     package.FileNames.Add(filePath);
                 }
+
                 if (!string.IsNullOrEmpty(this.hdnSrcZipFile.Value) && this.hdnSrcZipFile.Value.Trim().Length > 1)
                 {
                     package.FileNames.Add(Path.Combine(tempFolderPath, this.hdnSrcZipFile.Value));
                 }
-
                 ModuleSfeWriter moduleWriter = new ModuleSfeWriter(package);
                 try
                 {
-                    moduleWriter.CreatePackage(package.FolderName, "SFE_" + package.FolderName, package.FileNames, this.Context.Response, tempFolderPath, package, hdnSourceFile.Value);
+                    moduleWriter.CreatePackage(package.FolderName, "SFE_" + package.FolderName, package.FileNames, this.Context.Response, tempFolderPath, package);
                     if (script.IsClientScriptBlockRegistered(GetType(), "script1"))
                     {
                         script.RegisterClientScriptBlock(GetType(), "script1", "<script>$(function(){ counter=0;});</script>");
@@ -329,18 +324,17 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 }
                 catch (Exception)
                 {
+                    //ReturnBack();
                 }
+
+                // ReturnBack();
             }
         }
-
-
 
         protected void ReturnBack()
         {
             HttpContext.Current.Response.Redirect("Super-User/Module-Definitions.aspx", true);
-
         }
-
 
         public List<String> GetSelectedItems(ListBox lbx, string DirectoryPath)
         {
@@ -397,10 +391,9 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             }
             return list;
         }
-        protected void btnCancelled_Click(object sender, EventArgs e)
+        protected void btnBack_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Admin/Admin/Modules" + SageFrameSettingKeys.PageExtension);
-            //ProcessCancelRequest(Request.RawUrl);
+            ProcessCancelRequest(Request.RawUrl);
         }
     }
 }

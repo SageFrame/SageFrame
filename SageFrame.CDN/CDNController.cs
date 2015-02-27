@@ -5,8 +5,15 @@ using System.Text;
 
 namespace SageFrame.CDN
 {
+    /// <summary>
+    ///Business logic class for CDN.
+    /// </summary>
     public class CDNController
     {
+        /// <summary>
+        /// Saves  CDN Links.
+        /// </summary>
+        /// <param name="objInfo">CDNInfo object list</param>
         public void SaveLinks(List<CDNInfo> objInfo)
         {
             try
@@ -16,15 +23,20 @@ namespace SageFrame.CDN
             }
             catch (Exception)
             {
-                
+
                 throw;
             }
         }
-
+        /// <summary>
+        /// Returns CDN object list for given portalID.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns> CDNInfo object list  </returns>
         public List<CDNInfo> GetCDNLinks(int PortalID)
         {
             try
             {
+                
                 CDNProvider obj = new CDNProvider();
                 return obj.GetCDNLinks(PortalID);
             }
@@ -34,7 +46,10 @@ namespace SageFrame.CDN
                 throw;
             }
         }
-
+        /// <summary>
+        /// Saves  URL loading order of CDN links.
+        /// </summary>
+        /// <param name="objOrder">List of CDNInfo objects</param>
         public void SaveOrder(List<CDNInfo> objOrder)
         {
             try
@@ -48,7 +63,11 @@ namespace SageFrame.CDN
                 throw;
             }
         }
-
+        /// <summary>
+        /// Deletes url of CDN.
+        /// </summary>
+        /// <param name="UrlID">Url id</param>
+        /// <param name="PortalID">Portal id</param>
         public void DeleteURL(int UrlID, int PortalID)
         {
             CDNProvider objController = new CDNProvider();

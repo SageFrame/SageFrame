@@ -21,14 +21,20 @@ using SageFrame.Web;
 
 namespace SageFrame.SageFrameClass
 {
+    /// <summary>
+    /// Manipulates and returns the list availabe in this applications for any languages.
+    /// </summary>
     public static class SageFrameLists
     {
         
+        /// <summary>
+        /// Returns list of menu position in the page  for current culture.
+        /// </summary>
+        /// <returns>Returns list of menu position in the page for current culture.</returns>
         public static List<SageFrameStringKeyValue> menuPagePosition()
         {
             //SageUserControl SU = new SageUserControl();
-            //SU.GetSageMessage("PortalSettings", "PortalSettingIsSavedSuccessfully");
-            
+            //SU.GetSageMessage("PortalSettings", "PortalSettingIsSavedSuccessfully");            
             List<SageFrameStringKeyValue> menuPosition = new List<SageFrameStringKeyValue>();
             menuPosition.Add(new SageFrameStringKeyValue("Before", SageMessage.ListSageText(CultureInfo.CurrentCulture.Name, "SageFrameLists", "Before")));
             menuPosition.Add(new SageFrameStringKeyValue("After", SageMessage.ListSageText(CultureInfo.CurrentCulture.Name, "SageFrameLists", "After")));
@@ -36,6 +42,10 @@ namespace SageFrame.SageFrameClass
             return menuPosition;
         }
 
+        /// <summary>
+        /// Returns list of ULRs for current culture.
+        /// </summary>
+        /// <returns>Returns list of URLs for current culture.</returns>
         public static List<SageFrameStringKeyValue> urlTypeName()
         {
             List<SageFrameStringKeyValue> urlType = new List<SageFrameStringKeyValue>();
@@ -44,10 +54,13 @@ namespace SageFrame.SageFrameClass
             return urlType;
         }
 
+        /// <summary>
+        /// Returns list of data types for current culture.
+        /// </summary>
+        /// <returns>Returns list of data types for current culture.</returns>
         public static List<SageFrameIntKeyValue> DataTypes()
         {
             List<SageFrameIntKeyValue> arrColl = new List<SageFrameIntKeyValue>();
-
             arrColl.Add(new SageFrameIntKeyValue(0, SageMessage.ListSageText(CultureInfo.CurrentCulture.Name, "SageFrameLists", "String")));
             arrColl.Add(new SageFrameIntKeyValue(1, SageMessage.ListSageText(CultureInfo.CurrentCulture.Name, "SageFrameLists", "Integer")));
             arrColl.Add(new SageFrameIntKeyValue(2, SageMessage.ListSageText(CultureInfo.CurrentCulture.Name, "SageFrameLists", "Decimal")));
@@ -55,6 +68,10 @@ namespace SageFrame.SageFrameClass
             return arrColl;
         }
 
+        /// <summary>
+        /// Returns list of SMTP authentication for current culture.
+        /// </summary>
+        /// <returns>Returns list of SMTP authentication for current culture.</returns>
         public static List<SageFrameIntKeyValue> SMTPAuthntication()
         {
             List<SageFrameIntKeyValue> arrColl = new List<SageFrameIntKeyValue>();
@@ -64,6 +81,10 @@ namespace SageFrame.SageFrameClass
             return arrColl;
         }
 
+        /// <summary>
+        /// Returns list of user registration type for current culture.
+        /// </summary>
+        /// <returns>Returns list of user registration type for current culture.</returns>
         public static List<SageFrameIntKeyValue> UserRegistrationTypes()
         {
             List<SageFrameIntKeyValue> arrColl = new List<SageFrameIntKeyValue>();
@@ -74,6 +95,10 @@ namespace SageFrame.SageFrameClass
             return arrColl;
         }
 
+        /// <summary>
+        /// Returns list of Search engines for current culture.
+        /// </summary>
+        /// <returns>Returns list of engines for current culture.</returns>
         public static List<SageFrameIntKeyValue> SearchEngines()
         {
             List<SageFrameIntKeyValue> arrColl = new List<SageFrameIntKeyValue>();
@@ -83,6 +108,10 @@ namespace SageFrame.SageFrameClass
             return arrColl;
         }
 
+        /// <summary>
+        /// Returns list of yes, no for current culture.
+        /// </summary>
+        /// <returns>Returns list of yes, no for current culture.</returns>
         public static List<SageFrameIntKeyValue> YESNO()
         {
             List<SageFrameIntKeyValue> arrColl = new List<SageFrameIntKeyValue>();
@@ -104,6 +133,10 @@ namespace SageFrame.SageFrameClass
 
         //}
 
+        /// <summary>
+        /// Returns list of module pane name for current culture.
+        /// </summary>
+        /// <returns>Returns list of module pan name for current culture.</returns>
         public static List<SageFrameStringKeyValue> ModulePanes()
         {
             //List<SageFrameStringKeyValue> modulePanes = new List<SageFrameStringKeyValue>();
@@ -115,6 +148,11 @@ namespace SageFrame.SageFrameClass
             List<SageFrameStringKeyValue> modulePanes = SageMessage.ListSageModuleName(CultureInfo.CurrentCulture.Name, "ModulesPanes");
             return modulePanes;
         }
+
+        /// <summary>
+        /// Returns list of user statistics show by for current culture.
+        /// </summary>
+        /// <returns>Returns list of user statistics short by for current culture.</returns>
         public static List<SageFrameStringKeyValue> UserStatisticShortBy()
         {
             //List<SageFrameStringKeyValue> modulePanes = new List<SageFrameStringKeyValue>();
@@ -149,6 +187,11 @@ namespace SageFrame.SageFrameClass
         //    return postionType;
         //}        
 
+
+        /// <summary>
+        /// Returns list of position type for current culture.
+        /// </summary>
+        /// <returns>Returns list of position type for current culture.</returns>
         public static List<SageFrameStringKeyValue> PositionType()
         {
             List<SageFrameStringKeyValue> positionType = new List<SageFrameStringKeyValue>();
@@ -159,6 +202,10 @@ namespace SageFrame.SageFrameClass
             return positionType;
         }
 
+        /// <summary>
+        /// Returns list of control type for current culture.
+        /// </summary>
+        /// <returns>Returns list of control type for current culture.</returns>
         public static List<SageFrameIntKeyValue> ControlType()
         {
             List<SageFrameIntKeyValue> controlType = new List<SageFrameIntKeyValue>();
@@ -169,6 +216,10 @@ namespace SageFrame.SageFrameClass
             return controlType;
         }
 
+        /// <summary>
+        /// Returns list of days of week for current culture.
+        /// </summary>
+        /// <returns>Returns list of days of week for current culture.</returns>
         public static List<SageFrameIntKeyValue> WeekDays()
         {
             List<SageFrameIntKeyValue> controlType = new List<SageFrameIntKeyValue>();
@@ -182,6 +233,10 @@ namespace SageFrame.SageFrameClass
             return controlType;
         }
 
+        /// <summary>
+        /// Returns list of Version type for current culture.
+        /// </summary>
+        /// <returns>Returns list of version type for current culture.</returns>
         public static ArrayList VersionType()
         {
             ArrayList arrColl = new ArrayList();
@@ -199,6 +254,10 @@ namespace SageFrame.SageFrameClass
             return arrColl;
         }
 
+        /// <summary>
+        /// Returns list of FAQ sort for current culture.
+        /// </summary>
+        /// <returns>Returns list of FAQ sort for current culture.</returns>
         public static List<SageFrameIntKeyValue> FAQsSorting()
         {
             List<SageFrameIntKeyValue> FAQsSorting = new List<SageFrameIntKeyValue>();
@@ -209,6 +268,10 @@ namespace SageFrame.SageFrameClass
             return FAQsSorting;
         }
 
+        /// <summary>
+        /// Returns list of FAQ token for current culture.
+        /// </summary>
+        /// <returns>Returns list of FAQ token for current culture.</returns>
         public static List<SageFrameStringKeyValue> FAQsTokenLists()
         {
             List<SageFrameStringKeyValue> FAQsTokenLists = new List<SageFrameStringKeyValue>();
@@ -224,6 +287,10 @@ namespace SageFrame.SageFrameClass
             return FAQsTokenLists;
         }
 
+        /// <summary>
+        /// Returns list of news sorting for current culture.
+        /// </summary>
+        /// <returns>Returns list of news serching for current culture.</returns>
         public static List<SageFrameStringKeyValue> NewsSorting()
         {
             List<SageFrameStringKeyValue> NewsSorting = new List<SageFrameStringKeyValue>();
@@ -243,6 +310,10 @@ namespace SageFrame.SageFrameClass
             return NewsSorting;
         }
 
+        /// <summary>
+        /// Returns list of date format for current culture.
+        /// </summary>
+        /// <returns>Returns list of date format for current culture.</returns>
         public static List<SageFrameStringKeyValue> DateFormat()
         {
             List<SageFrameStringKeyValue> DateFormat = new List<SageFrameStringKeyValue>();
@@ -266,6 +337,10 @@ namespace SageFrame.SageFrameClass
             return DateFormat;
         }
 
+        /// <summary>
+        /// Returns list of installation type for current culture.
+        /// </summary>
+        /// <returns>Returns list of installatio type for current culture.</returns>
         public static List<SageFrameStringKeyValue> InstallationType()
         {
             List<SageFrameStringKeyValue> InstallationType = new List<SageFrameStringKeyValue>();
@@ -275,6 +350,10 @@ namespace SageFrame.SageFrameClass
             return InstallationType;
         }
 
+        /// <summary>
+        /// Returns list of database type for current culture.
+        /// </summary>
+        /// <returns>Returns list of database type for current culture.</returns>
         public static List<SageFrameStringKeyValue> DatabaseType()
         {
             List<SageFrameStringKeyValue> DatabaseType = new List<SageFrameStringKeyValue>();
@@ -283,24 +362,35 @@ namespace SageFrame.SageFrameClass
             return DatabaseType;
         }
 
+        /// <summary>
+        /// Returns list of search buttom type for current culture.
+        /// </summary>
+        /// <returns>Returns list of search buttom type for current culture.</returns>
         public static List<SageFrameIntKeyValue> SubscriptionDisplayType()
         {
             List<SageFrameIntKeyValue> SubscriptionDisplayType = new List<SageFrameIntKeyValue>();
             SubscriptionDisplayType.Add(new SageFrameIntKeyValue(0, SageMessage.ListSageText(CultureInfo.CurrentCulture.Name, "SageFrameLists", "Simple")));
             SubscriptionDisplayType.Add(new SageFrameIntKeyValue(1, SageMessage.ListSageText(CultureInfo.CurrentCulture.Name, "SageFrameLists", "Modalbox")));
             return SubscriptionDisplayType;
-        }        
-		
+        }
+
+        /// <summary>
+        /// Returns list of search button type for current culture.
+        /// </summary>
+        /// <returns>Returns list of search button for current culture.</returns>
 		public static List<SageFrameIntKeyValue> SearchButtonTypes()
         {
             List<SageFrameIntKeyValue> arrColl = new List<SageFrameIntKeyValue>();
-
             arrColl.Add(new SageFrameIntKeyValue(0, SageMessage.ListSageText(CultureInfo.CurrentCulture.Name, "SageFrameLists", "Button")));
             arrColl.Add(new SageFrameIntKeyValue(1, SageMessage.ListSageText(CultureInfo.CurrentCulture.Name, "SageFrameLists", "Image")));
-            arrColl.Add(new SageFrameIntKeyValue(2, SageMessage.ListSageText(CultureInfo.CurrentCulture.Name, "SageFrameLists", "Link")));            
+            arrColl.Add(new SageFrameIntKeyValue(2, SageMessage.ListSageText(CultureInfo.CurrentCulture.Name, "SageFrameLists", "Link")));
             return arrColl;
         }
 
+        /// <summary>
+        /// Returns list of searching order type for current culture.
+        /// </summary>
+        /// <returns>Returns list of searching order type for current culture.</returns>
         public static List<SageFrameIntKeyValue> SearchOrderingTypes()
         {
             List<SageFrameIntKeyValue> arrColl = new List<SageFrameIntKeyValue>();

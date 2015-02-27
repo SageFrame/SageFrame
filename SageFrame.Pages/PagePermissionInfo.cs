@@ -13,7 +13,7 @@ using System.Text;
 
 namespace SageFrame.PagePermission
 {
-   public class PagePermissionInfo
+    public class PagePermissionInfo
     {
         #region Private Members
 
@@ -29,68 +29,76 @@ namespace SageFrame.PagePermission
         #endregion
 
         #region Public Members
-
+        /// <summary>
+        /// Get or set PageID.
+        /// </summary>
         public int PageID
         {
             get { return _pageID; }
             set { _pageID = value; }
         }
+        /// <summary>
+        /// Get or set PortalID.
+        /// </summary>
         public int PortalID
         {
             get { return _portalID; }
             set { _portalID = value; }
         }
+        /// <summary>
+        /// Get or set PermissionID.
+        /// </summary>
         public int PermissionID
         {
             get { return _permissionID; }
             set { _permissionID = value; }
         }
+        /// <summary>
+        /// Get or set RoleID.
+        /// </summary>
         public string RoleID
         {
             get { return _roleID; }
             set { _roleID = value; }
         }
+        /// <summary>
+        /// Get or set user name.
+        /// </summary>
         public string Username
         {
             get { return _username; }
             set { _username = value; }
         }
+        /// <summary>
+        /// Get or set true if allow access.
+        /// </summary>
         public bool AllowAccess
         {
             get { return _allowAccess; }
             set { _allowAccess = value; }
         }
+        /// <summary>
+        /// Get or set true if active.
+        /// </summary>
         public bool IsActive
         {
             get { return _isActive; }
             set { _isActive = value; }
         }
+        /// <summary>
+        /// Get or set user name.
+        /// </summary>
         public string AddedBy
         {
             get { return _addedBy; }
             set { _addedBy = value; }
         }
 
-        //public int PageID { get; set; }
-
-        //public int PortalID { get; set; }
-
-        //public int PermissionID { get; set; }
-
-        //public string RoleID { get; set; }
-
-        //public string Username { get; set; }
-
-        //public bool AllowAccess { get; set; }
-
-        //public bool IsActive { get; set; }
-
-        //public bool AddedBy { get; set; }
-
         #endregion
+        /// <summary>
+        /// Initializes a new instance of the PagePermissionInfo class.
+        /// </summary>
+        public PagePermissionInfo() { }
 
-        public PagePermissionInfo()
-        {
-        }
     }
 }

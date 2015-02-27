@@ -33,7 +33,6 @@ public class MenuWebService : AuthenticateService
 
     public MenuWebService()
     {
-
         //Uncomment the following line if using designed components 
         //InitializeComponent(); 
     }
@@ -606,8 +605,11 @@ public class MenuWebService : AuthenticateService
 
     public void ClearCache(string CultureCode, int PortalID)
     {
-        HttpRuntime.Cache.Remove(CultureCode + ".FrontMenu" + PortalID.ToString());
-        HttpRuntime.Cache.Remove(CultureCode + ".SideMenu" + PortalID.ToString());
-        HttpRuntime.Cache.Remove(CultureCode + ".FooterMenu" + PortalID.ToString());
+        SageFrame.Common.CacheHelper.Clear(CultureCode + ".FrontMenu" + PortalID.ToString());
+        SageFrame.Common.CacheHelper.Clear(CultureCode + ".SideMenu" + PortalID.ToString());
+        SageFrame.Common.CacheHelper.Clear(CultureCode + ".FooterMenu" + PortalID.ToString());
+        //HttpRuntime.Cache.Remove(CultureCode + ".FrontMenu" + PortalID.ToString());
+        //HttpRuntime.Cache.Remove(CultureCode + ".SideMenu" + PortalID.ToString());
+        //HttpRuntime.Cache.Remove(CultureCode + ".FooterMenu" + PortalID.ToString());
     }
 }

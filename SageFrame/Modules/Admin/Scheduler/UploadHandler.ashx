@@ -18,7 +18,8 @@ public class UploadHandler : IHttpHandler
         if (objAuthentication.IsPostAuthenticatedView(portalID, userModuleID, userName, secureToken))
         {
             string strFileName = Path.GetFileName(HttpContext.Current.Request.Files[0].FileName);
-            if (SageFrame.Web.PictureManager.ValidImageExtension(strFileName))
+            bool isValid = System.Text.RegularExpressions.Regex.IsMatch(strFileName.ToLower(), @"^.*\.(dll)$"); ;
+            if(isValid)
             {
                 string strExtension = Path.GetExtension(HttpContext.Current.Request.Files[0].FileName).ToLower();
                 string strBaseLocation = HttpContext.Current.Server.MapPath("~/bin/");

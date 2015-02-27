@@ -13,8 +13,17 @@ using System.Text;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Helper class for theme.
+    /// </summary>
     public class ThemeHelper
     {
+        /// <summary>
+        /// Obtain admin theme.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">User name.</param>
+        /// <returns>Admin theme name.</returns>
         public static string GetAdminTheme(int PortalID,string UserName)
         {
             SettingInfo objSetting = TemplateController.GetSettingByKey(new SettingInfo("DASHBOARD_THEME", UserName, PortalID));

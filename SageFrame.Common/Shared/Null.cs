@@ -11,50 +11,85 @@ using System.Reflection;
 
 namespace SageFrame.Web.Utils
 {
-
+    /// <summary>
+    /// Define application encoded null values 
+    /// </summary>
    
     public class Null
     {
 
-        // define application encoded null values 
+       /// <summary>
+       /// Returns -1.
+       /// </summary>
         public static short NullShort
         {
             get { return -1; }
         }
+        /// <summary>
+        /// Return -1.
+        /// </summary>
         public static int NullInteger
         {
             get { return -1; }
         }
+        /// <summary>
+        /// Return float MinValue.
+        /// </summary>
         public static float NullSingle
         {
             get { return float.MinValue; }
         }
+        /// <summary>
+        /// Return double MinValue.
+        /// </summary>
         public static double NullDouble
         {
             get { return double.MinValue; }
         }
+        /// <summary>
+        /// Return decimal MinValue.
+        /// </summary>
         public static decimal NullDecimal
         {
             get { return decimal.MinValue; }
         }
+        /// <summary>
+        /// Return DateTime MinValue.
+        /// </summary>
         public static System.DateTime NullDate
         {
             get { return System.DateTime.MinValue; }
         }
+        /// <summary>
+        /// Return empty string.
+        /// </summary>
         public static string NullString
         {
             get { return ""; }
         }
+        /// <summary>
+        /// Return false.
+        /// </summary>
         public static bool NullBoolean
         {
             get { return false; }
         }
+        /// <summary>
+        /// Return empty Guid.
+        /// </summary>
         public static Guid NullGuid
         {
             get { return Guid.Empty; }
+            
         }
 
-        // sets a field to an application encoded null value ( used in BLL layer )
+        
+        /// <summary>
+        /// Sets a field to an application encoded null value (used in BLL layer).
+        /// </summary>
+        /// <param name="objValue">object</param>
+        /// <param name="objField">object</param>
+        /// <returns></returns>
         public static object SetNull(object objValue, object objField)
         {
             object functionReturnValue = null;
@@ -110,7 +145,12 @@ namespace SageFrame.Web.Utils
             return functionReturnValue;
         }
 
-        // sets a field to an application encoded null value ( used in BLL layer )
+        
+        /// <summary>
+        /// Sets a field to an application encoded null value (used in BLL layer).
+        /// </summary>
+        /// <param name="objPropertyInfo">Object of  class PropertyInfo.</param>
+        /// <returns>object</returns>
         public static object SetNull(PropertyInfo objPropertyInfo)
         {
             object functionReturnValue = null;
@@ -165,7 +205,13 @@ namespace SageFrame.Web.Utils
             return functionReturnValue;
         }
 
-        // convert an application encoded null value to a database null value ( used in DAL )
+        
+        /// <summary>
+        ///  Convert an application encoded null value to a database null value (used in DAL)
+        /// </summary>
+        /// <param name="objField">object</param>
+        /// <param name="objDBNull">object</param>
+        /// <returns>object</returns>
         public static object GetNull(object objField, object objDBNull)
         {
             object functionReturnValue = null;
@@ -248,7 +294,11 @@ namespace SageFrame.Web.Utils
             return functionReturnValue;
         }
 
-        // checks if a field contains an application encoded null value
+        /// <summary>
+        /// checks if a field contains an application encoded null value
+        /// </summary>
+        /// <param name="objField">object</param>
+        /// <returns>True if objField is known type.</returns>
         public static bool IsNull(object objField)
         {
             bool functionReturnValue = false;

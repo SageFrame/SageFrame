@@ -16,8 +16,18 @@ using System.Data.SqlClient;
 
 namespace SageFrame.FileManager
 {
+    /// <summary>
+    /// Permission Helper.
+    /// </summary>
     public class PermissionHelper
     {
+        /// <summary>
+        /// Connects to database and obatins all portal roles.
+        /// </summary>
+        /// <param name="portalID">portalID</param>
+        /// <param name="isAll">isAll</param>
+        /// <param name="userName">userName</param>
+        /// <returns>List of Roles class containing RoleID and RoleName. </returns>
         public static List<Roles> GetAllRoles(int portalID,bool isAll,string userName)
         {
             List<Roles> lstRoles = new List<Roles>();

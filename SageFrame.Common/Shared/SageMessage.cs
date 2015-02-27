@@ -17,8 +17,19 @@ using SageFrame.Common.CommonFunction;
 
 namespace SageFrame.Web
 {
+    /// <summary>
+    /// Summary of application message.
+    /// </summary>
     public static class SageMessage
     {
+        /// <summary>
+        /// Localize application menu.
+        /// </summary>
+        /// <param name="portalName">Portal Name</param>
+        /// <param name="CurrentCultureName">Current culture name.</param>
+        /// <param name="MenuKey">Menu key.</param>
+        /// <param name="MenuAttribute">Menu attribute.</param>
+        /// <returns></returns>
         public static string SageMenuLocalization(string portalName,string CurrentCultureName, string MenuKey, string MenuAttribute)
         {
             XmlDocument doc = new XmlDocument();
@@ -37,12 +48,24 @@ namespace SageFrame.Web
                 return string.Empty;
             }
         }
-
+        /// <summary>
+        /// Return application message.
+        /// </summary>
+        /// <param name="CurrentCultureName">Current culture name.</param>
+        /// <param name="ModuleName">Module name.</param>
+        /// <param name="MessageNode">Message node.</param>
+        /// <returns>Message</returns>
         public static string ProcessSageMessage(string CurrentCultureName, string ModuleName, string MessageNode)
         {
             return ProvideSageMessage(CurrentCultureName, ModuleName, MessageNode);
         }
-
+        /// <summary>
+        /// Return application message.
+        /// </summary>
+        /// <param name="CurrentCultureName">Current culture name.</param>
+        /// <param name="ModuleName">Module name.</param>
+        /// <param name="MessageNode">Message node.</param>
+        /// <returns>Message</returns>
         public static string ProvideSageMessage(string CurrentCultureName, string ModuleName, string MessageNode)
         {
             XmlDocument doc = new XmlDocument();
@@ -54,7 +77,13 @@ namespace SageFrame.Web
             XmlNode root = doc.DocumentElement;
             return root.SelectSingleNode(ModuleName).SelectSingleNode(MessageNode).ChildNodes[0].Value;
         }
-
+        /// <summary>
+        /// Return application message.
+        /// </summary>
+        /// <param name="CurrentCultureName">Current culture name.</param>
+        /// <param name="ModuleName">Module name.</param>
+        /// <param name="MessageNode">Message node.</param>
+        /// <returns>Message</returns>
         public static string ListSageText(string CurrentCultureName, string ModuleName, string MessageNode)
         {
             XmlDocument doc = new XmlDocument();
@@ -66,7 +95,12 @@ namespace SageFrame.Web
             XmlNode root = doc.DocumentElement;
             return root.SelectSingleNode(ModuleName).SelectSingleNode(MessageNode).ChildNodes[0].Value;
         }
-
+        /// <summary>
+        /// Return list of module name.
+        /// </summary>
+        /// <param name="CurrentCultureName">Current culture name.</param>
+        /// <param name="ModuleName">Module name.</param>
+        /// <returns></returns>
         public static List<SageFrameStringKeyValue> ListSageModuleName(string CurrentCultureName, string ModuleName)
         {
             
@@ -84,7 +118,12 @@ namespace SageFrame.Web
             }
             return modulePanes;
         }
-        
+        /// <summary>
+        /// Return module message.
+        /// </summary>
+        /// <param name="VertualPath">Path for message file.</param>
+        /// <param name="MessageNode">Message node</param>
+        /// <returns>Module message.</returns>
         public static string GetSageModuleLocalMessageByVertualPath(string VertualPath, string MessageNode)
         {
             try
@@ -126,7 +165,12 @@ namespace SageFrame.Web
             }
 
         }
-
+        /// <summary>
+        ///  Return module message.
+        /// </summary>
+        /// <param name="FullPathwithFileName">Full path for message file.</param>
+        /// <param name="MessageNode">Message node</param>
+        /// <returns>>Module message.</returns>
         public static string GetSageModuleLocalMessageByFullPathwithFileName(string FullPathwithFileName, string MessageNode)
         {
             try

@@ -189,7 +189,7 @@
             </div>
         </div>
         <div id="divHelp" class="sfHelp">
-            <a href="~/Help.htm" class="icon-help" runat="server" data-title="Help"></a>
+            <a href="~/Help.htm" class="icon-help" runat="server" data-title="Help" target="_blank"></a>
         </div>
         <div class="sfOuter sfCurve">
             <div class="sfInner sfCurve">
@@ -205,7 +205,7 @@
                     <div class="sfInstallpart">
                         <div class="sfFormwrapper">
                             <p class="sfWelcomeText">
-                                Welcome to the Sagever Installation Wizard.
+                                Welcome to the SageFrame Installation Wizard.
                             </p>
                             <h2>
                                 Let's get started !</h2>
@@ -361,7 +361,7 @@
                     </div>
             </div>
             <div class="sfinstalbtn">
-                <asp:Button ID="btnInstall" runat="server" CssClass="sfBtn" Text="Install Sagever"
+                <asp:Button ID="btnInstall" runat="server" CssClass="sfBtn" Text="Install SageFrame"
                     OnClick="btnInstall_Click" />
             </div>
             </asp:Panel>

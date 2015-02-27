@@ -18,7 +18,7 @@ using System.Text;
 using SageFrame.Framework;
 using SageFrame.LogView;
 using SageFrame.SageFrameClass.MessageManagement;
-#endregion 
+#endregion
 
 namespace SageFrame.Modules.Admin.EventViewer
 {
@@ -206,6 +206,76 @@ namespace SageFrame.Modules.Admin.EventViewer
                 ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("EventViewer", "CheckCheckBoxAlert"), "", SageMessageType.Alert);
             }
         }
+        protected void btnExportToExcel_Click(object sender, EventArgs e)
+        {
+            ExportToExcel();
+
+
+        }
+        private void ExportToExcel()
+        {
+            string table = "";
+            string logType = string.Empty;
+            if (ddlLogType.SelectedValue != "-1")
+            {
+                logType = ddlLogType.SelectedItem.Text;
+            }
+            try
+            {
+                List<LogInfo> lstInfo = new List<LogInfo>();
+                LogController objCon = new LogController();
+                lstInfo = objCon.GetLogView(GetPortalID, logType);
+                if (lstInfo.Count > 0)
+                {                    
+                    table += "<table><tr><th>Log ID</th><th>AddedOn</th><th>LogTypeName</th><th>Portal Name</th><th>Client IP Address</th><th>Page URL</th><th>Exception</th></tr>";
+                    foreach (LogInfo objInfo in lstInfo)
+                    {
+                        table += " <tr>";
+                        table += "<td>";
+                        table += objInfo.LogID;
+                        table += "</td>";
+                        table += "<td>";
+                        table += objInfo.AddedOn;
+                        table += "</td>";
+                        table += "<td>";
+                        table += objInfo.LogTypeName;
+                        table += "</td>";
+                        table += "<td>";
+                        table += objInfo.PortalName;
+                        table += "</td>";
+                        table += "<td>";
+                        table += objInfo.ClientIPAddress;
+                        table += "</td>";
+                        table += "<td>";
+                        table += objInfo.PageURL;
+                        table += "</td>";
+                        table += "<td>";
+                        table += objInfo.Exception;
+                        table += "</td>";
+                        table += "</tr>";                       
+                    }
+                    table += "</table>";
+                }
+                ExportToExcel(ref table, "Event Log-Report");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+
+        }
+        public void ExportToExcel(ref string table, string fileName)
+        {
+            table = table.Replace("&gt;", ">");
+            table = table.Replace("&lt;", "<");
+            HttpContext.Current.Response.ClearContent();
+            HttpContext.Current.Response.AddHeader("content-disposition", "attachment;filename=" + fileName + "_" + DateTime.Now.ToString("M_dd_yyyy_H_M_s") + ".xls");
+            HttpContext.Current.Response.ContentType = "application/x-msexcel";
+            HttpContext.Current.Response.Write(table);
+            HttpContext.Current.Response.End();
+        }
+
     }
 }
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!-- Paage name must be in small letters.-->
 <SageFrameAminHelp>
   <admin>
     <Welcome-Panel>
       <![CDATA[
-      In this section, you will find links to Sageframe quick tour, getting started with the product, tutorials and list of available modules.
+     In this section, you will find links to Sageframe quick tour, getting started with the product, tutorials and list of available modules.
       <br />
       <b>The Admin Interface: </b>
       Take a tour to get familiar with the admin interface.
@@ -55,7 +56,7 @@
   <portals>The Portal enables the creation of new child portals and editing the existing ones in your site. Web Portals provide a way for enterprises to provide a consistent look and feel with access control and procedures for multiple applications and databases, which otherwise would have been different entities altogether. The administrators and super users can manage multiple portals at one time. </portals>
 
   <users>
-     <![CDATA[
+    <![CDATA[
         Allows to manage users: create new users, edit roles, delete users, update user profile info and change password.
     <ul>
      <li><b>Add User: </b>It lets you create a new user and assign the role by filling up a small form. </li>
@@ -67,7 +68,7 @@
   </users>
 
   <roles>
-     <![CDATA[
+    <![CDATA[
      
           Enables you to create new roles and edit them. The four roles however by default cannot be edited.
         <ul>
@@ -80,7 +81,7 @@
   </roles>
 
   <pages>
-     <![CDATA[
+    <![CDATA[
     Page Manager provides you with the control to create or manage pages for the site. 
     Creating and handling pages like home, search result, support, layout, contact sitemap, discover and many more; 
     you can as well manage the logo, navigation, banner, HTML, design, extension and copyright with Page Manager.
@@ -136,7 +137,7 @@
   <files>The Files module enables administrator/superuser to work with the files and folders on the site. There are options for adding or deleting a file, adding or deleting a folder, copy and moving the files. The files manager allows user interface to work on files and folders located in various templates, modules and systems.</files>
 
   <seo>
-        <![CDATA[
+    <![CDATA[
     The SEO module lets you generate Google Analytics, Sitemap and Robots automatically and submit to major search engines such as Google, Yahoo, MSN and Bing at the same time.
     <ul>
      <li><b>Google Analytics: </b>It is a service which generates a detail statistics about the visitors to a website.</li>
@@ -151,7 +152,7 @@
   <portal-settings></portal-settings>
 
   <settings>
-     <![CDATA[
+    <![CDATA[
     The Settings module enables site administrator to configure settings from basic, advanced to superuser settings for the site.
     <ul>
       <li>The Basic Setting includes Site Details, Site Marketing, Appearance, Optimization and OpenID Service Provider.</li>
@@ -169,6 +170,18 @@
 
   <editmoduledefinition.ascx></editmoduledefinition.ascx>
 
-  <template-file-editor></template-file-editor>
+  <template-file-editor>Edit template files.</template-file-editor>
 
+  <sfupgrader>
+   
+    <![CDATA[
+             Enables you to upgrade your system. <br />
+             
+             Note: During upgrading manually down and up the site.
+    ]]>
+
+  </sfupgrader>
+  <paymentsetting>
+    Payment gateway setting is the management where we can manage all the settings of n numbers of payment gateway service provider reducing the time and effort to maintain the setting table.
+  </paymentsetting>
 </SageFrameAminHelp>

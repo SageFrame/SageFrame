@@ -164,7 +164,7 @@
         <asp:Button ID="imbCreate" runat="server" 
             meta:resourcekey="imbCreateResource1" OnClick="imbCreate_Click" ValidationGroup="vdgExtension" />Download Package</label>
        <label class="icon-close sfBtn">Cancel <asp:Button ID="btnCancelled" runat="server" AlternateText="Cancel" 
-            Text="Cancel" meta:resourcekey="btnCancelResource2" UseSubmitBehavior="false"
+             meta:resourcekey="btnCancelResource2" UseSubmitBehavior="false"
             OnClientClick="javascript:return window.location=CancelURL;" /></label>
     </div>
 </div>

@@ -14,6 +14,9 @@ using System.Web;
 
 namespace SageFrame.FileManager
 {
+   /// <summary>
+   /// Cache Helper class.
+   /// </summary>
     public static class CacheHelper
     {
         /// <summary>

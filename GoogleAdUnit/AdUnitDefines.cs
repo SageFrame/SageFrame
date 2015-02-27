@@ -27,29 +27,30 @@ using System.Text;
 namespace SFE.GoogleAdUnit
 {
     /// <summary>
-    /// Ad Unit type
+    /// Enum for  Advetise Unit type
     /// </summary>
     public enum AdUnitType
     {
         /// <summary>
-        /// 
+        /// value =0
         /// </summary>
         TextAndImage = 0,
         /// <summary>
-        /// 
+        /// value=1
         /// </summary>
         ImageOnly = 1,
         /// <summary>
-        /// 
+        /// value =2
         /// </summary>
         TextOnly = 2
     }
 
     /// <summary>
-    /// Ad unit format type.
+    /// Enum for advertise unit format type.
     /// </summary>
     public enum AdUnitFormat
     {
+       
         LeaderBoard_728x90_H = 0,
         Banner_468x60_H = 1,
         HalfBanner_234x60_H = 2,
@@ -64,7 +65,7 @@ namespace SFE.GoogleAdUnit
     }
 
 	/// <summary>
-	/// 
+	/// Enum for link unit format type.
 	/// </summary>
 	public enum LinkUnitFormat
 	{
@@ -77,7 +78,7 @@ namespace SFE.GoogleAdUnit
 	}
 
 	/// <summary>
-	/// 
+	/// Enum for alternate Ad Types.
 	/// </summary>
 	public enum AlternateAdTypes
 	{
@@ -87,7 +88,7 @@ namespace SFE.GoogleAdUnit
 	}
 
     /// <summary>
-    /// 
+    /// Enum for link Ads Per Unit.
     /// </summary>
     public enum LinkAdsPerUnit
     {

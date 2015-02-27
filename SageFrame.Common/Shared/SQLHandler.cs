@@ -19,6 +19,9 @@ using System.Reflection;
 
 namespace SageFrame.Web.Utilities
 {
+    /// <summary>
+    /// Application SQL handler.
+    /// </summary>
     public partial class SQLHandler
     {
         #region "Private Members"
@@ -29,26 +32,26 @@ namespace SageFrame.Web.Utilities
 
         #endregion
 
-        #region "Constructors"
-
-
-
-        #endregion
-
         #region "Properties"
-
+        /// <summary>
+        /// Get or set objectQualifier.
+        /// </summary>
         public string objectQualifier
         {
             get { return _objectQualifier; }
             set { _objectQualifier = value; }
         }
-
+        /// <summary>
+        /// Get or set databaseOwner.
+        /// </summary>
         public string databaseOwner
         {
             get { return _databaseOwner; }
             set { _databaseOwner = value; }
         }
-
+        /// <summary>
+        /// Get or set connectionString.
+        /// </summary>
         public string connectionString
         {
             get { return _connectionString; }
@@ -58,7 +61,10 @@ namespace SageFrame.Web.Utilities
         #endregion
 
         #region "Transaction Methods"
-
+        /// <summary>
+        /// Commit transaction on database.
+        /// </summary>
+        /// <param name="transaction"></param>
         public void CommitTransaction(DbTransaction transaction)
         {
             try
@@ -73,7 +79,10 @@ namespace SageFrame.Web.Utilities
                 }
             }
         }
-
+        /// <summary>
+        /// Return  base class for a transaction.
+        /// </summary>
+        /// <returns>Object of SqlTransaction</returns>
         public DbTransaction GetTransaction()
         {
             SqlConnection Conn = new SqlConnection(this.connectionString);
@@ -81,7 +90,10 @@ namespace SageFrame.Web.Utilities
             SqlTransaction transaction = Conn.BeginTransaction();
             return transaction;
         }
-
+        /// <summary>
+        ///Roll back SQL transaction.
+        /// </summary>
+        /// <param name="transaction">transaction</param>
         public void RollbackTransaction(DbTransaction transaction)
         {
             try
@@ -98,6 +110,14 @@ namespace SageFrame.Web.Utilities
         }
 
         #region Using Transaction Method
+        /// <summary>
+        /// Prepare command for execute.
+        /// </summary>
+        /// <param name="command">Sql Command.</param>
+        /// <param name="connection">connection</param>
+        /// <param name="transaction">Transact-SQL transaction</param>
+        /// <param name="commandType">Command type</param>
+        /// <param name="commandText">Command text.</param>
         public static void PrepareCommand(SqlCommand command, SqlConnection connection, SqlTransaction transaction, CommandType commandType, string commandText)
         {
             //if the provided connection is not open, we will open it
@@ -113,6 +133,15 @@ namespace SageFrame.Web.Utilities
             return;
         }
 
+        /// <summary>
+        ///  Executes non query
+        /// </summary>
+        /// <param name="transaction">Transact-SQL transaction</param>
+        /// <param name="commandType">Command type</param>
+        /// <param name="commandText">Command text.</param>
+        /// <param name="ParaMeterCollection">Accept Key Value collection for parameters.</param>
+        /// <param name="outParamName">Output parameter.</param>
+        /// <returns>ID</returns>
         public int ExecuteNonQuery(SqlTransaction transaction, CommandType commandType, string commandText, List<KeyValuePair<string, object>> ParaMeterCollection, string outParamName)
         {
             //create a command and prepare it for execution
@@ -134,11 +163,18 @@ namespace SageFrame.Web.Utilities
             cmd.ExecuteNonQuery();
             int id = (int)cmd.Parameters[outParamName].Value;
 
-            // detach the OracleParameters from the command object, so they can be used again.
+            // detach the Parameters from the command object, so they can be used again.
             cmd.Parameters.Clear();
             return id;
         }
 
+        /// <summary>
+        /// Executes non query
+        /// </summary>
+        /// <param name="transaction">Transact-SQL transaction</param>
+        /// <param name="commandType">Command type</param>
+        /// <param name="commandText">Command text.</param>
+        /// <param name="ParaMeterCollection">Output Key Value collection for parameters.</param>
         public void ExecuteNonQuery(SqlTransaction transaction, CommandType commandType, string commandText, List<KeyValuePair<string, object>> ParaMeterCollection)
         {
             //create a command and prepare it for execution
@@ -166,7 +202,11 @@ namespace SageFrame.Web.Utilities
         #endregion
 
         #region "SQL Execute Methods"
-
+        /// <summary>
+        /// Execute ADO Script.
+        /// </summary>
+        /// <param name="trans">Transact-SQL transaction.</param>
+        /// <param name="SQL">SQL</param>
         private void ExecuteADOScript(SqlTransaction trans, string SQL)
         {
             SqlConnection connection = trans.Connection;
@@ -176,7 +216,10 @@ namespace SageFrame.Web.Utilities
             command.CommandTimeout = 0;
             command.ExecuteNonQuery();
         }
-
+        /// <summary>
+        /// Execute ADO Script.
+        /// </summary>
+        /// <param name="SQL">SQL</param>
         private void ExecuteADOScript(string SQL)
         {
             SqlConnection connection = new SqlConnection(this.connectionString);
@@ -187,7 +230,11 @@ namespace SageFrame.Web.Utilities
             command.ExecuteNonQuery();
             connection.Close();
         }
-
+        /// <summary>
+        /// Execute ADOS cript
+        /// </summary>
+        /// <param name="SQL">SQL</param>
+        /// <param name="ConnectionString">ConnectionString</param>
         private void ExecuteADOScript(string SQL, string ConnectionString)
         {
             SqlConnection connection = new SqlConnection(ConnectionString);
@@ -198,12 +245,20 @@ namespace SageFrame.Web.Utilities
             command.ExecuteNonQuery();
             connection.Close();
         }
-
+        /// <summary>
+        /// Execute SQL script
+        /// </summary>
+        /// <param name="Script">Script</param>
+        /// <returns></returns>
         public string ExecuteScript(string Script)
         {
             return ExecuteScript(Script, false);
         }
-
+        /// <summary>
+        /// Execute script as DataSet.
+        /// </summary>
+        /// <param name="SQL">SQL</param>
+        /// <returns>DataSet</returns>
         public DataSet ExecuteScriptAsDataSet(string SQL)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -231,7 +286,12 @@ namespace SageFrame.Web.Utilities
                 SQLConn.Close();
             }
         }
-
+        /// <summary>
+        /// Execute SQL script
+        /// </summary>
+        /// <param name="Script">Script</param>
+        /// <param name="transaction">transaction</param>
+        /// <returns>Exception if occur.</returns>
         public string ExecuteScript(string Script, DbTransaction transaction)
         {
             string SQL = string.Empty;
@@ -271,7 +331,12 @@ namespace SageFrame.Web.Utilities
             }
             return Exceptions;
         }
-
+        /// <summary>
+        /// Execute script
+        /// </summary>
+        /// <param name="Script">Script</param>
+        /// <param name="UseTransactions">true if use transaction.</param>
+        /// <returns>Exception if occur.</returns>
         public string ExecuteScript(string Script, bool UseTransactions)
         {
             string SQL = string.Empty;
@@ -330,7 +395,12 @@ namespace SageFrame.Web.Utilities
 
             return Exceptions;
         }
-
+        /// <summary>
+        /// Execute application installation script.
+        /// </summary>
+        /// <param name="Script">Script</param>
+        /// <param name="ConnectionString">ConnectionString</param>
+        /// <returns>Exception if occur.</returns>
         public string ExecuteInstallScript(string Script, string ConnectionString)
         {
             string SQL = string.Empty;
@@ -364,7 +434,7 @@ namespace SageFrame.Web.Utilities
         #region "Public Methods"
 
         /// <summary>
-        /// RollBack Module Installation If Error Occur During Module Installation
+        /// RollBack module installation if error occur during module installation.
         /// </summary>
         /// <param name="ModuleID">ModuleID</param>
         /// <param name="PortalID">PortalID</param>
@@ -390,11 +460,11 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Returning Bool After Execute Non Query
+        /// Returning bool after execute non query.
         /// </summary>
-        /// <param name="StroredProcedureName">Store Procedure Name</param>
-        /// <param name="ParaMeterCollection"> Parameter Collection</param>
-        /// <param name="OutPutParamerterName">Out Parameter Collection</param>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <param name="ParaMeterCollection"> Parameter collection.</param>
+        /// <param name="OutPutParamerterName">Out parameter collection.</param>
         /// <returns>Bool</returns>
         public bool ExecuteNonQueryAsBool(string StroredProcedureName, List<KeyValuePair<string, object>> ParaMeterCollection, string OutPutParamerterName)
         {
@@ -435,12 +505,12 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Returning Bool After Execute Non Query
+        /// Returning bool after execute non query.
         /// </summary>
-        /// <param name="StroredProcedureName">Store Procedure Name</param>
-        /// <param name="ParaMeterCollection">Parameter Collection</param>
-        /// <param name="OutPutParamerterName">OutPut Parameter Name</param>
-        /// <param name="OutPutParamerterValue">OutPut Parameter Value</param>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <param name="ParaMeterCollection">Parameter collection.</param>
+        /// <param name="OutPutParamerterName">OutPut parameter name.</param>
+        /// <param name="OutPutParamerterValue">OutPut parameter value.</param>
         /// <returns>Bool</returns>
         public bool ExecuteNonQueryAsBool(string StroredProcedureName, List<KeyValuePair<string, object>> ParaMeterCollection, string OutPutParamerterName, object OutPutParamerterValue)
         {
@@ -481,10 +551,10 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute Non Query
+        /// Executes non query.
         /// </summary>
-        /// <param name="StroredProcedureName">Store Procedure Name In String</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters<KeyValuePair<string, object>> </param>
+        /// <param name="StroredProcedureName">Store Procedure Name In String.</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.<KeyValuePair<string, object>> </param>
         public void ExecuteNonQuery(string StroredProcedureName, List<KeyValuePair<string, object>> ParaMeterCollection)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -520,10 +590,10 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute Non Query
+        /// Executes non query.
         /// </summary>
-        /// <param name="StroredProcedureName">Store Procedure Name</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters <KeyValuePair<string, string>> </param>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters. <KeyValuePair<string, string>> </param>
         public void ExecuteNonQuery(string StroredProcedureName, List<KeyValuePair<string, string>> ParaMeterCollection)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -555,9 +625,9 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute Non Query
+        /// Executes non query.
         /// </summary>
-        /// <param name="StroredProcedureName">Store Procedure Name</param>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
         public void ExecuteNonQuery(string StroredProcedureName)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -584,11 +654,11 @@ namespace SageFrame.Web.Utilities
         /// Accept only int, Int16, long, DateTime, string (NVarcha of size  50),
         /// bool, decimal ( of size 16,2), float
         /// </summary>
-        /// <typeparam name="T">Return the given type of object</typeparam>
-        /// <param name="StroredProcedureName">Accet SQL procedure name in string</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection for parameters</param>
-        /// <param name="OutPutParamerterName">Accept Output parameter for the stored procedures</param>
-        /// <returns></returns>
+        /// <typeparam name="T">Given type of object.</typeparam>
+        /// <param name="StroredProcedureName">Accet SQL procedure name in string.</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.</param>
+        /// <param name="OutPutParamerterName">Accept output parameter for the stored procedures.</param>
+        /// <returns>Type of the object implementing.</returns>
         public T ExecuteNonQueryAsGivenType<T>(string StroredProcedureName, List<KeyValuePair<string, object>> ParaMeterCollection, string OutPutParamerterName)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -627,11 +697,11 @@ namespace SageFrame.Web.Utilities
         /// Accept only int, Int16, long, DateTime, string (NVarcha of size  50),
         /// bool, decimal ( of size 16,2), float
         /// </summary>
-        /// <typeparam name="T">Return the given type of object</typeparam>
-        /// <param name="StroredProcedureName">Accet SQL procedure name in string</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection for parameters</param>
-        /// <param name="OutPutParamerterName">Accept Output parameter for the stored procedures</param>
-        /// <returns></returns>
+        /// <typeparam name="T">Given type of object.</typeparam>
+        /// <param name="StroredProcedureName">Accet SQL procedure name in string.</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.</param>
+        /// <param name="OutPutParamerterName">Accept output parameter for the stored procedures.</param>
+        /// <returns>Type of the object implementing.</returns>
         public T ExecuteNonQueryAsGivenType<T>(string StroredProcedureName, List<KeyValuePair<string, object>> ParaMeterCollection, string OutPutParamerterName, object OutPutParamerterValue)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -667,12 +737,12 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// 
+        /// Return out put parametr of given type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="SQLCmd"></param>
-        /// <param name="OutPutParamerterName"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">Given type of object.</typeparam>
+        /// <param name="SQLCmd">SQL command.</param>
+        /// <param name="OutPutParamerterName">Out put paramerter name.</param>
+        /// <returns>Object of SqlCommand.</returns>
         public SqlCommand AddOutPutParametrofGivenType<T>(SqlCommand SQLCmd, string OutPutParamerterName)
         {
             if (typeof(T) == typeof(int))
@@ -721,13 +791,13 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// 
+        /// Return out put parametr of given type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="SQLCmd"></param>
-        /// <param name="OutPutParamerterName"></param>
-        /// <param name="OutPutParamerterValue"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">Given type of object.</typeparam>
+        /// <param name="SQLCmd">SQL command.</param>
+        /// <param name="OutPutParamerterName">Out put paramerter name.</param>
+        ///   <param name="OutPutParamerterValue">Out put paramerter value.</param>
+        /// <returns>Object of SqlCommand.</returns>
         public SqlCommand AddOutPutParametrofGivenType<T>(SqlCommand SQLCmd, string OutPutParamerterName, object OutPutParamerterValue)
         {
             if (typeof(T) == typeof(int))
@@ -777,12 +847,12 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute Non Query
+        /// Execute non query.
         /// </summary>
-        /// <param name="StroredProcedureName">Store Procedure Name In String</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters</param>
-        /// <param name="OutPutParamerterName">Accept OutPut Key Value Collection For Parameters</param>
-        /// <returns></returns>
+        /// <param name="StroredProcedureName">Store procedure name in string.</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.</param>
+        /// <param name="OutPutParamerterName">Accept output key value collection for parameters.</param>
+        /// <returns>Integer value.</returns>
         public int ExecuteNonQuery(string StroredProcedureName, List<KeyValuePair<string, object>> ParaMeterCollection, string OutPutParamerterName)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -823,12 +893,12 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute Non Query
+        /// Execute non query.
         /// </summary>
-        /// <param name="StroredProcedureName"> Store Procedure Name</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters</param>
-        /// <param name="OutPutParamerterName">Accept Output Key Value Collection For Parameters</param>
-        /// <returns></returns>
+        /// <param name="StroredProcedureName"> Store procedure name.</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.</param>
+        /// <param name="OutPutParamerterName">Accept output key value collection for parameters.</param>
+        /// <returns>Integer value.</returns>
         public int ExecuteNonQuery(string StroredProcedureName, List<KeyValuePair<string, string>> ParaMeterCollection, string OutPutParamerterName)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -865,13 +935,13 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute Non Query
+        /// Execute non query.
         /// </summary>
-        /// <param name="StroredProcedureName">Store Procedure Name</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters</param>
-        /// <param name="OutPutParamerterName">Accept Output  For Parameters Name</param>
-        /// <param name="OutPutParamerterValue">Accept OutPut For Parameters Value</param>
-        /// <returns></returns>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.</param>
+        /// <param name="OutPutParamerterName">Accept output  for parameters name.</param>
+        /// <param name="OutPutParamerterValue">Accept output for parameters value.</param>
+        /// <returns>Integer value.</returns>
         public int ExecuteNonQuery(string StroredProcedureName, List<KeyValuePair<string, string>> ParaMeterCollection, string OutPutParamerterName, object OutPutParamerterValue)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -909,11 +979,11 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute Non Query
+        /// Execute non query.
         /// </summary>
-        /// <param name="StroredProcedureName">Store Procedure Name</param>
-        /// <param name="OutPutParamerterName">Accept Output For Parameters Name</param>
-        /// <returns></returns>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <param name="OutPutParamerterName">Accept Output for parameters name.</param>
+        /// <returns>Integer value.</returns>
         public int ExecuteNonQuery(string StroredProcedureName, string OutPutParamerterName)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -943,12 +1013,12 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute Non Query
+        /// Execute non query.
         /// </summary>
-        /// <param name="StroredProcedureName">StoreProcedure Name</param>
-        /// <param name="OutPutParamerterName">Accept Output For Parameter Name</param>
-        /// <param name="OutPutParamerterValue">Accept Output For Parameter Value</param>
-        /// <returns></returns>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <param name="OutPutParamerterName">Accept output for parameter name.</param>
+        /// <param name="OutPutParamerterValue">Accept output for parameter value.</param>
+        /// <returns>Integer value.</returns>
         public int ExecuteNonQuery(string StroredProcedureName, string OutPutParamerterName, object OutPutParamerterValue)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -978,11 +1048,11 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute As DataSet
+        /// Execute as DataSet.
         /// </summary>
-        /// <param name="StroredProcedureName">StoreProcedure Name</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters</param>
-        /// <returns></returns>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.</param>
+        /// <returns>Object of DataSet.</returns>
         public DataSet ExecuteAsDataSet(string StroredProcedureName, List<KeyValuePair<string, object>> ParaMeterCollection)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -1023,11 +1093,11 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute As DataSet
+        /// Execute as DataSet.
         /// </summary>
-        /// <param name="StroredProcedureName">StoreProcedure Name</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters</param>
-        /// <returns></returns>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.</param>
+        /// <returns>Object of DataSet.</returns>
         public DataSet ExecuteAsDataSet(string StroredProcedureName, List<KeyValuePair<string, string>> ParaMeterCollection)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -1063,12 +1133,12 @@ namespace SageFrame.Web.Utilities
                 SQLConn.Close();
             }
         }
-
+       
         /// <summary>
-        /// Execute As DataReader
+        /// Execute as DataReader.
         /// </summary>
-        /// <param name="StroredProcedureName">StoreProcedure Name</param>
-        /// <returns></returns>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <returns>Object of SqlDataReader.</returns>
         public SqlDataReader ExecuteAsDataReader(string StroredProcedureName)
         {
             try
@@ -1092,11 +1162,11 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute As DataReader
+        /// Execute as DataReader.
         /// </summary>
-        /// <param name="StroredProcedureName">Store Procedure Name </param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters</param>
-        /// <returns></returns>
+        /// <param name="StroredProcedureName">Store procedure name. </param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.</param>
+        /// <returns>Object of SqlDataReader.</returns>
         public SqlDataReader ExecuteAsDataReader(string StroredProcedureName, List<KeyValuePair<string, object>> ParaMeterCollection)
         {
             try
@@ -1128,11 +1198,11 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute As DataReader
+        /// Execute as DataReader.
         /// </summary>
-        /// <param name="StroredProcedureName">StoreProcedure Name</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters</param>
-        /// <returns></returns>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.</param>
+        /// <returns>Object of SqlDataReader.</returns>
         public SqlDataReader ExecuteAsDataReader(string StroredProcedureName, List<KeyValuePair<string, string>> ParaMeterCollection)
         {
             try
@@ -1160,11 +1230,11 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute As Object
+        /// Execute as object.
         /// </summary>
-        /// <typeparam name="T"><T></typeparam>
-        /// <param name="StroredProcedureName">StoreProcedure Name</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters</param>
+        /// <typeparam name="T">Given type of object.</typeparam>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.</param>
         /// <returns></returns>
         public T ExecuteAsObject<T>(string StroredProcedureName, List<KeyValuePair<string, object>> ParaMeterCollection)
         {
@@ -1217,10 +1287,10 @@ namespace SageFrame.Web.Utilities
         /// <summary>
         /// Execute As Object
         /// </summary>
-        /// <typeparam name="T"><T></typeparam>
-        /// <param name="StroredProcedureName">StoreProcedure Name</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters</param>
-        /// <returns></returns>
+        /// <typeparam name="T">Given type of object.</typeparam>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.</param>
+        /// <returns>Type of the object implementing.</returns>
         public T ExecuteAsObject<T>(string StroredProcedureName, List<KeyValuePair<string, string>> ParaMeterCollection)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -1268,9 +1338,9 @@ namespace SageFrame.Web.Utilities
         /// <summary>
         /// Execute As Object
         /// </summary>
-        /// <typeparam name="T"><T></typeparam>
+        /// <typeparam name="T">Given type of object.</typeparam>
         /// <param name="StroredProcedureName">Accept Key Value Collection For Parameters</param>
-        /// <returns></returns>
+        /// <returns> Type of the object implementing</returns>
         public T ExecuteAsObject<T>(string StroredProcedureName)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -1314,7 +1384,7 @@ namespace SageFrame.Web.Utilities
         /// Execute As DataSet
         /// </summary>
         /// <param name="StroredProcedureName">StoreProcedure Name</param>
-        /// <returns></returns>
+        /// <returns>Object of DataSet.</returns>
         public DataSet ExecuteAsDataSet(string StroredProcedureName)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -1344,10 +1414,10 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute SQL
+        /// Execute SQL.
         /// </summary>
-        /// <param name="SQL">SQL query in string</param>
-        /// <returns></returns>
+        /// <param name="SQL">SQL query in string.</param>
+        /// <returns>Object of DataTable.</returns>
         public DataTable ExecuteSQL(string SQL)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -1387,10 +1457,10 @@ namespace SageFrame.Web.Utilities
         /// <summary>
         /// Execute As list
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="StroredProcedureName">StoreProcedure Name</param>
+        /// <typeparam name="T">Given type of object.</typeparam>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
         /// <param name="ParaMeterCollection"></param>
-        /// <returns></returns>
+        /// <returns>Type of list of object implementing.</returns>
         public List<T> ExecuteAsList<T>(string StroredProcedureName, List<KeyValuePair<string, object>> ParaMeterCollection)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -1435,12 +1505,12 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute As List
+        /// Execute as list.
         /// </summary>
-        /// <typeparam name="T"><T></typeparam>
-        /// <param name="StroredProcedureName">Store Procedure Name</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters</param>
-        /// <returns></returns>
+        /// <typeparam name="T">Given type of object</typeparam>
+        /// <param name="StroredProcedureName">Store procedure name.</param>
+        /// <param name="ParaMeterCollection">Accept Key Value collection for parameters.</param>
+        /// <returns>Type of list of object implementing.</returns>
         public List<T> ExecuteAsList<T>(string StroredProcedureName, List<KeyValuePair<string, string>> ParaMeterCollection)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -1483,11 +1553,11 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute As List
+        /// Execute As List.
         /// </summary>
-        /// <typeparam name="T"><T></typeparam>
-        /// <param name="StroredProcedureName">Storedprocedure Name</param>
-        /// <returns></returns>
+        /// <typeparam name="T">Given type of object.</typeparam>
+        /// <param name="StroredProcedureName">Storedprocedure name.</param>
+        /// <returns>Type of list of object implementing.</returns>
         public List<T> ExecuteAsList<T>(string StroredProcedureName)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -1521,12 +1591,12 @@ namespace SageFrame.Web.Utilities
         }
 
         /// <summary>
-        /// Execute As Scalar 
+        /// Execute As scalar .
         /// </summary>
-        /// <typeparam name="T"><T></typeparam>
-        /// <param name="StroredProcedureName">StoreProcedure Name</param>
-        /// <param name="ParaMeterCollection">Accept Key Value Collection For Parameters</param>
-        /// <returns></returns>
+        /// <typeparam name="T"> Given type of object.</typeparam>
+        /// <param name="StroredProcedureName">Store procedure name</param>
+        /// <param name="ParaMeterCollection">Accept key value collection for parameters.</param>
+        /// <returns>Type of the object implementing</returns>
         public T ExecuteAsScalar<T>(string StroredProcedureName, List<KeyValuePair<string, object>> ParaMeterCollection)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);
@@ -1562,9 +1632,9 @@ namespace SageFrame.Web.Utilities
         /// <summary>
         /// Execute As Scalar
         /// </summary>
-        /// <typeparam name="T"><T></typeparam>
-        /// <param name="StroredProcedureName">StoredProcedure Name</param>
-        /// <returns></returns>
+        /// <typeparam name="T"> Given type of object.</typeparam>
+        /// <param name="StroredProcedureName">Stored procedure name.</param>
+        /// <returns>Type of the object implementing</returns>
         public T ExecuteAsScalar<T>(string StroredProcedureName)
         {
             SqlConnection SQLConn = new SqlConnection(this._connectionString);

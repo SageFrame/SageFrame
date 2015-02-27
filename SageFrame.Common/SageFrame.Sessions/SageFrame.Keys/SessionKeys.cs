@@ -17,6 +17,9 @@ using SageFrame.Web;
 
 namespace SageFrame.Common
 {
+    /// <summary>
+    /// Application session keys.
+    /// </summary>
     [Serializable]
     public static partial class SessionKeys
     {
@@ -55,6 +58,10 @@ namespace SageFrame.Common
         public static string IsParent = "IsParent";
         public static string ParentURL = "ParentURL";
         public static string RandomCookieValue = "RandomCookieValue" + portalID;
+        /// <summary>
+        /// Initializes a new instance of PortalID. 
+        /// </summary>
+        /// <returns>PortalID</returns>
         public static int PortalID()
         {
             SageFrameConfig objSage = new SageFrameConfig();

@@ -30,12 +30,15 @@ namespace SageFrame.Framework
     {
         #region "Public Methods"
 
+        /// <summary>
+        /// Application controller class
+        /// </summary>
         public ApplicationController()
         {
         }
 
         /// <summary>
-        /// Find The HTML Element Inside The HTML Controls, Inside The User Control, Inside The Page And Change The Css Property Of It
+        /// Find The HTML Element Inside The HTML Controls, Inside The User Control, Inside The Page And Change The Css Property Of It.
         /// </summary>
         /// <param name="page">Page</param>
         /// <param name="userControlID">UserControlID</param>
@@ -52,7 +55,7 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// To Check Whether SageFrame Is Installed Or Not
+        /// To Check Whether SageFrame Is Installed Or Not.
         /// </summary>
         /// <returns>True If It Is Install</returns>
         public bool IsInstalled()
@@ -68,7 +71,7 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Check Either The Request Is Done By Admin Or Not By URL 
+        /// Check Either The Request Is Done By Admin Or Not By URL.
         /// </summary>
         /// <returns>True If The User Is Admin</returns>
         public bool IsAdminRequest()
@@ -129,7 +132,7 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Get Css Colored Template URL
+        /// Get Css Colored Template URL.
         /// </summary>
         /// <param name="adminTheme">Admin Theme</param>
         /// <returns>Css Root Path</returns>
@@ -154,6 +157,11 @@ namespace SageFrame.Framework
             return cssColoredTemplate;
         }
 
+        /// <summary>
+        /// Checks if the request is image request or not.
+        /// </summary>
+        /// <param name="url"> URL</param>
+        /// <returns>Returns "True" if the request is for image</returns>
         public bool IsImageRequest(string url)
         {
             bool isImageRequest = false;

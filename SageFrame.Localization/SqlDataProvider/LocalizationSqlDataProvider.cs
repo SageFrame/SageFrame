@@ -20,8 +20,15 @@ using SageFrame.Localization.Info;
 
 namespace SageFrame.Localization
 {
+    /// <summary>
+    /// Manipulates data for LocaleController class.
+    /// </summary>
     public class LocalizationSqlDataProvider
-    {
+    {  
+        /// <summary>
+        /// Connects to database and obtains available languages.
+        /// </summary>
+        /// <returns>List of languages containing LanguageID,CultureCode,CultureName and FallbackCulture.</returns>
         public static List<Language> GetAvailableLocales()
         {
             List<Language> lstAvailableLocales = new List<Language>();
@@ -55,6 +62,10 @@ namespace SageFrame.Localization
 
 
         }
+        /// <summary>
+        /// Connects to database and insert language.
+        /// </summary>
+        /// <param name="objLanguage">Object of Language.</param>
         public static void AddLanguage(Language objLanguage)
         {
             List<KeyValuePair<string, string>> ParaMeterCollection = new List<KeyValuePair<string, string>>();
@@ -76,7 +87,10 @@ namespace SageFrame.Localization
             }
 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static List<Countries> GetCountryList()
         {
             List<Countries> lstCountries = new List<Countries>();
@@ -96,7 +110,14 @@ namespace SageFrame.Localization
             }
             return lstCountries;
         }
-
+        /// <summary>
+        /// Connects to database and enable language for given portalId,languageId,addedBy,isEnabled and isPublished.
+        /// </summary>
+        /// <param name="portalId">portalId</param>
+        /// <param name="languageId">languageId</param>
+        /// <param name="addedBy">addedBy</param>
+        /// <param name="isEnabled">isEnabled</param>
+        /// <param name="isPublished">isPublished</param>
         public static void EnableLanguage(int portalId, int languageId, string addedBy, int isEnabled, int isPublished)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
@@ -116,7 +137,11 @@ namespace SageFrame.Localization
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connects to database and obtains portal lanaguages.
+        /// </summary>
+        /// <param name="portalId">PortalID</param>
+        /// <returns>List of Language class conatining LanguageID,CultureName and CultureCode.</returns>
         public static List<Language> GetPortalLanguages(int portalId)
         {
             List<Language> lstPortalLanguages = new List<Language>();
@@ -143,7 +168,10 @@ namespace SageFrame.Localization
             SQLReader.Close();
             return lstPortalLanguages;
         }
-
+        /// <summary>
+        /// Connects to database and obtains cire modules.
+        /// </summary>
+        /// <returns>List of ModuleInfo class containing ModuleID and ModuleName.</returns>
         public static List<ModuleInfo> GetCoreModules()
         {
             List<ModuleInfo> lstCoreModules = new List<ModuleInfo>();
@@ -174,7 +202,12 @@ namespace SageFrame.Localization
             SQLReader.Close();
             return lstCoreModules;
         }
-
+        /// <summary>
+        /// Connects to database and add language switch settings for given lstKeyValue,UserModuleID and PortalID.
+        /// </summary>
+        /// <param name="lstKeyValue">List of object of LanguageSwitchKeyValue class.</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
         public static void AddLanguageSwitchSettings(List<LanguageSwitchKeyValue> lstKeyValue, int UserModuleID, int PortalID)
         {
             foreach (LanguageSwitchKeyValue obj in lstKeyValue)
@@ -200,6 +233,12 @@ namespace SageFrame.Localization
                 }
             }
         }
+        /// <summary>
+        /// Connects to database and obtains language switch setting.
+        /// </summary>
+        /// <param name="portalId">portalId</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <returns>List of LanguageSwitchKeyValue class containing SettingKey and SettingValue.</returns>
         public static List<LanguageSwitchKeyValue> GetLanguageSwitchSettings(int portalId, int UserModuleID)
         {
             List<LanguageSwitchKeyValue> lstSettings = new List<LanguageSwitchKeyValue>();
@@ -225,7 +264,12 @@ namespace SageFrame.Localization
             return lstSettings;
         }
 
-
+        /// <summary>
+        /// Connects to database and obtains local page name.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="CultureCode">CultureCode</param>
+        /// <returns>List of LocalPageInfo class containing pageid and pagename. </returns>
 
         public static List<LocalPageInfo> GetLocalPageName(int PortalID, string CultureCode)
         {
@@ -236,7 +280,12 @@ namespace SageFrame.Localization
             return sqlHan.ExecuteAsList<LocalPageInfo>("[dbo].[usp_MenuLocalizeGetPages]", ParaMeterCollection);
         }
 
-
+        /// <summary>
+        /// Connects to database and obtains local module title
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="CultureCode">CultureCode</param>
+        /// <returns>List of LocalModuleInfo class containing user module id and user module title.  </returns>
         public static List<LocalModuleInfo> GetLocalModuleTitle(int PortalID, string CultureCode)
         {
             SQLHandler sqlHan = new SQLHandler();
@@ -246,7 +295,10 @@ namespace SageFrame.Localization
             return sqlHan.ExecuteAsList<LocalModuleInfo>("[dbo].[usp_MenuLocalizeGetModuleTitle]", ParaMeterCollection);
 
         }
-
+        /// <summary>
+        /// Connects to database and adds or updates local page name.
+        /// </summary>
+        /// <param name="lstLocalPage">List of object of LocalPageInfo class.</param>
         public static void AddUpdateLocalPage(List<LocalPageInfo> lstLocalPage)
         {
             string StoredProcedureName = "[dbo].[usp_AddUpdateLocalPage]";
@@ -263,7 +315,10 @@ namespace SageFrame.Localization
                 sqlHan.ExecuteNonQuery(StoredProcedureName, ParaMeterCollection);
             }
         }
-
+        /// <summary>
+        /// Connects to database and adds or updates local module title.
+        /// </summary>
+        /// <param name="lstLocalPage">List of object of LocalModuleInfo class. </param>
         public static void AddUpdateLocalModuleTitle(List<LocalModuleInfo> lstLocalPage)
         {
             string StoredProcedureName = "[dbo].[usp_AddUpdateLocalModuleTitle]";
@@ -279,7 +334,10 @@ namespace SageFrame.Localization
                 sqlHan.ExecuteNonQuery(StoredProcedureName, ParaMeterCollection);
             }
         }
-
+        /// <summary>
+        /// Connects to database and deletes language.
+        /// </summary>
+        /// <param name="code">code</param>
         public static void DeleteLanguage(string code)
         {
             try

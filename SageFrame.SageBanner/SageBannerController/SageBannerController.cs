@@ -20,19 +20,37 @@ using System.Web;
 #endregion
 
 namespace SageFrame.SageBannner.Controller
-{
+{ 
+    /// <summary>
+    /// Business logic for SageBanner.
+    /// </summary>
     public class SageBannerController
     {
+        /// <summary>
+        /// Saves banner content.
+        /// </summary>
+        /// <param name="obj">SageBannerInfo object.</param>
         public void SaveBannerContent(SageBannerInfo obj)
         {
             SageBannerProvider objpro = new SageBannerProvider();
             objpro.SaveBannerContent(obj);
         }
+        /// <summary>
+        /// Saves banner information.
+        /// </summary>
+        /// <param name="objB">SageBannerInfo object</param>
         public void SaveBannerInformation(SageBannerInfo objB)
         {
             SageBannerProvider objBP = new SageBannerProvider();
             objBP.SaveBannerInformation(objB);
         }
+        /// <summary>
+        /// Loads banner name on dropdown for given PortalID.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="CultureCode">CultureCode</param>
+        /// <returns>SageBannerInfo list</returns>
         public List<SageBannerInfo> LoadBannerOnDropDown(int UserModuleID, int PortalID, string CultureCode)
         {
             try
@@ -46,8 +64,14 @@ namespace SageFrame.SageBannner.Controller
             }
 
         }
-
-
+         /// <summary>
+         /// Loads banner images on grid.
+         /// </summary>
+        /// <param name="BannerID">BannerID</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="CultureCode">CultureCode</param>
+        /// <returns>SageBannerInfo list</returns>
         public List<SageBannerInfo> LoadBannerImagesOnGrid(int BannerID, int UserModuleID, int PortalID, string CultureCode)
         {
             try
@@ -61,7 +85,14 @@ namespace SageFrame.SageBannner.Controller
             }
         }
 
-
+        /// <summary>
+        /// Loads html content on grid.
+        /// </summary>
+        /// <param name="BannerID">BannerID</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="CultureCode">CultureCode</param>
+        /// <returns>SageBannerInfo list</returns>
         public List<SageBannerInfo> LoadHTMLContentOnGrid(int BannerID, int UserModuleID, int PortalID, string CultureCode)
         {
             try
@@ -75,14 +106,24 @@ namespace SageFrame.SageBannner.Controller
             }
         }
 
-
+        /// <summary>
+        /// Loads banner list on grid.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="CultureCode">CultureCode</param>
+        /// <returns>SageBannerInfo list.</returns>
         public List<SageBannerInfo> LoadBannerListOnGrid(int PortalID, int UserModuleID, string CultureCode)
         {
             SageBannerProvider obj = new SageBannerProvider();
             return obj.LoadBannerListOnGrid(PortalID, UserModuleID, CultureCode);
         }
 
-
+        /// <summary>
+        /// Obtain image information for given ImageID.
+        /// </summary>
+        /// <param name="ImageID"></param>
+        /// <returns>SageBannerInfo object</returns>
         public SageBannerInfo GetImageInformationByID(int ImageID)
         {
             try
@@ -96,7 +137,11 @@ namespace SageFrame.SageBannner.Controller
             }
 
         }
-
+        /// <summary>
+        /// Obtain html content for edit for given ImageID.
+        /// </summary>
+        /// <param name="ImageID">ImageID</param>
+        /// <returns>SageBannerInfo object</returns>
 
         public SageBannerInfo GetHTMLContentForEditByID(int ImageID)
         {
@@ -112,7 +157,10 @@ namespace SageFrame.SageBannner.Controller
 
         }
 
-
+        /// <summary>
+        /// Deletes banner content for given ImageId.
+        /// </summary>
+        /// <param name="ImageId">ImageId</param>
         public void DeleteBannerContentByID(int ImageId)
         {
             try
@@ -128,7 +176,10 @@ namespace SageFrame.SageBannner.Controller
 
         }
 
-
+        /// <summary>
+        /// Deletes banner and its content for given BannerID.
+        /// </summary>
+        /// <param name="BannerID">BannerID</param>
         public void DeleteBannerAndItsContentByBannerID(int BannerID)
         {
             try
@@ -142,7 +193,10 @@ namespace SageFrame.SageBannner.Controller
             }
 
         }
-
+        /// <summary>
+        /// Deletes html content for given image id.
+        /// </summary>
+        /// <param name="ImageId">ImageId</param>
 
         public void DeleteHTMLContentByID(int ImageId)
         {
@@ -158,13 +212,22 @@ namespace SageFrame.SageBannner.Controller
 
         }
 
-
+        /// <summary>
+        /// Obtain all portal pages of sageframe for given PortalID. 
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>SageBannerInfo list.</returns>
         public List<SageBannerInfo> GetAllPagesOfSageFrame(int PortalID)
         {
             SageBannerProvider obj = new SageBannerProvider();
             return obj.GetAllPagesOfSageFrame(PortalID);
         }
 
+        /// <summary>
+        ///  obtain image path.
+        /// </summary>
+        /// <param name="ImageId">ImageId</param>
+        /// <returns>Image path.</returns>
 
         public string GetFileName(int ImageId)
         {
@@ -180,7 +243,13 @@ namespace SageFrame.SageBannner.Controller
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Obtain sagebanner setting list.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="CultureCode">CultureCode</param>
+        /// <returns>SageBannerSettingInfo object.</returns>
 
         public SageBannerSettingInfo GetSageBannerSettingList(int PortalID, int UserModuleID, string CultureCode)
         {
@@ -205,7 +274,14 @@ namespace SageFrame.SageBannner.Controller
 
             }
         }
-
+        /// <summary>
+        /// Obtain banner images.
+        /// </summary>
+        /// <param name="BannerID">BannerID</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="CultureCode">CultureCode</param>
+        /// <returns>SageBannerInfo list.</returns>
         public List<SageBannerInfo> GetBannerImages(int BannerID, int UserModuleID, int PortalID, string CultureCode)
         {
             try
@@ -228,7 +304,11 @@ namespace SageFrame.SageBannner.Controller
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Sort images in list.
+        /// </summary>
+        /// <param name="ImageId">ImageId</param>
+        /// <param name="MoveUp">MoveUp</param>
 
         public void SortImageList(int ImageId, bool MoveUp)
         {
@@ -243,6 +323,16 @@ namespace SageFrame.SageBannner.Controller
                 throw ex;
             }
         }
+        /// <summary>
+        /// Saves html content.
+        /// </summary>
+        /// <param name="NavImagepath">NavImagepath</param>
+        /// <param name="HTMLBodyText">HTMLBodyText</param>
+        /// <param name="Bannerid">Bannerid</param>
+        /// <param name="UserModuleId">UserModuleId</param>
+        /// <param name="ImageID">ImageID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="CultureCode">CultureCode</param>
         public void SaveHTMLContent(string NavImagepath, string HTMLBodyText, int Bannerid, int UserModuleId, int ImageID, int PortalID, string CultureCode)
         {
             try

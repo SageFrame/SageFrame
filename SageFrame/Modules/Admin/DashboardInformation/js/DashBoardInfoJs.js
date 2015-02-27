@@ -521,14 +521,14 @@ $(function () {
 
     // Message to Display for Each Content to Tour
      tourMessageList = new Array(
-                            "<span class='sfTrHeading'>Welcome to Sagever tour.</span>This is the Top Sticky Bar which contains the Sagever logo and its version description. Along with that you can access the UI (User Interface) setting, Preview and User Profile.",
-                            "Here, you can see Sagever logo and the version you are using.",
+                            "<span class='sfTrHeading'>Welcome to SageFrame tour.</span>This is the Top Sticky Bar which contains the SageEver logo and its version description. Along with that you can access the UI (User Interface) setting, Preview and User Profile.",
+                            "Here, you can see SageFrame logo and the version you are using.",
                             "Click here to change the dashboard theme and sidebar position from the available options.",
                             "This section contains the Dashboard home link, site Preview, user details and settings, and logout menu.",
 							 "<span class='sfTrHeading'>Sidebar Menu</span>This is a collapsible side bar menu which contains all the necessary controls to build and customize your site.<br/><br/><button id='btnSfTourMenu' class='sfBtn' >Collapse</button>",
                            "Click on the arrow to hide/unhide the side bar menu.<br/><br/><button id='btnSfTourHide' class='sfBtn' >Hide</button>",
 						   "<span class='sfTrHeading'>Page Help</span>To know what the respective pages do, click on the Page Help. This page help option is available for every pages included on the dashboard.<br/><br/><button id='btnSfTourHelp' class='sfBtn' >Expand</button>",
-                            "<span class='sfTrHeading'>Sagever Welcome Screen</span>You can take a short tour to Sagever, watch video tutorials, read user manuals and get an insight of available modules.",
+                            "<span class='sfTrHeading'>SageFrame Welcome Screen</span>You can take a short tour to SageFrame, watch video tutorials, read user manuals and get an insight of available modules.",
                             "<span class='sfTrHeading'>C-Panel</span>This is your C-Panel for easy access of frequently used controls available in the system.",
                             "<span class='sfTrHeading'>Site Analytics</span>The Visitor’s List gives you the site’s data and web usage in graphical form. You can however see full statistics from the link given.",
                             "<span class='sfTrHeading'>Portal Snapshot</span>Get each and every information of pages, modules and users with the Portal Snapshot.",

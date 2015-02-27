@@ -1400,9 +1400,11 @@
                             $('#spnPaneName').text(panename);
                             $('#lblmoduleName').text(ui.draggable.html());
                             $('#trPages').hide();
-                            $('#chkInheritPermissions').prop("checked", false)
+                            $('#chkInheritPermissions').prop("checked", false);
                             ModuleManager.LoadRoles();
                             ModuleManager.config.ActiveElement = $li;
+                            $('#hdnModuleInPage').val('0');
+                            $('#hdnPageList li').removeClass('sfActive');
                             ModuleManager.ClearPopUpControl();
                             $('#trPages').slideUp();
                             ModuleManager.config.UserModuleID = 0;

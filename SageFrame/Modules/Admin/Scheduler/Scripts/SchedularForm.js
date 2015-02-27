@@ -122,7 +122,7 @@ function FillWeeks() {
     for (var i = 0; i < weekDropDown.length; i++) {
         $("#s3>#Weekly").append("<option value=" + i + ">" + weekDropDown[i] + "</option>");
     }
-    $("#s3").after("<br>");
+    //$("#s3").after("<br>");
 }
 
 function FillMonthly() {
@@ -233,6 +233,9 @@ function AddTask() {
     var startdate = new Date($.trim($("#txtStartDate").val()));
     var enddate = new Date($.trim($("#txtEndDate").val()));
     $.jsonRequest(url + "AddNewSchedule", param, RefreshGrid);
+    csscody.alert("<h1>Add Confirmation</h1><p>Your task has been added.</p>");
+    $('#lblFile').text("");
+    $("#BoxOverlay").css("z-index", "8999");
 }
 /*** Retrieve Task***/
 
@@ -275,9 +278,13 @@ function BindTask(data) {
     $('#ddlRetryUnits').val(data.RetryFrequencyUnit);
     $('#ddlEventList').val(data.AttachToEvent);
     $('#running_mode').val(data.RunningMode);
-    console.log(data.RunningMode);
     if (data.IsEnable) {
-        $("#chkIsEnabled").attr("checked", "checked");
+        console.log(1);
+        $("#chkIsEnabled").prop("checked", true);
+    }
+    else {
+        console.log(2);
+        $("#chkIsEnabled").prop("checked", false);
     }
     if (data.CatchUpEnabled) {
         $("#chkIsCatchUpEnabled").attr("checked", "checked");
@@ -408,7 +415,7 @@ function UpdateSchedule() {
     var _retryFrequencyUnit = $('#ddlRetryUnits option:selected').val();
     var _attachToEvent = $('#ddlEventList option:selected').val();
     var _catchUpEnabled = $("#chkIsCatchUpEnabled").is(":checked") ? true : false;
-    var _isEnable = true;
+    var _isEnable = $("#chkIsEnabled").is(":checked") ? true : false;
     var _servers = "none";
     var _createdByUserID = "superuser";
     var _runningMode = $('#running_mode').val();
@@ -487,6 +494,9 @@ function UpdateSchedule() {
     param = JSON2.stringify(param);
     $.jsonRequest(url + "UpdateSchedule", param, RefreshGrid);
     $('#newScheduleDiv').hide();
+    $('#fade1').remove();
+    csscody.alert("<h1>Update Confirmation</h1><p>Your task has been updated.</p>");
+    $("#BoxOverlay").css("z-index", "8999");
 }
 
 function RunScheduleNow(id, args) {
@@ -520,7 +530,7 @@ function InitalizeContextMenu() {
 }
 
 function ShowNewTaskPopUp(isNewSchedule) {
-
+    $("#chkIsEnabled").prop("checked", true);
     GetCurrentDate();
     FillWeeks();
     FillMonthly();
@@ -530,6 +540,9 @@ function ShowNewTaskPopUp(isNewSchedule) {
     $("span.fileUploadMsg").html("");
     FillHourMin();
     $("label[class=error]").remove();
+    $("span.error").hide();
+    $("input.error").removeClass("error");
+    $("#lblFile").text("");
     if (isNewSchedule) {
         HideAll();
         ResetInput();
@@ -553,8 +566,10 @@ function ShowNewTaskPopUp(isNewSchedule) {
         $("#txtAssemblyName").removeAttr("disabled");
         $("#btnAddTask").click(function() {
             var upfile = $("#uploadFileName").val();
-            if (upfile.length < 1) {
-                $("span.fileUploadMsg").attr("class", "error").html("Please select the dll file");
+            
+            if (upfile.length < 1 || (upfile.length > 1 && $("#lblFile").text() == '')) {
+                $("span.error").show();
+                $("span.fileUploadMsg").attr("class", "error").html("Please select the dll file").show();
             }
         });
 
@@ -581,6 +596,7 @@ function ShowNewTaskPopUp(isNewSchedule) {
     $('#txtRepeatHrs').removeAttr("style");
     $('#txtRepeatMins').removeAttr("style");
     $('#newScheduleDiv').removeClass('invisibleDiv').addClass('loading-visible').fadeIn("slow");
+    $('body').append("<div id='fade1' style='display:block'></div>");
     return false;
 }
 
@@ -697,6 +713,9 @@ function BindEvents() {
     });
     $('.closePopUp').on("click", function() {
         CloseTaskPopUp();
+        //$("input.error").removeClass("error");
+        //$("label.error, span.error").hide();
+        
     });
     $('#bottomControlDiv span.history').bind("click", function() {
         $('#taskHistoryDiv').fadeIn("slow");
@@ -758,6 +777,7 @@ function InitializeActivityIndicator() {
 
 function CloseTaskPopUp() {
     $('#newScheduleDiv').hide().addClass('invisibleDiv').removeClass('loading-visible');
+    $("#fade1").remove();
 }
 
 function GetCurrentDate() {
@@ -781,7 +801,8 @@ function ImageUploader() {
     $("span.fileUploadMsg").html();
     var uploadFlag = false;
     upload = new AjaxUpload($('#fileUpload'), {
-        action: SchedularModuleFilePath + 'UploadHandler.ashx',
+        action: SchedularModuleFilePath + 'UploadHandler.ashx?userModuleId=' + SchedularModuleID + "&portalID=" + 
+                    SageFramePortalID + "&sageFrameSecureToken=" + SageFrameSecureToken + "&userName=" + SageFrameUserName,
         name: 'myfile[]',
         multiple: true,
         data: {},
@@ -802,11 +823,12 @@ function ImageUploader() {
                     $("span.fileUploadMsg").html("");
                     $("#uploadFileName").val(file);
                     $('#lblFile').text(file);
+                    $("span.error").hide();
                     uploadFlag = true;
                 }
             });
         },
-        onSubmit: function(file, ext) {
+        onSubmit: function(file, ext) {            
             if (ext != "exe") {
                 if (ext && /^(dll)$/i.test(ext)) {
                     if (!uploadFlag) return false;
@@ -820,7 +842,7 @@ function ImageUploader() {
                 return false;
             }
         },
-        onComplete: function(file, response) {
+        onComplete: function(file, response) {            
             if ($("#uploadFileName").val().length < 1) {
                 $("span.fileUploadMsg").html("Please select dll file!");
             } 
@@ -1138,6 +1160,7 @@ function deleterecord(args) {
             }
         }
         csscody.confirm("<h1>Delete Confirmation</h1><p>Do you want to delete all selected items?</p>", properties);
+        $("#BoxOverlay").css("z-index", "8999");
     }
 }
 

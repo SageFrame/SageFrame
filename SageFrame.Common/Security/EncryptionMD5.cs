@@ -31,8 +31,12 @@ namespace SageFrame.Web
         const string DESKey = "AQWSEDRF";
         const string DESIV = "HGFEDCBA";
 
-
-        public static string Decrypt(string stringToDecrypt)//Decrypt the content
+        /// <summary>
+        /// Decrypt passing content.
+        /// </summary>
+        /// <param name="stringToDecrypt">Content to decrypt.</param>
+        /// <returns>Decrypt contain.</returns>
+        public static string Decrypt(string stringToDecrypt)
         {
             stringToDecrypt = stringToDecrypt.Replace(" ", "+");
             byte[] key;
@@ -67,8 +71,12 @@ namespace SageFrame.Web
                 throw ex;
             }
         }
-
-        public static string Encrypt(string stringToEncrypt)// Encrypt the content
+        /// <summary>
+        ///  Encrypt passing content.
+        /// </summary>
+        /// <param name="stringToEncrypt">Content to encrypt.</param>
+        /// <returns>Encrypted contain.</returns>
+        public static string Encrypt(string stringToEncrypt)
         {
 
             byte[] key;
@@ -100,7 +108,11 @@ namespace SageFrame.Web
             }
 
         }
-
+        /// <summary>
+        /// Convert to byte array.
+        /// </summary>
+        /// <param name="strInput">Content to convert byte array.</param>
+        /// <returns>Converted byte array.</returns>
         static byte[] Convert2ByteArray(string strInput)
         {
 

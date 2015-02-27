@@ -25,6 +25,7 @@
     };
     $(function() {
         $(document).on('click', "#" + $.Localization.GridID + ' .sfEdit', function(e) {
+		 $('#txtResxValueEditor').ckeditor("config");
             var index = $(this).attr("value");
             $.Localization.ID = index;
             var data = $('#' + $.Localization.GridID + ' textarea[title=' + index + ']').val();
@@ -32,7 +33,7 @@
             ShowPopUp("editorDiv");
             e.preventDefault();
         });
-        $('#txtResxValueEditor').ckeditor("config");
+       
         BindEvents();
     });
     function BindEvents() {

@@ -15,8 +15,17 @@ using System.Text.RegularExpressions;
 
 namespace SageFrame.Templating.xmlparser
 {
+    /// <summary>
+    /// Contains class that helps in parsing XML.
+    /// </summary>
     public class XmlParser
     {
+        /// <summary>
+        /// Returns node's attributes from XML file for a provided node.
+        /// </summary>
+        /// <param name="xmlFile">XML file path.</param>
+        /// <param name="startParseNode">Node for which details are to be extracted.</param>
+        /// <returns>List of XmlTag class object containing node details.</returns>
         public List<XmlTag> GetXmlTags(string xmlFile, string startParseNode)
         {
             List<XmlTag> lstSectionNodes = new List<XmlTag>();
@@ -43,6 +52,12 @@ namespace SageFrame.Templating.xmlparser
             return lstSectionNodes;
         }
 
+        /// <summary>
+        /// Returns layout positions.
+        /// </summary>
+        /// <param name="xmlFile">XML file path.</param>
+        /// <param name="startParseNode">Node to be parse. </param>
+        /// <returns>List of string  containing the layout position.</returns>
         public List<string> GetLayoutPositions(string xmlFile, string startParseNode)
         {
             XmlDocument doc = XmlHelper.LoadXMLDocument(xmlFile);
@@ -59,6 +74,11 @@ namespace SageFrame.Templating.xmlparser
             return lstPositions;
         }
 
+        /// <summary>
+        /// Returns  XmlTagTypes object containing xml tag type.
+        /// </summary>
+        /// <param name="xmlNode">XmlNode object  from where the xml tag type is to be retrive.</param>
+        /// <returns>XmlTagTypes object containing xml type tag value.</returns>
         public XmlTagTypes GetXmlTagType(XmlNode xmlNode)
         {
             XmlTagTypes tagType = new XmlTagTypes();
@@ -108,17 +128,31 @@ namespace SageFrame.Templating.xmlparser
             return tagType;
         }
 
-
+        /// <summary>
+        /// Returns the count of child node in any node.
+        /// </summary>
+        /// <param name="xmlNode">Node of which the child node is to be count.</param>
+        /// <returns>Child node counts.</returns>
         public int GetChildNodeCount(XmlNode xmlNode)
         {
             return (xmlNode.ChildNodes.Count);
         }
 
+        /// <summary>
+        /// Counts the attributes inside a XML node.
+        /// </summary>
+        /// <param name="xmlNode">Node of which the attributes is to be count. </param>
+        /// <returns>Count of attributes.</returns>
         public int GetAttributeCount(XmlNode xmlNode)
         {
             return (xmlNode.Attributes.Count);
         }
 
+        /// <summary>
+        /// Returns list of LayoutAttribute class object containing list of attributes of each node provided.
+        /// </summary>
+        /// <param name="xn">Node of which the attributes are to be extracted.</param>
+        /// <returns>List of attributes.</returns>
         public List<LayoutAttribute> GetAttributesCollection(XmlNode xn)
         {
             List<LayoutAttribute> lstXmlAttr = new List<LayoutAttribute>();
@@ -135,10 +169,15 @@ namespace SageFrame.Templating.xmlparser
             }
             return lstXmlAttr;
         }
+
+        /// <summary>
+        /// Returns  placeholder in a string array.
+        /// </summary>
+        /// <param name="node">Node containg the placeholder name.</param>
+        /// <returns>Array of strings of placehoder names.</returns>
         public string[] GetPlaceholders(XmlNode node)
         {
             List<string> lstPch = new List<string>();
-
             List<XmlTag> lstChildNodes = new List<XmlTag>();
             string childNode = "";
             if (node.ChildNodes.Count > 0)
@@ -146,16 +185,19 @@ namespace SageFrame.Templating.xmlparser
                 childNode = node.ChildNodes[0].Name;
             }
             XmlNodeList xnList = node.SelectNodes(childNode);
-
             for (int i = 0; i < node.ChildNodes.Count; i++)
             {
                 if (node.ChildNodes[i].Attributes["name"] != null)
                     lstPch.Add(node.ChildNodes[i].Attributes["name"].Value);
-
             }
             return lstPch.ToArray();
         }
 
+        /// <summary>
+        /// Retutrns positions of any node.
+        /// </summary>
+        /// <param name="node">Node containing positions.</param>
+        /// <returns>Array of string containing positions.</returns>
         public string[] GetPositions(XmlNode node)
         {
             List<string> lstPch = new List<string>();
@@ -179,6 +221,11 @@ namespace SageFrame.Templating.xmlparser
             return lstPch.ToArray();
         }
 
+        /// <summary>
+        /// Returns child node of any node provided.
+        /// </summary>
+        /// <param name="node">Node of which the child node are to be  list.</param>
+        /// <returns>List of XmlTag class object containing child nodes. </returns>
         public List<XmlTag> GetChildNodeCollection(XmlNode node)
         {
             List<XmlTag> lstChildNodes = new List<XmlTag>();
@@ -203,23 +250,28 @@ namespace SageFrame.Templating.xmlparser
                 {
                     lstChildNodes.Add(tag);
                 }
-
             }
-
             return lstChildNodes;
         }
 
-
-
+        /// <summary>
+        /// Buils complete tags from XML tag detail provided.
+        /// </summary>
+        /// <param name="tag">XmlTag class object containing XML details.</param>
+        /// <returns></returns>
         public string BuildCompleteTag(XmlTag tag)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(GetStartTag(tag));
             sb.Append(GetEndTag(tag));
             return sb.ToString();
-
         }
 
+        /// <summary>
+        /// Returns start tag.
+        /// </summary>
+        /// <param name="tag">XmlTag object containing node details.</param>
+        /// <returns>Start tag.</returns>
         public string GetStartTag(XmlTag tag)
         {
             bool hasAttribute = tag.LSTAttributes.Count > 0 ? true : false;
@@ -240,11 +292,22 @@ namespace SageFrame.Templating.xmlparser
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Returns xml end tag.
+        /// </summary>
+        /// <param name="tag">XmlTag tag containing tag name.</param>
+        /// <returns>XML end tag.</returns>
         public string GetEndTag(XmlTag tag)
         {
             return ("</" + tag.TagName + ">");
         }
 
+
+        /// <summary>
+        /// Returns attributes  from list of layout.
+        /// </summary>
+        /// <param name="lstAttr">List of layout attributes.</param>
+        /// <returns></returns>
         public string GetAttributeString(List<LayoutAttribute> lstAttr)
         {
             StringBuilder sb = new StringBuilder();
@@ -259,6 +322,11 @@ namespace SageFrame.Templating.xmlparser
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Validates the tag types.
+        /// </summary>
+        /// <param name="tag">Tag type.</param>
+        /// <returns>True if the tag type is valid.</returns>
         public bool ValidateTagType(XmlTag tag)
         {
             bool exists;
@@ -267,6 +335,11 @@ namespace SageFrame.Templating.xmlparser
 
         }
 
+        /// <summary>
+        /// Returns XML attribute type.
+        /// </summary>
+        /// <param name="xmlAttribute">LayoutAttribute object containing attribute name.</param>
+        /// <returns>Attribute types.</returns>
         public XmlAttributeTypes GetXmlAttributeType(LayoutAttribute xmlAttribute)
         {
             XmlAttributeTypes attrTypes = new XmlAttributeTypes();

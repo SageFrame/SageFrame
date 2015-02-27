@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 
 namespace SageFrame.ContactUs
-{
+{   
+    /// <summary>
+    ///  This class holds the properties for ContactUsInfo
+    /// </summary>
     public class ContactUsInfo
     {
         private int _ContactUsID;
@@ -34,11 +37,15 @@ namespace SageFrame.ContactUs
 		private string _UpdatedBy;
 		
 		private string _DeletedBy;
-
+        /// <summary>
+        /// Initializes a new instance of the ContactUsInfo class.
+        /// </summary>
         public ContactUsInfo()
 		{
 		}
-
+        /// <summary>
+        /// Gets or sets ContactUsID.
+        /// </summary>
         public int ContactUsID
         {
             get
@@ -53,7 +60,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets Name.
+        /// </summary>
         public string Name
         {
             get
@@ -68,7 +77,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets Email.
+        /// </summary>
         public string Email
         {
             get
@@ -83,7 +94,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets Message.
+        /// </summary>
         public string Message
         {
             get
@@ -98,7 +111,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets IsActive.
+        /// </summary>
         public System.Nullable<bool> IsActive
         {
             get
@@ -113,7 +128,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets IsDeleted.
+        /// </summary>
         public System.Nullable<bool> IsDeleted
         {
             get
@@ -128,7 +145,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets IsModified.
+        /// </summary>
         public System.Nullable<bool> IsModified
         {
             get
@@ -143,7 +162,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets AddedOn.
+        /// </summary>
         public System.Nullable<System.DateTime> AddedOn
         {
             get
@@ -158,7 +179,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets UpdatedOn.
+        /// </summary>
         public System.Nullable<System.DateTime> UpdatedOn
         {
             get
@@ -173,7 +196,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets DeletedOn.
+        /// </summary>
         public System.Nullable<System.DateTime> DeletedOn
         {
             get
@@ -188,7 +213,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets PortalID.
+        /// </summary>
         public System.Nullable<int> PortalID
         {
             get
@@ -203,7 +230,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets AddedBy.
+        /// </summary>
         public string AddedBy
         {
             get
@@ -218,7 +247,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets UpdatedBy.
+        /// </summary>
         public string UpdatedBy
         {
             get
@@ -233,7 +264,9 @@ namespace SageFrame.ContactUs
                 }
             }
         }
-
+        /// <summary>
+        /// Gets or sets DeletedBy.
+        /// </summary>
         public string DeletedBy
         {
             get

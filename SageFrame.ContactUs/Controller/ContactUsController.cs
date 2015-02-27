@@ -10,9 +10,21 @@ using SageFrame.SageFrameClass.MessageManagement;
 
 namespace SageFrame.ContactUs
 {
+    /// <summary>
+    /// Business logic class for ContactUs.
+    /// </summary>
     public class ContactUsController
-    {
-
+    { 
+        /// <summary>
+        /// Adds contactus for given portalID.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        /// <param name="email">Email.</param>
+        /// <param name="subject">Subject.</param>
+        /// <param name="message">Message.</param>
+        /// <param name="isActive">IsActive</param>
+        /// <param name="portalID">Portal id.</param>
+        /// <param name="addedBy">Added by.</param>
         public void ContactUsAdd(string name, string email, string subject, string message, bool isActive, int portalID, string addedBy)
         {
             try
@@ -29,7 +41,12 @@ namespace SageFrame.ContactUs
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Deletes contactus for given portalID.
+        /// </summary>
+        /// <param name="contactUsID">Contact us id.</param>
+        /// <param name="portalID">Portal id.</param>
+        /// <param name="deletedBy">Deleted by.</param>
         public void ContactUsDeleteByID(int contactUsID, int portalID, string deletedBy)
         {
             try
@@ -42,7 +59,11 @@ namespace SageFrame.ContactUs
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Returns ContactUsInfo list for given portalID.
+        /// </summary>
+        /// <param name="portalID">Portal id.</param>
+        /// <returns>ContactUsInfo list</returns>
         public List<ContactUsInfo> ContactUsGetAll(int portalID)
         {
             try

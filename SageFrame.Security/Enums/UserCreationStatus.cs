@@ -13,6 +13,9 @@ using System.Text;
 
 namespace SageFrame.Security.Helpers
 {
+    /// <summary>
+    /// Enum for user creation status.
+    /// </summary>
     public enum UserCreationStatus
     {
         DUPLICATE_EMAIL=3,

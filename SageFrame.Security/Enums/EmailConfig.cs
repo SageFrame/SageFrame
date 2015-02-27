@@ -13,6 +13,9 @@ using System.Text;
 
 namespace SageFrame.Security.Enums
 {
+    /// <summary>
+    /// Enum for email configuration.
+    /// </summary>
     public enum EmailConfig
     {
         UNIQUE_EMAIL=0

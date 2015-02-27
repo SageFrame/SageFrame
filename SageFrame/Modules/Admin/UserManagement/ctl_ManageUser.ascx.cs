@@ -28,6 +28,10 @@ using SageFrame.Security.Enums;
 using SageFrame.UserProfile;
 using System.IO;
 using SageFrame.Common;
+using SageFrame.ExportUser;
+using System.Data.OleDb;
+using System.Linq;
+using Microsoft.VisualBasic.FileIO;
 #endregion
 
 namespace SageFrame.Modules.Admin.UserManagement
@@ -36,29 +40,44 @@ namespace SageFrame.Modules.Admin.UserManagement
     {
         MembershipController m = new MembershipController();
         RoleController role = new RoleController();
+        List<ExportUserInfo> lstUserImportUsers = new List<ExportUserInfo>();
+        List<ExportUserInfo> lstDuplicateUserList = new List<ExportUserInfo>();
         public int Flag = 0;
         string falseDate = "10/10/1900";
         string defaultDate = "1/1/0001";
+        public string UserImportFilePath = string.Empty;
+        public string ImportFilePath = string.Empty;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             IncludeJs("UserManagement", false, "/js/jquery.pstrength-min.1.2.js");
-            IncludeJsTop("UserManagementValidation", "/js/jquery.validate.js");
+            IncludeJsTop("UserManagement", "/js/jquery.validate.js", "/js/jquery.alerts.js");
+            IncludeCss("UserManagement", "/css/jquery.alerts.css");
             imgProfileEdit.Visible = false;
+            lblDuplicateUser.Visible = false;
             try
             {
-                
+
                 if (!IsPostBack)
                 {
+                    Session["csv"] = null;
                     aceSearchText.CompletionSetCount = GetPortalID;
                     BindRolesInListBox(lstAvailableRoles);
                     BindUsers(string.Empty);
-                    PanelVisibility(false, true, false);
+                    PanelVisibility(false, true, false, false);
                     pnlSettings.Visible = false;
                     BindRolesInDropDown(ddlSearchRole);
                     AddImageUrls();
                 }
                 int index = rbFilterMode.SelectedIndex;
                 rbFilterMode.Items[index].Attributes.Add("class", "active");
+                RoleController _role = new RoleController();
+                string[] roles = _role.GetRoleNames(GetUsername, GetPortalID).ToLower().Split(',');
+                if (!roles.Contains(SystemSetting.SUPER_ROLE[0].ToLower()))
+                {
+                    imgBtnExportUser.Visible = false;
+                    imgBtnImportUser.Visible = false;
+                }
             }
             catch (Exception ex)
             {
@@ -80,14 +99,15 @@ namespace SageFrame.Modules.Admin.UserManagement
             //imgBtnSettings.ImageUrl = GetTemplateImageUrl("settings.png", true);
             //btnSaveSetting.ImageUrl = GetAdminImageUrl("btnsave.png", true);
             //btnCancel.ImageUrl = GetAdminImageUrl("imgcancel.png", true);
-           // btnDeleteProfilePic.ImageUrl = GetAdminImageUrl("imgdelete.png", true);
+            // btnDeleteProfilePic.ImageUrl = GetAdminImageUrl("imgdelete.png", true);
         }
 
-        private void PanelVisibility(bool VisibleUserPanel, bool VisibleUserListPanel, bool VisibleManageUserPanel)
+        private void PanelVisibility(bool VisibleUserPanel, bool VisibleUserListPanel, bool VisibleManageUserPanel, bool VisibleExportUserPanel)
         {
             pnlUser.Visible = VisibleUserPanel;
             pnlUserList.Visible = VisibleUserListPanel;
             pnlManageUser.Visible = VisibleManageUserPanel;
+            pnlUserImport.Visible = VisibleExportUserPanel;
         }
 
         private DataTable GetAllRoles()
@@ -241,7 +261,7 @@ namespace SageFrame.Modules.Admin.UserManagement
         {
             try
             {
-                PanelVisibility(true, false, false);
+                PanelVisibility(true, false, false, false);
                 ClearForm();
                 lstAvailableRoles.SelectedIndex = lstAvailableRoles.Items.IndexOf(lstAvailableRoles.Items.FindByValue("Registered User"));
             }
@@ -316,7 +336,7 @@ namespace SageFrame.Modules.Admin.UserManagement
             try
             {
                 BindUsers(string.Empty);
-                PanelVisibility(false, true, false);
+                PanelVisibility(false, true, false, false);
             }
             catch (Exception ex)
             {
@@ -431,7 +451,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                             lstUnselectedRoles.Enabled = false;
                             lstSelectedRoles.Enabled = false;
                         }
-                        PanelVisibility(false, false, true);
+                        PanelVisibility(false, false, true, false);
                         LoadUserProfileData();
                     }
                     else if (e.CommandName == "DeleteUser")
@@ -664,7 +684,7 @@ namespace SageFrame.Modules.Admin.UserManagement
         {
             try
             {
-                PanelVisibility(false, true, false);
+                PanelVisibility(false, true, false, false);
                 BindUsers(string.Empty);
                 FilterUserGrid(int.Parse(rbFilterMode.SelectedValue.ToString()));
             }
@@ -793,7 +813,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                     if (chkBoxItem.Checked == true)
                     {
                         LinkButton lnkUsername = (LinkButton)gdvUser.Rows[i].FindControl("lnkUsername");
-                        if (!SystemSetting.SYSTEM_USERS.Contains(lnkUsername.Text.Trim()))
+                        if (!SystemSetting.SYSTEM_DEFAULT_USERS.Contains(lnkUsername.Text.Trim(), StringComparer.OrdinalIgnoreCase))
                         {
                             seletedUsername = seletedUsername + lnkUsername.Text.Trim() + ",";
                         }
@@ -893,84 +913,89 @@ namespace SageFrame.Modules.Admin.UserManagement
         {
             try
             {
-
-                if (txtUserName.Text != "" && txtSecurityQuestion.Text != "" && txtSecurityAnswer.Text != "" && txtFirstName.Text != "" && txtLastName.Text != "" && txtEmail.Text != "")
+                if (SystemSetting.SYSTEM_DEFAULT_USERS.Contains(txtUserName.Text.Trim(), StringComparer.OrdinalIgnoreCase))
                 {
-                    if (lstAvailableRoles.SelectedIndex > -1)
+                    ShowMessage("", GetSageMessage("UserManagement", "ConflictInUserNameRoleName"), "", SageMessageType.Alert);
+                }
+                else
+                {
+                    if (txtUserName.Text != "" && txtSecurityQuestion.Text != "" && txtSecurityAnswer.Text != "" && txtFirstName.Text != "" && txtLastName.Text != "" && txtEmail.Text != "")
                     {
-                        if (txtPassword.Text.Length >= 4)
+                        if (lstAvailableRoles.SelectedIndex > -1)
                         {
-                            UserInfo objUser = new UserInfo();
-                            objUser.ApplicationName = Membership.ApplicationName;
-                            objUser.FirstName = txtFirstName.Text;
-                            objUser.UserName = txtUserName.Text;
-                            objUser.LastName = txtLastName.Text;
-                            string Password, PasswordSalt;
-                            PasswordHelper.EnforcePasswordSecurity(m.PasswordFormat, txtPassword.Text, out Password, out PasswordSalt);
-                            objUser.Password = Password;
-                            objUser.PasswordSalt = PasswordSalt;
-                            objUser.Email = txtEmail.Text;
-                            objUser.SecurityQuestion = txtSecurityQuestion.Text;
-                            objUser.SecurityAnswer = txtSecurityAnswer.Text;
-                            objUser.IsApproved = true;
-                            objUser.CurrentTimeUtc = DateTime.Now;
-                            objUser.CreatedDate = DateTime.Now;
-                            objUser.UniqueEmail = 0;
-                            objUser.PasswordFormat = m.PasswordFormat;
-                            objUser.PortalID = GetPortalID;
-                            objUser.AddedOn = DateTime.Now;
-                            objUser.AddedBy = GetUsername;
-                            objUser.UserID = Guid.NewGuid();
-                            objUser.RoleNames = GetSelectedRoleNameString();
-                            objUser.StoreID = GetStoreID;
-                            objUser.CustomerID = GetCustomerID;
-
-                            UserCreationStatus status = new UserCreationStatus();
-                            try
+                            if (txtPassword.Text.Length >= 4)
                             {
-                                MembershipDataProvider.CreatePortalUser(objUser, out status, UserCreationMode.CREATE);
+                                UserInfo objUser = new UserInfo();
+                                objUser.ApplicationName = Membership.ApplicationName;
+                                objUser.FirstName = txtFirstName.Text.Trim();
+                                objUser.UserName = txtUserName.Text.Trim();
+                                objUser.LastName = txtLastName.Text.Trim();
+                                string Password, PasswordSalt;
+                                PasswordHelper.EnforcePasswordSecurity(m.PasswordFormat, txtPassword.Text, out Password, out PasswordSalt);
+                                objUser.Password = Password;
+                                objUser.PasswordSalt = PasswordSalt;
+                                objUser.Email = txtEmail.Text;
+                                objUser.SecurityQuestion = txtSecurityQuestion.Text;
+                                objUser.SecurityAnswer = txtSecurityAnswer.Text;
+                                objUser.IsApproved = true;
+                                objUser.CurrentTimeUtc = DateTime.Now;
+                                objUser.CreatedDate = DateTime.Now;
+                                objUser.UniqueEmail = 0;
+                                objUser.PasswordFormat = m.PasswordFormat;
+                                objUser.PortalID = GetPortalID;
+                                objUser.AddedOn = DateTime.Now;
+                                objUser.AddedBy = GetUsername;
+                                objUser.UserID = Guid.NewGuid();
+                                objUser.RoleNames = GetSelectedRoleNameString();
+                                objUser.StoreID = GetStoreID;
+                                objUser.CustomerID = GetCustomerID;
 
-                                if (status == UserCreationStatus.DUPLICATE_USER)
+                                UserCreationStatus status = new UserCreationStatus();
+                                try
                                 {
-                                    ShowMessage("", GetSageMessage("UserManagement", "NameAlreadyExists"), "", SageMessageType.Alert);
+                                    MembershipDataProvider.CreatePortalUser(objUser, out status, UserCreationMode.CREATE);
 
+                                    if (status == UserCreationStatus.DUPLICATE_USER)
+                                    {
+                                        ShowMessage("", GetSageMessage("UserManagement", "NameAlreadyExists"), "", SageMessageType.Alert);
+
+                                    }
+                                    else if (status == UserCreationStatus.DUPLICATE_EMAIL)
+                                    {
+                                        ShowMessage("", GetSageMessage("UserManagement", "EmailAddressAlreadyIsInUse"), "", SageMessageType.Alert);
+
+                                    }
+                                    else if (status == UserCreationStatus.SUCCESS)
+                                    {
+                                        PanelVisibility(false, true, false, false);
+                                        BindUsers(string.Empty);
+                                        ShowMessage("", GetSageMessage("UserManagement", "UserCreatedSuccessfully"), "", SageMessageType.Success);
+
+
+                                    }
                                 }
-                                else if (status == UserCreationStatus.DUPLICATE_EMAIL)
+                                catch (Exception ex)
                                 {
-                                    ShowMessage("", GetSageMessage("UserManagement", "EmailAddressAlreadyIsInUse"), "", SageMessageType.Alert);
-
-                                }
-                                else if (status == UserCreationStatus.SUCCESS)
-                                {
-                                    PanelVisibility(false, true, false);
-                                    BindUsers(string.Empty);
-                                    ShowMessage("", GetSageMessage("UserManagement", "UserCreatedSuccessfully"), "", SageMessageType.Success);
-
-
+                                    throw ex;
                                 }
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                throw ex;
+                                ShowMessage("", GetSageMessage("UserManagement", "PasswordLength"), "", SageMessageType.Alert);
                             }
                         }
                         else
                         {
-                            ShowMessage("", GetSageMessage("UserManagement", "PasswordLength"), "", SageMessageType.Alert);
+                            ShowMessage("", GetSageMessage("UserManagement", "PleaseSelectRole"), "", SageMessageType.Alert);
+
                         }
                     }
                     else
                     {
-                        ShowMessage("", GetSageMessage("UserManagement", "PleaseSelectRole"), "", SageMessageType.Alert);
-
+                        ShowMessage("", GetSageMessage("UserManagement", "PleaseEnterAllRequiredFields"), "", SageMessageType.Alert);
                     }
-                }
-                else
-                {
-                    ShowMessage("", GetSageMessage("UserManagement", "PleaseEnterAllRequiredFields"), "", SageMessageType.Alert);
-                }
 
-
+                }
             }
             catch (Exception ex)
             {
@@ -994,7 +1019,7 @@ namespace SageFrame.Modules.Admin.UserManagement
 
         protected void imgBtnSettings_Click(object sender, EventArgs e)
         {
-            PanelVisibility(false, false, false);
+            PanelVisibility(false, false, false, false);
             pnlSettings.Visible = true;
             LoadSettings();
         }
@@ -1090,7 +1115,7 @@ namespace SageFrame.Modules.Admin.UserManagement
         protected void btnCancel_Click(object sender, EventArgs e)
         {
             pnlSettings.Visible = false;
-            PanelVisibility(false, true, false);
+            PanelVisibility(false, true, false, false);
 
         }
 
@@ -1459,9 +1484,566 @@ namespace SageFrame.Modules.Admin.UserManagement
                 throw;
             }
         }
-        protected void txtOthers_TextChanged(object sender, EventArgs e)
+
+        protected void imgBtnExportUser_Click(object sender, EventArgs e)
         {
+            RoleController _role = new RoleController();
+            string[] roles = _role.GetRoleNames(GetUsername, GetPortalID).ToLower().Split(',');
+            if (roles.Contains(SystemSetting.SUPER_ROLE[0].ToLower()))
+            {
+                UserExportToExcel();
+                ShowMessage(SageMessageTitle.Exception.ToString(), "No any data to export", "", SageMessageType.Alert);
+            }
 
         }
+
+        private void UserExportToExcel()
+        {
+            string csv = string.Empty;
+            try
+            {
+                List<ExportUserInfo> lstInfo = new List<ExportUserInfo>();
+                UserProfileController objCon = new UserProfileController();
+                lstInfo = objCon.GetUserExportList();
+                if (lstInfo.Count > 0)
+                {
+                    csv += "UserName ,";
+                    csv += "FirstName ,";
+                    csv += "LastName,";
+                    csv += "Email,";
+                    csv += "Password,";
+                    csv += "PasswordSalt,";
+                    csv += "PasswordFormat,";
+                    csv += "RoleName,";
+                    csv += "PortalID,";
+                    csv += "IsActive,";
+                    csv += "\r\n";
+
+                    foreach (ExportUserInfo objInfo in lstInfo)
+                    {
+                        csv += objInfo.UserName + ",";
+                        csv += objInfo.FirstName + ",";
+                        csv += objInfo.LastName + ",";
+                        csv += "\"" + objInfo.Email + "\"" + ",";
+                        csv += objInfo.Password + ",";
+                        csv += objInfo.PasswordSalt + ",";
+                        csv += objInfo.PasswordFormat + ",";
+                        csv += "\"" + objInfo.RoleName + "\"" + ",";
+                        csv += objInfo.PortalID + ",";
+                        csv += objInfo.IsApproved + ",";
+                        csv += "\r\n";
+                    }
+
+                    ExportToExcel(ref csv, "User-Report");
+                }
+                else
+                {
+                    ShowMessage(SageMessageTitle.Exception.ToString(), "No any data to export", "", SageMessageType.Alert);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public void ExportToExcel(ref string table, string fileName)
+        {
+            try
+            {
+                table = table.Replace("&gt;", ">");
+                table = table.Replace("&lt;", "<");
+                HttpContext.Current.Response.ClearContent();
+                HttpContext.Current.Response.AddHeader("content-disposition", "attachment;filename=" + fileName + "_" + DateTime.Now.ToString("M_dd_yyyy_H_M_s") + ".csv");
+                HttpContext.Current.Response.ContentType = "application/text";
+                HttpContext.Current.Response.Write(table);
+                HttpContext.Current.Response.Flush();
+                HttpContext.Current.Response.End();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+        }
+        protected void imgBtnImportUser_Click(object sender, EventArgs e)
+        {
+            RoleController _role = new RoleController();
+            string[] roles = _role.GetRoleNames(GetUsername, GetPortalID).ToLower().Split(',');
+            if (roles.Contains(SystemSetting.SUPER_ROLE[0].ToLower()))
+            {
+                PanelVisibility(false, false, false, true);
+            }
+        }
+
+        public DataSet ImportUserFile()
+        {
+            DataSet userImportDataSet = new DataSet();
+            OleDbConnection objConn = null;
+            System.Data.DataTable dt = null;
+            try
+            {
+                string connString = string.Empty;
+                string UserImportFile = string.Empty;
+                ImportFilePath = Server.MapPath("~/Modules/Admin/UserManagement/temp/");
+                if (!Directory.Exists(ImportFilePath))
+                {
+                    Directory.CreateDirectory(ImportFilePath);
+                }
+                if (fuUserImport.HasFile)
+                {
+
+                    string ext = Path.GetExtension(fuUserImport.FileName);
+                    ext = ext.ToLower();
+                    if (ext == ".csv")
+                    {
+                        string currentDateTime = DateTime.Now.ToString().Replace('/', '_').Replace(':', '_').Replace(' ', '_');
+                        UserImportFile = Path.GetFileNameWithoutExtension(fuUserImport.FileName) + "_" + currentDateTime + ext;
+                        UserImportFilePath = ImportFilePath + UserImportFile;
+                        fuUserImport.SaveAs(UserImportFilePath);
+                        DataTable csvData = new DataTable();
+                        using (TextFieldParser csvReader = new TextFieldParser(UserImportFilePath))
+                        {
+                            csvReader.SetDelimiters(new string[] { "," });
+                            csvReader.HasFieldsEnclosedInQuotes = true;
+
+                            //Read columns from CSV file, remove this line if columns not exits  
+                            string[] colFields = csvReader.ReadFields();
+
+                            foreach (string column in colFields)
+                            {
+                                DataColumn datecolumn = new DataColumn(column);
+                                datecolumn.AllowDBNull = true;
+                                csvData.Columns.Add(datecolumn);
+                            }
+
+                            while (!csvReader.EndOfData)
+                            {
+                                string[] fieldData = csvReader.ReadFields();
+                                csvData.Rows.Add(fieldData);
+                            }
+                        }
+                        userImportDataSet.Tables.Add(csvData);
+                    }
+                    else
+                    {
+                        ShowMessage("", GetSageMessage("UserManagement", "InvalidUserFileExtension"), "", SageMessageType.Alert);
+                    }
+                }
+                else
+                {
+                    ShowMessage("", GetSageMessage("UserManagement", "PleaseSelectUserFile"), "", SageMessageType.Alert);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                // Clean up.
+                if (objConn != null)
+                {
+                    objConn.Close();
+                    objConn.Dispose();
+                }
+                if (dt != null)
+                {
+                    dt.Dispose();
+                }
+            }
+            return userImportDataSet;
+        }
+
+        public List<string> MappingList()
+        {
+
+            List<string> lstMappingList = new List<string>();
+            lstMappingList.Add(txtImportUserName.Text);
+            lstMappingList.Add(txtImportFirstName.Text);
+            lstMappingList.Add(txtImportLastName.Text);
+            lstMappingList.Add(txtImportEmail.Text);
+            lstMappingList.Add(txtImportPassword.Text);
+            lstMappingList.Add(txtImportPasswordSalt.Text);
+            lstMappingList.Add(txtImportPasswordFormat.Text);
+            lstMappingList.Add(txtImportRoleName.Text);
+            lstMappingList.Add(txtImportPortalID.Text);
+            lstMappingList.Add(txtImportIsApproved.Text);
+            return lstMappingList;
+        }
+
+        protected void btnUserImport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                bool Flag = false;
+                DataSet userImportDataSet = ImportUserFile();
+                List<string> lstColumnHeader = new List<string>();
+                List<string> ObjMappingList = MappingList();
+
+                if (userImportDataSet.Tables.Count > 0)
+                {
+                    int columnLength = userImportDataSet.Tables[0].Columns.Count;
+                    for (int i = 0; i < columnLength; i++)
+                    {
+                        lstColumnHeader.Add(userImportDataSet.Tables[0].Columns[i].ColumnName);
+                    }
+
+                    Flag = !ObjMappingList.Except(lstColumnHeader).Any();
+                    if (Flag)
+                    {
+                        for (int i = 0; i < columnLength; i++)
+                        {
+                            if (txtImportUserName.Text == userImportDataSet.Tables[0].Columns[i].ColumnName)
+                            {
+                                userImportDataSet.Tables[0].Columns[i].ColumnName = "UserName";
+                            }
+                            if (txtImportFirstName.Text == userImportDataSet.Tables[0].Columns[i].ColumnName)
+                            {
+                                userImportDataSet.Tables[0].Columns[i].ColumnName = "FirstName";
+                            }
+                            if (txtImportLastName.Text == userImportDataSet.Tables[0].Columns[i].ColumnName)
+                            {
+                                userImportDataSet.Tables[0].Columns[i].ColumnName = "LastName";
+                            }
+                            if (txtImportEmail.Text == userImportDataSet.Tables[0].Columns[i].ColumnName)
+                            {
+                                userImportDataSet.Tables[0].Columns[i].ColumnName = "Email";
+                            }
+                            if (txtImportPassword.Text == userImportDataSet.Tables[0].Columns[i].ColumnName)
+                            {
+                                userImportDataSet.Tables[0].Columns[i].ColumnName = "Password";
+                            }
+                            if (txtImportPasswordSalt.Text == userImportDataSet.Tables[0].Columns[i].ColumnName)
+                            {
+                                userImportDataSet.Tables[0].Columns[i].ColumnName = "PasswordSalt";
+                            }
+                            if (txtImportPasswordFormat.Text == userImportDataSet.Tables[0].Columns[i].ColumnName)
+                            {
+                                userImportDataSet.Tables[0].Columns[i].ColumnName = "PasswordFormat";
+                            }
+                            if (txtImportRoleName.Text == userImportDataSet.Tables[0].Columns[i].ColumnName)
+                            {
+                                userImportDataSet.Tables[0].Columns[i].ColumnName = "RoleName";
+                            }
+                            if (txtImportPortalID.Text == userImportDataSet.Tables[0].Columns[i].ColumnName)
+                            {
+                                userImportDataSet.Tables[0].Columns[i].ColumnName = "PortalID";
+                            }
+                            if (txtImportIsApproved.Text == userImportDataSet.Tables[0].Columns[i].ColumnName)
+                            {
+                                userImportDataSet.Tables[0].Columns[i].ColumnName = "IsActive";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ShowMessage("", GetSageMessage("UserManagement", "ColumnMappingError"), "", SageMessageType.Alert);
+                        clearField();
+                        return;
+                    }
+
+                    //Listing Excel Users
+                    foreach (DataRow dr in userImportDataSet.Tables[0].Rows)
+                    {
+                        ExportUserInfo userImportInfo = new ExportUserInfo();
+                        userImportInfo.UserName = dr["UserName"].ToString();
+                        userImportInfo.FirstName = dr["FirstName"].ToString();
+                        userImportInfo.LastName = dr["LastName"].ToString();
+                        userImportInfo.Email = dr["Email"].ToString();
+                        userImportInfo.Password = dr["Password"].ToString();
+                        userImportInfo.PasswordSalt = dr["PasswordSalt"].ToString();
+                        userImportInfo.PasswordFormat = dr["PasswordFormat"].ToString();
+                        userImportInfo.RoleName = dr["RoleName"].ToString();
+                        userImportInfo.PortalID = Convert.ToInt32(dr["PortalID"]);
+                        userImportInfo.IsApproved = Convert.ToBoolean(dr["IsActive"]);
+                        lstUserImportUsers.Add(userImportInfo);
+                    }
+
+                    //Extracting Excel Roles
+                  
+                    List<RoleInfo> lstExcelRolesSplit = new List<RoleInfo>();
+                    foreach (ExportUserInfo objExport in lstUserImportUsers)
+                    {
+                        string[] excelRolesArr = objExport.RoleName.Split(',');
+                        foreach (string role in excelRolesArr)
+                        {
+                            RoleInfo objRoles = new RoleInfo();
+                            objRoles.PortalID = objExport.PortalID;
+                            objRoles.RoleName = role.Trim();
+                            lstExcelRolesSplit.Add(objRoles);
+                        }
+                    }
+
+                    List<RoleInfo> lstExcelRolesIdentical = new List<RoleInfo>();
+                    var ExcelRolesIdentical = lstExcelRolesSplit.Select(i => new { i.RoleName, i.PortalID }).Distinct();                    
+                    foreach (var objRole in ExcelRolesIdentical)
+                    {
+                        RoleInfo objRoleInfo = new RoleInfo();
+                        objRoleInfo.RoleName = objRole.RoleName;
+                        objRoleInfo.PortalID = objRole.PortalID;
+                        lstExcelRolesIdentical.Add(objRoleInfo);
+                    }
+
+                    //Extracting Sage Roles
+                    List<RolesManagementInfo> lstSageRoles = new List<RolesManagementInfo>();
+                    RolesManagementController objController = new RolesManagementController();
+                    lstSageRoles = objController.GetSageFramePortalList();                    
+                    List<RoleInfo> lstSageRolesSplit = new List<RoleInfo>();
+                    foreach (RolesManagementInfo objRoleMgntInfo in lstSageRoles)
+                    {
+                        RoleInfo objSageRoles = new RoleInfo();
+                        objSageRoles.RoleName = objRoleMgntInfo.RoleName;
+                        objSageRoles.PortalID = objRoleMgntInfo.PortalID;
+                        lstSageRolesSplit.Add(objSageRoles);
+                    }
+
+                    //Retrieve Identical Roles in Sage Roles and Excel Roles
+                    List<RoleInfo> lstIdenticalRoles = lstExcelRolesIdentical.Except(lstSageRolesSplit).ToList();
+
+                    //Adding Identical Roles in SageRoles
+                    for (int i = 0; i < lstIdenticalRoles.Count; i++)
+                    {
+                        RoleInfo objRole = new RoleInfo();
+                        string rolePrefix = GetPortalSEOName + "_";
+                        objRole.ApplicationName = Membership.ApplicationName;
+                        objRole.RoleName = lstIdenticalRoles[i].RoleName;
+                        objRole.PortalID = lstIdenticalRoles[i].PortalID;
+                        objRole.IsActive = 1;
+                        objRole.AddedOn = DateTime.Now;
+                        objRole.AddedBy = GetUsername;
+                        RoleController objRoleCon = new RoleController();
+                        RoleCreationStatus status = new RoleCreationStatus();
+                        objRoleCon.CreateRole(objRole, out status);
+                    }
+
+                    //Listing SageFrame Users
+                    UserProfileController objUserProfile = new UserProfileController();
+                    List<ExportUserInfo> lstSageUsers = objUserProfile.GetSageFrameUserList();
+
+                    //Extracting Excel Username
+                    List<string> lstExcelUserName = new List<string>();
+                    lstExcelUserName = lstUserImportUsers.Select(x => x.UserName).ToList();
+
+                    //Extracting Excel Email
+                    List<string> lstExcelEmail = new List<string>();
+                    lstExcelEmail = lstUserImportUsers.Select(x => x.Email).ToList();
+
+                    //Extracting SageFrame Username
+                    List<string> lstSageUserName = new List<string>();
+                    lstSageUserName = lstSageUsers.Select(x => x.UserName).ToList();
+
+                    //Extracting SageFrame Email
+                    List<string> lstSageEmail = new List<string>();
+                    lstSageEmail = lstSageUsers.Select(x => x.Email).ToList();
+
+                    //Check duplicacy of Self Excel Users and Email
+                    List<string> lstUserNameDuplicacyinExcel = new List<string>();
+                    lstUserNameDuplicacyinExcel = lstExcelUserName.GroupBy(x => x).Where(g => g.Count() > 1).Select(y => y.Key).ToList();
+
+                    List<string> lstEmailDuplicacyinExcel = new List<string>();
+                    lstEmailDuplicacyinExcel = lstExcelEmail.GroupBy(x => x).Where(g => g.Count() > 1).Select(y => y.Key).ToList();
+
+                    if (lstUserNameDuplicacyinExcel.Count > 0 || lstEmailDuplicacyinExcel.Count > 0)
+                    {
+                        ShowMessage("", GetSageMessage("UserManagement", "DuplicateUsers"), "", SageMessageType.Alert);
+                        clearField();
+                        DeleteTempFolder();
+                        return;
+                    }
+
+                    //check UserName duplicacy SageUsers And Excel Users               
+                    List<string> lstUserNameDuplicacy = new List<string>();
+                    lstUserNameDuplicacy = lstExcelUserName.Intersect(lstSageUserName).ToList();
+
+                    //Removing duplicate List by UserName
+                    ExportUserInfo dupUserListByUName = null;
+                    List<ExportUserInfo> lstdubUserListByName = new List<ExportUserInfo>();
+                    foreach (string DupUserName in lstUserNameDuplicacy)
+                    {
+                        List<ExportUserInfo> obj = lstUserImportUsers;
+                        dupUserListByUName = lstUserImportUsers.Single(x => x.UserName == DupUserName);
+                        lstUserImportUsers.Remove(dupUserListByUName);
+                        //list users in excel
+                        lstdubUserListByName.Add(dupUserListByUName);
+                    }
+
+                    //Extracting Email duplicacy in SageEmail and listUserImportUsers
+                    List<string> lstExcelEmailInImportUsers = new List<string>();
+                    lstExcelEmailInImportUsers = lstUserImportUsers.Select(x => x.Email).ToList();
+
+                    //check Email duplicacy SageEmail And Excel Email 
+                    List<string> lstEmailDuplicacy = new List<string>();
+                    if (!m.RequireUniqueEmail)
+                    {
+                        lstEmailDuplicacy = lstExcelEmailInImportUsers.Intersect(lstSageEmail).ToList();
+                    }
+                    //Removing duplicate List by Email
+                    ExportUserInfo dupUserListByEmail = null;
+                    List<ExportUserInfo> lstdubUserListByEmail = new List<ExportUserInfo>();
+                    if (lstUserImportUsers.Count != 0)
+                    {
+                        foreach (string DupEmail in lstEmailDuplicacy)
+                        {
+                            List<ExportUserInfo> obj = lstUserImportUsers;
+                            dupUserListByEmail = lstUserImportUsers.Single(x => x.Email == DupEmail);
+                            lstUserImportUsers.Remove(dupUserListByEmail);
+                            //list users in excel
+                            lstdubUserListByEmail.Add(dupUserListByEmail);
+                        }
+                    }
+
+                    //Retrieve Duplicate UserList in SageUsers and Excel Users
+                    lstDuplicateUserList = lstdubUserListByName.Concat(lstdubUserListByEmail).ToList();
+
+                    //Retrieve Identical UserList in SageUsers and Excel Users
+                    List<ExportUserInfo> lstIdenticalUserList = lstUserImportUsers;
+
+                    //Adding Identical User List in SageUserList
+                    if (lstIdenticalUserList.Count > 0)
+                    {
+                        for (int i = 0; i < lstIdenticalUserList.Count; i++)
+                        {
+                            UserInfo objUser = new UserInfo();
+                            objUser.ApplicationName = Membership.ApplicationName;
+                            objUser.FirstName = lstIdenticalUserList[i].FirstName;
+                            objUser.UserName = lstIdenticalUserList[i].UserName;
+                            objUser.LastName = lstIdenticalUserList[i].LastName;
+                            objUser.Password = lstIdenticalUserList[i].Password;
+                            objUser.PasswordSalt = lstIdenticalUserList[i].PasswordSalt;
+                            objUser.Email = lstIdenticalUserList[i].Email;
+                            objUser.SecurityQuestion = "";
+                            objUser.SecurityAnswer = "";
+                            objUser.IsApproved = lstIdenticalUserList[i].IsApproved;
+                            objUser.CurrentTimeUtc = DateTime.Now;
+                            objUser.CreatedDate = DateTime.Now;
+                            objUser.UniqueEmail = 0;
+                            objUser.PasswordFormat = Int32.Parse(lstIdenticalUserList[i].PasswordFormat);
+                            objUser.PortalID = lstIdenticalUserList[i].PortalID;
+                            objUser.AddedOn = DateTime.Now;
+                            objUser.AddedBy = GetUsername;
+                            objUser.UserID = Guid.NewGuid();
+                            objUser.RoleNames = lstIdenticalUserList[i].RoleName;
+                            objUser.StoreID = GetStoreID;
+                            objUser.CustomerID = GetCustomerID;
+                            UserCreationStatus status = new UserCreationStatus();
+                            MembershipDataProvider.CreatePortalUser(objUser, out status, UserCreationMode.CREATE);
+                        }
+                    }
+                    else
+                    {
+                        lblDuplicateUser.Visible = true;
+                        ShowMessage("", GetSageMessage("UserManagement", "UsersNotAdded"), "", SageMessageType.Error);
+                        ExportDuplicateUserList();
+                    }
+                    if (lstDuplicateUserList.Count > 0 && lstIdenticalUserList.Count > 0)
+                    {
+                        lblDuplicateUser.Visible = true;
+                        ShowMessage("", GetSageMessage("UserManagement", "UsersAddedSuccessfullyWithDuplicateUserReport"), "", SageMessageType.Success);
+                        ExportDuplicateUserList();
+                    }
+                    if (lstDuplicateUserList.Count == 0 && lstIdenticalUserList.Count > 0)
+                    {
+                        ShowMessage("", GetSageMessage("UserManagement", "UsersAddedSuccessfully"), "", SageMessageType.Success);
+                    }
+                    clearField();
+                    DeleteTempFolder();
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+        }
+        private void clearField()
+        {
+            txtImportUserName.Text = string.Empty;
+            txtImportFirstName.Text = string.Empty;
+            txtImportLastName.Text = string.Empty;
+            txtImportEmail.Text = string.Empty;
+            txtImportPassword.Text = string.Empty;
+            txtImportPasswordSalt.Text = string.Empty;
+            txtImportPasswordFormat.Text = string.Empty;
+            txtImportRoleName.Text = string.Empty;
+            txtImportPortalID.Text = string.Empty;
+            txtImportIsApproved.Text = string.Empty;
+        }
+        private void DeleteTempFolder()
+        {
+            if (Directory.Exists(ImportFilePath))
+            {
+                if (File.Exists(UserImportFilePath))
+                {
+                    File.SetAttributes(UserImportFilePath, FileAttributes.Normal);
+                    File.Delete(UserImportFilePath);
+                }
+                Directory.Delete(ImportFilePath, true);
+            }
+        }
+
+        private void ExportDuplicateUserList()
+        {
+            try
+            {
+                string csv = string.Empty;
+                List<ExportUserInfo> lstInfo = new List<ExportUserInfo>();
+                csv += "UserName ,";
+                csv += "FirstName ,";
+                csv += "LastName,";
+                csv += "Email,";
+                csv += "Password ,";
+                csv += "PasswordSalt,";
+                csv += "PasswordFormat,";
+                csv += "RoleName,";
+                csv += "PortalID,";
+                csv += "IsActive,";
+                csv += "\r\n";
+                foreach (ExportUserInfo objInfo in lstDuplicateUserList)
+                {
+                    csv += objInfo.UserName + ",";
+                    csv += objInfo.FirstName + ",";
+                    csv += objInfo.LastName + ",";
+                    csv += "\"" + objInfo.Email + "\"" + ",";
+                    csv += objInfo.Password + ",";
+                    csv += objInfo.PasswordSalt + ",";
+                    csv += objInfo.PasswordFormat + ",";
+                    csv += "\"" + objInfo.RoleName + "\"" + ",";
+                    csv += objInfo.PortalID + ",";
+                    csv += objInfo.IsApproved + ",";
+                    csv += "\r\n";
+                }
+                Session["csv"] = csv;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+        protected void btnImportCancel_Click(object sender, EventArgs e)
+        {
+            Session["csv"] = null;
+            Page.Response.Redirect(HttpContext.Current.Request.Url.ToString(), true);
+        }
+        protected void btnDuplicateUser_Click(object sender, EventArgs e)
+        {
+            if (Session["csv"] != null && Session["csv"].ToString() != string.Empty)
+            {
+                string csv = Session["csv"].ToString();
+                Session["csv"] = null;
+                ExportToExcel(ref csv, "Duplicate User-Report");
+            }
+            else
+            {
+                ShowMessage("", GetSageMessage("UserManagement", "NoDuplicateList"), "", SageMessageType.Alert);
+            }
+        }
+
     }
 }

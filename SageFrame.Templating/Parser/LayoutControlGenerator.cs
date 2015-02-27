@@ -14,8 +14,16 @@ using SageFrame.Templating.xmlparser;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Class that helps to generates layout markups.
+    /// </summary>
     public class LayoutControlGenerator
     {
+        /// <summary>
+        /// Generates HTML tag for list of tags provided.
+        /// </summary>
+        /// <param name="lstTags">List of tags.</param>
+        /// <returns>HTML markup.</returns>
         public string GenerateHTML(List<XmlTag> lstTags)
         {
             string markup = "";
@@ -30,6 +38,11 @@ namespace SageFrame.Templating
             return (GenerateExternalWrapper(markup));
         }
 
+        /// <summary>
+        /// Generates placeholder markup.
+        /// </summary>
+        /// <param name="Section">Section node.</param>
+        /// <returns>Placeholder markup.</returns>
         public string GeneratePlaceHolderMarkup(XmlTag Section)
         {
             foreach (XmlTag tag in Section.LSTChildNodes)
@@ -38,6 +51,11 @@ namespace SageFrame.Templating
             return "";
         }
 
+        /// <summary>
+        /// Generates section markups.
+        /// </summary>
+        /// <param name="section">Section node.</param>
+        /// <returns>Section markup.</returns>
         public string GenerateSectionMarkup(XmlTag section)
         {
             string markup = "";
@@ -60,14 +78,18 @@ namespace SageFrame.Templating
             return markup;
         }
 
+        /// <summary>
+        /// Generates section mark up for given node.
+        /// </summary>
+        /// <param name="name">Section name.</param>
+        /// <param name="section">Section node.</param>
+        /// <returns>Section markup.</returns>
         public string GetSectionMarkup(string name, XmlTag section)
         {
             string html = "";
             if (Enum.IsDefined(typeof(SectionTypes), name.ToUpper()))
             {
                 SectionTypes _type = (SectionTypes)Enum.Parse(typeof(SectionTypes), name.ToUpper());
-
-
                 switch (_type)
                 {
                     case SectionTypes.SFHEADER:
@@ -79,12 +101,16 @@ namespace SageFrame.Templating
                     case SectionTypes.SFFOOTER:
                         html = GetBottomMarkup(section);
                         break;
-
                 }
             }
             return html;
         }
 
+        /// <summary>
+        /// Generates outer wrapper markup for any markup.
+        /// </summary>
+        /// <param name="markup">Markup to be wrapped.</param>
+        /// <returns>Wrapped up Markup.</returns>
         public string GenerateExternalWrapper(string markup)
         {
             StringBuilder sb = new StringBuilder();
@@ -94,6 +120,11 @@ namespace SageFrame.Templating
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Returns top  markup of any section provided.
+        /// </summary>
+        /// <param name="section">Section name.</param>
+        /// <returns>Returns top markup.</returns>
         public string GetTopMarkup(XmlTag section)
         {
             StringBuilder sb = new StringBuilder();
@@ -101,14 +132,25 @@ namespace SageFrame.Templating
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Returns middle wrapper.
+        /// </summary>
+        /// <param name="section">Section name.</param>
+        /// <returns>Middle wrapper.</returns>
         public string GetMiddleWrapper(XmlTag section)
         {
             StringBuilder sb = new StringBuilder();
 
             string layout = LayoutControlBuilder.GenerateMiddleBlockStart(section);
             sb.Append(layout);
-            return sb.ToString(); ;
+            return sb.ToString();
         }
+
+        /// <summary>
+        /// Returns bottom markup.
+        /// </summary>
+        /// <param name="section">Section node.</param>
+        /// <returns>Bottom markup.</returns>
         public string GetBottomMarkup(XmlTag section)
         {
             StringBuilder sb = new StringBuilder();
@@ -116,6 +158,11 @@ namespace SageFrame.Templating
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Return Prefix  for placeholder.
+        /// </summary>
+        /// <param name="count">Times the number of repetition "--"</param>
+        /// <returns>Returns prefix.</returns>
         public string GetPrefix(int count)
         {
             string prefix = "";
@@ -126,6 +173,11 @@ namespace SageFrame.Templating
             return prefix;
         }
 
+        /// <summary>
+        /// Returns attributes from a list of attributes.
+        /// </summary>
+        /// <param name="lstAttr">List of layout attributes.</param>
+        /// <returns>List of attributes.</returns>
         public string GetAttributeString(List<LayoutAttribute> lstAttr)
         {
             StringBuilder sb = new StringBuilder();

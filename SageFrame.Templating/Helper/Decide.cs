@@ -19,8 +19,17 @@ using System.Xml.Linq;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Various utilities for templating.
+    /// </summary>
     public class Decide
     {
+        /// <summary>
+        /// Check for block.
+        /// </summary>
+        /// <param name="pch">Place holders. <see cref="T:SageFrame.Templating.Placeholders"/></param>
+        /// <param name="middleBlock">XmlTag class containing xml details.</param>
+        /// <returns>True if block exist.</returns>
         public static bool HasBlock(Placeholders pch, XmlTag middleBlock)
         {
             bool status = false;
@@ -32,7 +41,11 @@ namespace SageFrame.Templating
                 );
             return status;
         }
-
+        /// <summary>
+        /// Check for spot light.
+        /// </summary>
+        /// <param name="placeholder">XmlTag class containing xml details.</param>
+        /// <returns>True if spot light..</returns>
         public static bool IsSpotLight(XmlTag placeholder)
         {
             string pchName = Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.NAME);
@@ -43,7 +56,11 @@ namespace SageFrame.Templating
             }
             return status;
         }
-
+        /// <summary>
+        /// Check for custom block.
+        /// </summary>
+        /// <param name="placeholder">XmlTag class containing xml details.</param>
+        /// <returns>True for define custom block.</returns>
         public static bool IsCustomBlockDefined(XmlTag placeholder)
         {
 
@@ -65,7 +82,12 @@ namespace SageFrame.Templating
             }
             return status;
         }
-
+        /// <summary>
+        /// Check foor wrappers in position array.
+        /// </summary>
+        /// <param name="positionArr">Array of string of wrapper position.</param>
+        /// <param name="wrapArray">Array of string of wrapper.</param>
+        /// <returns>True for contain wrapper.</returns>
         public static bool Contains(string[] positionArr, string[] wrapArray)
         {
             bool Contains = false;
@@ -79,17 +101,25 @@ namespace SageFrame.Templating
             }
             return Contains;
         }
-
+        /// <summary>
+        /// Check for default template.
+        /// </summary>
+        /// <param name="TemplateName">Template name.</param>
+        /// <returns>True if default templates.</returns>
         public static bool IsTemplateDefault(string TemplateName)
         {
             return TemplateName.ToLower().Equals("default");
         }
-
+        /// <summary>
+        /// Check for valid xml.
+        /// </summary>
+        /// <param name="xml">xml in string format.</param>
+        /// <returns>True if valid xml.</returns>
         public static bool IsXmlInputValid(string xml)
         {
             try
             {
-                xml = xml.Replace(Environment.NewLine,"");
+                xml = xml.Replace(Environment.NewLine, "");
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(xml);
                 return true;
@@ -99,9 +129,13 @@ namespace SageFrame.Templating
 
                 return false;
             }
-            
+
         }
-      
+        /// <summary>
+        /// Mode for templating left block.
+        /// </summary>
+        /// <param name="middleBlock">XmlTag class containing xml details.</param>
+        /// <returns>Mode</returns>
         public static int LeftBlockMode(XmlTag middleBlock)
         {
             int status = 0;
@@ -111,7 +145,7 @@ namespace SageFrame.Templating
             }
             else if (Decide.HasBlock(Placeholders.LEFTTOP, middleBlock) && Decide.HasBlock(Placeholders.LEFTBOTTOM, middleBlock) && Decide.HasBlock(Placeholders.LEFTA, middleBlock) && !Decide.HasBlock(Placeholders.LEFTB, middleBlock))
             {
-                status=2;
+                status = 2;
             }
             else if (Decide.HasBlock(Placeholders.LEFTTOP, middleBlock) && Decide.HasBlock(Placeholders.LEFTBOTTOM, middleBlock) && !Decide.HasBlock(Placeholders.LEFTA, middleBlock) && Decide.HasBlock(Placeholders.LEFTB, middleBlock))
             {
@@ -156,7 +190,11 @@ namespace SageFrame.Templating
             return status;
 
         }
-
+        /// <summary>
+        /// Mode for templating right block.
+        /// </summary>
+        /// <param name="middleBlock">XmlTag class containing xml details.</param>
+        /// <returns>Mode</returns>
         public static int RightBlockMode(XmlTag middleBlock)
         {
             int status = 0;

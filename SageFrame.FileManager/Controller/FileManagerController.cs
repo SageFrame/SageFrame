@@ -13,8 +13,15 @@ using System.Text;
 
 namespace SageFrame.FileManager
 {
+    /// <summary>
+    /// Business logic class for FileManager.
+    /// </summary>
     public class FileManagerController
     {
+        /// <summary>
+        /// Adds folder for given object of Folder class.
+        /// </summary>
+        /// <param name="folder">Object of Folder class. </param>
         public static void AddFolder(Folder folder)
         {
             try
@@ -26,6 +33,10 @@ namespace SageFrame.FileManager
                 throw;
             }
         }
+        /// <summary>
+        /// Adds root folder for given object of Folder class.
+        /// </summary>
+        /// <param name="folder">Object of Folder class.</param>
         public static void AddRootFolder(Folder folder)
         {
             try
@@ -38,6 +49,11 @@ namespace SageFrame.FileManager
                 throw;
             }
         }
+        /// <summary>
+        /// Inserts folder and returns its ID.
+        /// </summary>
+        /// <param name="folder">Object of Folder class.</param>
+        /// <returns>FolderID if the folder is inserted succesfully</returns>
         public static int AddFolderReturnFolderID(Folder folder)
         {
             try
@@ -52,6 +68,11 @@ namespace SageFrame.FileManager
             }
 
         }
+        /// <summary>
+        /// Enables root folder.
+        /// </summary>
+        /// <param name="FolderID">FolderID</param>
+        /// <param name="IsEnabled">IsEnabled</param>
         public static void EnableRootFolder(int FolderID, bool IsEnabled)
         {
             try
@@ -65,12 +86,20 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// Obtains FolderId,FolderPath and StorageLocation.
+        /// </summary>
+        /// <returns>List of Folder class containing FolderId,FolderPath and StorageLocation.</returns>
         public static List<Folder> GetFolders()
         {
 
             return (FileMangerDataProvider.GetFolders());
 
         }
+        /// <summary>
+        /// Adds file for given object of ATTFile class.
+        /// </summary>
+        /// <param name="file">Object of ATTFile class.</param>
         public static void AddFile(ATTFile file)
         {
             try
@@ -83,6 +112,11 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// Obtains files for given FolderID.
+        /// </summary>
+        /// <param name="FolderID">FolderID</param>
+        /// <returns>List of ATTFile class containing file details.</returns>
         public static List<ATTFile> GetFiles(int FolderID)
         {
             try
@@ -96,6 +130,11 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// searchs file for given SearchQuery.
+        /// </summary>
+        /// <param name="SearchQuery">SearchQuery</param>
+        /// <returns>List of ATTFile class containing file details.</returns>
         public static List<ATTFile> SearchFiles(string SearchQuery)
         {
             try
@@ -108,6 +147,11 @@ namespace SageFrame.FileManager
                 throw;
             }
         }
+        /// <summary>
+        /// Deletes from file or folder.
+        /// </summary>
+        /// <param name="FolderID">FolderID</param>
+        /// <param name="FileID">FileID</param>
         public static void DeleteFileFolder(int FolderID, int FileID)
         {
             try
@@ -120,6 +164,10 @@ namespace SageFrame.FileManager
                 throw;
             }
         }
+        /// <summary>
+        /// Deletes root folder.
+        /// </summary>
+        /// <param name="FolderID">FolderID</param>
         public static void DeleteRootFolder(int FolderID)
         {
             try
@@ -132,6 +180,11 @@ namespace SageFrame.FileManager
                 throw;
             }
         }
+        /// <summary>
+        /// Updates file.
+        /// </summary>
+        /// <param name="FileID">FileID</param>
+        /// <param name="fileName">fileName</param>
         public static void UpdateFile(int FileID, string fileName)
         {
             try
@@ -143,6 +196,14 @@ namespace SageFrame.FileManager
                 throw;
             }
         }
+        /// <summary>
+        /// Copies file for given FileID,FolderID,UniqueID and VersionGuid.
+        /// </summary>
+        /// <param name="FileID">FileID</param>
+        /// <param name="FolderID">FolderID</param>
+        /// <param name="Folder">Folder</param>
+        /// <param name="UniqueID">UniqueID</param>
+        /// <param name="VersionGuid">VersionGuid</param>
         public static void CopyFile(int FileID, int FolderID, string Folder, Guid UniqueID, Guid VersionGuid)
         {
             try
@@ -155,6 +216,14 @@ namespace SageFrame.FileManager
                 throw;
             }
         }
+        /// <summary>
+        /// Moves file for given FileID,FolderID,Folder,UniqueID and VersionGuid
+        /// </summary>
+        /// <param name="FileID">FileID</param>
+        /// <param name="FolderID">FolderID</param>
+        /// <param name="Folder">Folder</param>
+        /// <param name="UniqueID">UniqueID</param>
+        /// <param name="VersionGuid">VersionGuid</param>
         public static void MoveFile(int FileID, int FolderID, string Folder, Guid UniqueID, Guid VersionGuid)
         {
             try
@@ -168,6 +237,15 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// Sets folder permission for given FolderID,PermissionKey,UserID,RoleID,IsActive and AddedBy.
+        /// </summary>
+        /// <param name="FolderID">FolderID</param>
+        /// <param name="PermissionKey">PermissionKey</param>
+        /// <param name="UserID">UserID</param>
+        /// <param name="RoleID">RoleID</param>
+        /// <param name="IsActive">IsActive</param>
+        /// <param name="AddedBy">AddedBy</param>
         public static void SetFolderPermission(int FolderID, string PermissionKey, int UserID, Guid RoleID, int IsActive, string AddedBy)
         {
             try
@@ -181,6 +259,10 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// Deletes existing permissions for given FolderID.
+        /// </summary>
+        /// <param name="FolderID">FolderID</param>
         public static void DeleteExistingPermissions(int FolderID)
         {
             try
@@ -194,6 +276,11 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// Obtains folder permission for given FolderID.
+        /// </summary>
+        /// <param name="FolderID">FolderID</param>
+        /// <returns>List of FolderPermission class containing folder details.</returns>
         public static List<FolderPermission> GetFolderPermissions(int FolderID)
         {
             try
@@ -207,6 +294,11 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// Obtains user id for given userName.
+        /// </summary>
+        /// <param name="userName">userName</param>
+        /// <returns>UserId</returns>
         public static int GetUserID(string userName)
         {
             try
@@ -220,6 +312,11 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// Obtains user list for folder for given FolderID.
+        /// </summary>
+        /// <param name="FolderID">FolderID</param>
+        /// <returns>List of FolderPermission class containing UserID and UserName.</returns>
         public static List<FolderPermission> GetUserListForFolder(int FolderID)
         {
             try
@@ -233,6 +330,14 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// Obtains permission keys for given FolderID,UserID,UserModuleID and UserName.
+        /// </summary>
+        /// <param name="FolderID">FolderID</param>
+        /// <param name="UserID">UserID</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="UserName">UserName</param>
+        /// <returns>List of folder permission key.</returns>
         public static List<string> GetPermissionKeys(int FolderID, int UserID, int UserModuleID, string UserName)
         {
             try
@@ -246,6 +351,11 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// Obtains file details for given FileID.
+        /// </summary>
+        /// <param name="FileID">FileID</param>
+        /// <returns>List of ATTFile class containing file details.</returns>
         public static ATTFile GetFileDetails(int FileID)
         {
             try
@@ -258,6 +368,10 @@ namespace SageFrame.FileManager
                 throw;
             }
         }
+        /// <summary>
+        /// Obtains root folders.
+        /// </summary>
+        /// <returns>List of Folder class containing FolderId,FolderPath,StorageLocation and IsActive.</returns>
         public static List<Folder> GetRootFolders()
         {
             try
@@ -271,6 +385,10 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// Obtains active root folders.
+        /// </summary>
+        /// <returns>List of Folder class containing FolderId,FolderPath,StorageLocation and IsActive.</returns>
         public static List<Folder> GetActiveRootFolders()
         {
             try
@@ -284,6 +402,10 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// Obtains all folders.
+        /// </summary>
+        /// <returns>List of Folder class containing FolderId,FolderPath and StorageLocation</returns>
         public static List<Folder> GetAllFolders()
         {
             try
@@ -296,6 +418,12 @@ namespace SageFrame.FileManager
                 throw;
             }
         }
+        /// <summary>
+        /// Obtains module permission.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="UserName">UserName</param>
+        /// <returns>List of file manager module permission key.</returns>
         public static List<string> GetModulePermission(int UserModuleID, string UserName)
         {
             try
@@ -307,6 +435,12 @@ namespace SageFrame.FileManager
                 throw;
             }
         }
+        /// <summary>
+        /// Obtains file manager settings for given UserModuleID and PortalID.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>List of FileManagerSettingInfo class containing file manager settings.</returns>
         public static List<FileManagerSettingInfo> GetFileManagerSettings(int UserModuleID, int PortalID)
         {
             try
@@ -320,6 +454,10 @@ namespace SageFrame.FileManager
 
             }
         }
+        /// <summary>
+        /// Adds or updates file manager setting value.
+        /// </summary>
+        /// <param name="lstSettings">List of object of FileManagerSettingInfo class. </param>
         public static void AddUpdateSettings(List<FileManagerSettingInfo> lstSettings)
         {
 

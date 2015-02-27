@@ -12,6 +12,9 @@ using System.Web;
 
 namespace SageFrame.Web
 {
+    /// <summary>
+    /// Declaration of system settings.
+    /// </summary>
     public static class SystemSetting
     {
         #region "Declaration"
@@ -64,8 +67,12 @@ namespace SageFrame.Web
         public static string[] INCOMPRESSIBLE_EXTENSIONS = { ".gif", ".jpg", ".png", ".axd", ".asmx", ".css", ".js", "Fconnector.aspx", ".html", ".htm", "connector.aspx?", "fckstyles.xml" };
         public static string[] ALLOWED_EXTENSIONS = { ".gif", ".jpg", ".png" };
         public static string[] ALLOWED_FILES = { ".gif", ".jpg", ".png", ".htm", ".xml", ".html", ".cs", ".ascx", ".js", ".asmx",".css" };
+        public static string[] SYSTEM_DEFAULT_USERS = { "anonymoususer", "siteadmin"};
         #endregion
-
+        /// <summary>
+        /// Return database owner.
+        /// </summary>
+        /// <returns>Database owner.</returns>
         public static string GetDataBaseOwner()
         {
             string _databaseOwner = System.Configuration.ConfigurationManager.AppSettings["databaseOwner"].ToString();
@@ -75,7 +82,10 @@ namespace SageFrame.Web
             }
             return _databaseOwner;
         }
-
+        /// <summary>
+        /// Return object qualifer.
+        /// </summary>
+        /// <returns>Object qualifer.</returns>
         public static string GetObjectQualifer()
         {
             string _objectQualifier = System.Configuration.ConfigurationManager.AppSettings["objectQualifier"].ToString();

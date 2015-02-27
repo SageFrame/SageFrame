@@ -20,9 +20,20 @@ using System.Data.SqlClient;
 
 namespace SageFrame.Message
 {
+    /// <summary>
+    /// Manupulates data for mail message 
+    /// </summary>
     public class MessageManagementProvider
     {
-
+        /// <summary>
+        /// Connects to database and Returns all the message template type.
+        /// </summary>
+        /// <param name="IsActive">Set true if the message template is active.</param>
+        /// <param name="IsDeleted">Set true if the message template is deleted.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="Username">User's name.</param>
+        /// <param name="CurrentCulture">Culture name.</param>
+        /// <returns>List of MessageManagementInfo object containing message template type.</returns>
         public List<MessageManagementInfo> GetMessageTemplateTypeList(bool IsActive, bool IsDeleted, int PortalID, string Username, string CurrentCulture)
         {
             try
@@ -44,6 +55,13 @@ namespace SageFrame.Message
                 throw ex;
             }
         }
+
+        /// <summary>
+        /// Connects to database and returns message template type token list by message template type.
+        /// </summary>
+        /// <param name="MessageTemplateTypeID">Message template type ID</param>
+        /// <param name="PortalID">Portal ID</param>
+        /// <returns>List of message template type token</returns>
         public List<MessageManagementInfo> GetMessageTemplateTypeTokenListByMessageTemplateType(int MessageTemplateTypeID, int PortalID)
         {
             try
@@ -63,6 +81,12 @@ namespace SageFrame.Message
             }
         }
 
+        /// <summary>
+        /// Connects to database and  returns message template by message template type ID.
+        /// </summary>
+        /// <param name="MessageTemplateTypeID">Message template type ID.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <returns>list of  message templates.</returns>
         public static List<MessageManagementInfo> GetMessageTemplateByMessageTemplateTypeID(int MessageTemplateTypeID, int PortalID)
         {
             try
@@ -82,6 +106,19 @@ namespace SageFrame.Message
             }
         }
 
+        /// <summary>
+        /// Connects to database and updates message template
+        /// </summary>
+        /// <param name="MessageTemplateID">Message template ID.</param>
+        /// <param name="MessageTemplateTypeID">Message template type ID.</param>
+        /// <param name="Subject">Email subject.</param>
+        /// <param name="Body">Email body.</param>
+        /// <param name="MailFrom">Email from.</param>
+        /// <param name="IsActive">Set true if email is active.</param>
+        /// <param name="UpdatedOn">Email updated on.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="UpdatedBy">Email updated user's name.</param>
+        /// <param name="CurrentCulture">Culture name.</param>
         public void UpdateMessageTemplate(int MessageTemplateID, int MessageTemplateTypeID, string Subject, string Body, string MailFrom, bool IsActive, DateTime UpdatedOn, int PortalID, string UpdatedBy, string CurrentCulture)
         {
             try
@@ -112,8 +149,19 @@ namespace SageFrame.Message
             }
         }
 
-
-
+        /// <summary>
+        /// Connects to database and adds message template.
+        /// </summary>
+        /// <param name="MessageTemplateTypeID">Message template type ID.</param>
+        /// <param name="Subject">Email subject.</param>
+        /// <param name="Body">Email body.</param>
+        /// <param name="MailFrom">Email from.</param>
+        /// <param name="IsActive">Set true if email is active</param>
+        /// <param name="AddedOn">Message added date.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="AddedBy">Message added by.</param>
+        /// <param name="CurrentCulture">Culture name.</param>
+        /// <returns>Returns message template ID</returns>
         public int AddMessageTemplate(int MessageTemplateTypeID, string Subject, string Body, string MailFrom, bool IsActive, DateTime AddedOn, int PortalID, string AddedBy, string CurrentCulture)
         {
             try
@@ -145,6 +193,15 @@ namespace SageFrame.Message
             }
         }
 
+        /// <summary>
+        /// Connects to database and returns message template list.
+        /// </summary>
+        /// <param name="IsActive">Set true if active message template is to be retrive.</param>
+        /// <param name="IsDeleted">Set true if deleted message template is to be retrive.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="Username">User's name.</param>
+        /// <param name="CurrentCulture">Culture name.</param>
+        /// <returns>Returns list of message.</returns>
         public List<MessageManagementInfo> GetMessageTemplateList(bool IsActive, bool IsDeleted, int PortalID, string Username, string CurrentCulture)
         {
             try
@@ -167,6 +224,12 @@ namespace SageFrame.Message
             }
         }
 
+        /// <summary>
+        /// Connects to database and returns message template  by message template ID.
+        /// </summary>
+        /// <param name="MessageTemplateID">Message Template ID.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <returns>MessageManagemenetInfo class onject contain message details</returns>
         public MessageManagementInfo GetMessageTemplate(int MessageTemplateID, int PortalID)
         {
             SqlDataReader reader = null;
@@ -207,6 +270,13 @@ namespace SageFrame.Message
 
         }
 
+        /// <summary>
+        ///  Connects to database and deletes message template.
+        /// </summary>
+        /// <param name="MessageTemplateID">Message template ID.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="DeletedOn">Message deleted date.</param>
+        /// <param name="DeletedBy">Message deleted user's name.</param>
         public void DeleteMessageTemplate(int MessageTemplateID, int PortalID, DateTime DeletedOn, string DeletedBy)
         {
             try
@@ -230,6 +300,15 @@ namespace SageFrame.Message
             }
         }
 
+        /// <summary>
+        /// Connects to database and adds message template type.
+        /// </summary>
+        /// <param name="Name">Template type name.</param>
+        /// <param name="IsActive">Set true if message template type is active.</param>
+        /// <param name="AddedOn">Template type added date.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="AddedBy">Template type added user's name.</param>
+        /// <returns>Returns message template type ID</returns>
         public int AddMessageTemplateType(string Name, bool IsActive, DateTime AddedOn, int PortalID, string AddedBy)
         {
             try
@@ -254,6 +333,12 @@ namespace SageFrame.Message
             }
         }
 
+        /// <summary>
+        /// Connects to database and returns user's first name.
+        /// </summary>
+        /// <param name="Username">User's name.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <returns>User's first name.</returns>
         public MessageManagementInfo GetUserFirstName(string Username, int PortalID)
         {
             SqlDataReader reader = null;
@@ -289,6 +374,12 @@ namespace SageFrame.Message
             }
         }
 
+        /// <summary>
+        /// Connects to database and returns user's last name.
+        /// </summary>
+        /// <param name="Username">User's name.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <returns>User's last name.</returns>
         public MessageManagementInfo GetUserLastName(string Username, int PortalID)
         {
             SqlDataReader reader = null;
@@ -324,6 +415,12 @@ namespace SageFrame.Message
             }
         }
 
+        /// <summary>
+        /// Connects to database and returns user's email by user's name and potral ID
+        /// </summary>
+        /// <param name="Username">User's name</param>
+        /// <param name="PortalID">Portal ID</param>
+        /// <returns>User's email</returns>
         public MessageManagementInfo GetUserEmail(string Username, int PortalID)
         {
             SqlDataReader reader = null;
@@ -331,14 +428,11 @@ namespace SageFrame.Message
             {
                 string sp = "[dbo].[sp_GetUserEmail]";
                 SQLHandler SQLH = new SQLHandler();
-
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
                 ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", Username));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-
                 reader = SQLH.ExecuteAsDataReader(sp, ParamCollInput);
                 MessageManagementInfo objInfo = new MessageManagementInfo();
-
                 while (reader.Read())
                 {
                     objInfo.Email = reader["Email"].ToString();
@@ -359,6 +453,12 @@ namespace SageFrame.Message
             }
         }
 
+        /// <summary>
+        /// Connects to database and returns activation code
+        /// </summary>
+        /// <param name="Username">User's name</param>
+        /// <param name="PortalID">Portal ID</param>
+        /// <returns>Activation code</returns>
         public MessageManagementInfo GetUserActivationCode(string Username, int PortalID)
         {
             SqlDataReader reader = null;
@@ -394,6 +494,17 @@ namespace SageFrame.Message
             }
         }
 
+        /// <summary>
+        /// Connects to database and adds message template token
+        /// </summary>
+        /// <param name="messageTokenID">Message token ID</param>
+        /// <param name="messageTemplateTypeID">Message template type ID</param>
+        /// <param name="name">Message template type name</param>
+        /// <param name="isActive">Set true if message template</param>
+        /// <param name="addedOn">Message template added date</param>
+        /// <param name="portalID">Portal ID</param>
+        /// <param name="addedBy">Message template adding user's name</param>
+        /// <returns>returns message token ID</returns>
         public int MessageTemplateTokenAdd(int messageTokenID, int messageTemplateTypeID, string name, bool isActive, DateTime addedOn, int portalID, string addedBy)
         {
             try
@@ -415,6 +526,12 @@ namespace SageFrame.Message
             }
         }        
 
+        /// <summary>
+        /// Connects to database and  checks for message template uniqueness.
+        /// </summary>
+        /// <param name="messageTempTypeName">Message template type name.</param>
+        /// <param name="portalID">Portal ID.</param>
+        /// <returns>Returns true if messasge template type is unique.</returns>
         public bool CheckMessgeTemplateUnique(string messageTempTypeName, int portalID)
         {
             try
@@ -431,6 +548,13 @@ namespace SageFrame.Message
             }
         }
 
+        /// <summary>
+        /// Connects to database and checks for message token uniqueness.
+        /// </summary>
+        /// <param name="messageTempTokenName">Message template token name.</param>
+        /// <param name="messageTemplateTypeID">Messege template type ID</param>
+        /// <param name="portalID">Portal ID</param>
+        /// <returns>Returns true if message token is unique </returns>
         public bool CheckMessgeTokenUnique(string messageTempTokenName, int messageTemplateTypeID, int portalID)
         {
             try

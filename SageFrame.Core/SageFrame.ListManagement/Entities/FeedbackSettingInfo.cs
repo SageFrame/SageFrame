@@ -18,8 +18,14 @@ using System.Text;
 
 namespace SageFrame.ListManagement
 {
+    /// <summary>
+    /// Feedback setting class.
+    /// </summary>
     public class FeedbackSettingInfo
     {
+        /// <summary>
+        /// Sets or gets Setting value
+        /// </summary>
         public string SettingValue { get; set; }
     }
 }

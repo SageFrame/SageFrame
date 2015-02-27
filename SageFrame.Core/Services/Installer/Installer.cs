@@ -28,8 +28,8 @@ using SageFrame.Web.Utilities;
 using RegisterModule;
 using SageFrame.Core;
 using System.Web.Hosting;
-using System.Reflection;
-using SageFrame.Core.Services;
+//using System.Reflection;
+//using SageFrame.Core.Services;
 
 #endregion
 
@@ -37,17 +37,23 @@ using SageFrame.Core.Services;
 
 namespace SageFrame.SageFrameClass.Services
 {
+	/// <summary>
+    /// Class that helps during the installation of modules.
+    /// </summary>
     public class Installers : BaseAdministrationUserControl
     {
         #region "Private Members"
 
-       
+
         System.Nullable<Int32> _newModuleID = 0;
         System.Nullable<Int32> _newModuleDefID = 0;
         System.Nullable<Int32> _newPortalmoduleID = 0;
 
         string Exceptions = string.Empty;
-
+		
+		 /// <summary>
+        /// Enum for control type.
+        /// </summary>
         public enum ControlType
         {
             View = 1,
@@ -60,11 +66,19 @@ namespace SageFrame.SageFrameClass.Services
         #region "Public Properties"
 
         #endregion
-
+		
+		/// <summary>
+        /// Initializes an instance of Installers class.
+        /// </summary>
         public Installers()
         {
         }
-
+        /// <summary>
+        /// Connects to database and returns module's details by modules name.
+        /// </summary>
+        /// <param name="ModuleName">Module's name.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <returns>Module's details.</returns>
         public static ModuleInfo GetModuleByModuleName(string ModuleName, int PortalID)
         {
             try
@@ -81,7 +95,11 @@ namespace SageFrame.SageFrameClass.Services
                 throw;
             }
         }
-
+        /// <summary>
+        /// Returns  module's details by module name
+        /// </summary>
+        /// <param name="moduleName">Module's name.</param>
+        /// <returns>Module details.</returns>
         public ModuleInfo GetModuleByName(string moduleName)
         {
             ModuleInfo module = null;
@@ -113,13 +131,106 @@ namespace SageFrame.SageFrameClass.Services
             }
             return module;
         }
-
         /// <summary>
-        /// index 0 will contain integer part of the function
-        /// index 1 will contain module object
+        /// Obtain module name.
         /// </summary>
-        /// <param name="fileModule"></param>
-        /// <returns></returns>
+        /// <param name="fileModule">zip file name.</param>
+        /// <returns>List of array.</returns>
+        public ArrayList Step0CheckLogic(string zipFilename)
+        {
+            CompositeModule compositeModule = new CompositeModule();
+            ModuleInfo module = new ModuleInfo();
+            bool IsCompositeModule = false;
+            int ReturnValue = 0;
+            try
+            {
+               
+                string path = HttpContext.Current.Server.MapPath("~/");
+                string temPath = SageFrame.Common.RegisterModule.Common.TemporaryFolder ;
+                string destPath = Path.Combine(path, temPath);
+                string filePath = destPath + "\\" + zipFilename;
+                string ExtractedPath = string.Empty;
+                ZipUtil.UnZipFiles(filePath, destPath, ref ExtractedPath, SageFrame.Common.RegisterModule.Common.Password, SageFrame.Common.RegisterModule.Common.RemoveZipFile);
+                if (!string.IsNullOrEmpty(ExtractedPath) && Directory.Exists(ExtractedPath))
+                {
+                    string ManifestFile = checkFormanifestFile(ExtractedPath);
+                    if (ManifestFile.Trim() != "")
+                    {
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load(ExtractedPath + '\\' + ManifestFile);
+                        XmlElement root = doc.DocumentElement;
+                        if (checkValidManifestFile(root))
+                        {
+                            int logic = 2;
+
+                            if (IsMultipleModule(doc))
+                            {
+                                logic = Step1CheckLogic(ExtractedPath, doc);
+                                IsCompositeModule = true;
+                                // if (logic == 2)
+                                // PopulateCompositeModule(ExtractedPath, doc, ref compositeModule);
+                                compositeModule.TempFolderPath = ExtractedPath;
+                                compositeModule.ManifestFile = ManifestFile;
+
+
+                            }
+                            else
+                            {
+                                logic = Step1CheckLogic(module.TempFolderPath, module, doc);
+                                module.TempFolderPath = ExtractedPath;
+                                module.ManifestFile = ManifestFile;
+
+                            }
+
+                            switch (logic)
+                            {
+                                case 0://No manifest file
+                                    DeleteTempDirectory(ExtractedPath);
+                                    ReturnValue = 3;
+                                    break;
+                                case -1://Invalid Manifest file
+                                    DeleteTempDirectory(ExtractedPath);
+                                    ReturnValue = 4;
+                                    break;
+                                case 1://Already exist
+                                    ReturnValue = 2;
+                                    break;
+                                case 2://Fresh Installation
+                                    ReturnValue = 1;
+                                    break;
+
+                            }
+                        }
+                    }//end of  if (ManifestFile.Trim() 
+
+
+                }
+                else
+                {
+                    ReturnValue = 0;
+                }
+
+            }
+            catch
+            {
+                ReturnValue = -1;
+            }
+            ArrayList arrColl = new ArrayList();
+            arrColl.Add(ReturnValue);
+
+            if (IsCompositeModule)
+                arrColl.Add(compositeModule);
+            else arrColl.Add(module);
+            arrColl.Add(IsCompositeModule);
+
+            return arrColl;
+        }
+        /// <summary>
+        /// Index 0 will contain integer part of the function.
+        /// Index 1 will contain module object.
+        /// </summary>
+        /// <param name="fileModule">FileUpload object.</param>
+        /// <returns>Arraylist module details.</returns>
         public ArrayList Step0CheckLogic(FileUpload fileModule)
         {
             CompositeModule compositeModule = new CompositeModule();
@@ -234,11 +345,12 @@ namespace SageFrame.SageFrameClass.Services
 
 
         /// <summary>
-        /// index 0 will contain integer part of the function
-        /// index 1 will contain module object
+        /// Index 0 will contain integer part of the function.
+        /// Index 1 will contain module object.
         /// </summary>
-        /// <param name="fileModule"></param>
-        /// <returns></returns>
+        /// <param name="fileName">File name.</param>
+        /// <param name="parentPath">Parent path.</param>
+        /// <returns>Array list of module details</returns>
         public ArrayList Step0CheckLogic(string fileName, string parentPath)
         {
             CompositeModule compositeModule = new CompositeModule();
@@ -346,6 +458,13 @@ namespace SageFrame.SageFrameClass.Services
 
             return arrColl;
         }
+
+        /// <summary>
+        /// Checks the maifeast file of the module being installed if it is valid or not.
+        /// </summary>
+        /// <param name="root">XmlElement object containing xml details.</param>
+        /// <param name="module">ModuleInfo object.</param>
+        /// <returns>True if the manifeast file is valid.</returns>
         public bool checkValidManifestFile(XmlElement root, ModuleInfo module)
         {
             if (root.Name == "sageframe")//need to change the root node for valid manifest file at root node  
@@ -362,7 +481,11 @@ namespace SageFrame.SageFrameClass.Services
             return false;
         }
 
-
+        /// <summary>
+        /// Checks the maifeast file of the module being installed if it is valid or not.
+        /// </summary>
+        /// <param name="root">XmlElement object containing xml details.</param>
+        /// <returns>True if the manifeast file is valid.</returns>
         public bool checkValidManifestFile(XmlElement root)
         {
             if (root.Name == "sageframe")//need to change the root node for valid manifest file at root node  
@@ -379,44 +502,62 @@ namespace SageFrame.SageFrameClass.Services
             return false;
         }
 
+        /// <summary>
+        /// Checks if the module already exists  
+        /// </summary>
+        /// <param name="moduleName">Module name to be compared.</param>
+        /// <param name="module">ModuleInfo object containing mmodule name.</param>
+        /// <returns>True if Module name already exists.</returns>
         public bool IsModuleExist(string moduleName, ModuleInfo module)
         {
             ModuleController objProvider = new ModuleController();
             List<ModuleInfo> lstExistingModules = objProvider.GetAllExistingModule();
             bool exists = lstExistingModules.Exists(
                 delegate(ModuleInfo obj)
+                {
+                    bool returntype = false;
+                    if (obj.ModuleName.ToLower() == moduleName.ToLower())
                     {
-                        bool returntype = false;
-                        if (obj.ModuleName.ToLower() == moduleName.ToLower())
-                        {
-                            module.ModuleID = obj.ModuleID;
-                            returntype = true;
-                        }
-                        return returntype;
+                        module.ModuleID = obj.ModuleID;
+                        returntype = true;
                     }
+                    return returntype;
+                }
                 );
             return exists;
         }
 
+        /// <summary>
+        /// Checks if the module already exists  
+        /// </summary>
+        /// <param name="moduleName">Module name to be compared.</param>
+        /// <returns>True if Module name already exists.</returns>
         public bool IsModuleExist(string moduleName)
         {
             ModuleController objProvider = new ModuleController();
             List<ModuleInfo> lstExistingModules = objProvider.GetAllExistingModule();
             bool exists = lstExistingModules.Exists(
                 delegate(ModuleInfo obj)
+                {
+                    bool returntype = false;
+                    if (obj.ModuleName.ToLower() == moduleName.ToLower())
                     {
-                        bool returntype = false;
-                        if (obj.ModuleName.ToLower() == moduleName.ToLower())
-                        {
-                            returntype = true;
-                        }
-                        return returntype;
+                        returntype = true;
                     }
+                    return returntype;
+                }
                 );
 
             return exists;
         }
 
+        /// <summary>
+        /// Checks if the module already exists.
+        /// </summary>
+        /// <param name="TempUnzippedPath">Unzipped file temp path.</param>
+        /// <param name="module"> ModuleInfo object.</param>
+        /// <param name="doc">XmlDocument object containing folder node.</param>
+        /// <returns>Returns 1 if module already exists else returns 2.</returns>
         public int Step1CheckLogic(string TempUnzippedPath, ModuleInfo module, XmlDocument doc)
         {
             XmlNodeList xnList = doc.SelectNodes("sageframe/folders/folder");
@@ -445,7 +586,12 @@ namespace SageFrame.SageFrameClass.Services
         }
 
 
-
+        /// <summary>
+        /// Checks if the module already exists.
+        /// </summary>
+        /// <param name="TempUnzippedPath">Unzipped file temp path.</param>
+        /// <param name="doc">XmlDocument object containing folder node.</param>
+        /// <returns>Returns 1 if module already exists else returns 2.</returns>
         public int Step1CheckLogic(string TempUnzippedPath, XmlDocument doc)
         {
             XmlNodeList xnList = doc.SelectNodes("sageframe/folders/folder");
@@ -476,7 +622,12 @@ namespace SageFrame.SageFrameClass.Services
             return 0;
         }
 
-
+        /// <summary>
+        /// Populates composite modules. 
+        /// </summary>
+        /// <param name="TempUnzippedPath"> Temp Unzipped file path.</param>
+        /// <param name="doc">XmlDocument object containing </param>
+        /// <param name="compositeModule">compositeModule object</param>
         public void PopulateCompositeModule(string TempUnzippedPath, XmlDocument doc, ref CompositeModule compositeModule)
         {
             checkFormanifestFile(TempUnzippedPath);
@@ -501,6 +652,11 @@ namespace SageFrame.SageFrameClass.Services
 
         }
 
+        /// <summary>
+        /// Checks for manifeast file in the zipped file presented in the temp folder.
+        /// </summary>
+        /// <param name="TempUnzippedPath">Temp folder path.</param>
+        /// <returns>Manifeast file name.</returns>
         public string checkFormanifestFile(string TempUnzippedPath)
         {
             string ManifestFile = "";
@@ -520,7 +676,12 @@ namespace SageFrame.SageFrameClass.Services
             return ManifestFile;
         }
 
-
+        /// <summary>
+        /// Checks for manifeast file in the zipped file presented in the temp folder.
+        /// </summary>
+        /// <param name="TempUnzippedPath">Temp folder path.</param>
+        /// <param name="module"> ModuleInfo object containing module's manifest name.</param>
+        /// <returns>Manifeast file name.</returns>
         public string checkFormanifestFile(string TempUnzippedPath, ModuleInfo module)
         {
             DirectoryInfo dir = new DirectoryInfo(TempUnzippedPath);
@@ -539,7 +700,11 @@ namespace SageFrame.SageFrameClass.Services
             return module.ManifestFile;
         }
 
-
+        /// <summary>
+        /// Checks whether the given content type is valid or not.
+        /// </summary>
+        /// <param name="p">Extension to be checked.</param>
+        /// <returns>True if the content type is valid.</returns>
         private bool IsVAlidZipContentType(string p)
         {
             // extract and store the file extension into another variable
@@ -558,6 +723,11 @@ namespace SageFrame.SageFrameClass.Services
             return flag;
         }
 
+        /// <summary>
+        /// Checks control type.
+        /// </summary>
+        /// <param name="_controlType">Control type to be cheked.</param>
+        /// <returns>View type.</returns>
         private int checkControlType(string _controlType)
         {
             int returnValue = 0;
@@ -579,6 +749,11 @@ namespace SageFrame.SageFrameClass.Services
             return returnValue;
         }
 
+        /// <summary>
+        /// Rolls the stored procedure back. Call it if anything went wrong during module installation.
+        /// </summary>
+        /// <param name="ModuleID">Module ID.</param>
+        /// <param name="PortalID">Portal ID.</param>
         public void ModulesRollBack(int ModuleID, int PortalID)
         {
             try
@@ -592,6 +767,12 @@ namespace SageFrame.SageFrameClass.Services
             }
         }
 
+        /// <summary>
+        /// Reads SQL file from the module zip.
+        /// </summary>
+        /// <param name="TempUnzippedPath">Module's temp zip path.</param>
+        /// <param name="_sqlProvidername">SQL provider's file name.</param>
+        /// <returns>Returns the success or failure message inaccordance with the script execution.</returns>
         public string ReadSQLFile(string TempUnzippedPath, string _sqlProvidername)
         {
             string Exceptions = string.Empty;
@@ -622,11 +803,14 @@ namespace SageFrame.SageFrameClass.Services
             }
             return Exceptions;
         }
+
+        /// <summary>
+        /// Fills composite module info  from the sfe read from the temp folder of the module being install.
+        /// </summary>
+        /// <param name="Package">Composite module object containing the manifest file.</param>
+        /// <returns>CompositeModule object containing composite module informations.</returns>
         public CompositeModule fillCompositeModuleInfo(CompositeModule Package)
         {
-
-
-
             XmlDocument doc = new XmlDocument();
             doc.Load(Package.TempFolderPath + '\\' + Package.ManifestFile);
             XmlElement root = doc.DocumentElement;
@@ -666,6 +850,12 @@ namespace SageFrame.SageFrameClass.Services
             }
             return Package;
         }
+
+        /// <summary>
+        ///  Fills composite module info  from the sfe read from the temp folder of the module being install.
+        /// </summary>
+        /// <param name="module">ModuleInfo object containing manifest file.</param>
+        /// <returns>ModuleInfo object containing module details.</returns>
         public ModuleInfo fillModuleInfo(ModuleInfo module)
         {
             if (!string.IsNullOrEmpty(module.ManifestFile))
@@ -701,7 +891,11 @@ namespace SageFrame.SageFrameClass.Services
         }
 
 
-
+        /// <summary>
+        /// Checks if the file path node is duplicated
+        /// </summary>
+        /// <param name="xmlDocument">XmlDocument object containing folder path as node.</param>
+        /// <returns>true if the node is found more than once.</returns>
         public bool IsMultipleModule(XmlDocument xmlDocument)
         {
             bool flag = false;
@@ -713,6 +907,13 @@ namespace SageFrame.SageFrameClass.Services
         }
 
 
+        /// <summary>
+        /// Installs package.
+        /// </summary>
+        /// <param name="module">ModuleInfo object containing module details.</param>
+        /// <param name="doc">XmlDocument object containing sfe details.</param>
+        /// <param name="dllFiles">ArrayList of dll files.</param>
+        /// <param name="_unistallScriptFile">Uninstall script file name.</param>
         public void InstallPackageCore(ModuleInfo module, XmlDocument doc, ref  ArrayList dllFiles, ref  string _unistallScriptFile)
         {
             #region "Module Creation Logic"
@@ -787,161 +988,41 @@ namespace SageFrame.SageFrameClass.Services
             {
                 #region CheckValidDataSqlProvider
                 string moduleFile = GetSqlDataProviderFile(module.TempFolderPath);
-                if (moduleFile.Trim().Length < 2)
-                    moduleFile = module.Version;
+                if (moduleFile.Trim().Length < 2) moduleFile = module.Version;
 
-               
+                if (!String.IsNullOrEmpty(moduleFile))
+                {
+                    Exceptions = ReadSQLFile(module.TempFolderPath, moduleFile + ".SqlDataProvider");
+                }
                 #endregion
 
-                bool orderSpecified = (from XmlNode xn3 in xnList3 select xn3.Attributes["order"]).Select(order => order != null).FirstOrDefault();
-
-                if (orderSpecified)
+                foreach (XmlNode xn3 in xnList3)
                 {
-
-                    var sortedItems = xnList3.OfType<XmlElement>()
-                        .OrderBy(item => int.Parse(item.GetAttribute("order")));
-
-                    foreach (var item in sortedItems)
+                    string _fileName = xn3["name"].InnerXml;
+                    try
                     {
-                        string _fileName = item["name"].InnerXml;
 
-                        try
+
+                        #region CheckAlldllFiles
+                        if (!String.IsNullOrEmpty(_fileName) && _fileName.Contains(".dll"))
                         {
-                            #region ReadSqlProviderfile
-
-                            if (!String.IsNullOrEmpty(moduleFile) && !_fileName.Contains("Uninstall.SqlDataProvider") && _fileName.Contains(".SqlDataProvider"))
-                            {
-                                Exceptions = ReadSQLFile(module.TempFolderPath, _fileName);
-                            }
-
-                            #endregion
-
-                            #region CheckAlldllFiles
-
-                            if (!String.IsNullOrEmpty(_fileName) && _fileName.Contains(".dll"))
-                            {
-                                dllFiles.Add(_fileName);
-                            }
-
-                            #endregion
-
-                            #region ReadUninstall SQL FileName
-
-                            if (!String.IsNullOrEmpty(_fileName) && _fileName.Contains("Uninstall.SqlDataProvider"))
-                            {
-                                _unistallScriptFile = _fileName;
-                            }
-
-                            #endregion
+                            dllFiles.Add(_fileName);
                         }
-                        catch (Exception ex)
+                        #endregion
+                        #region ReadUninstall SQL FileName
+                        if (!String.IsNullOrEmpty(_fileName) && _fileName.Contains("Uninstall.SqlDataProvider"))
                         {
-                            Exceptions += ex.Message;
-                            break;
+                            _unistallScriptFile = _fileName;
                         }
+                        #endregion
                     }
-
-                }
-                else
-                {
-
-
-                    foreach (XmlNode xn3 in xnList3)
+                    catch (Exception ex)
                     {
-
-
-                        string _fileName = xn3["name"].InnerXml;
-
-
-
-                        try
-                        {
-                            #region ReadSqlProviderfile
-
-                            if (!String.IsNullOrEmpty(moduleFile) && !_fileName.Contains("Uninstall.SqlDataProvider") && _fileName.Contains(".SqlDataProvider"))
-                            {
-                                Exceptions = ReadSQLFile(module.TempFolderPath, moduleFile + ".SqlDataProvider");
-                            }
-
-                            #endregion
-
-                            #region CheckAlldllFiles
-
-                            if (!String.IsNullOrEmpty(_fileName) && _fileName.Contains(".dll"))
-                            {
-                                dllFiles.Add(_fileName);
-                            }
-
-                            #endregion
-
-                            #region ReadUninstall SQL FileName
-
-                            if (!String.IsNullOrEmpty(_fileName) && _fileName.Contains("Uninstall.SqlDataProvider"))
-                            {
-                                _unistallScriptFile = _fileName;
-                            }
-
-                            #endregion
-                        }
-                        catch (Exception ex)
-                        {
-                            Exceptions += ex.Message;
-                            break;
-                        }
+                        Exceptions += ex.Message;
+                        break;
                     }
                 }
             }
-            XmlNodeList xnList4 = doc.SelectNodes("sageframe/folders/folder/templates/template");
-             if (xnList4 != null && xnList4.Count != 0)
-             {
-                  foreach (XmlNode xn4 in xnList4)
-                  {
-                       string _templateName = xn4["name"].InnerXml;
-                      #region Read Template file
-                       if (!String.IsNullOrEmpty(_templateName))
-                      {
-                          string templateName = _templateName;
-                          AddTemplateZip(templateName, module.TempFolderPath);
-                      }
-                      #endregion
-                  }
-
-             }
-             XmlNodeList directrylist = doc.SelectNodes("sageframe/folders/folder/move/directories/directory");
-
-             if (directrylist != null && directrylist.Count != 0)
-             {
-                 foreach (XmlNode directory in directrylist)
-                 {
-                   
-                     if (directory["from"] != null && directory["to"]!=null)
-                     {
-                         string fromdirectory = module.TempFolderPath + "\\" + directory["from"].InnerXml;
-                         string todirectory = HttpContext.Current.Server.MapPath(@"~/" + directory["to"].InnerXml);
-                         MoveDirectory(fromdirectory, todirectory);
-
-                     }
-                    
-                 }
-             }
-
-             XmlNodeList fileList = doc.SelectNodes("sageframe/folders/folder/move/files/file");
-
-             if (fileList != null && fileList.Count != 0)
-             {
-                 foreach (XmlNode file in fileList)
-                 {
-
-                     if (file["to"] != null && file["name"]!=null)
-                     {
-                         string fileName = file["name"] != null ? file["name"].InnerXml : "";
-                         string fromLocation = module.TempFolderPath + "\\" + file["from"].InnerXml;
-                         string toLocation = HttpContext.Current.Server.MapPath(@"~/" + file["to"].InnerXml);
-                         MoveFile(fileName, fromLocation, toLocation);
-                     }
-
-                 }
-             }
 
             if (Exceptions != string.Empty)
             {
@@ -959,20 +1040,14 @@ namespace SageFrame.SageFrameClass.Services
             }
             #endregion
 
+
         }
 
-        public void AddTemplateZip(string templateName, string tempPath)
-        {
-            string templateFolder = Path.Combine(tempPath, templateName);
-            string path = HttpContext.Current.Server.MapPath("~/");
-
-            string templateFolderPath = path + "Templates\\" + templateName;
-            CopyDirectory(templateFolder, templateFolderPath);
-            //Directory.Delete(templateFolder);
-            DeleteTempDirectory(templateFolder);
-        }
-
-
+        /// <summary>
+        /// Returns sql dataprovider file name.
+        /// </summary>
+        /// <param name="path">Sql data provider file path.</param>
+        /// <returns>SQL installer data provide name.</returns>
         public string GetSqlDataProviderFile(string path)
         {
             string file = "";
@@ -986,12 +1061,13 @@ namespace SageFrame.SageFrameClass.Services
                 string str = fName.Replace(".", "");
 
                 try
-                {   int num =0;
-                bool isNumeric = int.TryParse(str, out num);
+                {
+                    int num = 0;
+                    bool isNumeric = int.TryParse(str, out num);
 
 
 
-                if (isNumeric && num > 0)
+                    if (isNumeric && num > 0)
                         fileNames.Add(new KeyValuePair<string, int>(fName, Convert.ToInt32(num)));
                 }
                 catch (Exception ex)
@@ -1011,6 +1087,10 @@ namespace SageFrame.SageFrameClass.Services
 
         }
 
+        /// <summary>
+        /// Install package.
+        /// </summary>
+        /// <param name="module">ModuleInfo object containing the detail of modules.</param>
         public void InstallPackage(ModuleInfo module)
         {
             XmlDocument doc = new XmlDocument();
@@ -1064,52 +1144,17 @@ namespace SageFrame.SageFrameClass.Services
                     //File.Move();
                 }
             }
-            // check IModuleExtraCodeExecute interface is implemented or not for insallation of module
-            if (IsIModuleExtraCodeInterfaceImplemented(doc))
-            {
-                ExtraCodeOnInstallation(doc, module.TempFolderPath);
-            }
-
             //-----------------------------------//
             RemoveFromAvailableResources(module.ModuleName + ".zip");
             //------------------------------------------//
             DeleteTempDirectory(module.TempFolderPath);
 
         }
-
-        private void MoveDirectory(string sourceDirectory, string destination)
-        {
-            if (Directory.Exists(sourceDirectory))
-            {
-                if (Directory.Exists(destination))
-                {
-                    CopyDirectory(sourceDirectory, destination);
-                }
-                else
-                {
-                    Directory.CreateDirectory(destination);
-                    CopyDirectory(sourceDirectory, destination);
-                }
-            }
-        }
-
-        private void MoveFile(string filename, string sourceDirectory, string destination)
-        {
-            if (Directory.Exists(sourceDirectory))
-            {
-                string filePath = Path.Combine(sourceDirectory, filename.Trim());
-                string destfilePath = Path.Combine(destination, filename.Trim());
-                if (File.Exists(filePath))
-                {
-                    //if (File.Exists(destfilePath))
-                    //{   //OverWrite file
-                    File.Copy(filePath, destfilePath, true);
-                    File.Delete(filePath);
-                    //}
-                }
-            }
-        }
-
+        /// <summary>
+        /// Copies folder from one folder to another.
+        /// </summary>
+        /// <param name="SourceDirectory">File source from where the file is to be moved.</param>
+        /// <param name="DestinationDirectory">File destination where the file is to be moved.</param>
         public void CopyDirectory(string SourceDirectory, string DestinationDirectory)
         {
             if (Directory.Exists(SourceDirectory))
@@ -1137,6 +1182,11 @@ namespace SageFrame.SageFrameClass.Services
             }
         }
 
+        /// <summary>
+        /// Returns  file name from the file full path.
+        /// </summary>
+        /// <param name="path">File full path.</param>
+        /// <returns>File name.</returns>
         private string ParseFileNameWithoutPath(string path)
         {
             if (path != null && path != string.Empty)
@@ -1148,6 +1198,10 @@ namespace SageFrame.SageFrameClass.Services
             return string.Empty;
         }
 
+        /// <summary>
+        /// Deletes directory of the provided path.
+        /// </summary>
+        /// <param name="TempDirectory">Directory full path.</param>
         public void DeleteTempDirectory(string TempDirectory)
         {
             try
@@ -1164,7 +1218,10 @@ namespace SageFrame.SageFrameClass.Services
             }
         }
 
-        //--------------------------------------------------------//
+        /// <summary>
+        /// Removes files from resources file.
+        /// </summary>
+        /// <param name="filename">File name.</param>
         protected void RemoveFromAvailableResources(string filename)
         {
             string path = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resources");
@@ -1177,6 +1234,11 @@ namespace SageFrame.SageFrameClass.Services
 
         }
 
+        /// <summary>
+        /// Adds available modules to the folder.
+        /// </summary>
+        /// <param name="TempFolderpath">Temporary folder path.</param>
+        /// <param name="Component">Component object containing module details.</param>
         public void AddAvailableModules(string TempFolderpath, Component Component)
         {
             string DestinationPath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resources");
@@ -1189,6 +1251,11 @@ namespace SageFrame.SageFrameClass.Services
             }
 
         }
+
+        /// <summary>
+        /// Connects to database and ads available modules
+        /// </summary>
+        /// <param name="Component">Component object containing module details.</param>
         protected void AddToAvailableModule(Component Component)
         {
             try
@@ -1221,32 +1288,10 @@ namespace SageFrame.SageFrameClass.Services
             }
         }
 
-        //protected void AddToAvailableModule(Component Component)
-        //{
-        //    try
-        //    {
-
-        //        db.usp_AvailableModulesAdd(Component.FriendlyName, Component.Description, Component.Version, Component.BusinesscontrollerClass, Component.ZipFile, Component.Name, true, false, false, GetPortalID, GetUsername);
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-
-        //}
-
-        //protected void RemoveAvailableModule(string filename)
-        //{
-        //    try
-        //    {
-        //        db.usp_AvailableModulesUpdate(filename);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
+        /// <summary>
+        /// Connects to database and removes module by file name.
+        /// </summary>
+        /// <param name="filename">File name.</param>
         protected void RemoveAvailableModule(string filename)
         {
             try
@@ -1267,6 +1312,13 @@ namespace SageFrame.SageFrameClass.Services
 
         }
 
+
+        /// <summary>
+        /// Copies module zip file from one folder to another.
+        /// </summary>
+        /// <param name="sourcePath">Source path from where the zip is to be copied.</param>
+        /// <param name="destinationPath">Destination path where the zip is to be moved.</param>
+        /// <returns>Returns 1 if the zip is copied successfully else returns 0.</returns>
         public int CopyModuleZipFiles(string sourcePath, string destinationPath)
         {
             try
@@ -1293,6 +1345,11 @@ namespace SageFrame.SageFrameClass.Services
             }
         }
 
+
+        /// <summary>
+        /// Deletes module zip file from the given folder.
+        /// </summary>
+        /// <param name="Path">Path of the zip file to be delete.</param>
         public void DeleteModuleZipfile(string Path)
         {
             try
@@ -1309,6 +1366,12 @@ namespace SageFrame.SageFrameClass.Services
             }
         }
 
+
+        /// <summary>
+        /// Returns available modules list.
+        /// </summary>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <returns>Available module list.</returns>
         public List<ModuleInfo> GetAvailableModulesList(int PortalID)
         {
             try
@@ -1331,91 +1394,6 @@ namespace SageFrame.SageFrameClass.Services
 
         //-----------------------------------------------------------//
 
-        #region Extra Code Execution on Insallation & UnInstallation of Module
-        /// <summary>
-        /// function GetAssemblyNameWithIClass(doc); return list with two value
-        /// index 0 consist the AssemblyName
-        /// index 1 consist the Interface implemented Class Name for Install and Unstall of module
-        /// </summary>
-        /// <param name="doc"></param>
-        public void ExtraCodeOnInstallation(XmlDocument doc, string tempFolderPath)
-        {
-            try
-            {
-                List<string> assemblyClassIName = GetAssemblyNameWithIClass(doc);
-                AppDomain.CurrentDomain.Load(assemblyClassIName[0]);
-                foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
-                {
-                    string assName = ass.GetName().Name.ToString();
-                    if (assName == assemblyClassIName[0])
-                    {
-                        Type type = ass.GetType(assemblyClassIName[0] + "." + assemblyClassIName[1], false);
-                        IModuleExtraCodeExecute imece = (IModuleExtraCodeExecute)Activator.CreateInstance(type);
 
-                        imece.ExecuteOnInstallation(doc, tempFolderPath);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ProcessException(ex);
-            }
-        }
-
-        public void ExtraCodeOnUnInstallation(XmlDocument doc)
-        {
-            try
-            {
-                List<string> assemblyClassIName = GetAssemblyNameWithIClass(doc);
-                foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
-                {
-                    string assName = ass.GetName().Name.ToString();
-                    if (assName == assemblyClassIName[0])
-                    {
-                        Type type = ass.GetType(assemblyClassIName[0] + "." + assemblyClassIName[1], false);
-                        IModuleExtraCodeExecute imece = (IModuleExtraCodeExecute)Activator.CreateInstance(type);
-                        imece.ExecuteOnUnInstallation(doc);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ProcessException(ex);
-            }
-        }
-
-        /// <summary>
-        ///Function GetAssemblyNameWithIClass(XmlDocument doc) checks for "interfaceimplementedclass" node in sfe
-        /// "interfaceimplementedclass" node consists assembly name and IModuleExtraCodeExecute interface implemented class name with comma seperated like
-        ///  <interfaceimplementedclass>AssemblyName,IModuleExtraCodeExecuteImplemented</interfaceimplementedclass>
-        ///  function returns list with two values, AssemblyName at index 0 and IModuleExtraCodeExecute interface implemented class name at in index 1
-        /// </summary>
-        /// <param name="doc"></param>
-        /// <returns></returns>
-        public List<string> GetAssemblyNameWithIClass(XmlDocument doc)
-        {
-            XmlNodeList xnInterfaceImplement = doc.SelectNodes("sageframe/folders/folder/interfaceimplementedclass");
-            string[] assemblyValue = new string[] { };
-            if (xnInterfaceImplement != null && xnInterfaceImplement.Count != 0)
-            {
-                char[] commaSeparator = new char[] { ',' };
-                foreach (XmlNode interFaceCode in xnInterfaceImplement)
-                {
-                    assemblyValue = interFaceCode.InnerText.Split(commaSeparator, StringSplitOptions.RemoveEmptyEntries);
-                }
-            }
-            return new List<string> { assemblyValue[0], assemblyValue[1] };
-        }
-
-        public bool IsIModuleExtraCodeInterfaceImplemented(XmlDocument doc)
-        {
-            XmlNodeList xnListModule = doc.SelectNodes("sageframe/folders/folder/interfaceimplementedclass");
-            if (xnListModule != null && xnListModule.Count != 0)
-            {
-                return true;
-            }
-            return false;
-        }
-        #endregion
     }
 }

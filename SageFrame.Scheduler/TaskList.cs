@@ -7,9 +7,10 @@ FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEF
 #region "References"
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 #endregion
 
 namespace SageFrame.Scheduler
@@ -18,9 +19,10 @@ namespace SageFrame.Scheduler
         ReaderWriter = 0,
         Exclusive
     }
-public class TaskList<T> : IList<T>, IDisposable
+public class TaskList<T> : ConcurrentBag<T>, IDisposable
     {
-        private readonly List<T> _list = new List<T>();
+        System.Collections.Concurrent.ConcurrentBag<T> _list = new ConcurrentBag<T>();
+        //private readonly List<T> _list = new List<T>();
         private ILockStrategy _lockStrategy;
 
         public TaskList()
@@ -37,7 +39,7 @@ public class TaskList<T> : IList<T>, IDisposable
         {
         }
 
-        internal IList<T> BackingList
+        internal ConcurrentBag<T> BackingList
         {
             get
             {
@@ -45,7 +47,7 @@ public class TaskList<T> : IList<T>, IDisposable
             }
         }
 
-        #region IList<T> Members
+        #region ConcurrentBag<T> Members
 
         public void Add(T item)
         {
@@ -58,7 +60,11 @@ public class TaskList<T> : IList<T>, IDisposable
         {
             EnsureNotDisposed();
             EnsureWriteAccess();
-            _list.Clear();
+            T someItem;
+            while (!_list.IsEmpty)
+            {
+                _list.TryTake(out someItem);
+            }
         }
 
         public bool Contains(T item)
@@ -99,7 +105,7 @@ public class TaskList<T> : IList<T>, IDisposable
         {
             EnsureNotDisposed();
             EnsureWriteAccess();
-            return _list.Remove(item);
+            return _list.TryTake(out item);
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -109,47 +115,47 @@ public class TaskList<T> : IList<T>, IDisposable
             return _list.GetEnumerator();
         }
 
-        public int IndexOf(T item)
-        {
-            EnsureNotDisposed();
-            EnsureReadAccess();
-            return _list.IndexOf(item);
-        }
+        //public int IndexOf(T item)
+        //{
+        //    EnsureNotDisposed();
+        //    EnsureReadAccess();
+        //    return _list.IndexOf(item);
+        //}
 
-        public void Insert(int index, T item)
-        {
-            EnsureNotDisposed();
-            EnsureWriteAccess();
-            _list.Insert(index, item);
-        }
+        //public void Insert(int index, T item)
+        //{
+        //    EnsureNotDisposed();
+        //    EnsureWriteAccess();
+        //    _list.Insert(index, item);
+        //}
 
-        public T this[int index]
-        {
-            get
-            {
-                EnsureNotDisposed();
-                EnsureReadAccess();
-                return _list[index];
-            }
-            set
-            {
-                EnsureNotDisposed();
-                EnsureWriteAccess();
-                _list[index] = value;
-            }
-        }
+        //public T this[int index]
+        //{
+        //    get
+        //    {
+        //        EnsureNotDisposed();
+        //        EnsureReadAccess();
+        //        return _list[index];
+        //    }
+        //    set
+        //    {
+        //        EnsureNotDisposed();
+        //        EnsureWriteAccess();
+        //        _list[index] = value;
+        //    }
+        //}
 
-        public void RemoveAt(int index)
-        {
-            EnsureNotDisposed();
-            EnsureWriteAccess();
-            _list.RemoveAt(index);
-        }
+        //public void RemoveAt(int index)
+        //{
+        //    EnsureNotDisposed();
+        //    EnsureWriteAccess();
+        //    _list.RemoveAt(index);
+        //}
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator1();
-        }
+        //IEnumerator IEnumerable.GetEnumerator()
+        //{
+        //    return GetEnumerator1();
+        //}
 
         #endregion
 

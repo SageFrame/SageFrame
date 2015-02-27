@@ -17,6 +17,9 @@ using System.Diagnostics;
 
 #endregion
 
+/// <summary>
+/// Entities class for Session tracker
+/// </summary>
 [Serializable]
 public class SessionTrackerPage
 {

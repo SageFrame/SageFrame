@@ -8,13 +8,19 @@ using SageFrame.Web.Utilities;
 
 namespace SageFrame.Services
 {
+    /// <summary>
+    /// Authenticate if the user have permission for the module or not
+    /// </summary>
     public class AuthenticateService : System.Web.Services.WebService
     {
+        /// <summary>
+        /// Initializes a new instance of the AuthenticateService class.
+        /// </summary>
         public AuthenticateService()
         {
         }
         /// <summary>
-        /// strict use for http post method for admin part
+        /// strict use for http post method for edit or setting control.
         /// </summary>
         /// <param name="portalId">portalId</param>
         /// <param name="userModuleId">userModuleId</param>
@@ -45,7 +51,7 @@ namespace SageFrame.Services
         }
 
         /// <summary>
-        /// strict use for http get method for admin part
+        /// authenticates method for view controls.
         /// </summary>
         /// <param name="portalId">portalId</param>
         /// <param name="userModuleId">userModuleId</param>
@@ -74,6 +80,12 @@ namespace SageFrame.Services
             return false;
         }
 
+        /// <summary>
+        /// Returns username
+        /// </summary>
+        /// <param name="portalID">portalID</param>
+        /// <param name="authToken"> authentication token</param>
+        /// <returns>Returns userName</returns>
         private string GetUsername(int portalID, string authToken)
         {
             try

@@ -18,6 +18,9 @@ using System.Globalization;
 
 namespace SageFrame.Application
 {
+    /// <summary>
+    /// Application summary
+    /// </summary>
     [Serializable]
     public class Application
     {
@@ -27,6 +30,9 @@ namespace SageFrame.Application
         private string _ApplicationPath = string.Empty;
         private string _ApplicationMapPath = string.Empty;
 
+        /// <summary>
+        /// Initializes a new instance of the application class.
+        /// </summary>
         public Application()
         {
             NETFrameworkIISVersion = GetNETFrameworkVersion();
@@ -36,6 +42,10 @@ namespace SageFrame.Application
             _ApplicationMapPath = ApplicationMapPath.Replace("/", "\\");
 
         }
+        /// <summary>
+        /// Returns CurrentDotNetVersion.  
+        /// </summary>
+        /// <returns>string</returns>
         public static string CurrentDotNetVersion()
         {
             RegistryKey installed_versions = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP");
@@ -45,7 +55,9 @@ namespace SageFrame.Application
             int SP = Convert.ToInt32(installed_versions.OpenSubKey(version_names[version_names.Length - 1]).GetValue("SP", 0));
             return Framework.ToString();
         }
-
+        /// <summary>
+        /// Get or set NETFrameworkIISVersion.
+        /// </summary>
         public System.Version NETFrameworkIISVersion
         {
             get
@@ -57,7 +69,9 @@ namespace SageFrame.Application
                 _NETFrameworkVersion = value;
             }
         }
-
+        /// <summary>
+        /// Get or set ApplicationPath.
+        /// </summary>
         public string ApplicationPath
         {
             get
@@ -69,7 +83,9 @@ namespace SageFrame.Application
                 _ApplicationPath = value;
             }
         }
-
+        /// <summary>
+        /// Get or set ApplicationMapPath.
+        /// </summary>
         public string ApplicationMapPath
         {
             get
@@ -81,7 +97,9 @@ namespace SageFrame.Application
                 _ApplicationMapPath = value;
             }
         }
-
+        /// <summary>
+        /// Get company name.
+        /// </summary>
         public string Company
         {
             get
@@ -89,7 +107,9 @@ namespace SageFrame.Application
                 return "BrainDigit Pty.";
             }
         }
-
+        /// <summary>
+        /// Get description.
+        /// </summary>
         public string Description
         {
             get
@@ -97,7 +117,9 @@ namespace SageFrame.Application
                 return "SageFrame Community Edition";
             }
         }
-
+        /// <summary>
+        /// Get help URL.
+        /// </summary>
         public string HelpUrl
         {
             get
@@ -105,7 +127,9 @@ namespace SageFrame.Application
                 return "http://www.sageframe.com/default.aspx";
             }
         }
-
+        /// <summary>
+        /// Get copyright information.
+        /// </summary>
         public string LegalCopyright
         {
             get
@@ -114,7 +138,9 @@ namespace SageFrame.Application
                             + (DateTime.Today.ToString("yyyy") + " by SageFrame Corporation"));
             }
         }
-
+        /// <summary>
+        /// Get corporation name.
+        /// </summary>
         public string Name
         {
             get
@@ -122,7 +148,9 @@ namespace SageFrame.Application
                 return "SFECORP.CE";
             }
         }
-
+        /// <summary>
+        /// Get sageframe extension.
+        /// </summary>
         public string SKU
         {
             get
@@ -130,7 +158,9 @@ namespace SageFrame.Application
                 return "SFE";
             }
         }
-
+        /// <summary>
+        /// Get SageFrame application release mode.
+        /// </summary>
         public ReleaseMode Status
         {
             get
@@ -150,7 +180,9 @@ namespace SageFrame.Application
                 return _status;
             }
         }
-
+        /// <summary>
+        /// Get sageframe title.
+        /// </summary>
         public string Title
         {
             get
@@ -158,7 +190,9 @@ namespace SageFrame.Application
                 return "SageFrame";
             }
         }
-
+        /// <summary>
+        /// Get SageFrame registered trademark.
+        /// </summary>
         public string Trademark
         {
             get
@@ -166,7 +200,9 @@ namespace SageFrame.Application
                 return "SageFrame,SFE";
             }
         }
-
+        /// <summary>
+        /// Get SageFrame type.
+        /// </summary>
         public string Type
         {
             get
@@ -174,7 +210,9 @@ namespace SageFrame.Application
                 return "Framework";
             }
         }
-
+        /// <summary>
+        /// Get SageFrame upgrade URL.
+        /// </summary>
         public string UpgradeUrl
         {
             get
@@ -182,7 +220,9 @@ namespace SageFrame.Application
                 return "http://update.sageframe.com";
             }
         }
-
+        /// <summary>
+        /// Get SageFrame URL.
+        /// </summary>
         public string Url
         {
             get
@@ -190,20 +230,29 @@ namespace SageFrame.Application
                 return "http://www.sageframe.com";
             }
         }
-
+        /// <summary>
+        /// Get assembly version.
+        /// </summary>
         public System.Version Version
         {
             get
             {
-                return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;// .GetName.Version;
+                return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             }
         }
-
+        /// <summary>
+        /// Get sqldataprovider
+        /// </summary>
         public string DataProvider
         {
             get { return "SqlDataProvider"; }
         }
-
+        /// <summary>
+        /// Returns application version.  
+        /// </summary>
+        /// <param name="version">Represent the version number.</param>
+        /// <param name="includeBuild">Boolean variable to check for inculding a version.</param>
+        /// <returns></returns>
         public string FormatVersion(System.Version version, bool includeBuild)
         {
             string strVersion = (version.Major.ToString("00") + ("." + (version.Minor.ToString("00") + ("." + version.Build.ToString("00")))));
@@ -213,13 +262,22 @@ namespace SageFrame.Application
             }
             return strVersion;
         }
-
+        /// <summary>
+        ///  Returns application version of shorter formats.
+        /// </summary>
+        /// <param name="version">Represent the version number.</param>
+        /// <param name="includeBuild">Boolean variable to check for inculding a version.</param>
+        /// <returns>Short version.</returns>
         public string FormatShortVersion(System.Version version, bool includeBuild)
         {
+            
             string strVersion = (version.Major.ToString("0") + ("." + (version.Minor.ToString("0"))));
             return strVersion;
         }
-
+        /// <summary>
+        /// Return .NET framework version.
+        /// </summary>
+        /// <returns>.NET framework version. </returns>
         private static System.Version GetNETFrameworkVersion()
         {
             string version = System.Environment.Version.ToString(2);
@@ -253,7 +311,9 @@ namespace SageFrame.Application
             }
             return new System.Version(version);
         }
-
+        /// <summary>
+        /// Get sever IP Address
+        /// </summary>
         public string ServerIPAddress
         {
             get
@@ -274,7 +334,9 @@ namespace SageFrame.Application
                 return strTemp;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public string DNSName
         {
             get

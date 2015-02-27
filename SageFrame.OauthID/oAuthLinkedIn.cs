@@ -19,6 +19,9 @@ using SageFrame.Web;
 
 namespace SageFrame.OauthID
 {
+    /// <summary>
+    /// Summary description for oAuthLinkedIn.
+    /// </summary>
     public class oAuthLinkedIn : oAuthBase2
     {
         #region "Declaration"
@@ -35,6 +38,9 @@ namespace SageFrame.OauthID
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Get or set consumer key.
+        /// </summary>
         public string ConsumerKey
         {
             get
@@ -47,7 +53,9 @@ namespace SageFrame.OauthID
             }
             set { _consumerKey = value; }
         }
-
+        /// <summary>
+        /// Get or set consumer secret.
+        /// </summary>
         public string ConsumerSecret
         {
             get
@@ -60,8 +68,13 @@ namespace SageFrame.OauthID
             }
             set { _consumerSecret = value; }
         }
-
+        /// <summary>
+        /// Get or set token.
+        /// </summary>
         public string Token { get { return _token; } set { _token = value; } }
+        /// <summary>
+        /// Get or set token secret.
+        /// </summary>
         public string TokenSecret { get { return _tokenSecret; } set { _tokenSecret = value; } }
         #endregion
 
@@ -202,9 +215,9 @@ namespace SageFrame.OauthID
         /// WebRequestWithPut
         /// </summary>
         /// <param name="method">WebRequestWithPut</param>
-        /// <param name="url"></param>
-        /// <param name="postData"></param>
-        /// <returns></returns>
+        /// <param name="url">Full url to the web resource.</param>
+        /// <param name="postData">Data to post in querystring format</param>
+        /// <returns>The web server response.</returns>
         public string APIWebRequest(string method, string url, string postData)
         {
             Uri uri = new Uri(url);

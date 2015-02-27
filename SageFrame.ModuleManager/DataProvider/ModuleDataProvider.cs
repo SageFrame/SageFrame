@@ -18,8 +18,16 @@ using SageFrame.Common;
 
 namespace SageFrame.ModuleManager.DataProvider
 {
+    /// <summary>
+    ///  Manupulates data for ModuleDataProvider.
+    /// </summary>
     public class ModuleDataProvider
     {
+        /// <summary>
+        /// Connect to database and add user module.
+        /// </summary>
+        /// <param name="module">Object of UserModuleInfo class.</param>
+        /// <returns>Newly added user module ID.</returns>
         public string AddUserModule(UserModuleInfo module)
         {
             SageFrameSQLHelper sqlH = new SageFrameSQLHelper();
@@ -85,7 +93,7 @@ namespace SageFrame.ModuleManager.DataProvider
                     {
                         SetUserModulePermission(module.LSTUserModulePermission, tran, int.Parse(resultColl[0].Value), module.PortalID, module.AddedBy, module.ModuleDefID);
                     }
-                    if(module.IsInAdmin)
+                    if (module.IsInAdmin)
                     {
                         module.PortalID = -1;
                     }
@@ -106,7 +114,15 @@ namespace SageFrame.ModuleManager.DataProvider
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Connect to database and set user module permission.
+        /// </summary>
+        /// <param name="lstPermission">List of ModulePermissionInfo class.</param>
+        /// <param name="tran">Object of SqlTransaction</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="AddedBy">User name.</param>
+        /// <param name="ModuleDefID">ModuleDefID</param>
         public void SetUserModulePermission(List<ModulePermissionInfo> lstPermission, SqlTransaction tran, int UserModuleID, int PortalID, string AddedBy, int ModuleDefID)
         {
             try
@@ -151,6 +167,15 @@ namespace SageFrame.ModuleManager.DataProvider
             }
 
         }
+        /// <summary>
+        /// Connect to database and set user inherite permission.
+        /// </summary>
+        /// <param name="PageID">PageID</param>
+        /// <param name="tran">Object of SqlTransaction</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="AddedBy">User name.</param>
+        /// <param name="ModuleDefID">ModuleDefID</param>
         public void SetUserModuleInheritedPermission(int PageID, SqlTransaction tran, int UserModuleID, int PortalID, string AddedBy, int ModuleDefID)
         {
             try
@@ -188,6 +213,15 @@ namespace SageFrame.ModuleManager.DataProvider
             }
 
         }
+        /// <summary>
+        /// Connect to database and update user module inherit permission.
+        /// </summary>
+        /// <param name="PageID">PageID</param>
+        /// <param name="tran">object of SqlTransaction.</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="AddedBy">User name.</param>
+        /// <param name="ModuleDefID">ModuleDefID</param>
         public static void UpdateUserModuleInheritedPermission(int PageID, SqlTransaction tran, int UserModuleID, int PortalID, string AddedBy, int ModuleDefID)
         {
             try
@@ -225,7 +259,14 @@ namespace SageFrame.ModuleManager.DataProvider
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and set page modules.
+        /// </summary>
+        /// <param name="module">Object of UserModuleInfo class.</param>
+        /// <param name="tran">Object of SqlTransaction class.</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="AddedBy">User name.</param>
         public void SetPageModules(UserModuleInfo module, SqlTransaction tran, int UserModuleID, int PortalID, string AddedBy)
         {
 
@@ -277,15 +318,20 @@ namespace SageFrame.ModuleManager.DataProvider
 
         }
 
-
+        /// <summary>
+        /// Connect to database and obtain list of page module list.
+        /// </summary>
+        /// <param name="PageID">PageID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="IsHandheld">true for handheld devise.</param>
+        /// <returns>List of UserModuleInfo class.</returns>
         public static List<UserModuleInfo> GetPageModules(int PageID, int PortalID, bool IsHandheld)
         {
-            bool ValidateTemplate = TemplateValidation.GetTemplateValidation();
-             List<UserModuleInfo> lstUserModules = new List<UserModuleInfo>();
-             if (ValidateTemplate)
-             {
-                 string StoredProcedureName = "[dbo].[usp_ModuleManagerGetPageModules]";
-                 List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
+
+            List<UserModuleInfo> lstUserModules = new List<UserModuleInfo>();
+
+            string StoredProcedureName = "[dbo].[usp_ModuleManagerGetPageModules]";
+            List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
                                                                          {
                                                                              new KeyValuePair<string, object>(
                                                                                  "@PageID", PageID),
@@ -294,20 +340,25 @@ namespace SageFrame.ModuleManager.DataProvider
                                                                              new KeyValuePair<string, object>(
                                                                                  "@IsHandheld", IsHandheld),
                                                                          };
-                 try
-                 {
-                     SQLHandler sagesql = new SQLHandler();
-                     lstUserModules = sagesql.ExecuteAsList<UserModuleInfo>(StoredProcedureName, ParaMeterCollection);
-                 }
-                 catch (Exception e)
-                 {
-                     throw e;
-                 }
-             }
+            try
+            {
+                SQLHandler sagesql = new SQLHandler();
+                lstUserModules = sagesql.ExecuteAsList<UserModuleInfo>(StoredProcedureName, ParaMeterCollection);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
             return lstUserModules;
         }
 
-
+        /// <summary>
+        /// Connect to database and delete user module based on PortalID.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="DeletedBy">User name.</param>
         public static void DeleteUserModule(int UserModuleID, int PortalID, string DeletedBy)
         {
             List<UserModuleInfo> lstUserModules = new List<UserModuleInfo>();
@@ -333,7 +384,10 @@ namespace SageFrame.ModuleManager.DataProvider
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and update page modules.
+        /// </summary>
+        /// <param name="lstPageModules">List of PageModuleInfo class.</param>
         public static void UpdatePageModule(List<PageModuleInfo> lstPageModules)
         {
 
@@ -362,7 +416,11 @@ namespace SageFrame.ModuleManager.DataProvider
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and obtain page user module .
+        /// </summary>
+        /// <param name="IsAdmin">true for admin modules.</param>
+        /// <returns>List of UserModuleInfo class.</returns>
         public static List<UserModuleInfo> GetPageUserModules(bool IsAdmin)
         {
             List<UserModuleInfo> lstUserModules = new List<UserModuleInfo>();
@@ -386,7 +444,12 @@ namespace SageFrame.ModuleManager.DataProvider
 
             return lstUserModules;
         }
-
+        /// <summary>
+        /// Connect to database and obtain user module details.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID"></param>
+        /// <returns>Object of UserModuleInfo class.</returns>
         public static UserModuleInfo GetUserModuleDetails(int UserModuleID, int PortalID)
         {
             UserModuleInfo objUserModule = new UserModuleInfo();
@@ -414,7 +477,12 @@ namespace SageFrame.ModuleManager.DataProvider
 
             return objUserModule;
         }
-
+        /// <summary>
+        /// Connect to database and obtain module permission.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>List of ModulePermissionInfo class.</returns>
         public static List<ModulePermissionInfo> GetModulePermission(int UserModuleID, int PortalID)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
@@ -429,7 +497,10 @@ namespace SageFrame.ModuleManager.DataProvider
 
 
         }
-
+        /// <summary>
+        /// Connect to database and update user module.
+        /// </summary>
+        /// <param name="module">Object of UserModuleInfo class.</param>
 
         public static void UpdateUserModule(UserModuleInfo module)
         {
@@ -500,7 +571,15 @@ namespace SageFrame.ModuleManager.DataProvider
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Connect to database and update user module permission.
+        /// </summary>
+        /// <param name="lstPermission">List of ModulePermissionInfo class.</param>
+        /// <param name="tran">Object of SqlTransaction class.</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="AddedBy">User name.</param>
+        /// <param name="ModuleDefID">ModuleDefID</param>
         public static void UpdateUserModulePermission(List<ModulePermissionInfo> lstPermission, SqlTransaction tran, int UserModuleID, int PortalID, string AddedBy, int ModuleDefID)
         {
 
@@ -558,14 +637,19 @@ namespace SageFrame.ModuleManager.DataProvider
             }
         }
 
-
-        internal static bool PublishPage(int pageId,bool isPublish)
+        /// <summary>
+        /// Connect to database and publish page.
+        /// </summary>
+        /// <param name="pageId">pageId</param>
+        /// <param name="isPublish">true for publis</param>
+        /// <returns>true for publish.</returns>
+        internal static bool PublishPage(int pageId, bool isPublish)
         {
             try
             {
                 List<KeyValuePair<string, object>> para = new List<KeyValuePair<string, object>>();
                 para.Add(new KeyValuePair<string, object>("@PageId", pageId));
-                para.Add(new KeyValuePair<string, object>("@IsPublished",isPublish));
+                para.Add(new KeyValuePair<string, object>("@IsPublished", isPublish));
                 SQLHandler handler = new SQLHandler();
                 handler.ExecuteNonQuery("[dbo].[usp_PagePublish]", para);
                 return true;

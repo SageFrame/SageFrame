@@ -21,7 +21,6 @@ namespace SageFrame.Upgrade
         {
             try
             {
-
                 app.BeginRequest += new EventHandler(MaintainenceCheck);
             }
             catch (Exception ex)
@@ -71,10 +70,8 @@ namespace SageFrame.Upgrade
 
                                     context.Response.Redirect("~/Modules/Upgrade/upgrade.aspx", true);
                                 }
-
                             }
                             context.Response.Redirect("~" + node.ChildNodes[1].InnerText, false);
-
                         }
                     }
                 }

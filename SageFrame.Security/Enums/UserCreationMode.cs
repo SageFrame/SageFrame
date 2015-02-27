@@ -13,6 +13,9 @@ using System.Text;
 
 namespace SageFrame.Security.Helpers
 {
+    /// <summary>
+    /// Enum for user creation mode.
+    /// </summary>
     public enum UserCreationMode
     {
         REGISTER,

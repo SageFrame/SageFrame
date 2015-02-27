@@ -12,8 +12,16 @@ using System.Data.Common;
 
 namespace SageFrame.Dashboard
 {
+    /// <summary>
+    /// Manipulates data for DashboardController Class
+    /// </summary>
     public class DashboardDataProvider
-    {
+    { 
+        /// <summary>
+        /// Connects to database and add quick link.
+        /// </summary>
+        /// <param name="linkObj">QuickLink object.</param>
+        /// <returns>Returns true if inserted successfully.</returns>
         public static bool AddQuickLink(QuickLink linkObj)
         {
             string sp = "[dbo].[usp_DashboardQuickLinkAdd]";
@@ -38,7 +46,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connects to database and returns link list.
+        /// </summary>
+        /// <param name="PortalID">PortalID.</param>
+        /// <returns>Link list.</returns>
         public static List<Link> GetAdminPages(int PortalID)
         {
             string sp = "[dbo].[usp_DashboardGetAdminPages]";
@@ -57,7 +69,12 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connects to database and returns QuickLink list.
+        /// </summary>
+        /// <param name="UserName">UserName.</param>
+        /// <param name="PortalID">PortalID.</param>
+        /// <returns>QuickLink list.</returns>
         public static List<QuickLink> GetQuickLinks(string UserName, int PortalID)
         {
             string sp = "[dbo].[usp_DashboardQuickLinkGet]";
@@ -78,6 +95,12 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Connects to database and returns QuickLink list.
+        /// </summary>
+        /// <param name="UserName">UserName.</param>
+        /// <param name="PortalID">PortalID.</param>
+        /// <returns>QuickLink list.</returns>
         public static List<QuickLink> GetQuickLinksAll(string UserName, int PortalID)
         {
             string sp = "[dbo].[usp_DashboardQuickLinkGetAll]";
@@ -98,7 +121,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connects to database and deletequick link for given QuickLinkID.
+        /// </summary>
+        /// <param name="QuickLinkID">Quick link id.</param>
         public static void DeleteQuickLink(int QuickLinkID)
         {
             string sp = "[dbo].[usp_DashboardQuickLinkDelete]";
@@ -118,7 +144,11 @@ namespace SageFrame.Dashboard
             }
         }
 
-
+        /// <summary>
+        /// Connects to database and add side bar.
+        /// </summary>
+        /// <param name="sbObj">Sidebar object.</param>
+        /// <returns>Returns true if inserted successfully.</returns>
         public static bool AddSidebar(Sidebar sbObj)
         {
             string sp = "[dbo].[usp_DashboardSidebarAdd]";
@@ -145,6 +175,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Connects to database and update side bar.
+        /// </summary>
+        /// <param name="sbObj">Sidebar object.</param>
+        /// <returns>Returns true if updated successfully.</returns>
         public static bool UpdateSidebar(Sidebar sbObj)
         {
             string sp = "[dbo].[usp_DashboardSidebarUpdate]";
@@ -171,6 +206,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Connects to database and update quick link.
+        /// </summary>
+        /// <param name="linkObj">QuickLink object.</param>
+        /// <returns>Returns true if updated successfully.</returns>
         public static bool UpdateLink(QuickLink linkObj)
         {
             string sp = "[dbo].[usp_DashboardQuickLinkUpdate]";
@@ -194,6 +234,12 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Connects to database and returns sidebar list for given username and portalid.
+        /// </summary>
+        /// <param name="UserName">UserName.</param>
+        /// <param name="PortalID">PortalID.</param>
+        /// <returns>Sidebar list.</returns>
 
         public static List<Sidebar> GetSidebar(string UserName,int PortalID)
         {
@@ -216,6 +262,12 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Connects to database and returns sidebar list for given username and portalid.
+        /// </summary>
+        /// <param name="UserName">UserName.</param>
+        /// <param name="PortalID">PortalID.</param>
+        /// <returns>Sidebar list.</returns>
         public static List<Sidebar> GetSidebarAll(string UserName, int PortalID)
         {
             string sp = "[dbo].[usp_DashboardSidebarGetAll]";
@@ -237,7 +289,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connects to database and returns sidebar list for given SidebarItemID.
+        /// </summary>
+        /// <param name="SidebarItemID">Sidebar item id.</param>
+        /// <returns>Sidebar list.</returns>
         public static List<Sidebar> GetParentLinks(int SidebarItemID)
         {
             string sp = "[dbo].[usp_DashboardSidebarGetParents]";
@@ -256,6 +312,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Connects to database and delte sidebar item for given SidebarItemID.
+        /// </summary>
+        /// <param name="SidebarItemID">Sidebar item id.</param>
         public static void DeleteSidebarItem(int SidebarItemID)
         {
             string sp = "[dbo].[usp_DashboardSidebarDelete]";
@@ -274,6 +334,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Connects to database and returns quick link details for given SidebarItemID.
+        /// </summary>
+        /// <param name="SidebarItemID">SidebarItemID</param>
+        /// <returns>Quick link details for given sidebar item id.</returns>
         public static Sidebar GetSidebarDetails(int SidebarItemID)
         {
             string sp = "[dbo].[usp_DashboardSidebarGetDetails]";
@@ -292,7 +357,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connects to database and returns quick link details for given QuickLinkItemID.
+        /// </summary>
+        /// <param name="QuickLinkItemID">Quick link item id.</param>
+        /// <returns>Quick link details for given quick link item id.</returns>
         public static QuickLink GetQuickLinkDetails(int QuickLinkItemID)
         {
             string sp = "[dbo].[usp_DashboardQuickLinkGetDetails]";
@@ -311,7 +380,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connects to database and reorder side bar link.
+        /// </summary>
+        /// <param name="lstOrder"> List of object of DashboardKeyValue class.</param>
         public static void ReorderSidebarLink(List<DashboardKeyValue> lstOrder)
         {
             string sp = "[dbo].[usp_DashboardSidebarReorder]";
@@ -333,6 +405,10 @@ namespace SageFrame.Dashboard
                 }
             }
         }
+        /// <summary>
+        /// Connects to database and reorder quick links.
+        /// </summary>
+        /// <param name="lstOrder">List of object of DashboardKeyValue class.</param>
         public static void ReorderQuickLinks(List<DashboardKeyValue> lstOrder)
         {
             string sp = "[dbo].[usp_DashboardQuickLinkReorder]";
@@ -354,7 +430,10 @@ namespace SageFrame.Dashboard
                 }
             }
         }
-
+        /// <summary>
+        /// Connects to database and insert to DashboardSettingsKeyValue.
+        /// </summary>
+        /// <param name="objSetting">DashbordSettingInfo object.</param>
         public static void AddUpdateDashboardSettings(DashbordSettingInfo objSetting)
         {
             string sp = "[dbo].[usp_DashboardSettingAddUpdate]";
@@ -377,7 +456,11 @@ namespace SageFrame.Dashboard
                 }
             
         }
-
+        /// <summary>
+        /// Connects to database and obtain setting key.
+        /// </summary>
+        /// <param name="objSetting">DashbordSettingInfo object.</param>
+        /// <returns>DashbordSettingInfo object.</returns>
         public static DashbordSettingInfo GetSettingByKey(DashbordSettingInfo objSetting)
         {
             string sp = "[dbo].[usp_DashboardGetSettingByKey]";
@@ -399,7 +482,10 @@ namespace SageFrame.Dashboard
             }
 
         }
-
+        /// <summary>
+        /// Connects to database and obtain online user count.
+        /// </summary>
+        /// <returns>CountUserInfo object.</returns>
         public static CountUserInfo GetOnlineUserCount()
         {
             try
@@ -415,7 +501,10 @@ namespace SageFrame.Dashboard
             }
 
         }
-
+        /// <summary>
+        /// Connects to database and get module web info.
+        /// </summary>
+        /// <returns>ModuleWebInfo list.</returns>
         public static List<ModuleWebInfo> GetModuleWebInfo()
         {
             SQLHandler sageSql = new SQLHandler();
@@ -435,6 +524,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Connects to database and get modules.
+        /// </summary>
+        /// <param name="TotalCount">Total count.</param>
+        /// <returns>ModuleInfo list.</returns>
         public static List<ModuleInfo> GetModules(int TotalCount)
         {
             SQLHandler sageSql = new SQLHandler();
@@ -456,6 +550,11 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Connects to database and search modules for given keyword.
+        /// </summary>
+        /// <param name="keyword">Keyword.</param>
+        /// <returns>ModuleInfo list.</returns>
         public static List<ModuleInfo> SearchModules(string keyword)
         {
             SQLHandler sageSql = new SQLHandler();
@@ -476,6 +575,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
+        /// <summary>
+        /// Connects to database and add module web info.
+        /// </summary>
+        /// <param name="list"> List of object of ModuleWebInfo class.</param>
         public static void AddModuleWebInfo(List<ModuleWebInfo> list)
         {
             string sp = "[dbo].[usp_ModuleWebInfoDelete]";
@@ -513,7 +616,10 @@ namespace SageFrame.Dashboard
 
 
         }
-
+        /// <summary>
+        /// Connects to database and update blog content.
+        /// </summary>
+        /// <param name="content">Content.</param>
 
         public static void UpdateBlogContent(string content)
         {
@@ -531,7 +637,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connects to database and obtain blog content.
+        /// </summary>
+        /// <returns>String.</returns>
         public static string GetBlogContent()
         {
             string sp = "[dbo].[usp_GetBlogRssContent]";
@@ -560,7 +669,10 @@ namespace SageFrame.Dashboard
             }
             return content;
         }
-
+        /// <summary>
+        /// Connects to database and update tutorial content.
+        /// </summary>
+        /// <param name="content">Content.</param>
         public static void UpdateTutorialContent(string content)
         {
             string sp = "[dbo].[usp_TutorialRssContentUpdate]";
@@ -577,7 +689,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connects to database and obtain tutorial content.
+        /// </summary>
+        /// <returns>String.</returns>
         public static string GetTutorialContent()
         {
             string sp = "[dbo].[usp_TutorialRssContentGet]";
@@ -606,7 +721,10 @@ namespace SageFrame.Dashboard
             }
             return content;
         }
-
+        /// <summary>
+        /// Connects to database and update news content.
+        /// </summary>
+        /// <param name="content">Content</param>
         public static void UpdateNewsContent(string content)
         {
             string sp = "[dbo].[usp_NewsRssContentUpdate]";
@@ -623,7 +741,10 @@ namespace SageFrame.Dashboard
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connects to database and obtain news content.
+        /// </summary>
+        /// <returns>String.</returns>
         public static string GetNewsContent()
         {
             string sp = "[dbo].[usp_NewsRssContentGet]";
@@ -652,6 +773,12 @@ namespace SageFrame.Dashboard
             }
             return content;
         }
+        /// <summary>
+        /// Connects to database and obtain general snapshot.
+        /// </summary>
+        /// <param name="PortalID">PortalID.</param>
+        /// <param name="IsAdmin">IsAdmin.</param>
+        /// <returns>CountUserInfo object.</returns>
         public static CountUserInfo GetGeneralSnapShot(int PortalID, bool IsAdmin)
         {
             SQLHandler sageSql = new SQLHandler();
@@ -668,7 +795,13 @@ namespace SageFrame.Dashboard
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Connects to database and show pages visible in dashboard.
+        /// </summary>
+        /// <param name="PageSEOName">Page seo name.</param>
+        /// <param name="UserName">UserName.</param>
+        /// <param name="PortalID">PortalID.</param>
+        /// <returns>DashboardInfo list.</returns>
         public List<DashboardInfo> DashBoardView(string PageSEOName, string UserName, int PortalID)
         {
             try

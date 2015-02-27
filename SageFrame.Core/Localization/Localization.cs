@@ -19,12 +19,21 @@ using System.Xml;
 
 namespace SageFrame.Localization
 {
+    /// <summary>
+    /// Contains localization default methods and properties.
+    /// </summary>
     public class Localization
     {
+        /// <summary>
+        /// Initializes a new instance of the Localization class.
+        /// </summary>
         public Localization()
         {
         }
 
+        /// <summary>
+        /// Returns  the path for application resource directory.
+        /// </summary>
         public static string ApplicationResourceDirectory
         {
             get
@@ -33,6 +42,9 @@ namespace SageFrame.Localization
             }
         }
 
+        /// <summary>
+        /// Returns default application culture.
+        /// </summary>
         public static string SystemLocale
         {
             get
@@ -40,6 +52,9 @@ namespace SageFrame.Localization
                 return "en-US";
             }
         }
+        /// <summary>
+        /// Returns default timezone  file path.
+        /// </summary>
         public static string TimezonesFile
         {
             get
@@ -47,6 +62,12 @@ namespace SageFrame.Localization
                 return (ApplicationResourceDirectory + "/TimeZones.xml");
             }
         }
+
+        /// <summary>
+        /// Returns timezone collection.
+        /// </summary>
+        /// <param name="language">language</param>
+        /// <returns>Collection of timezones</returns>
         public static NameValueCollection GetTimeZones(string language)
         {
             string cacheKey = ("sageframe-" + (language + "-timezones"));

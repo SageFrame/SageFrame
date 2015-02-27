@@ -36,8 +36,16 @@ using System.Collections;
 
 namespace SageFrame.Web
 {
+    /// <summary>
+    /// Collection of methods for error handling in the application.
+    /// </summary>
     public class ErrorHandler
     {
+        /// <summary>
+        /// Recors all the common exception.
+        /// </summary>
+        /// <param name="exc">Exceptions.</param>
+        /// <returns>Returns true if custom error in the application is on.</returns>
         public bool LogCommonException(Exception exc)
         {
             string strIPaddress = string.Empty;
@@ -61,6 +69,11 @@ namespace SageFrame.Web
             return sfConfig.GetSettingBollByKey(SageFrameSettingKeys.UseCustomErrorMessages);
         }
 
+        /// <summary>
+        /// Records all page method exceptions.
+        /// </summary>
+        /// <param name="exc">Exceptions.</param>
+        /// <returns>Returns true if custom error in the application is on.</returns>
         public bool LogPageMethodException(Exception exc)
         {
             string strIPaddress = string.Empty;
@@ -74,18 +87,21 @@ namespace SageFrame.Web
             {
                 strPageUrl = HttpContext.Current.Request.RawUrl;
             }
-            
+
             int inID = 0;
             SageFrameConfig sfConfig = new SageFrameConfig();
             ErrorLogController objController = new ErrorLogController();
             inID = objController.InsertLog((int)SageFrame.Web.SageFrameEnums.ErrorType.AdministrationArea, 11, exc.Message, exc.ToString(),
            strIPaddress, strPageUrl, true, sfConfig.GetPortalID, sfConfig.GetUsername);
-
-
             return sfConfig.GetSettingBollByKey(SageFrameSettingKeys.UseCustomErrorMessages);
 
         }
 
+        /// <summary>
+        /// Records  all the WCF exception
+        /// </summary>
+        /// <param name="exc">Exceptions.</param>
+        /// <returns>Returns true if custom error in the application is on.</returns>
         public bool LogWCFException(Exception exc)
         {
             string strIPaddress = string.Empty;
@@ -105,11 +121,15 @@ namespace SageFrame.Web
             ErrorLogController objController = new ErrorLogController();
             inID = objController.InsertLog((int)SageFrame.Web.SageFrameEnums.ErrorType.AdministrationArea, 11, exc.Message, exc.ToString(),
                      strIPaddress, strPageUrl, true, sfConfig.GetPortalID, sfConfig.GetUsername);
-
             return sfConfig.GetSettingBollByKey(SageFrameSettingKeys.UseCustomErrorMessages);
 
         }
 
+        /// <summary>
+        /// Records  web service type exception.
+        /// </summary>
+        /// <param name="exc">Exceptions.</param>
+        /// <returns>Returns true if custom error in the application is on.</returns>
         public bool LogWebServiceException(Exception exc)
         {
             string strIPaddress = string.Empty;
@@ -123,7 +143,7 @@ namespace SageFrame.Web
             {
                 strPageUrl = HttpContext.Current.Request.RawUrl;
             }
-            
+
             int inID = 0;
             SageFrameConfig sfConfig = new SageFrameConfig();
             ErrorLogController objController = new ErrorLogController();

@@ -48,7 +48,7 @@ public partial class Modules_UserProfile : BaseAdministrationUserControl
     string defaultDate = "1/1/0001";
     protected void Page_Load(object sender, EventArgs e)
     {
-        IncludeCss("UserProfile", "/js/jquery-ui-1.8.14.custom/css/redmond/jquery-ui-1.8.16.custom.css");
+        //IncludeCss("UserProfile", "/js/jquery-ui-1.8.14.custom/css/redmond/jquery-ui-1.8.16.custom.css");
         SecurityPolicy objSecurity = new SecurityPolicy();
         FormsAuthenticationTicket ticket = objSecurity.GetUserTicket(GetPortalID);
         if (ticket.Name != ApplicationKeys.anonymousUser)

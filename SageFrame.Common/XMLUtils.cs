@@ -14,8 +14,16 @@ using System.Web.Hosting;
 
 namespace SageFrame.Common
 {
+    /// <summary>
+    /// Helper class for XML writer.
+    /// </summary>
     public class XMLUtils
     {
+        /// <summary>
+        /// Return new XML writer settings.
+        /// </summary>
+        XmlWriterSettings settings = new XmlWriterSettings();
+        /// <returns>Object of XmlWriterSettings.</returns>
         public static XmlWriterSettings GetXmlWriterSettings()
         {
             XmlWriterSettings settings = new XmlWriterSettings();

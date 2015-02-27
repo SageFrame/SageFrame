@@ -30,7 +30,7 @@ public partial class Modules_Admin_PageHelp_PageHelp : BaseAdministrationUserCon
             string URL = Request.Url.ToString().Split('?')[0];
             pageName = GetPageSEOName(URL);
             lnkpage.Text = "Documentation on " + pageName;
-            string navigateURL = "http://www.sageframe.com/Documentation.aspx?pageName=" + pageName;
+            string navigateURL = "http://www.sageframe.com/Page-Documentation.aspx?pageName=" + pageName;
 
             SageFrameConfig objSageConfig = new SageFrameConfig();
             ApplicationInfo objApplication = objSageConfig.GetApplicationInfo("SageFrame");
@@ -39,12 +39,22 @@ public partial class Modules_Admin_PageHelp_PageHelp : BaseAdministrationUserCon
             {
                 navigateURL += objApplication.ApplicationId.ToString();
             }
-            lnkpage.NavigateUrl = navigateURL + "&V=3.0";
+            lnkpage.NavigateUrl = navigateURL + "&V=3.5";
             XmlNode root = doc.DocumentElement;
             XmlNode pageNode = root.SelectSingleNode(pageName.ToLower());
             if (pageNode != null)
             {
                 BindPageHelpHtml(pageNode);
+            }
+            else {
+                string defaultMsg = "";
+                defaultMsg = "This is a newly created page.If you want to have help notification for this page go to filemanager and update in SageAdminHelpText.xml file.";
+                StringBuilder description = new StringBuilder();
+                description.Append("<div class='sfHorTabContentHolder' id='sfHorTabContentHolder_");
+                description.Append("'><p>");
+                description.Append(defaultMsg);
+                description.Append("</p></div>");
+                ltrPageHelp.Text = description.ToString();
             }
         }
         catch (Exception ex)

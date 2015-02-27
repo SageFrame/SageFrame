@@ -60,7 +60,7 @@ public partial class Controls_TopStickyBar : BaseAdministrationUserControl
             {
                 lnkAccount.Visible = false;
             }
-            SageFrame.Application.Application app = new SageFrame.Application.Application();
+            SageFrame.Version.SageFrameVersion app = new SageFrame.Version.SageFrameVersion();
             lblVersion.Text = string.Format("V {0}", app.FormatShortVersion(app.Version, true));
         }
         hypLogo.NavigateUrl = GetPortalAdminPage();
@@ -76,10 +76,7 @@ public partial class Controls_TopStickyBar : BaseAdministrationUserControl
         else
         {
             cpanel.Visible = false;
-        }
-        TemplateValidation objValidation = new TemplateValidation();
-        objValidation.Validate();
-        
+        }        
     }
 
     public void BindValues()
@@ -100,6 +97,7 @@ public partial class Controls_TopStickyBar : BaseAdministrationUserControl
         SageFrameConfig sfConfig = new SageFrameConfig();
         pageName = Path.GetFileNameWithoutExtension(pageName);
         pageName = pageName.ToLower().Equals("default") ? sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) : pageName;
+        string tempActiveLayout = string.Empty;
         foreach (KeyValue kvp in preset.lstLayouts)
         {
             string[] arrLayouts = kvp.Value.Split(',');
@@ -107,9 +105,21 @@ public partial class Controls_TopStickyBar : BaseAdministrationUserControl
             {
                 activeLayout = kvp.Key;
             }
+            if (kvp.Value.ToLower() == "all")
+            {
+                tempActiveLayout = kvp.Key;
+            }
         }
         if (activeLayout != null && activeLayout != string.Empty)
         {
+            if (ddlLayout.Items.FindByText(string.Format("{0}.ascx", activeLayout)) != null)
+            {
+                ddlLayout.Items.FindByText(string.Format("{0}.ascx", activeLayout)).Selected = true;
+            }
+        }
+        else
+        {
+            activeLayout = tempActiveLayout;
             if (ddlLayout.Items.FindByText(string.Format("{0}.ascx", activeLayout)) != null)
             {
                 ddlLayout.Items.FindByText(string.Format("{0}.ascx", activeLayout)).Selected = true;

@@ -15,8 +15,16 @@ using System.IO;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Helper class for layout..
+    /// </summary>
     public class LayoutHelper
     {
+        /// <summary>
+        /// Create layouts.
+        /// </summary>
+        /// <param name="TemplateName">Template name.</param>
+        /// <param name="PresetObj">Object of PresetInfo class.</param>
         public static void CreateLayoutControls(string TemplateName, PresetInfo PresetObj)
         {
             string templatePath = TemplateName.ToLower().Equals("default") ? Utils.GetTemplatePath_Default(TemplateName) : Utils.GetTemplatePath(TemplateName);
@@ -67,7 +75,10 @@ namespace SageFrame.Templating
 
 
         }
-
+        /// <summary>
+        /// Create handheld layout control.
+        /// </summary>
+        /// <param name="TemplateName">Template name.</param>
         public static void CreateHandheldLayoutControls(string TemplateName)
         {
             string templatePath = TemplateName.ToLower().Equals("default") ? Utils.GetTemplatePath_Default(TemplateName) : Utils.GetTemplatePath(TemplateName);

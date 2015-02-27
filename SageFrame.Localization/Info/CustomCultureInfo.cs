@@ -13,11 +13,27 @@ using System.Text;
 
 namespace SageFrame.Localization
 {
+    /// <summary>
+    /// This class holds the properties for CustomCultureInfo.
+    /// </summary>
     public class CustomCultureInfo
     {
+        /// <summary>
+        /// Gets or sets display name.
+        /// </summary>
         public string DisplayName { get; set; }
+        /// <summary>
+        /// Gets or sets language code.
+        /// </summary>
         public string LanguageCode{get;set;}
+        /// <summary>
+        /// Gets or sets language name.
+        /// </summary>
         public string LanguageName { get; set; }
+        /// <summary>
+        /// Initializes a new instance of the CustomCultureInfo class.
+        /// </summary>
         public CustomCultureInfo() { }
     }
+   
 }

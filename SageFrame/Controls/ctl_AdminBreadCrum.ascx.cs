@@ -87,11 +87,11 @@ namespace SageFrame.Controls
                             var pageLink = pagePath + childPages + SageFrameSettingKeys.PageExtension;
                             if (item.TabPath == "Admin")
                             {
-                                pageLink = pagePath + "Admin/Admin" + Extension;
+                                pageLink = pagePath + "/Admin/Admin" + Extension;
                             }
                             if (item.TabPath.IndexOf("Super-User") > -1)
                             {
-                                pageLink = pagePath + "Admin/Admin" + Extension;
+                                pageLink = pagePath + "/Admin/Admin" + Extension;
                             }
                             childPages += "/";
                             if (index == length - 1)
@@ -121,6 +121,7 @@ namespace SageFrame.Controls
                                     }
                                     else
                                     {
+                                        pageLink = item.TabPath == "User-Profile" ? pagePath + "sf/sfUser-Profile" + Extension : pageLink;
                                         html.Append("<li><a href=" + pageLink + ">" + item.TabPath.Replace("-", " ") + "</a></li>");
                                     }
                                 }

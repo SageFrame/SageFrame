@@ -16,9 +16,8 @@ using System.Web;
 
 
 /// <summary>
-/// Summary description for SageFrameEnums
+/// Description for application Enums.
 /// </summary>
-/// 
 namespace SageFrame.Web
 {
     public class SageFrameEnums
@@ -29,14 +28,18 @@ namespace SageFrame.Web
             // TODO: Add constructor logic here
             //
         }
-
+        /// <summary>
+        /// Application data type.
+        /// </summary>
         public enum ECTDataTypes
         {
             Integer = 1,
             Decimal = 2,
             String = 3
         }
-
+        /// <summary>
+        /// Application error type.
+        /// </summary>
         public enum ErrorType
         {
             Unknown,
@@ -51,14 +54,18 @@ namespace SageFrame.Web
             WebService,
             PageMethod
         }
-
+        /// <summary>
+        /// Application permission type.
+        /// </summary>
         public enum ViewPermissionType
         {
             View = 0,
             Edit = 1
         }
 
-        
+        /// <summary>
+        /// Application control type.
+        /// </summary>
 
         public enum ControlType
         {
@@ -69,14 +76,18 @@ namespace SageFrame.Web
 
 
     }
-
+    /// <summary>
+    /// Application message type
+    /// </summary>
     public enum SageMessageType
     {
         Success,
         Error,
         Alert
     }
-
+    /// <summary>
+    /// Application message title.
+    /// </summary>
     public enum SageMessageTitle
     {
         Information,
@@ -88,6 +99,9 @@ namespace SageFrame.Web
 
 namespace SageFrame.Modules.Admin.PortalSettings
 {
+    /// <summary>
+    /// Application setting type.
+    /// </summary>
     public enum SettingType
     {
         SiteAdmin,

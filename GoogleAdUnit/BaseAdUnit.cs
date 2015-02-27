@@ -31,7 +31,7 @@ namespace SFE.GoogleAdUnit
 
         #region Public Properties
         /// <summary>
-        /// 
+        /// Gets or sets advertisement affiliation.
         /// </summary>
         public String AffiliateId
         {
@@ -40,7 +40,7 @@ namespace SFE.GoogleAdUnit
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets channel id of advertisement.
         /// </summary>
         public String ChannelId
         {
@@ -49,7 +49,7 @@ namespace SFE.GoogleAdUnit
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets alternative advertisement URL.
         /// </summary>
         public String AnotherUrl
         {
@@ -58,7 +58,7 @@ namespace SFE.GoogleAdUnit
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets AlternateAdTypes object.
         /// </summary>
         public AlternateAdTypes AlternateAdType
         {
@@ -67,7 +67,7 @@ namespace SFE.GoogleAdUnit
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets color of advertisement.
         /// </summary>
         public Color TextColor
         {
@@ -76,7 +76,7 @@ namespace SFE.GoogleAdUnit
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets background color of advertisement.
         /// </summary>
         public Color BackColor
         {
@@ -85,7 +85,7 @@ namespace SFE.GoogleAdUnit
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets border color of advertisement.
         /// </summary>
         public Color BorderColor
         {
@@ -94,7 +94,7 @@ namespace SFE.GoogleAdUnit
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets link color  of advertisement.
         /// </summary>
         public Color LinkColor
         {
@@ -103,7 +103,7 @@ namespace SFE.GoogleAdUnit
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets URL color of advertisement.
         /// </summary>
         public Color UrlColor
         {
@@ -112,7 +112,7 @@ namespace SFE.GoogleAdUnit
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets solid fill color of advertisement.
         /// </summary>
         public Color SolidFillColor
         {
@@ -122,6 +122,11 @@ namespace SFE.GoogleAdUnit
         #endregion
 
         #region Override Methods
+
+        /// <summary>
+        /// Is override protected method to render at design or runtime.
+        /// </summary>
+        /// <param name="writer">HtmlTextWriter object.</param>
         protected override void Render(HtmlTextWriter writer)
         {
             if (this.DesignMode)
@@ -136,11 +141,20 @@ namespace SFE.GoogleAdUnit
         #endregion
 
         #region Helper Methods
+
+        /// <summary>
+        /// Designs render time.
+        /// </summary>
+        /// <param name="writer">HtmlTextWriter object.</param>
         protected virtual void DesignTimeRender(System.Web.UI.HtmlTextWriter writer)
         {
 
         }
 
+        /// <summary>
+        /// Renders at runtime.
+        /// </summary>
+        /// <param name="writer">HtmlTextWriter object.</param>
         protected void RunTimeRender(System.Web.UI.HtmlTextWriter writer)
         {
             if (null == AffiliateId ||
@@ -184,21 +198,37 @@ namespace SFE.GoogleAdUnit
             writer.Write("</div>");
         }
 
+        /// <summary>
+        /// Inserts specific script.
+        /// </summary>
+        /// <param name="writer">HtmlTextWriter object.</param>
         protected virtual void InsertSpecificScript(System.Web.UI.HtmlTextWriter writer)
         {
 
         }
 
+        /// <summary>
+        /// Returns advertisement format.
+        /// </summary>
+        /// <returns>Empty string.</returns>
         protected virtual String GetAdFormat()
         {
             return String.Empty;
         }
 
+        /// <summary>
+        /// Returns advertisement type.
+        /// </summary>
+        /// <returns>Empty string.</returns>
         protected virtual String GetAdType()
         {
             return String.Empty;
         }
 
+        /// <summary>
+        /// Returns dimensions of the Adverting image.
+        /// </summary>
+        /// <returns>Null.</returns>
         internal virtual UnitDimensions GetUnitDimensions()
         {
             return null;

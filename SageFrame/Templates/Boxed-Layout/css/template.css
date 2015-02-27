@@ -1143,7 +1143,7 @@ select {
 
 
 /* Navigation */
-.sfNavigation {text-align: center; background: #458CCC;}
+.sfNavigation {text-align: center; background:#4a4a4a; margin-bottom:-1px;}
 .sfNavigation ul { display: inline-block; }
 .sf-menu a { font:16px sans-serif; color:#fff;}
 
@@ -1181,7 +1181,7 @@ transform: translateX(-50%) translateY(-50%);}
 .sfBannerDesc p { font-size:18px; font-family: sans-serif;}
 .sfInnerwrapper .bx-prev { left: 15px;}
 .sfInnerwrapper .bx-next { right: 15px;}
- .sfInnerBanner { height:150px; margin-bottom: 40px; background: url(../../../Core/Template/images/banner_bg_02.jpg) no-repeat center top !important; 
+ .sfInnerBanner { height:150px; margin-bottom: 40px; background: url(../../../Core/Template/images/sfbanner-inner.jpg) no-repeat center top !important; 
   position: relative;}
  .sfInnerBanner h1 { margin:0; color:#fff; text-align: center; text-shadow: 0 2px 5px rgba(0,0,0,.5); width:90%; font-size: 42px; position: absolute; top:50%; left:50%;
   -webkit-transform: translateY(-50%)  translateX(-50%) ;

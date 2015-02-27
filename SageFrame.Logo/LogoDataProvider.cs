@@ -5,9 +5,23 @@ using System.Text;
 using SageFrame.Web.Utilities;
 
 namespace SageFrame.Logo
-{
+{   
+    /// <summary>
+    /// Manupulates data for LogoController Class
+    /// </summary>
     public class LogoDataProvider
-    {
+    {   
+        /// <summary>
+        /// Connects to database and saves logo parameters
+        /// </summary>
+        /// <param name="logoText">logoText</param>
+        /// <param name="logoPath">logoPath</param>
+        /// <param name="userModuleID">userModuleID</param>
+        /// <param name="portalID">portalID</param>
+        /// <param name="Slogan">Slogan</param>
+        /// <param name="URL">URL</param>
+        /// <param name="CultureCode">CultureCode</param>
+
         public void SaveLogoSettings(string logoText, string logoPath, int userModuleID, int portalID, string Slogan, string URL,string CultureCode)
         {
             try
@@ -28,6 +42,13 @@ namespace SageFrame.Logo
                 throw ex;
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userModuleID">userModuleID</param>
+        /// <param name="portalID">portalID</param>
+        /// <param name="CultureCode">CultureCode</param>
+        /// <returns></returns>
         public LogoEntity GetLogoData(int userModuleID, int portalID, string CultureCode)
         {
             try

@@ -4,9 +4,16 @@ using System.Text;
 using DashBoardControl.Info;
 
 namespace DashBoardControl
-{
+{  
+   /// <summary>
+    /// Business logic class for DashBoard.
+   /// </summary>
     public class DashBoardController
-    {
+    { 
+        /// <summary>
+        /// Adds dashboard setting.
+        /// </summary>
+        /// <param name="lstDashBoardSetting">List of object of DashBoardSettingInfo class..</param>
       public static void AddDashBoardSetting(List<DashBoardSettingInfo> lstDashBoardSetting)
         {
            try
@@ -19,6 +26,12 @@ namespace DashBoardControl
                throw;
            }
        }
+        /// <summary>
+        /// Returns list for given portal id.
+        /// </summary>
+      /// <param name="UserModuleID">User module id.</param>
+      /// <param name="PortalID">Portal id.</param>
+      /// <returns>DashBoardSettingInfo list</returns>
        public static List<DashBoardSettingInfo> GetDashBoardSetting(int UserModuleID, int PortalID)
         {
            try
@@ -32,7 +45,12 @@ namespace DashBoardControl
            }
        }
 
-     
+     /// <summary>
+       /// Returns list for given portal id.
+     /// </summary>
+       /// <param name="UserModuleID">User module id.</param>
+       /// <param name="PortalID">Portal id.</param>
+       /// <returns>DashBoardSettingInfo list</returns>
 
         public static List<DashBoardSettingInfo> ListDashBoardSettingForView(int UserModuleID, int PortalID)
         {
@@ -46,7 +64,10 @@ namespace DashBoardControl
                throw;
            }
        }
-
+        /// <summary>
+        ///  Returns monthly visit.
+        /// </summary>
+        /// <returns>Monthly wise visit</returns>
         public static int GetMonthlyVisit()
         {
             try
@@ -59,7 +80,12 @@ namespace DashBoardControl
                 throw;
             }
         }
-
+        /// <summary>
+        /// Returns DashBoardSettingInfo list.
+        /// </summary>
+        /// <param name="StartDate">Start date.</param>
+        /// <param name="EndDate">End date.</param>
+        /// <returns>DashBoardSettingInfo list</returns>
         public static List<DashBoardSettingInfo> GetDailyVisit(string StartDate, string EndDate)
         {
             try
@@ -73,7 +99,14 @@ namespace DashBoardControl
             }
 
         }
-
+        /// <summary>
+        /// Returns DashBoardSettingInfo list.
+        /// </summary>
+        /// <param name="StartDate">Start date.</param>
+        /// <param name="EndDate">End date.</param>
+        /// <param name="pageNo">Page no.</param>
+        /// <param name="range">Range</param>
+        /// <returns>DashBoardSettingInfo list</returns>
         public static List<DashBoardSettingInfo> GetRefSite(string StartDate, string EndDate, int pageNo, int range)
         {
             try
@@ -140,7 +173,12 @@ namespace DashBoardControl
         }
 
         #endregion
-
+        /// <summary>
+        /// Returns DashBoardSettingInfo list for report.
+        /// </summary>
+        /// <param name="StartDate">Start date.</param>
+        /// <param name="EndDate">End date.</param>
+        /// <returns>DashBoardSettingInfo list</returns>
         public static List<DashBoardSettingInfo> GetSearchPage(string StartDate, string EndDate)
         {
             try 
@@ -154,7 +192,12 @@ namespace DashBoardControl
             }
 
         }
-
+        /// <summary>
+        /// Returns DashBoardSettingInfo list.
+        /// </summary>
+        /// <param name="StartDate">Start date.</param>
+        /// <param name="EndDate">End date.</param>
+        /// <returns>DashBoardSettingInfo list</returns>
         public static List<DashBoardSettingInfo> GetTopFiveVisitedCountry(string StartDate, string EndDate)
         {
 

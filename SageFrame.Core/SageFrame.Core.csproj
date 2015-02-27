@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SageFrame.Core</RootNamespace>
     <AssemblyName>SageFrame.Core</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -31,6 +31,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -50,6 +52,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
@@ -62,9 +65,6 @@
     </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <HintPath>..\SageFrame\bin\Ionic.Zip.dll</HintPath>
-    </Reference>
-    <Reference Include="SageFrame.layout">
-      <HintPath>bin\SageFrame.layout.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -160,9 +160,9 @@
     <Compile Include="SageFrame.Modules\ModuleController.cs" />
     <Compile Include="SageFrame.Modules\ModuleEntities.cs" />
     <Compile Include="SageFrame.Modules\ModuleProvider.cs" />
-    <Compile Include="SageFrame.Packages\SageFrame.NewLetterSubscriber\NewLetterSubscriberController.cs" />
-    <Compile Include="SageFrame.Packages\SageFrame.NewLetterSubscriber\NewLetterSubscriberProvider.cs" />
-    <Compile Include="SageFrame.Packages\SageFrame.NewLetterSubscriber\NewsLetterSettingsInfo.cs" />
+    <Compile Include="SageFrame.NewLetterSubscriber\NewLetterSubscriberController.cs" />
+    <Compile Include="SageFrame.NewLetterSubscriber\NewLetterSubscriberProvider.cs" />
+    <Compile Include="SageFrame.NewLetterSubscriber\NewsLetterSettingsInfo.cs" />
     <Compile Include="SageFrame.Packages\PackagesController.cs" />
     <Compile Include="SageFrame.Packages\PackagesInfo.cs" />
     <Compile Include="SageFrame.Packages\PackagesProvider.cs" />

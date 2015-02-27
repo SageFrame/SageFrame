@@ -45,7 +45,7 @@ div.sideBarRight .sfSidebar {border-left-color: #404040;}
 .sfSidebar ul.menu li a i { color:#999;}
 .sfSidebar ul.menu li a.active, .sfSidebar ul.menu li a.active i { color:#fff;}
 .sfSidebar ul.menu li.Grandparent.sfLevel0 > a.active { color:#fff;}
-.sfSidebar ul.menu li.Grandparent > a.active {border-top-color:#555;color:#eee;}
+.sfSidebar ul.menu li.Grandparent > a.active {background:#5a5a5a !important;color:#eee;}
 .sfSidebar ul.menu li.Grandparent > a.active i { color:#eee;}
 .sfSidebar ul.menu li.Grandparent.sfLevel0.sfHover > ul { border-right-color: #444;  background:#151515;}
 

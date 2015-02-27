@@ -1,10 +1,10 @@
-﻿(function($) {
+﻿(function ($) {
     var arrResultToBind = new Array();
     var SortID = 0;
     var arrItemListType = new Array();
     rowTotal = 0;
     currentPage = 0;
-    $.createSearchResult = function(p) {
+    $.createSearchResult = function (p) {
         p = $.extend
         ({
             PortalID: '',
@@ -32,10 +32,10 @@
                 UserName: p.UserName,
                 baseURL: p.baseURL + "WebService.asmx/"
             },
-            init: function() {
+            init: function () {
                 SearchResult.GetSearchResult(1, p.ViewPerPage, 0);
             },
-            ajaxSuccess: function(data) {
+            ajaxSuccess: function (data) {
                 switch (SearchResult.config.ajaxCallMode) {
                     case 0:
                         break;
@@ -44,9 +44,9 @@
                         break;
                 }
             },
-            ajaxFailure: function() {
+            ajaxFailure: function () {
             },
-            ajaxCall: function(config) {
+            ajaxCall: function (config) {
                 $.ajax({
 
                     type: SearchResult.config.type,
@@ -60,12 +60,12 @@
                     error: SearchResult.ajaxFailure
                 });
             },
-            BindPagination: function() {
+            BindPagination: function () {
                 $('#divSageSearchResult').pajinate({
                     items_per_page: p.ViewPerPage
                 });
             },
-            GetSearchResult: function(offset, limit, current) {
+            GetSearchResult: function (offset, limit, current) {
                 currentPage = current;
                 var url = window.location.href;
                 searchWord = url.substring(url.indexOf('searchword=') + 11);
@@ -75,13 +75,13 @@
                 SearchResult.config.ajaxCallMode = 1;
                 SearchResult.ajaxCall(SearchResult.config);
             },
-            BindSearchResult: function(data) {
+            BindSearchResult: function (data) {
                 arrItemListType.length = 0;
                 if (data.d.length > 0) {
                     $('#ulSearchResult').html('');
                     var html = "";
                     var searchWord = '';
-                    $.each(data.d, function(index, value) {
+                    $.each(data.d, function (index, value) {
                         rowTotal = value.RowTotal;
                         arrItemListType.push(value.ItemID);
                         var htmlContent = "";
@@ -89,10 +89,11 @@
                         searchWord = value.SearchWord;
                         Content = value.HTMLContent;
                         var arr = searchWord.split(' ');
-                        $.each(arr, function(index, item) {
+                        $.each(arr, function (index, item) {
                             var text = new RegExp('(' + item + ')', 'gi');
                             Content = Content.replace(text, '<strong>$1</strong>');
                         });
+                        var pageName = SageFrameHostURL + "/" + value.PageName + SagePageExtension;
                         html += '<li id="liSearchResult" class="sfSearchList"><a href="' + value.URL + '">' + value.PageName + '</a>';
                         html += '<p id="htmContent" class="sfResultDetail">' + Content + '</p>';
                         html += '<p class="sfResultDate">' + value.UpdatedContentOn + '</p>';
@@ -108,7 +109,7 @@
                     }
                     if (arrItemListType.length > 0) {
                         $("#Pagination").pagination(rowTotal, {
-                        items_per_page: p.ViewPerPage,
+                            items_per_page: p.ViewPerPage,
                             current_page: currentPage,
                             callfunction: true,
                             function_name: { name: SearchResult.GetSearchResult, limit: p.ViewPerPage },
@@ -127,7 +128,7 @@
         };
         SearchResult.init();
     };
-    $.fn.SageSearchResult = function(p) {
+    $.fn.SageSearchResult = function (p) {
         $.createSearchResult(p);
     };
 })(jQuery);

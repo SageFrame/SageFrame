@@ -12,10 +12,13 @@ using System.ComponentModel;
 
 namespace SFE.GoogleAdUnit
 {
+    /// <summary>
+    /// Class that contains properties for advertisement.
+    /// </summary>
     [
         DefaultProperty("AffiliateId"),
         ToolboxData("<{0}:AdUnit runat=\"server\"></{0}:AdUnit>")
-    ]
+    ]   
     public class AdUnit : BaseAdUnit
     {
         #region Class Members
@@ -26,7 +29,7 @@ namespace SFE.GoogleAdUnit
         #region Public Properties
  
         /// <summary>
-        /// 
+        /// Gets or set advertisement unit type.
         /// </summary>
         public AdUnitType AdUnitType
         {
@@ -35,7 +38,7 @@ namespace SFE.GoogleAdUnit
         }
 
         /// <summary>
-        /// 
+        /// Gets or sets advertisement unit format.
         /// </summary>
         public AdUnitFormat AdUnitFormat
         {
@@ -46,21 +49,31 @@ namespace SFE.GoogleAdUnit
         #endregion
 
         #region Helper Methods
+        /// <summary>
+        /// Protected method for design time render
+        /// </summary>
+        /// <param name="writer"></param>
         override protected void DesignTimeRender(System.Web.UI.HtmlTextWriter writer)
         {
             StringBuilder strStream = new StringBuilder();
-
             UnitDimensions obDim = AdUnitGlobals.g_AdUnitDimensions[this.AdUnitFormat] as UnitDimensions;
 			strStream.AppendFormat(AdUnitGlobals.g_strAdUnitDesigntimeRender, obDim.WIDTH, obDim.HEIGHT, DrawingUtil.GetColorHexFormat(this.BorderColor, false), DrawingUtil.GetColorHexFormat(this.TextColor, false), DrawingUtil.GetColorHexFormat(this.BackColor, false), "&nbsp;");
-
             writer.Write(strStream.ToString());
         }
  
+        /// <summary>
+        /// Protected method for inserting specific script to the HtmlTextWriter object.
+        /// </summary>
+        /// <param name="writer">HtmlTextWriter object where the specific script is to be insert.</param>
         protected override void InsertSpecificScript(HtmlTextWriter writer)
         {
             writer.Write(String.Format("google_ad_type=\"{0}\";", this.GetAdType()));
         }
 
+        /// <summary>
+        /// Protected override method to get advertisement format.
+        /// </summary>
+        /// <returns>Advertisement format.</returns>
 		override protected String GetAdFormat()
 		{
 			switch (this.AdUnitFormat)
@@ -91,6 +104,10 @@ namespace SFE.GoogleAdUnit
 			}
 		}
 
+        /// <summary>
+        /// Protected ovverride method that returns advertisement type.
+        /// </summary>
+        /// <returns>Advertisement type.</returns>
 		override protected String GetAdType()
 		{
 			switch (this.AdUnitType)
@@ -105,6 +122,10 @@ namespace SFE.GoogleAdUnit
 			}
 		}
 
+        /// <summary>
+        /// Internal override method to get dimension of the advertisement.
+        /// </summary>
+        /// <returns>Advertisement's dimension.</returns>
         internal override UnitDimensions GetUnitDimensions()
         {
             return AdUnitGlobals.g_AdUnitDimensions[this.AdUnitFormat] as UnitDimensions;

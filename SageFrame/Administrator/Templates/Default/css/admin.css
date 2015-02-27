@@ -297,7 +297,7 @@ box-shadow:0px 0px 5px rgba(0,0,0,0.3) inset;
 
 /*Grandparent*/
 .sfSidebar ul.menu li.Grandparent { font-weight:bold; }
-.sfSidebar ul.menu li.Grandparent > a {border-style:solid; border-width:5px 0px 0px 0px; border-color:transparent; padding:20px 14px;}
+.sfSidebar ul.menu li.Grandparent > a {border-style:solid; border-width:0px; border-color:transparent; padding:20px 14px;}
 .sfSidebar ul.menu li.Grandparent > a span:after { position:absolute; right:9px; top:23px; font-size:13px; color:#A5A5A5;
 content:"\e666";
  font-family: "sageframe";
@@ -310,7 +310,8 @@ content:"\e666";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;}
 .sfSidebar ul.menu li.Grandparent > a.active span:after { content:"\e665"; color:#515357;}
-.sfSidebar ul.menu li.Grandparent > a.active {border-top:5px solid #0e64b0;color:#515357;}
+.sfSidebar ul.menu li.Grandparent > a.active { background:#fff; color:#515357;
+box-shadow: -1px 3px 2px rgba(0, 0, 0, 0.2); -webkit-box-shadow: -1px 3px 2px rgba(0, 0, 0, 0.2); -o-box-shadow: -1px 3px 2px rgba(0, 0, 0, 0.2); -ms-box-shadow: -1px 3px 2px rgba(0, 0, 0, 0.2);}
 .sfSidebar ul.menu li.Grandparent > a.active i { color:#515357;}
 .sideBarLeft .sfSidebar ul.menu li.Grandparent.sfLevel0.sfHover > ul { border-right:1px solid #ccc;  background:#fff; width:190px !important;}
 .sideBarRight .sfSidebar ul.menu li.Grandparent.sfLevel0.sfHover > ul { border-left:1px solid #ccc;  background:#fff; width:190px !important;}
@@ -318,7 +319,7 @@ content:"\e666";
 /*Parent*/
 .sfSidebar ul.menu li.Grandparent ul.acitem li.parent {}
 .sfSidebar ul.menu li.Grandparent ul.acitem li.parent > a.active,.sfSidebar ul.menu li.Grandparent ul.acitem li.sfLevel1 > a.active, .sfSidebar ul.menu li.sfLevel0 > a.active  { background:#0b4b83; color:#fff;}
-.sfSidebar ul.menu li.Grandparent.sfLevel0 > a.active { background:none; color:#515357;}
+.sfSidebar ul.menu li.Grandparent.sfLevel0 > a.active { background:#fff; background:rgba(255, 255, 255, 0.8); color:#515357;}
 .sfSidebar ul.menu li.Grandparent ul.acitem li.parent > a.active i, .sfSidebar ul.menu li.Grandparent ul.acitem li.sfLevel1> a.active i { color:#fff;}
 .sfSidebar ul.menu li.Grandparent ul.acitem li.parent > a:before { position:absolute; top:14px; right:12px; color:#a5a5a5; content:"\e619";
 font-family: "sageframe" !important;
@@ -384,7 +385,7 @@ div.sideBarRight .sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.chi
 .sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child a { padding:3px 6px; font-size:12px; color:#fff; }
 .sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child a:before { content:"";}
 .sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child a i { font-size:11px; color:#fff; float:left; width:auto; margin-top:5px;}
-.sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child a span { float:left; width:auto;}
+.sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child a span { float:left; width:147px;}
 .sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child a:hover i { color:#fff;}
 .sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child a:hover, .sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child a.active { background:#7C8EA4; color:#fff;
 border-radius:3px 0px 0px 3px; -webkit-border-radius:3px 0px 0px 3px ; -ms-border-radius:3px 0px 0px 3px; -o-border-radius:3px 0px 0px 3px;}
@@ -403,7 +404,7 @@ line-height: 1;
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;}
 .sfSidebar.sfSidebarhide ul.menu li.Grandparent.sfLevel0.sfHover ul.acitem li a:after { content:"";}
-div.sideBarRight .sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child a i:before { content:"\e618";}
+div.sideBarRight .sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child > a i:before { content:"\e618";}
 
 
 div.sideBarRight .sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child a:hover, div.sideBarRight .sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child a.active { background:#7C8EA4; color:#fff;
@@ -443,6 +444,35 @@ border-radius:0px 6px 6px 0px; -webkit-border-radius:0px 6px 6px 0px; -o-border-
   -moz-osx-font-smoothing: grayscale; }
   
 .sideBarRight .sfHidepanel a i.sidebarCollapse:before { content:"\e618";}
+.sideBarLeft .sfSidebar.sfSidebarhide ul.menu li.Grandparent ul.acitem li.parent ul li.child.parentchild > ul.acitem { border-radius:0px 3px 3px 0px;}
+.sideBarRight .sfSidebar.sfSidebarhide ul.menu li.Grandparent ul.acitem li.parent ul li.child.parentchild > ul.acitem { border-radius:3px 0px 0px 3px;}
+
+
+.sfSidebar.sfSidebarhide ul.menu li.Grandparent ul.acitem li.parent ul li.child a i:before { content:"" !important; }
+.sideBarLeft .sfSidebar.sfSidebarhide ul.menu li.Grandparent ul.acitem li.parent ul li.child.parentchild > a:before {content: "\e621"; font-size:8px;color:#afb8c3; padding:4px 4px 9px; position:absolute; top:10px; right:10px; z-index:1;
+font-family:'aspx';
+font-style: normal !important;
+font-weight: normal !important;
+font-variant: normal !important;
+text-transform: none !important;
+speak: none;
+line-height: 1;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;} 
+.sideBarRight .sfSidebar.sfSidebarhide ul.menu li.Grandparent ul.acitem li.parent ul li.child.parentchild > a:before {content: "\e618"; font-size:8px;color:#afb8c3; padding:4px 4px 9px; position:absolute; top:10px; left:3px; z-index:1;
+font-family:'aspx';
+font-style: normal !important;
+font-weight: normal !important;
+font-variant: normal !important;
+text-transform: none !important;
+speak: none;
+line-height: 1;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;} 
+
+.sideBarRight .sfSidebar ul.menu li.Grandparent ul.acitem li.parent ul li.child a span { float:left; width:147px;}
+.sideBarRight .sfSidebar.sfSidebarhide ul.menu li.Grandparent ul.acitem li.parent ul li.child a span {  margin-left:8px; }
+.sideBarRight .sfSidebar.sfSidebarhide ul.menu li.Grandparent ul.acitem li.parent ul li.child ul li.grandchild a span { margin-left:-5px; width:auto;}
 
 
 /*---Body Right Content---*/
@@ -1180,7 +1210,7 @@ th.sfColType {
 	float:left;
 	margin:0 5px 0 0;
 }
-.sfPagination ul li a, .sfPagination td a, .sfPagination td span, .Pagination a, .Pagination span {
+.sfPagination ul li a, .sfPagination td a, .sfPagination td span, .Pagination a, .Pagination span, ul.simplePagerNav li a {
 	color:#000;
 	height:24px;
 	line-height:24px;
@@ -1191,6 +1221,8 @@ th.sfColType {
 	border:1px solid #bbb;
 	background:#E6E6E6; text-shadow:none;
 }
+ul.simplePagerNav li.prev a { padding:3px 8px !important; }
+ul.simplePagerNav li.next a { padding:3px 8px !important; border-right:1px solid #ccc;}
 #divDroppable.sfModulesHolder .sfPagination a, #divDroppable.sfModulesHolder .sfPagination span { height:20px; line-height:20px; width:20px;}
 .Pagination a {
 	margin-left:5px;
@@ -1270,7 +1302,7 @@ table.simplePagerNav td { display: list-item; list-style: none; float: left;}
 	padding:0;
 }
 #divPagerNav ul li a {
-	margin:0 5px 0 0;
+	margin:0;
 }
 #divPagerNav ul li.active a {
 	background:#4692c3;
@@ -2472,7 +2504,7 @@ border-radius:3px; -webkit-border-radius:3px; -ms-border-radius:3px; -o-border-r
 .sfWelcomeWrap h2 { font-size:16px; color:#838383; font-weight:normal;}
 .sfTutorialWrap { margin:38px 0px 0px 0px}
 .sfTutorialWrap ul {}
-.sfTutorialWrap ul li { float:left; width:23%; margin-right:25px;}
+.sfTutorialWrap ul li { float:left; width:22%; margin-right:25px;}
 .sfTutorialWrap ul li h4 { font-size:16px; font-weight:normal; margin-bottom:5px;}
 .sfTutorialWrap ul li h3 { font-size:18px; font-weight:normal; margin-bottom:15px;  border-bottom:none;}
 .sfTutorialWrap ul li span { color:#515357;}
@@ -2483,11 +2515,11 @@ border-radius:3px; -webkit-border-radius:3px; -ms-border-radius:3px; -o-border-r
 
 .sfTutorialWrap ul li.sfTutorialC, .sfTutorialWrap ul li.sfModuleList { border-left:1px solid #ccc; padding-left:20px; min-height:200px;
 box-sizing:border-box; -webkit-box-sizing:border-box; -moz-box-sizing:border-box; -ms-box-sizing:border-box; -o-box-sizing:border-box;}
-.sfTutorialWrap ul li.sfTutorialC { margin-right:20px;}
-.sfTutorialWrap ul li.sfTutorialC a, .sfTutorialWrap ul li.sfModuleList a { position:relative; padding-left:10px;}
+.sfTutorialWrap ul li.sfTutorialC { margin-right:20px; padding-left:50px;}
+.sfTutorialWrap ul li.sfTutorialC a, .sfTutorialWrap ul li.sfModuleList a, .sfTutorialWrap ul li.sfModuleList span { position:relative; padding-left:10px;}
 .sfTutorialWrap ul li.sfTutorialC a:before, .sfTutorialWrap ul li.sfModuleList a:before { content:""; width:3px; height:3px; border-radius:50%; position:absolute; left:0px; top:11px; background-color:#59595c;}
 .sfTutorialWrap ul li.sfTutorialC a:hover:after, .sfTutorialWrap ul li.sfModuleList a:hover:after { position:absolute; right:0px; top:4px; font-size:10px;
-content: "\e6111";
+content: "\e711";
 font-family: "sageframe" !important;
 font-style: normal !important;
 font-weight: normal !important;
@@ -2497,7 +2529,7 @@ speak: none;
 line-height: 1;
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale; }
-.sfTutorialWrap ul li:last-child{ margin-right:0px;}
+.sfTutorialWrap ul li:last-child{ margin-right:0px; padding-left:50px;}
 
 .sfTutorialWrap ul li.sfTutorialA div.sfTakeTour, .sfTutorialWrap ul li.sfTutorialB a { background:#5f94ce; width:210px; height:100px; display:block; overflow:hidden; margin-bottom:15px;
 box-shadow:0px 0px 3px rgba(0,0,0,.3); -webkit-box-shadow:0px 0px 3px rgba(0,0,0,.3); -o-box-shadow:0px 0px 3px rgba(0,0,0,.3); -ms-box-shadow:0px 0px 3px rgba(0,0,0,.3); 
@@ -2662,3 +2694,9 @@ box-shadow:inset 0 0 5px 1px rgba(0,0,0,0.8); -o-box-shadow:inset 0 0 5px 1px rg
 .sfActivationWrapper input#btnActivateCancel { background-color:#5a5a5a; margin-left:3px;
 border-radius:3px; -webkit-border-radius:3px; -ms-border-radius:3px; -o-border-radius:3px;}
 .sfActivationWrapper input#btnActivateCancel:hover { background-color:#7a7a7a;}
+
+#imgSort { cursor:pointer;}
+
+
+#tabMenu .sfQuicklink {
+ min-width:320px; overflow:auto;}

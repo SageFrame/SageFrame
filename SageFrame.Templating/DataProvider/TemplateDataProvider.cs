@@ -18,8 +18,16 @@ using SageFrame.Web;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Manupulates data for TemplateDataProvider.
+    /// </summary>
     public class TemplateDataProvider
     {
+        /// <summary>
+        /// Connect to database and activate template during installation.
+        /// </summary>
+        /// <param name="TemplateName">Template name.</param>
+        /// <param name="PortalID">PortalID</param>
         public static void ActivateTemplate(string TemplateName, int PortalID)
         {
              
@@ -33,7 +41,11 @@ namespace SageFrame.Templating
 
        
         }
-
+        /// <summary>
+        ///Connect to database and obtain active template.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>Object of TemplateInfo class.</returns>
         public static TemplateInfo GetActiveTemplate(int PortalID)
         {   
             SQLHandler sagesql = new SQLHandler();
@@ -41,13 +53,21 @@ namespace SageFrame.Templating
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
             return (sagesql.ExecuteAsObject<TemplateInfo>("usp_sftemplate_GetActiveTemplate",ParaMeterCollection));
         }
+        /// <summary>
+        /// Connect to database and obtain portal templates.
+        /// </summary>
+        /// <returns>List of TemplateInfo class.</returns>
         public static List<TemplateInfo> GetPortalTemplates()
         {
             SQLHandler sagesql = new SQLHandler();
             return (sagesql.ExecuteAsList<TemplateInfo>("usp_TemplateGetPortalTemplate"));
         }
 
-
+        /// <summary>
+        /// Connect to database and update active template.
+        /// </summary>
+        /// <param name="TemplateName">Template name.</param>
+        /// <param name="conn">Connection string.</param>
         public static void UpdActivateTemplate(string TemplateName, string conn)
         {
 
@@ -59,7 +79,11 @@ namespace SageFrame.Templating
             sqlcmd.ExecuteNonQuery();
             sqlcon.Close();
         }
-
+        /// <summary>
+        /// Connect to database and obtain application settings.
+        /// </summary>
+        /// <param name="objSetting">Object of SettingInfo class.</param>
+        /// <returns>Object of SettingInfo class.</returns>
         public static SettingInfo GetSettingByKey(SettingInfo objSetting)
         {
             string sp = "[dbo].[usp_DashboardGetSettingByKey]";

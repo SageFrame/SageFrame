@@ -16,13 +16,23 @@ using System.Web.Hosting;
 
 namespace SageFrame.Scheduler
 {
+    /// <summary>
+    /// Business logic for SchedulerController.
+    /// </summary>
     public class SchedulerController
     {
-
+        /// <summary>
+        /// Reload schedule.
+        /// </summary>
         public static void ReloadSchedule()
         {
             Scheduler.ReloadSchedule();
         }
+        /// <summary>
+        /// Add new schedule.
+        /// </summary>
+        /// <param name="objSchedule"></param>
+        /// <returns></returns>
         public static Schedule AddNewSchedule(Schedule objSchedule)
         {
             try
@@ -42,6 +52,18 @@ namespace SageFrame.Scheduler
 
             return objSchedule;
         }
+        /// <summary>
+        /// Add scheduler exception
+        /// </summary>
+        /// <param name="LogTypeID">Log type ID.</param>
+        /// <param name="Severity">Severity</param>
+        /// <param name="Message">Message</param>
+        /// <param name="Exception">Exception</param>
+        /// <param name="ClientIPAddress">Client IP address.</param>
+        /// <param name="PageURL">Page URL.</param>
+        /// <param name="IsActive">True if active.</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="AddedBy">User name.</param>
 
         public static void AddSchedulerException(int LogTypeID, int Severity, string Message, string Exception, string ClientIPAddress, string PageURL, bool IsActive,
      int PortalID, string AddedBy)
@@ -58,7 +80,11 @@ namespace SageFrame.Scheduler
 
 
         }
-
+        /// <summary>
+        /// Obtain next start time.
+        /// </summary>
+        /// <param name="objScheduleHistory">Object of Schedule class.</param>
+        /// <returns>Next start.</returns>
         public static string GetNextStart(Schedule objScheduleHistory)
         {
             if (objScheduleHistory.RunningMode != RunningMode.Once)
@@ -142,9 +168,6 @@ namespace SageFrame.Scheduler
                 objScheduleHistory.NextStart = string.Empty;
             return objScheduleHistory.NextStart;
         }
-
-
-
 
         public static string GetNextStartHistory(ScheduleHistory objScheduleHistory)
         {

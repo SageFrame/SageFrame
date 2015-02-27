@@ -1,11 +1,10 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ctl_Extensions.ascx.cs"
     Inherits="SageFrame.Modules.Admin.Extensions.ctl_Extensions" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
-
 <script type="text/javascript">
     //<![CDATA[
-    $(function() {
-        $('#divModulesLists input:checkbox:first').on("change", function() {
+    $(function () {
+        $('#divModulesLists input:checkbox:first').on("change", function () {
             if ($(this).is(":checked")) {
                 $('#divModulesLists input:checkbox:not(:disabled)').prop("checked", true);
             }
@@ -16,7 +15,6 @@
     });
     //]]>
 </script>
-
 <h1>
     Modules Management</h1>
 <asp:PlaceHolder ID="ExtensionPlaceHolder" runat="server">
@@ -24,24 +22,27 @@
         <asp:ImageButton ID="imbInstallModule" runat="server" CausesValidation="False" OnClick="imbInstallModule_Click"
             meta:resourcekey="imbInstallModuleResource1" />
         <asp:Label Style="cursor: pointer;" ID="lblInstallModule" runat="server" Text="Install Module"
-          CssClass="icon-install-module sfBtn"  AssociatedControlID="imbInstallModule" meta:resourcekey="lblInstallModuleResource1" />
+            CssClass="icon-install-module sfBtn" AssociatedControlID="imbInstallModule" meta:resourcekey="lblInstallModuleResource1" />
         <asp:ImageButton ID="imbCreateNewModule" runat="server" OnClick="imbCreateNewModule_Click"
             meta:resourcekey="imbCreateNewModuleResource1" />
         <asp:Label ID="lblCreateNewModule" runat="server" Text="Create New Module" AssociatedControlID="imbCreateNewModule"
-           CssClass="icon-addnew sfBtn"  meta:resourcekey="lblCreateNewModuleResource1" />
+            CssClass="icon-addnew sfBtn" meta:resourcekey="lblCreateNewModuleResource1" />
         <asp:ImageButton ID="imbAvailableModules" Style="display: none" runat="server" OnClick="imbAvailableModules_Click"
             meta:resourcekey="imbAvailableModulesResource1" />
         <asp:Label Style="display: none" ID="lblAvailableModule" runat="server" Text="Available Module"
-           CssClass="icon-addnew sfBtn"  AssociatedControlID="imbAvailableModules" meta:resourcekey="lblAvailableModuleResource1" />
+            CssClass="icon-addnew sfBtn" AssociatedControlID="imbAvailableModules" meta:resourcekey="lblAvailableModuleResource1" />
+        <asp:ImageButton ID="imbCreatePackage" runat="server" OnClick="imbCreatePackage_Click"
+            meta:resourcekey="imbCreatePackageResource1" />
+        <asp:Label Style="cursor: pointer;" ID="lblCreatePackage" runat="server" Text="Create Package"
+            CssClass="icon-addnew sfBtn" AssociatedControlID="imbCreatePackage" meta:resourcekey="lblCreatePackageResource1" />
         <asp:ImageButton ID="imbCreateCompositeModule" runat="server" OnClick="imbCreateCompositeModule_Click"
             meta:resourcekey="imbCreateCompositeModuleResource1" />
         <asp:Label Style="cursor: pointer;" ID="lblCreateCompositeModule" runat="server"
-           CssClass="icon-addnew sfBtn"  Text="Create Composite Module" AssociatedControlID="imbCreateCompositeModule"
+            CssClass="icon-addnew sfBtn" Text="Create Composite Package" AssociatedControlID="imbCreateCompositeModule"
             meta:resourcekey="lblCreateCompositeModuleResource1" />
-        <%--<asp:ImageButton ID="imbCreatePackage" runat="server" OnClick="imbCreatePackage_Click"
-            meta:resourcekey="imbCreatePackageResource1" />
-        <asp:Label Style="cursor: pointer;" ID="lblCreatePackage" runat="server" Text="Create Package"
-           CssClass="icon-addnew sfBtn"  AssociatedControlID="imbCreatePackage" meta:resourcekey="lblCreatePackageResource1" />--%>
+        <asp:ImageButton ID="imbDownloadModules" runat="server" OnClick="imbDownloadModules_Click"/>
+        <asp:Label Style="cursor: pointer;" ID="lblDownloadModules" runat="server" CssClass="icon-download sfBtn"
+            Text="Download Modules" AssociatedControlID="imbDownloadModules" />
     </div>
     <div class="sfFormwrapper sfPadding sfTableOption">
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -51,8 +52,9 @@
                         meta:resourcekey="lblSearchModuleResource1"></asp:Label>
                 </td>
                 <td>
-                    <asp:TextBox ID="txtSearchText" runat="server" CssClass="sfInputbox text sfFloatLeft" meta:resourcekey="txtSearchTextResource1"></asp:TextBox>
-                     <div class="sfHideImg sfFloatLeft">
+                    <asp:TextBox ID="txtSearchText" runat="server" CssClass="sfInputbox text sfFloatLeft"
+                        meta:resourcekey="txtSearchTextResource1"></asp:TextBox>
+                    <div class="sfHideImg sfFloatLeft">
                         <asp:ImageButton ID="imgSearch" runat="server" OnClick="imgSearch_Click" ToolTip="Search"
                             meta:resourcekey="imgSearchResource1" />
                         <asp:Label ID="lblSearch" runat="server" Text="" AssociatedControlID="imgSearch"
@@ -60,7 +62,6 @@
                     </div>
                 </td>
                 <td>
-                   
                 </td>
                 <td>
                 </td>
@@ -143,21 +144,20 @@
                     </ItemTemplate>
                     <HeaderStyle CssClass="sfIsactive" />
                 </asp:TemplateField>
-                <asp:TemplateField meta:resourcekey="TemplateFieldResource7" >
-                    <ItemTemplate >
-                       <%-- <asp:ImageButton ID="imbEdit" runat="server" CausesValidation="False" CommandArgument='<%# Eval("ModuleID") %>'
+                <asp:TemplateField meta:resourcekey="TemplateFieldResource7">
+                    <ItemTemplate>
+                        <%-- <asp:ImageButton ID="imbEdit" runat="server" CausesValidation="False" CommandArgument='<%# Eval("ModuleID") %>'
                          CssClass="sfEdit"   CommandName="Edit" ImageUrl='<%# GetTemplateImageUrl("imgedit.png", true) %>'
                             ToolTip="Edit Module" meta:resourcekey="imbEditResource1" />--%>
-                          <asp:LinkButton ID="imbEdit" runat="server" CausesValidation="False" CommandArgument='<%# Eval("ModuleID") %>'
-                         CssClass="icon-edit"    CommandName="Edit" 
-                            ToolTip="Edit Module" meta:resourcekey="imbEditResource1" />
+                        <asp:LinkButton ID="imbEdit" runat="server" CausesValidation="False" CommandArgument='<%# Eval("ModuleID") %>'
+                            CssClass="icon-edit" CommandName="Edit" ToolTip="Edit Module" meta:resourcekey="imbEditResource1" />
                     </ItemTemplate>
                     <HeaderStyle CssClass="sfDelete"></HeaderStyle>
                 </asp:TemplateField>
                 <asp:TemplateField meta:resourcekey="TemplateFieldResource8">
                     <ItemTemplate>
                         <asp:LinkButton ID="imbDelete" runat="server" CausesValidation="False" CommandArgument='<%# Eval("ModuleID") %>'
-                         CssClass="icon-delete"   CommandName="Delete" ImageUrl='<%# GetTemplateImageUrl("imgdelete.png", true) %>'
+                            CssClass="icon-delete" CommandName="Delete" ImageUrl='<%# GetTemplateImageUrl("imgdelete.png", true) %>'
                             ToolTip="Delete Module" meta:resourcekey="imbDeleteResource1" OnClientClick="return ConfirmDialog(this, 'Confirmation', 'Are you sure you want to delete this extension?');" />
                     </ItemTemplate>
                     <HeaderStyle CssClass="sfDelete"></HeaderStyle>

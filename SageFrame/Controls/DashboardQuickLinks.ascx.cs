@@ -41,7 +41,7 @@ public partial class Controls_DashboardQuickLinks : BaseAdministrationUserContro
         IsSideBarVisible = ShowSideBar ? 1 : 0;
         BuildQuickLinks();
         //lblVersion.Text = string.Format("V {0}", Config.GetSetting("SageFrameVersion"));
-        SageFrame.Application.Application app = new SageFrame.Application.Application();
+        SageFrame.Version.SageFrameVersion app = new SageFrame.Version.SageFrameVersion();
         lblVersion.Text = string.Format("V {0}", app.FormatShortVersion(app.Version, true));
     }
 

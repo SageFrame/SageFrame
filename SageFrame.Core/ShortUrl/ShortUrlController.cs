@@ -6,8 +6,16 @@ using System.Web;
 
 namespace SageFrame.Core
 {
+    /// <summary>
+    /// Business logic for URL shortening.
+    /// </summary>
     public class ShortUrlController
     {
+        /// <summary>
+        /// Encodes the provided url by mixing with random character.
+        /// </summary>
+        /// <param name="url">User friendly URL.</param>
+        /// <returns>Encoded URL.</returns>
         public string EncodeUrl(string url)
         {
             string shortUrlkey = string.Empty;
@@ -25,6 +33,11 @@ namespace SageFrame.Core
             return encodedUrl;
         }
 
+        /// <summary>
+        /// Decodes the  encrypted URL.
+        /// </summary>
+        /// <param name="key">encrpted URL.</param>
+        /// <returns>User friendly URL.</returns>
         public string DecodeUrl(string key)
         {
             ShortUrlProvider provider = new ShortUrlProvider();
@@ -32,6 +45,11 @@ namespace SageFrame.Core
             return decodedUrl;
         }
 
+        /// <summary>
+        /// Checks if the random text is valid or not.
+        /// </summary>
+        /// <param name="ramdomText">Random text.</param>
+        /// <returns>True if the text is valid.</returns>
         public bool CheckValidCode(string ramdomText)
         {
             bool isValid = false;
@@ -43,6 +61,11 @@ namespace SageFrame.Core
             return isValid;
         }
 
+        /// <summary>
+        /// Generates random text for any string.
+        /// </summary>
+        /// <param name="randomText">String to be randomized.</param>
+        /// <returns>Random text.</returns>
         protected string GetRandomText(string randomText)
         {
 
@@ -103,6 +126,10 @@ namespace SageFrame.Core
 
         }
 
+        /// <summary>
+        /// Generates random string.
+        /// </summary>
+        /// <returns>Random string.</returns>
         private string GenerateRandomCode()
         {
             Random random = new Random();

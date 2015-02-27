@@ -16,9 +16,22 @@ using System.Xml;
 
 namespace SageFrame.SEOExtension
 {
+    /// <summary>
+    /// Manupulates data for SiteMapController Class.
+    /// </summary>
    public class SiteMapDataProvider
     {
-       
+       /// <summary>
+        /// Connects to database and returns SiteMapInfo List.
+       /// </summary>
+        /// <param name="prefix">Prefix</param>
+        /// <param name="IsActive">Active date</param>
+       /// <param name="IsDeleted">varify for deletion</param>
+       /// <param name="PortalID">PortalID</param>
+        /// <param name="Username">Username</param>
+        /// <param name="IsVisible">IsVisible</param>
+        /// <param name="IsRequiredPage">IsRequiredPage</param>
+        /// <returns>SiteMapInfo List</returns>
 
        public static List<SiteMapInfo> GetSiteMap(string prefix, bool IsActive, bool IsDeleted, int PortalID, string Username, bool IsVisible, bool IsRequiredPage)
        {

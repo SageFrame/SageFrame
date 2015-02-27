@@ -4,7 +4,7 @@
     //<![CDATA[
     var PageMode = false;
     var Extension = '<%=PageExtension %>'
-    $(document).ready(function() {
+    $(document).ready(function () {
         var LSTSagePages = [];
         $(this).SageTreeBuilder({
             PortalID: '<%=PortalID%>',
@@ -16,6 +16,7 @@
             baseURL: ServicePath + '/Modules/Pages/Services/PagesWebService.asmx/',
             Mode: $('#rdbAdmin').attr('checked'),
             AppName: '<%=appPath%>',
+            HostURL: '<%=GetURL%>',
             StartupPage: '<%=StartupPage%>',
             ActiveTemplateName: '<%=ActiveTemplateName %>'
         });
@@ -28,6 +29,7 @@
             CultureCode: '<%=CultureCode%>',
             baseURL: ServicePath + '/Modules/Pages/Services/PagesWebService.asmx/',
             AppName: '<%=appPath%>',
+            HostURL: '<%=GetURL%>',
             StartupPage: '<%=StartupPage%>',
             ActiveTemplateName: '<%=ActiveTemplateName %>',
             PageExtension: '<%=PageExtension %>'
@@ -110,8 +112,7 @@
                                                     Module Name
                                                 </label>
                                             </td>
-                                            <td width="30">
-                                                :
+                                            <td width="30">:
                                             </td>
                                             <td>
                                                 <label id="lblmoduleName">
@@ -124,8 +125,7 @@
                                                     Module Title
                                                 </label>
                                             </td>
-                                            <td width="30">
-                                                :
+                                            <td width="30">:
                                             </td>
                                             <td>
                                                 <input type="text" id="txtModuleTitle" class="sfInputbox" />
@@ -137,8 +137,7 @@
                                                     Pane Name
                                                 </label>
                                             </td>
-                                            <td width="30">
-                                                :
+                                            <td width="30">:
                                             </td>
                                             <td>
                                                 <label id="spnPaneName">
@@ -151,8 +150,7 @@
                                                     Header Text
                                                 </label>
                                             </td>
-                                            <td width="30">
-                                                :
+                                            <td width="30">:
                                             </td>
                                             <td>
                                                 <input type="text" id="txtHeaderTxt" class="sfInputbox" maxlength="50" />
@@ -169,8 +167,7 @@
                                                     Module Suffix Class
                                                 </label>
                                             </td>
-                                            <td width="30">
-                                                :
+                                            <td width="30">:
                                             </td>
                                             <td>
                                                 <input type="text" id="txtModuleSuffix" class="sfInputbox" />
@@ -181,8 +178,7 @@
                                                 <label class="sfFormlabel">
                                                     IsActive</label>
                                             </td>
-                                            <td width="30">
-                                                :
+                                            <td width="30">:
                                             </td>
                                             <td>
                                                 <input type="checkbox" id="chkIsActive" checked="checked" />
@@ -194,8 +190,7 @@
                                                     Show in Other Pages
                                                 </label>
                                             </td>
-                                            <td width="30">
-                                                :
+                                            <td width="30">:
                                             </td>
                                             <td>
                                                 <input type="checkbox" value="All" id="rbAllPages" name="showPagesGroup" checked="checked" />
@@ -266,8 +261,7 @@
                                                         <label>
                                                             Edit</label>
                                                     </th>
-                                                    <th>
-                                                    </th>
+                                                    <th></th>
                                                 </tr>
                                             </table>
                                         </div>
@@ -297,8 +291,7 @@
         <div class="sfPageModuleManager">
             <div id="divLayout">
                 <div class="divLayoutContainer">
-                    <h3>
-                        Page Module Manager</h3>
+                    <h3>Page Module Manager</h3>
                     <div class="sfFormwrapper sfPadding sfMarginbtn sfModuletopwrapper" id="PageHeader">
                         <div class="publishbar">
                             <span id="btnPreview" value="Preview" class="icon-page-preview">Preview</span> <span
@@ -320,8 +313,7 @@
                                 <%--<img alt="" id="imgMobileSwitch" title="Handheld Layout" src="<%=appPath%>/Administrator/Templates/Default/images/pcicon.png"
                                     class="active" />
                                 <img alt="" id="imgPCSwitch" title="Handheld Layout" src="<%=appPath%>/Administrator/Templates/Default/images/iphone.png" />--%>
-                                <span id="imgMobileSwitch" class="active icon-pc"></span><span id="imgPCSwitch" class="icon-handheld">
-                                </span>
+                                <span id="imgMobileSwitch" class="active icon-pc"></span><span id="imgPCSwitch" class="icon-handheld"></span>
                             </div>
                         </div>
                         <div class="clear">
@@ -332,8 +324,7 @@
                 </div>
                 <div class="sfNewPage" style="display: none;">
                     <div id="divPageDetails">
-                        <h3>
-                            Page Details <span class='sfPageDetailCancel icon-close'></span>
+                        <h3>Page Details <span class='sfPageDetailCancel icon-close'></span>
                         </h3>
                         <div id="dvPageSetting" class="cssClassTabPabelTabel">
                             <div id="tblPageDetails">
@@ -472,8 +463,7 @@
                                     </table>
                                 </div>
                                 <div class="clearfix sfTableOption">
-                                    <h3 class="sfFloatLeft">
-                                        Page Permission Settings
+                                    <h3 class="sfFloatLeft">Page Permission Settings
                                     </h3>
                                     <div class="sfButtonwrapper sftype1 sfFloatRight">
                                         <label id="imbAddUsers" class="icon-add-user sfBtn">
@@ -517,7 +507,8 @@
                     <div id="divAddUsers" class="sfFormwrapper" title="Add Users">
                         <p class="sfNote">
                             <i class="icon-info"></i>First search for users, select the user from search results
-                            and finally add the user.</p>
+                            and finally add the user.
+                        </p>
                         <table cellpadding="0" cellspacing="0" width="0">
                             <tr>
                                 <td>
@@ -545,8 +536,7 @@
         </div>
         <%-- <div id="wrapper" class="ModuleList">--%>
         <div id="divDroppable" class="sfFormwrapper sfNone sfModulesHolder">
-            <h3>
-                Modules
+            <h3>Modules
                 <div id="divSearch" class="sfSearch">
                     <input id="txtSearchModules" type="text" class="sfInputbox" style="width: 20px" />
                     <span class="icon-search sfSearchModules"></span>

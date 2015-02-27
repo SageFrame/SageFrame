@@ -39,10 +39,16 @@ using System.Collections;
 /// 
 namespace SageFrame.Web
 {
+    /// <summary>
+    /// Inherits SageUserControl class and provides 
+    /// </summary>
     public partial class BaseAdministrationUserControl : SageUserControl
     {
         #region "Protectected Methods"
-
+        /// <summary>
+        /// Handles the exception and records in the log
+        /// </summary>
+        /// <param name="exc">exception</param>
         protected void ProcessException(Exception exc)
         {
             int inID = 0;
@@ -62,7 +68,7 @@ namespace SageFrame.Web
         #region "Public Methods"
 
         /// <summary>
-        /// 
+        /// Initializes a new instance of the BaseAdministrationUserControl class.
         /// </summary>
         public BaseAdministrationUserControl()
         {
@@ -111,32 +117,30 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// 
+        /// Reduce the rawURL to simple URL, appends the parameter and redirects.
         /// </summary>
-        /// <param name="rawUrl"></param>
-        /// <param name="controlPath"></param>
-        /// <param name="parameter"></param>
+        /// <param name="rawUrl">rawURL</param>
+        /// <param name="controlPath"> control path</param>
+        /// <param name="parameter">URL parameter to be added</param>
         public void ProcessSourceControlUrl(string rawUrl, string controlPath, string parameter)
         {
             ProcessSourceControlUrlBase(rawUrl, controlPath, parameter);
         }
 
         /// <summary>
-        /// 
+        /// Redirects to the  url with the extension message
         /// </summary>
-        /// <param name="RedirectUrl"></param>
-        /// <param name="IsSupress"></param>
-        /// <param name="ExtensionMessage"></param>
+        /// <param name="RedirectUrl">refirect URL</param>
+        /// <param name="IsSupress">Indicates whether current page execution should terminates</param>
+        /// <param name="ExtensionMessage">  extension message</param>
         public void ProcessCancelRequestBase(string RedirectUrl, bool IsSupress, string ExtensionMessage)
         {
             string strURL = string.Empty;
-
             if (RedirectUrl.Contains("?"))
             {
                 string[] d = RedirectUrl.Split('?');
                 strURL = d[0];
             }
-
             if (strURL.Contains("?"))
             {
                 strURL += "&ExtensionMessage=" + ExtensionMessage;
@@ -149,15 +153,14 @@ namespace SageFrame.Web
             {
                 strURL += "?ExtensionMessage=" + ExtensionMessage;
             }
-
             HttpContext.Current.Response.Redirect(strURL, IsSupress);
         }
 
         /// <summary>
-        /// Splits An Param In An Array
+        /// Splits An Param In An Array.
         /// </summary>
-        /// <param name="param"></param>
-        /// <returns></returns>
+        /// <param name="param">String  with "/" like that of URL</param>
+        /// <returns>Array of string</returns>
         public string[] GetParam(string param)
         {
             string[] stringParam = param.Split('/');

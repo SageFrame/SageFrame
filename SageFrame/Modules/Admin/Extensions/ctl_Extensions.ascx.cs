@@ -30,7 +30,6 @@ namespace SageFrame.Modules.Admin.Extensions
     /// </remark>
     public partial class ctl_Extensions : BaseAdministrationUserControl
     {
-
         CommonFunction LToDCon = new CommonFunction();
         protected void Page_Init(object sender, EventArgs e)
         {
@@ -140,7 +139,12 @@ namespace SageFrame.Modules.Admin.Extensions
             string ControlPath = "/Modules/Admin/Extensions/Editors/PackageCreator.ascx";
             ProcessSourceControlUrl(Request.RawUrl, ControlPath, "extension");
         }
-
+        protected void imbDownloadModules_Click(object sender, ImageClickEventArgs e)
+        {
+            string ControlPath = "/Modules/Admin/Extensions/Editors/DownLoadModules.ascx";
+            ProcessSourceControlUrl(Request.RawUrl, ControlPath, "extension");
+        }
+        
         public string ConvertToYesNo(string i)
         {
             string flag = "No";
@@ -183,16 +187,12 @@ namespace SageFrame.Modules.Admin.Extensions
                     int moduleID = int.Parse(e.CommandArgument.ToString());
                     try
                     {
-
                         //Uninstall Module
                         ModuleController objController = new ModuleController();
                         ModuleInfo moduleInfo = objController.GetModuleInformationByModuleID(moduleID);
-
                         UninstallModule(moduleInfo, true);
                         //Delete module from database
                         objController.DeletePackagesByModuleID(GetPortalID, moduleID);
-
-
                         BindGrid(string.Empty);
                         ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("Extensions", "ModuleIsDeletedSuccessfully"), "", SageMessageType.Success);
                     }
@@ -329,8 +329,6 @@ namespace SageFrame.Modules.Admin.Extensions
                             {
                                 moduleInfo.ModuleName = xn["modulename"].InnerXml.ToString();
                                 moduleInfo.FolderName = xn["foldername"].InnerXml.ToString();
-
-
                             }
                             try
                             {
@@ -431,11 +429,11 @@ namespace SageFrame.Modules.Admin.Extensions
                     }
 
                     // check IModuleExtraCodeExecute interface is implemented or not for install/unInstall of module
-                    if (installerClass.IsIModuleExtraCodeInterfaceImplemented(doc))
-                    {
-                        installerClass.ExtraCodeOnUnInstallation(doc);
-                    }                    
-                  
+                    //if (installerClass.IsIModuleExtraCodeInterfaceImplemented(doc))
+                    //{
+                    //    installerClass.ExtraCodeOnUnInstallation(doc);
+                    //}                    
+
                     DeleteAllDllsFromBin(dllFiles, moduleFolderPath);
                 }
             }

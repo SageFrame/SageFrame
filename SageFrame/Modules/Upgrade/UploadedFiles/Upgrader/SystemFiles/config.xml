@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <CONFIG>
 
-<SAGEFRAME VERSION="02.50"></SAGEFRAME>  
+<SAGEFRAME VERSION="5.0"></SAGEFRAME>  
   <FILES>  
 	<FILE path="SageFrame\Modules\NewsLetter\css\module.css"></FILE> 
 	

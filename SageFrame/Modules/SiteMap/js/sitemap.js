@@ -77,7 +77,7 @@
                 parentID = item.ParentID;
                 categoryLevel = item.MenuLevel;
                 if (item.MenuLevel == 0) {
-                    var PageLink = item.LinkType == 0 ? PagePath + item.URL + PageExtension : item.LinkURL;
+                    var PageLink = item.LinkType == 0 ? SageFrameHostURL + item.URL + PageExtension : item.LinkURL;
 
                     if (item.ChildCount > 0) {
                         html += '<li>' + SiteMap.BuildMenuItem(item, PageLink);
@@ -114,7 +114,7 @@
                 if (item.MenuLevel > 0) {
                     if (item.ParentID == PageID) {
                         itemPath += item.Title;
-                        var PageLink = item.LinkType == 0 ? PagePath + item.URL + PageExtension : item.LinkURL;
+                        var PageLink = item.LinkType == 0 ? SageFrameHostURL + item.URL + PageExtension : item.LinkURL; 
                         var styleClass = item.ChildCount > 0 ? 'class="sfParent"' : '';
                         strListmaker += '<li>' + SiteMap.BuildMenuItem(item, PageLink, 0);
                         childNodes = SiteMap.BindChildCategory(response, item.MenuItemID);

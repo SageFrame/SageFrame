@@ -19,24 +19,37 @@ using System.Xml;
 
 namespace SageFrame.Core.Services.Installer
 {
-   public class PackageWriterBase
-    {   
-       private CompositeModule _Package;	
+    /// <summary>
+    /// Class that contains properties and methods that are used to  create composite package.
+    /// </summary>
+    public class PackageWriterBase
+    {
+        private CompositeModule _Package;
 
-	#region "Constructors"
+        #region "Constructors"
 
+        /// <summary>
+        /// Initializes an instance of PackageWriterBase class.
+        /// </summary>
         protected PackageWriterBase()
         {
         }
 
+        /// <summary>
+        /// Initializes an instance of PackageWriterBase class.
+        /// </summary>
+        /// <param name="package">CompositeModule object.</param>
         public PackageWriterBase(CompositeModule package)
         {
             _Package = package;
-
         }
-    #endregion
+        #endregion
 
         #region Public Properties
+
+        /// <summary>
+        /// Gets or sets CompositeModule object.
+        /// </summary>
         public CompositeModule Package
         {
             get
@@ -51,6 +64,10 @@ namespace SageFrame.Core.Services.Installer
 
         #endregion
 
+        /// <summary>
+        /// Writes package end element.
+        /// </summary>
+        /// <param name="writer">XmlWriter object where the start of the element is to be insert.</param>
         private void WritePackageEndElement(XmlWriter writer)
         {
             //Close components Element
@@ -60,6 +77,10 @@ namespace SageFrame.Core.Services.Installer
             writer.WriteEndElement();
         }
 
+        /// <summary>
+        /// Writes package start element for the given XmlWriter object.
+        /// </summary>
+        /// <param name="writer">XmlWriter object where the start of the element is to be insert.</param>
         private void WritePackageStartElement(XmlWriter writer)
         {
             //Start package Element
@@ -74,12 +95,12 @@ namespace SageFrame.Core.Services.Installer
 
             //Write Description
             writer.WriteElementString("description", Package.Description);
-            
+
 
             writer.WriteElementString("owner", Package.Owner);
             writer.WriteElementString("organization", Package.Organization);
             writer.WriteElementString("url", Package.URL);
-            writer.WriteElementString("email", Package.Email);           
+            writer.WriteElementString("email", Package.Email);
 
             //Write License
             writer.WriteElementString("license", Package.License);
@@ -105,6 +126,10 @@ namespace SageFrame.Core.Services.Installer
             writer.WriteStartElement("components");
         }
 
+        /// <summary>
+        /// Writes composite sfe file for the given XmlWriter object.
+        /// </summary>
+        /// <param name="writer">XmlWriter object where the start of the element is to be insert.</param>
         private void WriteCompositesfeFile(XmlWriter writer)
         {
             //Start package Element

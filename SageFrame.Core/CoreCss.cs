@@ -21,9 +21,17 @@ using System.IO;
 
 namespace SageFrame.Core
 {
+    /// <summary>
+    /// Class that returns system css lists.
+    /// </summary>
     [Serializable]
     public class CoreCss
     {
+        /// <summary>
+        /// Returns list of css used in the provided template.
+        /// </summary>
+        /// <param name="TemplateName">Template name.</param>
+        /// <returns>List of css.</returns>
         public static List<CssScriptInfo> GetTemplateCss(string TemplateName)
         {
             string templatePath = TemplateName.ToLower().Equals("default") ? Utils.GetTemplatePath_Default(TemplateName) : Utils.GetTemplatePath(TemplateName);

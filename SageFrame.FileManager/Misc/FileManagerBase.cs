@@ -18,11 +18,14 @@ using SageFrame.Common;
 #endregion
 
 namespace SageFrame.FileManager
-{
+{ 
     public class FileManagerBase : System.Web.UI.Page
     {
         int PortalID = 1;
-
+        /// <summary>
+        /// Handles application exceptions.
+        /// </summary>
+        /// <param name="exc">exc</param>
         public void ProcessException(Exception exc)
         {
             int inID = 0;
@@ -30,7 +33,9 @@ namespace SageFrame.FileManager
             inID = objController.InsertLog((int)SageFrame.Web.SageFrameEnums.ErrorType.AdministrationArea, 11, exc.Message, exc.ToString(),
                                        HttpContext.Current.Request.UserHostAddress, HttpContext.Current.Request.RawUrl, true, GetPortalID, GetUsername);
         }
-        
+        /// <summary>
+        /// Obtain portalId.
+        /// </summary>
         public int GetPortalID
         {
             get
@@ -52,12 +57,17 @@ namespace SageFrame.FileManager
                 }
             }
         }
-
+        /// <summary>
+        /// Sets portalId
+        /// </summary>
+        /// <param name="portalID">portalID</param>
         public void SetPortalID(int portalID)
         {
             PortalID = portalID;
         }
-
+        /// <summary>
+        /// Obtains userName.
+        /// </summary>
         public string GetUsername
         {
             get

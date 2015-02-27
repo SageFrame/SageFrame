@@ -18,12 +18,21 @@ using System.Net;
 
 namespace SageFrame.Framework
 {
+    /// <summary>
+    /// IPAddress to country resolver.
+    /// </summary>
     public class IPAddressToCountryResolver
     {
-        public IPAddressToCountryResolver()
-        {
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the IPAddressToCountryResolver class.
+        /// </summary>
+        public IPAddressToCountryResolver() { }
+        /// <summary>
+        /// Return country name from user host IPAddress.
+        /// </summary>
+        /// <param name="userHostIpAddress">User host IP Address.</param>
+        /// <param name="countryName">Outpt parameter countryName.</param>
+        /// <returns>Country name.</returns>
         public bool GetCountry(string userHostIpAddress, out string countryName)
         {
             bool result = false;
@@ -44,7 +53,11 @@ namespace SageFrame.Framework
 
             return result;
         }
-
+        /// <summary>
+        /// Return IP V4 address.
+        /// </summary>
+        /// <param name="ipaddress">IP address.</param>
+        /// <returns>IP V4 address.</returns>
         public static string GetIP4Address(string ipaddress)
         {
             string IP4Address = String.Empty;

@@ -14,8 +14,18 @@ using SageFrame.Templating.xmlparser;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Helper class for building block.
+    /// </summary>
     public class BlockBuilder
     {
+        /// <summary>
+        /// Obtain customize middleblock markup.
+        /// </summary>
+        /// <param name="middleBlock">Object of XmlTag class.</param>
+        /// <param name="lstWrapper">List of CustomWrapper class.</param>
+        /// <param name="Mode">Mode</param>
+        /// <returns>String format of customized middleblock markup.</returns>
         public static string GetMiddleCustomMarkup(XmlTag middleBlock, List<CustomWrapper> lstWrapper, int Mode)
         {
             List<KeyValue> widths = Calculator.CalculateMiddleBlockWidth(middleBlock);
@@ -490,7 +500,13 @@ namespace SageFrame.Templating
 
 
         }
-
+        /// <summary>
+        /// Obtain top blocks.
+        /// </summary>
+        /// <param name="topBlock">Object of XmlTag class.</param>
+        /// <param name="lstWrappers">List of CustomWrapper class.</param>
+        /// <param name="Mode">Mode.</param>
+        /// <returns>String format of top blocks markup.</returns>
         public static string GetTopBlocks(XmlTag topBlock, List<CustomWrapper> lstWrappers, int Mode)
         {
 
@@ -507,7 +523,13 @@ namespace SageFrame.Templating
             }
 
         }
-
+        /// <summary>
+        /// Obtain bottom blocks.
+        /// </summary>
+        /// <param name="BottomBlock">Object of XmlTag class.</param>
+        /// <param name="lstWrappers">List of CustomWrapper class.</param>
+        /// <param name="Mode">Mode</param>
+        /// <returns>String format of bottom blocks markup.</returns>
         public static string GetBottomBlocks(XmlTag BottomBlock, List<CustomWrapper> lstWrappers, int Mode)
         {
             StringBuilder sb = new StringBuilder();

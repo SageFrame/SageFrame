@@ -20,8 +20,16 @@ using SageFrame.Web.Utils;
 
 namespace SageFrame.Web.Utilities
 {
+    /// <summary>
+    /// Application data source helper.
+    /// </summary>
     public class DataSourceHelper
     {
+        /// <summary>
+        /// Teturn array list from object.
+        /// </summary>
+        /// <param name="objType">Type od datatype.</param>
+        /// <returns>Array list</returns>
         public static ArrayList GetPropertyInfo(Type objType)
         {
 
@@ -40,7 +48,12 @@ namespace SageFrame.Web.Utilities
             return objProperties;
 
         }
-
+        /// <summary>
+        /// Return object of array of integer.
+        /// </summary>
+        /// <param name="objProperties">ArrayList</param>
+        /// <param name="dr">The DataReader</param>
+        /// <returns>Array of integer.</returns>
         private static int[] GetOrdinals(ArrayList objProperties, IDataReader dr)
         {
 
@@ -66,7 +79,14 @@ namespace SageFrame.Web.Utilities
             return arrOrdinals;
 
         }
-
+        /// <summary>
+        /// Return object based on parameters.
+        /// </summary>
+        /// <param name="objType">Type od datatype.</param>
+        /// <param name="dr">The DataReader</param>
+        /// <param name="objProperties">ArrayList</param>
+        /// <param name="arrOrdinals">Array of integer.</param>
+        /// <returns>Object</returns>
         private static object CreateObject(Type objType, IDataReader dr, ArrayList objProperties, int[] arrOrdinals)
         {
 
@@ -147,7 +167,12 @@ namespace SageFrame.Web.Utilities
             return objObject;
 
         }
-
+        /// <summary>
+        /// Reuturn object based on given parameters.
+        /// </summary>
+        /// <param name="dr">The DataReader.</param>
+        /// <param name="objType">Type od datatype.</param>
+        /// <returns>Object</returns>
         public static object FillObject(IDataReader dr, Type objType)
         {
 
@@ -203,7 +228,12 @@ namespace SageFrame.Web.Utilities
             return objFillObject;
 
         }
-
+        /// <summary>
+        /// Return list of array.
+        /// </summary>
+        /// <param name="dr">The DataReader</param>
+        /// <param name="objType">Type od datatype.</param>
+        /// <returns>Object of ArrayList</returns>
         public static ArrayList FillCollection(IDataReader dr, Type objType)
         {
 
@@ -234,7 +264,13 @@ namespace SageFrame.Web.Utilities
             return objFillCollection;
 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dr">The DataReader.</param>
+        /// <param name="objType">Type of datatype.</param>
+        /// <param name="objToFill">The List.</param>
+        /// <returns>Object of list.</returns>
         public static IList FillCollection(IDataReader dr, Type objType, ref IList objToFill)
         {
 
@@ -264,7 +300,12 @@ namespace SageFrame.Web.Utilities
             return objToFill;
 
         }
-
+        /// <summary>
+        /// Return object.
+        /// </summary>
+        /// <param name="objObject">object</param>
+        /// <param name="objType">Type of datatype.</param>
+        /// <returns>object</returns>
         public static object InitializeObject(object objObject, Type objType)
         {
             PropertyInfo objPropertyInfo;
@@ -288,30 +329,23 @@ namespace SageFrame.Web.Utilities
             return objObject;
 
         }
-
-
-
+        /// <summary>
+        /// Return object of XmlDocument.
+        /// </summary>
+        /// <param name="objObject">object</param>
+        /// <returns>Object of XmlDocument.</returns>
         public static XmlDocument Serialize(object objObject)
         {
 
             XmlSerializer objXmlSerializer = new XmlSerializer(objObject.GetType());
-
             StringBuilder objStringBuilder = new StringBuilder();
-
             TextWriter objTextWriter = new StringWriter(objStringBuilder);
-
             objXmlSerializer.Serialize(objTextWriter, objObject);
-
             StringReader objStringReader = new StringReader(objTextWriter.ToString());
-
             DataSet objDataSet = new DataSet();
-
             objDataSet.ReadXml(objStringReader);
-
             XmlDocument xmlSerializedObject = new XmlDocument();
-
             xmlSerializedObject.LoadXml(objDataSet.GetXml());
-
             return xmlSerializedObject;
 
         }
@@ -569,7 +603,7 @@ namespace SageFrame.Web.Utilities
         }
 
         #endregion
-		#region Dinesh Hona Modification
+        #region Add new
 
         /// -----------------------------------------------------------------------------
         /// <summary>
@@ -581,7 +615,6 @@ namespace SageFrame.Web.Utilities
         /// <returns>A List of custom business objects</returns>
         /// <remarks></remarks>
         /// <history>
-        /// 	[dinesh]	4/22/2011	Created
         /// </history>
         /// -----------------------------------------------------------------------------
         public static List<T> FillCollection<T>(DataTable dt)
@@ -605,9 +638,6 @@ namespace SageFrame.Web.Utilities
         /// <param name="dr">The DataRow</param>
         /// <returns>The custom business object</returns>
         /// <remarks></remarks>
-        /// <history>
-        /// 	[dinesh]	4/22/2011	Created
-        /// </history>
         /// -----------------------------------------------------------------------------
         private static T CreateObject<T>(DataRow dr)
         {

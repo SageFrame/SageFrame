@@ -16,6 +16,9 @@ using System.Text;
 
 namespace SageFrame.Common
 {
+    /// <summary>
+    /// Application cache keys.
+    /// </summary>
     [Serializable]
     public static partial class CacheKeys
     {

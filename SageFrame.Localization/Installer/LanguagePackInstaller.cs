@@ -29,8 +29,16 @@ using RegisterModule;
 
 namespace SageFrame.Localization
 {
+    /// <summary>
+    /// Localization language pack installer class.
+    /// </summary>
     public class LanguagePackInstaller
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileModule">Object of FileUpload class. </param>
+        /// <returns></returns>
         public ArrayList Step0CheckLogic(FileUpload fileModule)
         {
             PackageInfo package = new PackageInfo();
@@ -99,7 +107,12 @@ namespace SageFrame.Localization
             arrColl.Add(package);
             return arrColl;
         }
-
+        /// <summary>
+        /// Checks valid manifest file.
+        /// </summary>
+        /// <param name="root">Object of XmlElement.</param>
+        /// <param name="package">Object of PackageInfo. </param>
+        /// <returns>Returns true for sageframe</returns>
         public bool checkValidManifestFile(XmlElement root, PackageInfo package)
         {
             if (root.Name == "sageframe")
@@ -108,13 +121,23 @@ namespace SageFrame.Localization
             }
             return false;
         }
-
+        /// <summary>
+        /// Checks for language exists.
+        /// </summary>
+        /// <param name="moduleName">moduleName</param>
+        /// <param name="package">Object of PackageInfo class. </param>
+        /// <returns>False</returns>
         public bool IsLanguageExists(string moduleName, PackageInfo package)
         {
 
             return false;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="TempUnzippedPath">TempUnzippedPath</param>
+        /// <param name="package">Object of PackageInfo</param>
+        /// <returns></returns>
         public int Step1CheckLogic(string TempUnzippedPath, PackageInfo package)
         {
             if (checkFormanifestFile(TempUnzippedPath, package) != "")
@@ -149,7 +172,12 @@ namespace SageFrame.Localization
             }
             return 0;//No manifest file
         }
-
+        /// <summary>
+        /// Checks for .sfe.
+        /// </summary>
+        /// <param name="TempUnzippedPath">TempUnzippedPath</param>
+        /// <param name="package">Object of PackageInfo. </param>
+        /// <returns>Manifest file.</returns>
         public string checkFormanifestFile(string TempUnzippedPath, PackageInfo package)
         {
             DirectoryInfo dir = new DirectoryInfo(TempUnzippedPath);
@@ -167,7 +195,11 @@ namespace SageFrame.Localization
             }
             return package.ManifestFile;
         }
-
+        /// <summary>
+        /// Checks valid zip.
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns>Returns true if file extension is valid for uploaded file.</returns>
         private bool IsVAlidZipContentType(string p)
         {
             // extract and store the file extension into another variable
@@ -185,6 +217,11 @@ namespace SageFrame.Localization
             }
             return flag;
         }
+        /// <summary>
+        /// RollBack module installation if error occur during  installation.
+        /// </summary>
+        /// <param name="ModuleID">ModuleID</param>
+        /// <param name="PortalID">PortalID</param>
         public void ModulesRollBack(int ModuleID, int PortalID)
         {
             try
@@ -197,7 +234,11 @@ namespace SageFrame.Localization
                 //ProcessException(e);
             }
         }
-
+        /// <summary>
+        /// Fills package information.
+        /// </summary>
+        /// <param name="package">Object of PackageInfo class.</param>
+        /// <returns>Object of PackageInfo.</returns>
         public PackageInfo fillPackageInfo(PackageInfo package)
         {
             XmlDocument doc = new XmlDocument();
@@ -222,7 +263,13 @@ namespace SageFrame.Localization
             }
             return package;
         }
-
+        /// <summary>
+        /// Package installation.
+        /// </summary>
+        /// <param name="package">Object of PackageInfo.</param>
+        /// <param name="destinationpath">Destinationpath</param>
+        /// <param name="isOverWrite">IsOverWrite</param>
+        /// <param name="selectedModules">List of object of FileDetails.</param>
         public void InstallPackage(PackageInfo package, string destinationpath, bool isOverWrite, List<FileDetails> selectedModules)
         {
             XmlDocument doc = new XmlDocument();
@@ -271,7 +318,12 @@ namespace SageFrame.Localization
 
             DeleteTempDirectory(package.TempFolderPath);
         }
-
+        /// <summary>
+        /// Compares existing files.
+        /// </summary>
+        /// <param name="package">Object of PackageInfo. </param>
+        /// <param name="destinationpath">Destinationpath</param>
+        /// <returns>List of FileDetails. </returns>
         public static List<FileDetails> CompareExistingFiles(PackageInfo package, string destinationpath)
         {
             XmlDocument doc = new XmlDocument();
@@ -307,7 +359,10 @@ namespace SageFrame.Localization
             }
             return lstFiles;
         }
-
+        /// <summary>
+        /// Deletes temporary directory.
+        /// </summary>
+        /// <param name="TempDirectory">TempDirectory</param>
         public void DeleteTempDirectory(string TempDirectory)
         {
             try

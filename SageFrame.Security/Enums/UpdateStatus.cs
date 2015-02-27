@@ -13,6 +13,9 @@ using System.Text;
 
 namespace SageFrame.Security.Enums
 {
+    /// <summary>
+    /// Enum for user update status.
+    /// </summary>
     public enum UserUpdateStatus
     {
         USER_UPDATE_SUCCESSFUL=0,

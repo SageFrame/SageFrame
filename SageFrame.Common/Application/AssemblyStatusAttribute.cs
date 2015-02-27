@@ -12,6 +12,9 @@ using System.Web;
 
 namespace SageFrame.Application
 {
+    /// <summary>
+    /// Options for application release mode.
+    /// </summary>
     public enum ReleaseMode
     {
 
@@ -26,12 +29,18 @@ namespace SageFrame.Application
     public class AssemblyStatusAttribute : System.Attribute
     {
         private ReleaseMode _releaseMode;
+        /// <summary>
+        /// Initializes a new instance of the application status.
+        /// </summary>
+        /// <param name="releaseMode">Release mode.</param>
 
         public AssemblyStatusAttribute(ReleaseMode releaseMode)
         {
             _releaseMode = releaseMode;
         }
-
+        /// <summary>
+        /// Get release mode.
+        /// </summary>
         public ReleaseMode Status
         {
             get

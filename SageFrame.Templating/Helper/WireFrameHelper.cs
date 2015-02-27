@@ -17,10 +17,18 @@ using System.Web;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Helper class of wireframe.
+    /// </summary>
     public class WireFrameHelper
     {
         public static List<CustomWrapper> lstWrapper = new List<CustomWrapper>();
         public static int _Mode = 0;
+        /// <summary>
+        /// Information about template.
+        /// </summary>
+        /// <param name="lstXml">List of XmlTag class.</param>
+        /// <returns>Object of TemplateInfo class.</returns>
         public static TemplateInfo CreateTemplateObject(List<XmlTag> lstXml)
         {
             TemplateInfo objTemp = new TemplateInfo();
@@ -48,7 +56,10 @@ namespace SageFrame.Templating
             }
             return objTemp;
         }
-
+        /// <summary>
+        /// Information about empty template.
+        /// </summary>
+        /// <returns>Object of TemplateInfo class.</returns>
         public static TemplateInfo CreateEmptyTemplateObject()
         {
             TemplateInfo tempObj = new TemplateInfo();
@@ -58,12 +69,24 @@ namespace SageFrame.Templating
             tempObj.Website = "N/A";
             return tempObj;
         }
-
+        /// <summary>
+        /// Obtain left tag,
+        /// </summary>
+        /// <returns>Object of XmlTag class.</returns>
         public static XmlTag GetLeftTag()
         {
             return (TagBuilder(XmlTagTypes.Placeholder.ToString().ToLower(), XmlTagTypes.Placeholder, XmlAttributeTypes.NAME, XmlAttributeTypes.NAME.ToString().ToLower(), "leftA", ""));
         }
-
+        /// <summary>
+        /// Build XML tag.
+        /// </summary>
+        /// <param name="tagName">Tag name.</param>
+        /// <param name="type">XML tag types.<see cref="T:SageFrame.Templating.xmlparser.XmlTagTypes"/></param>
+        /// <param name="attType">XML attribute type.<see cref="T:SageFrame.Templating.xmlparser.XmlAttributeTypes"/></param>
+        /// <param name="attName">Attribute name.</param>
+        /// <param name="attValue">Attribute value.</param>
+        /// <param name="innerHTML">Inner HTML.</param>
+        /// <returns>Object of XmlTag class.</returns>
         public static XmlTag TagBuilder(string tagName, XmlTagTypes type, XmlAttributeTypes attType, string attName, string attValue, string innerHTML)
         {
             XmlTag tag = new XmlTag();
@@ -73,7 +96,13 @@ namespace SageFrame.Templating
             tag.InnerHtml = innerHTML;
             return tag;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attName">Attribute name.</param>
+        /// <param name="attValue">Attribute value.</param>
+        /// <param name="attType">XML attribute type.<see cref="T:SageFrame.Templating.xmlparser.XmlAttributeTypes"/></param>
+        /// <returns>List of LayoutAttribute class.</returns>
         public static List<LayoutAttribute> AddAttributes(string attName, string attValue, XmlAttributeTypes attType)
         {
             List<LayoutAttribute> lstAttributes = new List<LayoutAttribute>();

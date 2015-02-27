@@ -22,7 +22,10 @@ using System.Text.RegularExpressions;
 namespace SageFrame.Web.Common.SEO
 {
     public class SEOHelper
-    {        
+    { 
+        /// <summary>
+        /// Seo Helper.
+        /// </summary>
         public SEOHelper()
         {
             //
@@ -62,7 +65,13 @@ namespace SageFrame.Web.Common.SEO
                     }
                 }
         }
-
+        /// <summary>
+        /// Render CSS path.
+        /// </summary>
+        /// <param name="page">Page instance</param>
+        /// <param name="name">name</param>
+        /// <param name="cssFilePath">FilePath</param>
+        /// <param name="OverwriteExisting">Overwrite existing path if exists.</param>
         public static void RenderCSSPath(Page page, string name, string cssFilePath, bool OverwriteExisting)
         {
             if (page == null || page.Header == null)
@@ -174,7 +183,11 @@ namespace SageFrame.Web.Common.SEO
                 name2 = name2.Replace("__", "_");
             return HttpContext.Current.Server.UrlEncode(name2);
         }
-
+        /// <summary>
+        /// Remove unnecessary HTML tag.
+        /// </summary>
+        /// <param name="stringWithHTML">string with HTML tag.</param>
+        /// <returns>Return replaced string.</returns>
         public string RemoveUnwantedHTMLTAG(string stringWithHTML)
         {
             try

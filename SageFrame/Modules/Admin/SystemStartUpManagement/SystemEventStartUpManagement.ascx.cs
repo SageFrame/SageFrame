@@ -25,8 +25,7 @@ public partial class Modules_Admin_SystemStartUpManagement_SystemEventStartUpMan
         try
         {
             if (!IsPostBack)
-            {
-                AddImageUrls();
+            {               
                 ClearForm();
                 BindData();
                 pnlSystemEventStartUpList.Style.Add("display", "block");
@@ -36,12 +35,6 @@ public partial class Modules_Admin_SystemStartUpManagement_SystemEventStartUpMan
         {
             ProcessException(ex);
         }
-    }
-    private void AddImageUrls()
-    {
-        imbSave.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
-        imbCancel.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-        imbAddNew.ImageUrl = GetTemplateImageUrl("imgadd.png", true);
     }
     private void BindData()
     {

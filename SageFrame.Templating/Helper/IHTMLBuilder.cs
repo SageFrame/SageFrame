@@ -14,6 +14,9 @@ using System.IO;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Interface for HTMLBuilder.
+    /// </summary>
     public interface IHTMLBuilder
     {
         string GenerateOuterWrappers();

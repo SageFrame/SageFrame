@@ -25,6 +25,9 @@ using System.Xml.Linq;
 
 namespace SageFrame.Web.Templates.Payment
 {
+    /// <summary>
+    /// IConfigurePaymentMethodModule
+    /// </summary>
     public interface IConfigurePaymentMethodModule
     {
         void Save();

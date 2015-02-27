@@ -272,6 +272,10 @@
 
                 $('span.sfClosepopup').bind("click", function () {
                     $('#fade , #popuprel , #popuprel2 , #popuprel3,#newFolderPopUp,#uploadFilePopUp,#divMessagePopUp,#divEditPopUp,#divSuccessPopUp,#divConfirmPopUp,#divCopyFiles,#divEditMode').fadeOut();
+                    if ($('#divFileTree').find('a.cssClassTreeSelected').length > 0) {
+                        $('#divFileTree').find('a.cssClassTreeSelected').trigger('click');
+                        $('#divFileTree').find('a.cssClassTreeSelected').trigger('click');
+                    }
                     //jcrop_api.release();
                 });
 
@@ -512,6 +516,7 @@
                 });
             },
             DeleteFiles: function () {
+                var flag = 0;
                 $('#fileList tr').each(function (index) {
                     var checkbox = $(this).find("span[class='check']").find("input");
                     if ($(checkbox).prop("checked") == true) {
@@ -528,7 +533,11 @@
                             data: param,
                             dataType: "json",
                             success: function (msg) {
-                                SageFrame.messaging.show("Files Deleted Successfully", "Success");
+                                if (flag == 0) {
+                                    SageFrame.messaging.show("Files Deleted Successfully", "Success");
+                                    flag++
+                                }
+
                                 FileManager.config.CurrentPage = 1;
                                 FileManager.BindPageSizeDropdown(Directory);
                                 //FileManager.ShowMessagePopUp("divMessagePopUp", msg.d);
@@ -820,10 +829,10 @@
                             onSelect: showCoords
 
                         },
-        function () {
-            jcrop_api = this;
-        }
-        );
+                        function () {
+                            jcrop_api = this;
+                        }
+                        );
                     },
                     error: function (msg) { FileManager.errorFn(); }
                 });
@@ -1307,7 +1316,7 @@
                     }
                     if (navCount > 15) {
                         var html = "<ul class='simplePagerNav'>";
-                        html += '<li class="prev"><a href="#">Prev</a></li>';
+                        html += '<li class="prev"><a href="#"><</a></li>';
                         html += '<li class="nav"><a href="#">1</a></li>';
                         html += '<li class="nav"><a href="#">2</a></li>';
                         for (var i = 3; i <= 15; i++) {
@@ -1316,16 +1325,16 @@
                         html += '<li  class="MoreNav"><a href="#">.........</a></li>';
                         html += '<li class="nav"><a href="#">' + parseInt(navCount - 2) + '</a></li>';
                         html += '<li class="nav"><a href="#">' + parseInt(navCount - 1) + '</a></li>';
-                        html += '<li class="next"><a href="#">Next</a></li>';
+                        html += '<li class="next"><a href="#">></a></li>';
                         html += '</ul>';
                     }
                     else {
                         var html = "<ul class='simplePagerNav'>";
-                        html += '<li class="prev"><a href="#">Prev</a></li>';
+                        html += '<li class="prev"><a href="#"><</a></li>';
                         for (var i = 1; i <= navCount; i++) {
                             html += '<li class="nav"><a href="#">' + i + '</a></li>';
                         }
-                        html += '<li class="next"><a href="#">Next</a></li>';
+                        html += '<li class="next"><a href="#">></a></li>';
                         html += '</ul>';
                     }
 
@@ -1349,7 +1358,7 @@
                     var startIndex = currentPage - 5;
                     var endIndex = parseInt(currentPage) + 5;
                     var html = "<ul class='simplePagerNav'>";
-                    html += '<li class="prev"><a href="#">Prev</a></li>';
+                    html += '<li class="prev"><a href="#"><</a></li>';
                     html += '<li class="nav"><a href="#">1</a></li>';
                     html += '<li class="nav"><a href="#">2</a></li>';
                     html += '<li  class="MoreNav"><a href="#">.........</a></li>';
@@ -1359,7 +1368,7 @@
                     html += '<li  class="MoreNav"><a href="#">.........</a></li>';
                     html += '<li class="nav"><a href="#">' + parseInt(navCount - 2) + '</a></li>';
                     html += '<li class="nav"><a href="#">' + parseInt(navCount - 1) + '</a></li>';
-                    html += '<li class="next"><a href="#">Next</a></li>';
+                    html += '<li class="next"><a href="#">></a></li>';
                     html += '</ul>';
 
 
@@ -1385,7 +1394,7 @@
                     var endIndex = navCount;
 
                     var html = "<ul class='simplePagerNav'>";
-                    html += '<li class="prev"><a href="#">Prev</a></li>';
+                    html += '<li class="prev"><a href="#"><</a></li>';
                     html += '<li class="nav"><a href="#">1</a></li>';
                     html += '<li class="nav"><a href="#">2</a></li>';
                     html += '<li  class="MoreNav"><a href="#">.........</a></li>';
@@ -1393,7 +1402,7 @@
                         html += '<li class="nav"><a href="#">' + i + '</a></li>';
                     }
 
-                    html += '<li class="next"><a href="#">Next</a></li>';
+                    html += '<li class="next"><a href="#">></a></li>';
                     html += '</ul>';
                     $('#divPagerNav').append(html);
 
@@ -1465,11 +1474,10 @@
                 async: false
             });
         }
-    })(jQuery);  
-            
+    })(jQuery);
+
 </script>
-<h1>
-    Template File Manager</h1>
+<h1>Template File Manager</h1>
 <div class="sfFilemanageholder sfMargintop">
     <div id="divFileTreeOuter">
         <div id="divTab">
@@ -1520,8 +1528,7 @@
                                     <label id="imbSearch" class="icon-search sfBtn">
                                     </label>
                                 </td>
-                                <td>
-                                </td>
+                                <td></td>
                             </tr>
                         </table>
                     </div>
@@ -1540,11 +1547,11 @@
         </div>
     </div>
 </div>
-<div id="uploadFilePopUp" class="popupbox sfFormwrapper" style="height: 150px; width: 200px;
-    background-color: #fff">
+<div id="uploadFilePopUp" class="popupbox sfFormwrapper" style="height: 150px; width: 200px; background-color: #fff">
     <div class="ui-widget-header">
         <span class="ui-dialog-title" id="ui-dialog-title-divEditPopUp">Add File</span><a
-            href="#" class="ui-dialog-titlebar-close" role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">close</span></a></div>
+            href="#" class="ui-dialog-titlebar-close" role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">close</span></a>
+    </div>
     <table>
         <%-- <tr>
        <td colspan="3">
@@ -1564,7 +1571,8 @@
 <div id="newFolderPopUp" class="popupbox sfFormwrapper">
     <div class="ui-widget-header">
         <span class="ui-dialog-title" id="Span1">Add New Folder</span><a href="#" class="ui-dialog-titlebar-close ui-corner-all"
-            role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">close</span></a></div>
+            role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">close</span></a>
+    </div>
     <table>
         <tr>
             <td>
@@ -1573,8 +1581,7 @@
             <td>
                 <input type="text" id="txtFolderName" class="sfInputbox" />
             </td>
-            <td>
-            </td>
+            <td></td>
         </tr>
         <tr>
             <td>
@@ -1597,14 +1604,13 @@
         </tr>
     </table>
 </div>
-<div id="divEditMode" class="popupbox sfFormwrapper" style="height: 75%; width: 75%;
-    overflow: scroll; background-color: #fff">
+<div id="divEditMode" class="popupbox sfFormwrapper" style="height: 75%; width: 75%; overflow: scroll; background-color: #fff">
     <div class="ui-widget-header">
         <span class="ui-dialog-title" id="Span4">FileMgrPopUp</span><a href="#" class="ui-dialog-titlebar-close ui-corner-all"><span
-            class="sfClosepopup ui-icon ui-icon-closethick">close</span></a></div>
+            class="sfClosepopup ui-icon ui-icon-closethick">close</span></a>
+    </div>
     <div id="divImages">
-        <h2>
-            Edit Image</h2>
+        <h2>Edit Image</h2>
         <div id="divFileInforMation">
         </div>
         <table>
@@ -1665,8 +1671,7 @@
                 </td>
             </tr>
             <tr>
-                <td>
-                </td>
+                <td></td>
             </tr>
         </table>
     </div>
@@ -1688,7 +1693,8 @@
 <div id="divEditPopUp" class="popupbox sfFormwrapper">
     <div class="ui-widget-header">
         <span class="ui-dialog-title" id="Span2">Rename File</span><a href="#" class="ui-dialog-titlebar-close ui-corner-all"
-            role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">close</span></a></div>
+            role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">close</span></a>
+    </div>
     <table>
         <tr>
             <td width="80px">
@@ -1728,8 +1734,7 @@
             </td>
         </tr>--%>
         <tr>
-            <td colspan="2">
-            </td>
+            <td colspan="2"></td>
             <td>
                 <div class="sfButtonwrapper">
                     <input type="button" id="btnUpdateFile" value="Update" class="sfBtn" />
@@ -1741,7 +1746,8 @@
 <div id="divCopyFiles" class="popupbox">
     <div class="ui-widget-header">
         <span class="ui-dialog-title" id="Span3">Message</span><a href="#" class="ui-dialog-titlebar-close ui-corner-all"
-            role="button"><span class="sfClosepopup ui-icon ui-icon-closethick"> close</span></a></div>
+            role="button"><span class="sfClosepopup ui-icon ui-icon-closethick"> close</span></a>
+    </div>
     <p id="copyMessage">
     </p>
     <div class="sfButtonwrapper">
@@ -1750,16 +1756,16 @@
 </div>
 <div id="divMessagePopUp" class="popupbox">
     <div class="ui-widget-header">
-        <a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">
-            close</span></a></div>
+        <a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">close</span></a>
+    </div>
     <div class="cssClassFileManagerPopUP" style="text-align: center">
         <span class="cssClassMessage sfFormlabel"></span>
     </div>
 </div>
 <div id="divSuccessPopUp" class="popupbox">
     <div class="ui-widget-header">
-        <a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">
-            close</span></a></div>
+        <a href="#" class="ui-dialog-titlebar-close ui-corner-all" role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">close</span></a>
+    </div>
     <div class="cssClassFileManagerPopUP" style="text-align: center">
         <span class="cssClassSuccessMessage sfFormlabel"></span>
     </div>
@@ -1767,7 +1773,8 @@
 <div id="divErrorPopUp" class="popupbox">
     <div class="ui-widget-header">
         <span class="ui-dialog-title" id="Span6">Add New Folder</span><a href="#" class="ui-dialog-titlebar-close ui-corner-all"
-            role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">close</span></a></div>
+            role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">close</span></a>
+    </div>
     <div class="cssClassFileManagerPopUP" style="text-align: center">
         <span class="cssClassErrorMessage sfFormlabel"></span>
     </div>
@@ -1775,7 +1782,8 @@
 <div id="divConfirmPopUp" class="popupbox sfFormwrapper">
     <div class="ui-widget-header">
         <span class="ui-dialog-title" id="Span7">Confirmation</span><a href="#" class="ui-dialog-titlebar-close ui-corner-all"
-            role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">close</span></a></div>
+            role="button"><span class="sfClosepopup ui-icon ui-icon-closethick">close</span></a>
+    </div>
     <span class="sfFormlabel sfConfirmmsg" style="text-align: center"></span>
     <div class="sfButtonwrapper" style="text-align: center">
         <input type="button" id="btnConfirmYes" value="Yes" style="float: none" class="sfBtn" />

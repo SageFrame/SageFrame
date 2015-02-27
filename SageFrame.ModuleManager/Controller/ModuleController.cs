@@ -14,8 +14,16 @@ using SageFrame.ModuleManager.DataProvider;
 
 namespace SageFrame.ModuleManager.Controller
 {
+    /// <summary>
+    /// Business logic for Module.
+    /// </summary>
     public class ModuleController
     {
+        /// <summary>
+        /// Add user module.
+        /// </summary>
+        /// <param name="usermodule"></param>
+        /// <returns>Object of UserModuleInfo class.</returns>
         public static string AddUserModule(UserModuleInfo usermodule)
         {
             try
@@ -29,7 +37,13 @@ namespace SageFrame.ModuleManager.Controller
                 throw;
             }
         }
-
+        /// <summary>
+        /// Obtain list of page modules.
+        /// </summary>
+        /// <param name="PageID">PageID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="IsHandheld">true if device is handheld.</param>
+        /// <returns>List of UserModuleInfo class.</returns>
         public static List<UserModuleInfo> GetPageModules(int PageID, int PortalID,bool IsHandheld)
         {
             try
@@ -42,7 +56,12 @@ namespace SageFrame.ModuleManager.Controller
                 throw;
             }
         }
-
+        /// <summary>
+        /// Delete user module.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="DeletedBy">User name.</param>
         public static void DeleteUserModule(int UserModuleID, int PortalID, string DeletedBy)
         {
             try
@@ -55,7 +74,10 @@ namespace SageFrame.ModuleManager.Controller
                 throw;
             }
         }
-
+        /// <summary>
+        /// Update page modules.
+        /// </summary>
+        /// <param name="lstPageModules">List of PageModuleInfo class.</param>
         public static void UpdatePageModule(List<PageModuleInfo> lstPageModules)
         {
 
@@ -69,7 +91,11 @@ namespace SageFrame.ModuleManager.Controller
                 throw;
             }
         }
-
+        /// <summary>
+        /// Obtain users page module.
+        /// </summary>
+        /// <param name="IsAdmin">true if nodules for admin.</param>
+        /// <returns>List of UserModuleInfo class.</returns>
         public static List<UserModuleInfo> GetPageUserModules(bool IsAdmin)
         {
             try
@@ -82,7 +108,12 @@ namespace SageFrame.ModuleManager.Controller
                 throw;
             }
         }
-
+        /// <summary>
+        /// Obtain user module details.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>Object of UserModuleInfo class.</returns>
         public static UserModuleInfo GetUserModuleDetails(int UserModuleID, int PortalID)
         {
             try
@@ -95,7 +126,10 @@ namespace SageFrame.ModuleManager.Controller
                 throw;
             }
         }
-
+        /// <summary>
+        /// Update user modules.
+        /// </summary>
+        /// <param name="module">Object of UserModuleInfo class.</param>
         public static void UpdateUserModule(UserModuleInfo module)
         {
             try
@@ -108,7 +142,12 @@ namespace SageFrame.ModuleManager.Controller
                 throw;
             }
         }
-
+        /// <summary>
+        /// Public created newly page.
+        /// </summary>
+        /// <param name="pageId">pageId</param>
+        /// <param name="isPublish">true if publish.</param>
+        /// <returns>true if publish.</returns>
         public static bool PublishPage(int pageId,bool isPublish)
         {
             return ModuleDataProvider.PublishPage(pageId,isPublish);

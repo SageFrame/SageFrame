@@ -296,9 +296,9 @@ public class SchedulerWebService : AuthenticateService
     }
 
     [WebMethod]
-    public int isFileUniqueTask(string FileName, int PortalID, int userModuleId, string UserName, string secureToken)
+    public int isFileUniqueTask(string FileName, int portalID, int userModuleId, string userName, string sageFrameSecureToken)
     {
-        if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+        if (IsPostAuthenticated(portalID, userModuleId, userName, sageFrameSecureToken))
         {
             //bool bIsReady = false;
 

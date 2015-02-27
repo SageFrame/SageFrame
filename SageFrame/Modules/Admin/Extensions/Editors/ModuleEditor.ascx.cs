@@ -66,7 +66,6 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 {
                     imbUninstall.Attributes.Add("onclick", "javascript:return confirm('" + GetSageMessage("Extensions", "ConfirmUninstallExtension") + "')");
 
-                    //AddImageUrls();
                     AddScript();
                     if (HttpContext.Current.Session["moduleid"] != null)
                     {
@@ -85,14 +84,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             }
         }
 
-        private void AddImageUrls()
-        {
-            //imbUpdate.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
-            //imbUninstall.ImageUrl = GetTemplateImageUrl("imgdelete.png", true);
-            //imbCancel.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-            //imbUpdateDefinition.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
-            //imbAddControl.ImageUrl = GetTemplateImageUrl("imgadd.png", true);
-        }
+
 
         private void AddScript()
         {
@@ -317,7 +309,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
         protected void imbUpdateDefinition_Click(object sender, EventArgs e)
         {
             try
-            {                
+            {
                 ModuleController objController = new ModuleController();
                 objController.UpdateModuleDefinitions(int.Parse(ddlDefinitions.SelectedValue), txtFriendlyName.Text, int.Parse(txtDefaultCacheTime.Text), true, true, DateTime.Now, GetPortalID, GetUsername);
                 BindModuleDefDropDown();
@@ -373,7 +365,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             ProcessCancelRequest(Request.RawUrl);
         }
 
-       
+
         protected void imbUninstall_Click(object sender, EventArgs e)
         {
             UninstallModule();
@@ -458,7 +450,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 }
             }
         }
-       
+
         private void ReadUninstallScriptAndDLLFiles(XmlDocument doc, string moduleFolderPath, Installers installerClass)
         {
             XmlElement root = doc.DocumentElement;
@@ -498,10 +490,10 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                     }
 
                     // check IModuleExtraCodeExecute interface is implemented or not for install/unInstall of module
-                    if (installerClass.IsIModuleExtraCodeInterfaceImplemented(doc))
-                    {
-                        installerClass.ExtraCodeOnUnInstallation(doc);
-                    }   
+                    //if (installerClass.IsIModuleExtraCodeInterfaceImplemented(doc))
+                    //{
+                    //    installerClass.ExtraCodeOnUnInstallation(doc);
+                    //}
                     DeleteAllDllsFromBin(dllFiles, moduleFolderPath);
                 }
             }
@@ -537,7 +529,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
         {
 
         }
-      
-       
-}
+
+
+    }
 }

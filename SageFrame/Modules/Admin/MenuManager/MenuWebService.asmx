@@ -90,6 +90,7 @@ public class MenuWebService : AuthenticateService
         if (IsPostAuthenticatedView(PortalID, userModuleId, UserName, secureToken))
         {
             MenuManagerDataController.AddSubText(PageID, SubText, IsActive, IsVisible);
+
         }
     }
 
@@ -217,6 +218,8 @@ public class MenuWebService : AuthenticateService
         {
             objInfo.ImageIcon = objInfo.ImageIcon == "" || objInfo.ImageIcon == null ? "" : objInfo.ImageIcon;
             MenuManagerDataController.AddExternalLink(objInfo);
+            ClearCache(objInfo.CultureCode, objInfo.PortalID);
+
         }
     }
 
@@ -231,13 +234,14 @@ public class MenuWebService : AuthenticateService
     }
 
     [WebMethod]
-    public void SortMenu(int MenuItemID, int ParentID, int BeforeID, int AfterID, int PortalID, int userModuleId, string UserName, string secureToken)
+    public void SortMenu(int MenuItemID, int ParentID, int BeforeID, int AfterID, int PortalID, int userModuleId, string UserName, string secureToken, string cultureCode)
     {
         try
         {
             if (IsPostAuthenticatedView(PortalID, userModuleId, UserName, secureToken))
             {
                 MenuManagerDataController.SortMenu(MenuItemID, ParentID, BeforeID, AfterID, PortalID);
+                ClearCache(cultureCode, PortalID);
             }
         }
         catch (Exception)
@@ -259,11 +263,12 @@ public class MenuWebService : AuthenticateService
 
 
     [WebMethod]
-    public void AddSetting(List<MenuManagerInfo> lstSettings, string UserName, int UserModuleID, int PortalID, string secureToken)
+    public void AddSetting(List<MenuManagerInfo> lstSettings, string UserName, int UserModuleID, int PortalID, string secureToken, string CultureCode)
     {
         if (IsPostAuthenticatedView(PortalID, UserModuleID, UserName, secureToken))
         {
             MenuManagerDataController.AddSetting(lstSettings);
+            ClearCache(CultureCode, PortalID);
         }
     }
 
@@ -353,32 +358,29 @@ public class MenuWebService : AuthenticateService
     }
 
     [WebMethod]
-    public void DeleteLink(int MenuItemID, int PortalID, string UserName, int UserModuleID, string secureToken)
+    public void DeleteLink(int MenuItemID, int PortalID, string UserName, int UserModuleID, string secureToken, string CultureCode)
     {
         if (IsPostAuthenticatedView(PortalID, UserModuleID, UserName, secureToken))
         {
             MenuManagerDataController.DeleteLink(MenuItemID);
+            ClearCache(CultureCode, PortalID);
         }
     }
 
     [WebMethod]
-    public void SaveSageMenu(int UserModuleID, int PortalID, string SettingKey, string SettingValue, string UserName, string secureToken)
+    public void SaveSageMenu(int UserModuleID, int PortalID, string SettingKey, string SettingValue, string UserName, string secureToken, string CultureCode)
     {
         if (IsPostAuthenticatedView(PortalID, UserModuleID, UserName, secureToken))
         {
             MenuManagerDataController.UpdateSageMenuSelected(UserModuleID, PortalID, SettingKey, SettingValue);
+            ClearCache(CultureCode, PortalID);
         }
     }
-    
+
     public void ClearCache(string CultureCode, int PortalID)
     {
-
-        HttpRuntime.Cache.Remove(CultureCode + ".FrontMenu" + PortalID.ToString());
-        HttpRuntime.Cache.Remove(CultureCode + ".SideMenu" + PortalID.ToString());
-        HttpRuntime.Cache.Remove(CultureCode + ".FooterMenu" + PortalID.ToString());
+        SageFrame.Common.CacheHelper.Clear(CultureCode + ".FrontMenu" + PortalID.ToString());
+        SageFrame.Common.CacheHelper.Clear(CultureCode + ".SideMenu" + PortalID.ToString());
+        SageFrame.Common.CacheHelper.Clear(CultureCode + ".FooterMenu" + PortalID.ToString());
     }
-
-
-
-
 }

@@ -19,8 +19,15 @@ using SageFrame.Web.Utilities;
 
 namespace SageFrame.LogView
 {
+    /// <summary>
+    /// Manupulates data for Log.
+    /// </summary>
     public class LogProvider
     {
+        /// <summary>
+        /// Connects to database and returns log types.
+        /// </summary>
+        /// <returns>List of LogInfo class containing log types.</returns>
         public List<LogInfo> GetLogType()
         {
             try
@@ -30,12 +37,16 @@ namespace SageFrame.LogView
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
-
         }
 
+        /// <summary>
+        /// Connects to database and returns log view.
+        /// </summary>
+        /// <param name="PortalID">portalID</param>
+        /// <param name="LogType">logtype</param>
+        /// <returns>List of LogInfo class containing log's view</returns>
         public List<LogInfo> GetLogView(int PortalID, string LogType)
         {
             try
@@ -48,7 +59,6 @@ namespace SageFrame.LogView
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
 

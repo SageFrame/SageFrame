@@ -14,11 +14,21 @@ using SageFrame.Templating.xmlparser;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Helper class for parse block.
+    /// </summary>
     public class BlockParser
     {
         public static int Mode = 0;
         public static bool Flag = false;
         const string sfCol = "sfCol_";
+        /// <summary>
+        /// Obtain place holder.
+        /// </summary>
+        /// <param name="placeholder">Object of XmlTag class.</param>
+        /// <param name="lstWrapper">List of CustomWrapper class.</param>
+        /// <param name="_Mode">Mode</param>
+        /// <returns>String format of placeholder markup.</returns>
         public static string ProcessPlaceholder(XmlTag placeholder, List<CustomWrapper> lstWrapper, int _Mode)
         {
             Mode = _Mode;
@@ -79,6 +89,12 @@ namespace SageFrame.Templating
             }
             return sb.ToString();
         }
+        /// <summary>
+        /// Parsing fixed block.
+        /// </summary>
+        /// <param name="placeholder">Object of XmlTag class.</param>
+        /// <param name="lstWrapper">List of CustomWrapper class.</param>
+        /// <returns>String format of fixed block markup.</returns>
         public static string ParseFixedBlocks(XmlTag placeholder, List<CustomWrapper> lstWrapper)
         {
 
@@ -172,7 +188,7 @@ namespace SageFrame.Templating
                         sb.Append("<div " + styleClass + ">");
                     else
                         // sb.Append("<th " + styleClass + " style='" + customStyle + "'>");
-                        sb.Append("<th " + styleClass + " style='" + customStyle + "'>");
+                        sb.Append("<th " + styleClass + " class='" + customStyle + "'>");
                 }
                 sb.Append(Mode == 2 ? "<div class='sfWrapper'>" : "<div class='sfWrapper sfCurve'>");
                 sb.Append(HtmlBuilder.AddPlaceholder(positionsAr[i], Mode));
@@ -208,6 +224,12 @@ namespace SageFrame.Templating
 
             return sb.ToString();
         }
+        /// <summary>
+        /// Parsing normal block. 
+        /// </summary>
+        /// <param name="placeholder">object of XmlTag class.</param>
+        /// <param name="lstWrapper">List of CustomWrapper class. </param>
+        /// <returns>String format of normal block markup.</returns>
         static string ParseNormalBlocks(XmlTag placeholder, List<CustomWrapper> lstWrapper)
         {
             string pchName = string.Format("{0}{1}{2}", "sf", Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.NAME).ToLower(), "_mytable");
@@ -312,7 +334,7 @@ namespace SageFrame.Templating
                         //sb.Append("<div id=" + id + "  style='" + customStyle + "'>");
                         sb.Append("<div id=" + id + "  class='" + customStyle + "'>");
                     else
-                        sb.Append("<th id=" + id + " style='" + customStyle + "'>");
+                        sb.Append("<th id=" + id + " class='" + customStyle + "'>");
                 }
                 else
                 {
@@ -320,7 +342,7 @@ namespace SageFrame.Templating
                     //sb.Append("<div id=" + id + " style='" + customStyle + "'>");
                     if (!chkPch)
                     {
-                        sb.Append("<th id=" + id + " style='Width=100%'>");
+                        sb.Append("<th id=" + id + " style='Width=100%' class='sfCol_100'>");
                     }
                     else
                     {
@@ -375,6 +397,12 @@ namespace SageFrame.Templating
             //}
             return sb.ToString();
         }
+        /// <summary>
+        /// Parsing left right block.
+        /// </summary>
+        /// <param name="placeholder">Object of XmlTag class.</param>
+        /// <param name="lstWrapper">List of CustomWrapper class.</param>
+        /// <returns>String format of left right block markup.</returns>
         static string ParseNormalLeftRightBlocks(XmlTag placeholder, List<CustomWrapper> lstWrapper)
         {
 
@@ -465,6 +493,14 @@ namespace SageFrame.Templating
             }
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain middle placeholder.
+        /// </summary>
+        /// <param name="placeholder">Placeholders<see cref="T:SageFrame.Templating.Placeholders"/></param> 
+        /// <param name="middleblock">Object of XmlTag class.</param>
+        /// <param name="lstWrapper">List of CustomWrapper class.</param>
+        /// <param name="_Mode">Mode</param>
+        /// <returns>String format of middle palceholder markup.</returns>
         public static string ProcessMiddlePlaceholders(Placeholders placeholder, XmlTag middleblock, List<CustomWrapper> lstWrapper, int _Mode)
         {
             Mode = _Mode;
@@ -536,6 +572,12 @@ namespace SageFrame.Templating
 
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain block wrapper.
+        /// </summary>
+        /// <param name="pch">Object of  XmlTag class.</param>
+        /// <param name="wrapperdepth">List of wrapper depth.</param>
+        /// <returns>String format of block wrapper.</returns>
         public static string GenerateBlockWrappers(XmlTag pch, ref List<int> wrapperdepth)
         {
             StringBuilder sb = new StringBuilder();
@@ -589,6 +631,15 @@ namespace SageFrame.Templating
 
             return sb.ToString();
         }
+        /// <summary>
+        /// Obtain left right placeholder.
+        /// </summary>
+        /// <param name="placeholder">Placeholders<see cref="T:SageFrame.Templating.Placeholders"/></param> 
+        /// <param name="middleblock">Object of XmlTag class.</param>
+        /// <param name="lstWrapper">List of CustomWrapper class.</param>
+        /// <param name="_Mode">Mode</param>
+        /// <param name="Width">Width</param>
+        /// <returns>String format of placeholder</returns>
         public static string ProcessLeftRightPlaceholders(Placeholders placeholder, XmlTag middleblock, List<CustomWrapper> lstWrapper, int _Mode, string Width)
         {
             Mode = _Mode;
@@ -660,7 +711,10 @@ namespace SageFrame.Templating
 
             return sb.ToString();
         }
-
+        /// <summary>
+        /// Check file path.
+        /// </summary>
+        /// <param name="FileName">File name.</param>
         public static void CheckFilePath(string FileName)
         {
             if (FileName == "core")
@@ -668,6 +722,9 @@ namespace SageFrame.Templating
             else
                 Flag = false;
         }
+        /// <summary>
+        /// Check file path.
+        /// </summary>
         public static void CheckFilePath()
         {
             Flag = true;

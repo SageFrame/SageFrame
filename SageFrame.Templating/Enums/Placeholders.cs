@@ -13,6 +13,9 @@ using System.Text;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Enum for Placeholders.
+    /// </summary>
     public enum Placeholders
     {
         HEADER=1,

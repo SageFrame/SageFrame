@@ -14,8 +14,15 @@ using SageFrame.Web.Utilities;
 
 namespace SageFrame.ModuleMessage
 {
+    /// <summary>
+    /// Manupulates data for ModuleMessageDataProvider.
+    /// </summary>
     public class ModuleMessageDataProvider
     {
+        /// <summary>
+        /// Connect to database and obtain all modules.
+        /// </summary>
+        /// <returns>List of ModuleMessageInfo class.</returns>
         public static List<ModuleMessageInfo> GetAllModules()
         {
             try
@@ -30,7 +37,10 @@ namespace SageFrame.ModuleMessage
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and add module message.
+        /// </summary>
+        /// <param name="objModuleMessage">Object of ModuleMessageInfo class.</param>
         public static void AddModuleMessage(ModuleMessageInfo objModuleMessage)
         {
             try
@@ -54,6 +64,12 @@ namespace SageFrame.ModuleMessage
             }
 
         }
+        /// <summary>
+        /// Connect to database and obtain module message.
+        /// </summary>
+        /// <param name="ModuleID">ModuleID</param>
+        /// <param name="Culture">Culture code.</param>
+        /// <returns>Object of ModuleMessageInfo.</returns>
         public static ModuleMessageInfo GetModuleMessage(int ModuleID,string Culture)
         {
             try
@@ -72,6 +88,12 @@ namespace SageFrame.ModuleMessage
             }
 
         }
+        /// <summary>
+        /// Connect to database and obtain module message based on user module ID and culture code.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="Culture">Culture code.</param>
+        /// <returns>Object of ModuleMessageInfo class.</returns>
         public static ModuleMessageInfo GetModuleMessageByUserModuleID(int UserModuleID, string Culture)
         {
             try
@@ -90,7 +112,11 @@ namespace SageFrame.ModuleMessage
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and update message status.
+        /// </summary>
+        /// <param name="ModuleID">ModuleID</param>
+        /// <param name="IsActive">true if active.</param>
         public static void UpdateMessageStatus(int ModuleID, bool IsActive)
         {
             try

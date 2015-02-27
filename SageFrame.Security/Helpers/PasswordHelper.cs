@@ -15,8 +15,19 @@ using SageFrame.Security.Enums;
 
 namespace SageFrame.Security.Helpers
 {
+    /// <summary>
+    /// Application password helper.
+    /// </summary>
     public class PasswordHelper
     {
+        /// <summary>
+        /// Check for valid user.
+        /// </summary>
+        /// <param name="PasswordFormat">password format.</param>
+        /// <param name="passwordText">Password.</param>
+        /// <param name="passwordHash">Hash password.</param>
+        /// <param name="passwordSalt">Salt password.</param>
+        /// <returns>True for valid user.</returns>
         public static bool ValidateUser(int PasswordFormat,string passwordText, string passwordHash, string passwordSalt)
         {
             Crypto.Crypto c = new SageFrame.Security.Crypto.Crypto();
@@ -37,7 +48,13 @@ namespace SageFrame.Security.Helpers
             return verificationStatus;
 
         }
-
+        /// <summary>
+        /// Enforce password security.
+        /// </summary>
+        /// <param name="PasswordFormat">Password format.</param>
+        /// <param name="data">data</param>
+        /// <param name="PassWord">Password.</param>
+        /// <param name="PasswordSalt">Salt password.</param>
         public static void EnforcePasswordSecurity(int PasswordFormat, string data, out string PassWord, out string PasswordSalt)
         {
             Crypto.Crypto cryptObj = new Crypto.Crypto();

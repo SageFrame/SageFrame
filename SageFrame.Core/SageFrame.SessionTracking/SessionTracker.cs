@@ -20,6 +20,9 @@ using System.Web;
 
 namespace SageFrame.Web
 {
+    /// <summary>
+    /// Class containing the session details.
+    /// </summary>
     [Serializable]
     public class SessionTracker
     {
@@ -39,6 +42,9 @@ namespace SageFrame.Web
         private string _username;
         private string _insertSessionTrackerPages;
 
+        /// <summary>
+        /// Gets or sets session tracker ID
+        /// </summary>
         public string SessionTrackerID
         {
             get
@@ -51,6 +57,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets session visit count. 
+        /// </summary>
         public int VisitCount
         {
             get
@@ -59,6 +68,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets session visit count. 
+        /// </summary>
         public string OriginalReferrer
         {
             get
@@ -67,6 +79,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets session's original URL.
+        /// </summary>
         public string OriginalURL
         {
             get
@@ -75,6 +90,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets session 's referrer URL.
+        /// </summary>
         public string SessionReferrer
         {
             get
@@ -83,6 +101,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets session's URL.
+        /// </summary>
         public string SessionURL
         {
             get
@@ -91,6 +112,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets host user's address.
+        /// </summary>
         public string SessionUserHostAddress
         {
             get
@@ -99,6 +123,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets session's user agent.
+        /// </summary>
         public string SessionUserAgent
         {
             get
@@ -107,6 +134,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets arrylist of pages.
+        /// </summary>
         public ArrayList Pages
         {
             get
@@ -115,6 +145,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets request generated browser. 
+        /// </summary>
         public string Browser
         {
             get
@@ -123,6 +156,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets session crawler.
+        /// </summary>
         public string Crawler
         {
             get
@@ -131,6 +167,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets session  portal ID.
+        /// </summary>
         public string PortalID
         {
             get
@@ -143,6 +182,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets session user's name.
+        /// </summary>
         public string Username
         {
             get
@@ -155,6 +197,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Gets or sets page name.
+        /// </summary>
         public string InsertSessionTrackerPages
         {
             get
@@ -167,6 +212,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Initializes an instance of SessionTracker class.
+        /// </summary>
         public SessionTracker()
         {
             try
@@ -194,6 +242,10 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Adds page name to session recorded page.
+        /// </summary>
+        /// <param name="pageName">Page name.</param>
         public void AddPage(string pageName)
         {
             this._pages.Add((object)new SessionTrackerPage()
@@ -203,12 +255,19 @@ namespace SageFrame.Web
             });
         }
 
+        /// <summary>
+        /// Increases the page visit count.
+        /// </summary>
         public void IncrementVisitCount()
         {
             this._visitCount = HttpContext.Current.Request.Cookies.Get("VisitCount") != null ? (int.Parse(((object)HttpContext.Current.Request.Cookies.Get("VisitCount").Value).ToString()) + 1).ToString() : "1";
             this.addCookie("VisitCount", this._visitCount);
         }
 
+        /// <summary>
+        /// Sets original referer URL.
+        /// </summary>
+        /// <param name="val">Referer URL.</param>
         public void SetOriginalReferrer(string val)
         {
             if (HttpContext.Current.Request.Cookies.Get("OriginalReferrer") != null)
@@ -222,6 +281,10 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Sets original URL.
+        /// </summary>
+        /// <param name="val">Original URL.</param>
         public void SetOriginalURL(string val)
         {
             if (HttpContext.Current.Request.Cookies.Get("OriginalURL") != null)
@@ -235,6 +298,11 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Adds cookie's key and value.
+        /// </summary>
+        /// <param name="key">Cookie's key</param>
+        /// <param name="value">Cookie's value.</param>
         private void addCookie(string key, string value)
         {
             HttpContext.Current.Response.Cookies.Set(new HttpCookie(key, value)

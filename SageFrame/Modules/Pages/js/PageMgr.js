@@ -10,6 +10,7 @@
             CultureCode: 'en-US',
             baseURL: Path + 'Services/PagesWebService.asmx/',
             AppName: "/sageframe",
+            HostURL: "",
             StartupPage: 'Home',
             ActiveTemplateName: 'Default',
             PageExtension: ''
@@ -34,7 +35,9 @@
                 PortalID: p.PortalID,
                 arrUsers: [],
                 OldPage: "",
-                IsPageDuplicate: false
+                IsPageDuplicate: false,
+                lstAdminPages: [],
+                lstNormalPages: []
             },
             messages:
                 {
@@ -244,6 +247,8 @@
                 $('#btnSubmit').bind("click", function () {
                     $('#txtPageName').removeAttr("readonly").removeClass("sfDisable");
                     var refreshInterval = $('#txtRefreshInterval').val();
+                    SagePages.config.lstNormalPages = [];
+                    SagePages.config.lstAdminPages = [];
                     if (isNaN(refreshInterval)) {
                         $("#lblIntegerError").text('');
                         $('#txtRefreshInterval').after('<label class="Error"  id="lblIntegerError"><br/>Please Enter Positive Numeric Value.</label>');
@@ -265,7 +270,6 @@
                         var pageName = String($('#txtPageName').val());
                         var status = false;
                         SagePages.GetPages();
-                        //status = SagePages.config.IsPageDuplicate;
                         var pageList = $('#categoryTree li');
                         var pageID = $('#txtPageName').prop('title');
                         var pageList = $('#categoryTree li');
@@ -277,16 +281,43 @@
                                 return;
                             }
                         }
-                        $.each(pageList, function (index, item) {
-                            var self = $(this);
-                            var id = self.attr('id');
-                            if (id != pageID) {
-                                var pName = self.find('span.true').attr('pageName');
-                                if (pName.toLowerCase() == pageName.toLowerCase().trim().replace(/ /g, "-")) {
+                        if ($('#rdbFronMenu').prop('checked') == true) {
+                            $.each(pageList, function (index, item) {
+                                var self = $(this);
+                                var id = self.attr('id');
+                                if (id != pageID) {
+                                    var pName = self.find('span.true').attr('pageName');
+                                    SagePages.config.lstNormalPages.push(pName.toLowerCase())
+                                }
+                            });
+
+                        }
+                        else if ($('#rdbAdmin').prop('checked') == true) {
+                            $.each(pageList, function (index, item) {
+                                var self = $(this);
+                                var id = self.attr('id');
+                                if (id != pageID) {
+                                    var pName = self.find('span.true').attr('pageName');
+                                    SagePages.config.lstAdminPages.push(pName.toLowerCase())
+                                }
+                            });
+
+                        }
+
+                        if (SagePages.config.lstNormalPages.length > 0) {
+                            $.each(SagePages.config.lstNormalPages, function (index, item) {
+                                if (item == pageName.toLowerCase().trim().replace(/ /g, "-")) {
                                     status = true;
                                 }
-                            }
-                        });
+                            });
+                        }
+                        if (SagePages.config.lstAdminPages.length > 0) {
+                            $.each(SagePages.config.lstAdminPages, function (index, item) {
+                                if (item == pageName.toLowerCase().trim().replace(/ /g, "-")) {
+                                    status = true;
+                                }
+                            });
+                        }
                         if (!status) {
                             if ($('#txtPageName').val().length > 50 || $('#txtTitle').val().length > 60 || $('#txtDescription').val().length > 150 || $('#txtCaption').val().length > 25) {
                                 var messagehtml = '';
@@ -337,6 +368,12 @@
                                 $('#txtPageName').after("<label class='sfError'><br/>Contains Invalid Characters</label>");
                             }
                             else {
+                                if ($('#rdbFronMenu').prop('checked') == true) {
+                                    SagePages.config.lstNormalPages.push(pageName.toLowerCase().trim().replace(/ /g, "-"));
+                                }
+                                else if ($('#rdbAdmin').prop('checked') == true) {
+                                    SagePages.config.lstAdminPages.push(pageName.toLowerCase().trim().replace(/ /g, "-"));
+                                }
                                 SagePages.AddUpdatePage();
                                 $("#flIcon").next('.filename').html('No file selected.');
                                 $('#txtPageName').next("label").remove();
@@ -384,7 +421,6 @@
                     SagePages.PreviewPage();
                 });
                 $('label.sfError').remove();
-
                 $('.sfPageDetailCancel').on('click', function () {
                     $('#imbPageCancel').click();
                 });
@@ -437,9 +473,9 @@
                             return ConfirmDialog(this, 'message', "The image size is too large. Should be less than 1mb");
                         }
                         var pageimage = file.split(" ").join("_");
-                        var filePath = p.AppName + "/PageImages/" + pageimage;
+                        var filePath = p.HostURL + "/PageImages/" + pageimage;
                         $('span.filename').text(pageimage);
-                        var html = '<img title="' + pageimage + '" src="' + filePath + '" /><span class="deleteIcon"><img class="delete" src=' + SageFrame.utils.GetAdminImage("delete.png") + '></span>';
+                        var html = '<img title="' + pageimage + '" src="' + filePath + '" /><span class="deleteIcon"><label class="sfBtn icon-close"></label></span>';
                         $('div.cssClassUploadFiles').html(html);
                     }
                 });
@@ -456,7 +492,7 @@
                 }
                 $.each(parentPages, function (index, item) {
                     if (item.PageID != selectedpage && item.ParentID != selectedpage)
-                        html += '<option value=' + item.PageID + '>' +String(item.PageName).replace(new RegExp("-", "g"), ' ') + '</option>';
+                        html += '<option value=' + item.PageID + '>' + String(item.PageName).replace(new RegExp("-", "g"), ' ') + '</option>';
                 });
                 $('#cboParentPage').html(html);
             },
@@ -714,9 +750,9 @@
                             return ConfirmDialog(this, 'message', "The image size is too large. Should be less than 1mb");
                         }
                         var pageimage = file.split(" ").join("_");
-                        var filePath = p.AppName + "/PageImages/" + pageimage;
+                        var filePath = p.HostURL + "/PageImages/" + pageimage;
                         $('span.filename').text(pageimage);
-                        var html = '<img title="' + pageimage + '" src="' + filePath + '" /><span class="deleteIcon"><img class="delete" src=' + SageFrame.utils.GetAdminImage("delete.png") + '></span>';
+                        var html = '<img title="' + pageimage + '" src="' + filePath + '" /><span class="deleteIcon"><label class="sfBtn icon-close"></label></span>';
                         $('div.cssClassUploadFiles').html(html);
                     }
                 });
@@ -728,6 +764,12 @@
                 }
                 else {
                     SageFrame.messaging.show(SageFrame.messaging.GetLocalizedMessage("en-US", "PageManager", "PageUpdatedSuccessful"), "Success");
+                }
+                if ($('#rdbFronMenu').prop('checked') == true) {
+                    SagePages.config.lstNormalPages = [];
+                }
+                else if ($('#rdbAdmin').prop('checked') == true) {
+                    SagePages.config.lstAdminPages = [];
                 }
                 if (returnValue == "2" || returnValue == "3") {
                     $('#categoryTree').html('');

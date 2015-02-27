@@ -15,8 +15,15 @@ using System.Web.Hosting;
 
 namespace SageFrame.Localization
 {
+    /// <summary>
+    /// Description for XmlHelper for Localization .
+    /// </summary>
     public class XMLHelper
-    {
+    { 
+        /// <summary>
+        /// Obtains Xml writer settings.
+        /// </summary>
+        /// <returns>Object of XmlWriterSettings.</returns>
         public static XmlWriterSettings GetXmlWriterSettings()
         {
             XmlWriterSettings settings = new XmlWriterSettings();
@@ -25,6 +32,11 @@ namespace SageFrame.Localization
             settings.Indent = true;
             return settings;
         }
+        /// <summary>
+        /// Obtains package manifest.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns>Object of PackageInfo.</returns>
         public static PackageInfo GetPackageManifest(string path)
         {
             PackageInfo package = new PackageInfo();

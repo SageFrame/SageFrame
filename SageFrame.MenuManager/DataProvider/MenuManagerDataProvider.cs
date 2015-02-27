@@ -17,8 +17,17 @@ using SageFrame.Pages;
 
 namespace SageFrame.MenuManager
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MenuManagerDataProvider
     {
+        /// <summary>
+        /// Connect to database and obtain menu list based on user name and PortalID.
+        /// </summary>
+        /// <param name="UserName">User name.</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>List of MenuManagerInfo class.</returns>
         public static List<MenuManagerInfo> GetMenuList(string UserName, int PortalID)
         {
             try
@@ -36,6 +45,15 @@ namespace SageFrame.MenuManager
             }
 
         }
+        /// <summary>
+        /// Update menu.
+        /// </summary>
+        /// <param name="lstMenuPermissions">List of MenuPermissionInfo class.</param>
+        /// <param name="MenuID">MenuID</param>
+        /// <param name="MenuName">Menu name.</param>
+        /// <param name="MenuType">Menu type.</param>
+        /// <param name="IsDefault">true if default menu.</param>
+        /// <param name="PortalID">PortalID</param>
         public static void UpdateMenu(List<MenuPermissionInfo> lstMenuPermissions, int MenuID, string MenuName, string MenuType, bool IsDefault, int PortalID)
         {
             string sp = "[dbo].[usp_MenuMgrUpdateMenu]";
@@ -58,7 +76,13 @@ namespace SageFrame.MenuManager
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connect to database and obtain application menu list based on user name , UserModuleID and PortalID.
+        /// </summary>
+        /// <param name="UserName">User name.</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>List of MenuManagerInfo class.</returns>
         public static List<MenuManagerInfo> GetSageMenuList(string UserName, int UserModuleID, int PortalID)
         {
             try
@@ -77,6 +101,11 @@ namespace SageFrame.MenuManager
             }
 
         }
+        /// <summary>
+        /// Connect to database and check for default menu.
+        /// </summary>
+        /// <param name="MenuID">MenuID</param>
+        /// <returns>List of MenuManagerInfo class.</returns>
         public static List<MenuManagerInfo> CheckDefaultMenu(int MenuID)
         {
             try
@@ -93,6 +122,11 @@ namespace SageFrame.MenuManager
             }
 
         }
+        /// <summary>
+        /// Connect to datatbase and obtain all menu items based on MenuID.
+        /// </summary>
+        /// <param name="MenuID">MenuID</param>
+        /// <returns>List of MenuManagerInfo class.</returns>
         public static List<MenuManagerInfo> GetAllMenuItem(int MenuID)
         {
             try
@@ -109,6 +143,12 @@ namespace SageFrame.MenuManager
             }
 
         }
+        /// <summary>
+        /// Connect to database and obtain menu items based on UserModuleID and PortalID.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>List of MenuManagerInfo class.</returns>
         public static List<MenuManagerInfo> GetAllMenuItems(int UserModuleID, int PortalID)
         {
             try
@@ -126,7 +166,13 @@ namespace SageFrame.MenuManager
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and obtain application menu.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">User name.</param>
+        /// <returns>List of MenuManagerInfo class.</returns>
         public static List<MenuManagerInfo> GetSageMenu(int UserModuleID, int PortalID, string UserName)
         {
             try
@@ -145,6 +191,14 @@ namespace SageFrame.MenuManager
             }
 
         }
+        /// <summary>
+        /// Connect to database and obtain application localized menu.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">User name.</param>
+        /// <param name="CultureName">Culture name.</param>
+        /// <returns>List of MenuManagerInfo class.</returns>
         public static List<MenuManagerInfo> GetSageMenu_Localized(int UserModuleID, int PortalID, string UserName, string CultureName)
         {
             try
@@ -164,7 +218,14 @@ namespace SageFrame.MenuManager
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and add new menu.
+        /// </summary>
+        /// <param name="lstMenuPermissions">List of menu permission.</param>
+        /// <param name="MenuName">Menu name.</param>
+        /// <param name="MenuType">Menu type.</param>
+        /// <param name="IsDefault">true for default menu.</param>
+        /// <param name="PortalID">PortalID</param>
         public static void AddNewMenu(List<MenuPermissionInfo> lstMenuPermissions, string MenuName, string MenuType, bool IsDefault, int PortalID)
         {
             string sp = "[dbo].[usp_MenuMgrAddNewMenu]";
@@ -205,7 +266,13 @@ namespace SageFrame.MenuManager
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connect to database and add sub text.
+        /// </summary>
+        /// <param name="PageID">PageID</param>
+        /// <param name="SubText">Sub text contain.</param>
+        /// <param name="IsActive"> true for active.</param>
+        /// <param name="IsVisible">true for visibility.</param>
         public static void AddSubText(int PageID, string SubText, bool IsActive, bool IsVisible)
         {
             string sp = "[dbo].[usp_MenuMgrAddSubText]";
@@ -225,6 +292,10 @@ namespace SageFrame.MenuManager
                 throw;
             }
         }
+        /// <summary>
+        /// Connect to database and delete existing menu based on MenuID.
+        /// </summary>
+        /// <param name="MenuID">MenuID</param>
         public static void DeleteMenu(int MenuID)
         {
             string sp = "[dbo].[usp_MenuMgrDeleteMenu]";
@@ -241,7 +312,13 @@ namespace SageFrame.MenuManager
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connect to database and obtain pages beside admin pages.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">User name.</param>
+        /// <param name="CultureCode">Culture code.</param>
+        /// <returns>List of PageEntity class. </returns>
         public static List<PageEntity> GetNormalPage(int PortalID, string UserName, string CultureCode)
         {
             List<PageEntity> lstPages = new List<PageEntity>();
@@ -272,6 +349,12 @@ namespace SageFrame.MenuManager
             }
 
         }
+        /// <summary>
+        /// Obtain child pages.
+        /// </summary>
+        /// <param name="pageList">List of PageEntity class.</param>
+        /// <param name="parent">Object of PageEntity class. </param>
+        /// <param name="lstPages">List of PageEntity class</param>
         public static void GetChildPages(ref List<PageEntity> pageList, PageEntity parent, List<PageEntity> lstPages)
         {
             foreach (PageEntity obj in lstPages)
@@ -286,6 +369,11 @@ namespace SageFrame.MenuManager
                 }
             }
         }
+        /// <summary>
+        /// Obtain prefix based on level.
+        /// </summary>
+        /// <param name="Level">Menu item level.</param>
+        /// <returns>Menu items with prefix.</returns>
         public static string GetPrefix(int Level)
         {
             string prefix = "";
@@ -295,7 +383,13 @@ namespace SageFrame.MenuManager
             }
             return prefix;
         }
-
+        /// <summary>
+        /// Connect to database and obtain admin pages.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">User name.</param>
+        /// <param name="CultureCode">Culture code.</param>
+        /// <returns>List of MenuManagerInfo class.</returns>
         public static List<MenuManagerInfo> GetAdminPage(int PortalID, string UserName, string CultureCode)
         {
             List<MenuManagerInfo> lstPages = new List<MenuManagerInfo>();
@@ -306,7 +400,7 @@ namespace SageFrame.MenuManager
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserName", UserName));
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@CultureCode", CultureCode));
-            SqlDataReader SQLReader= null;
+            SqlDataReader SQLReader = null;
             try
             {
                 SQLHandler sagesql = new SQLHandler();
@@ -342,7 +436,10 @@ namespace SageFrame.MenuManager
             }
         }
 
-
+        /// <summary>
+        /// Connect to database and add menu item.
+        /// </summary>
+        /// <param name="MenuItems">Object of MenuManagerInfo.</param>
         public static void AddMenuItem(MenuManagerInfo MenuItems)
         {
             string sp = "[dbo].[usp_MenuMgrAddMenuItem]";
@@ -376,7 +473,10 @@ namespace SageFrame.MenuManager
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and add external link.
+        /// </summary>
+        /// <param name="MenuItems">Object of MenuManagerInfo.</param>
         public static void AddExternalLink(MenuManagerInfo MenuItems)
         {
             string sp = "[dbo].[usp_MenuMgrAddExternalLink]";
@@ -407,7 +507,10 @@ namespace SageFrame.MenuManager
             }
 
         }
-
+        /// <summary>
+        ///Connect to database and add html content.
+        /// </summary>
+        /// <param name="MenuItems">Object of MenuManagerInfo.</param>
         public static void AddHtmlContent(MenuManagerInfo MenuItems)
         {
             string sp = "[dbo].[usp_MenuMgrAddHtmlContent]";
@@ -437,7 +540,14 @@ namespace SageFrame.MenuManager
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and sort menu.
+        /// </summary>
+        /// <param name="MenuItemID">MenuItemID</param>
+        /// <param name="ParentID">Menu item parent ID.</param>
+        /// <param name="BeforeID">Previous MenuItemID.</param>
+        /// <param name="AfterID">Next MenuItemID.</param>
+        /// <param name="PortalID">PortalID</param>
         public static void SortMenu(int MenuItemID, int ParentID, int BeforeID, int AfterID, int PortalID)
         {
             string sp = "[dbo].[usp_MenuMgrSortMenu]";
@@ -461,7 +571,11 @@ namespace SageFrame.MenuManager
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and obtain menu item details.
+        /// </summary>
+        /// <param name="MenuItemID">MenuItemID</param>
+        /// <returns>Object of MenuManagerInfo.</returns>
         public static MenuManagerInfo GetMenuItemDetails(int MenuItemID)
         {
             List<MenuManagerInfo> lstPages = new List<MenuManagerInfo>();
@@ -479,7 +593,10 @@ namespace SageFrame.MenuManager
                 throw e;
             }
         }
-
+        /// <summary>
+        /// Connect to database and add menu settings.
+        /// </summary>
+        /// <param name="objInfo">List of MenuManagerInfo class.</param>
         public static void AddSetting(List<MenuManagerInfo> objInfo)
         {
             foreach (MenuManagerInfo obj in objInfo)
@@ -506,7 +623,12 @@ namespace SageFrame.MenuManager
             }
 
         }
-
+        /// <summary>
+        /// Connect to database and obtain menu setting based on PortalID and MenuID.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="MenuID">MenuID</param>
+        /// <returns>Object of MenuManagerInfo.</returns>
         public static MenuManagerInfo GetMenuSetting(int PortalID, int MenuID)
         {
             MenuManagerInfo objSetting = new MenuManagerInfo();
@@ -528,6 +650,12 @@ namespace SageFrame.MenuManager
 
             return objSetting;
         }
+        /// <summary>
+        /// Connect to database and obtain menu permission based on PortalID and MenuID.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="MenuID">MenuID</param>
+        /// <returns>List of MenuPermissionInfo class.</returns>
         public static List<MenuPermissionInfo> GetMenuPermission(int PortalID, int MenuID)
         {
 
@@ -547,6 +675,12 @@ namespace SageFrame.MenuManager
             }
 
         }
+        /// <summary>
+        /// Connect to database and add menu permissions.
+        /// </summary>
+        /// <param name="lstMenuPermissions">List of MenuPermissionInfo class.</param>
+        /// <param name="MenuID">MenuID</param>
+        /// <param name="PortalID">PortalID</param>
         public static void AddMenuPermission(List<MenuPermissionInfo> lstMenuPermissions, int MenuID, int PortalID)
         {
 
@@ -591,7 +725,10 @@ namespace SageFrame.MenuManager
             }
         }
 
-
+        /// <summary>
+        /// Connect to database and delete menu link based on MenuItemID.
+        /// </summary>
+        /// <param name="MenuItemID">MenuItemID</param>
         public static void DeleteLink(int MenuItemID)
         {
             string sp = "[dbo].[usp_MenuMgrDeleteLink]";
@@ -608,7 +745,13 @@ namespace SageFrame.MenuManager
                 throw;
             }
         }
-
+        /// <summary>
+        /// Connect to database and update application selected menu.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="SettingKey">Application setting key.</param>
+        /// <param name="SettingValue">Application setting value.</param>
         public static void UpdateSageMenuSelected(int UserModuleID, int PortalID, string SettingKey, string SettingValue)
         {
             string sp = "[dbo].[usp_SageMenuUpdateSelectedMenu]";
@@ -628,6 +771,12 @@ namespace SageFrame.MenuManager
                 throw;
             }
         }
+        /// <summary>
+        /// Connect to database and obtain pages for sitemap.
+        /// </summary>
+        /// <param name="UserName">User name.</param>
+        /// <param name="CultureCode">Culture code.</param>
+        /// <returns>List of SitemapInfo class.</returns>
         public static List<SitemapInfo> GetSiteMapPages(string UserName, string CultureCode)
         {
             List<SitemapInfo> lstPages = new List<SitemapInfo>();

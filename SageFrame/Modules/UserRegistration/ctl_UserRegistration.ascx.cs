@@ -249,9 +249,9 @@ namespace SageFrame.Modules.UserRegistration
                     bool isUserActive = UserRegistrationType == 2 ? true : false;
                     UserInfo objUser = new UserInfo();
                     objUser.ApplicationName = Membership.ApplicationName;
-                    objUser.FirstName = FirstName.Text;
-                    objUser.UserName = UserName.Text;
-                    objUser.LastName = LastName.Text;
+                    objUser.FirstName = FirstName.Text.Trim();
+                    objUser.UserName = UserName.Text.Trim();
+                    objUser.LastName = LastName.Text.Trim();
                     string Pwd, PasswordSalt;
                     PasswordHelper.EnforcePasswordSecurity(_member.PasswordFormat, Password.Text, out Pwd, out PasswordSalt);
                     objUser.Password = Pwd;
@@ -288,7 +288,7 @@ namespace SageFrame.Modules.UserRegistration
                     {
                         try
                         {
-                            MembershipUser userInfo = Membership.GetUser(UserName.Text);
+                            MembershipUser userInfo = Membership.GetUser(UserName.Text.Trim());
                             if (chkIsSubscribeNewsLetter.Checked)
                             {
                                 int? newID = 0;
@@ -408,7 +408,7 @@ namespace SageFrame.Modules.UserRegistration
             string strRoles = string.Empty;
             MembershipController member = new MembershipController();
             RoleController role = new RoleController();
-            UserInfo user = member.GetUserDetails(GetPortalID, UserName.Text);
+            UserInfo user = member.GetUserDetails(GetPortalID, UserName.Text.Trim());
 
             if (!(string.IsNullOrEmpty(UserName.Text) && string.IsNullOrEmpty(Password.Text)))
             {

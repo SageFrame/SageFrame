@@ -13,6 +13,9 @@ using System.Text.RegularExpressions;
 
 namespace SageFrame.Common.CommonFunction
 {
+   /// <summary>
+    ///Description for HTML helper.
+   /// </summary>
     public class HTMLHelper
     {
         /// <summary>

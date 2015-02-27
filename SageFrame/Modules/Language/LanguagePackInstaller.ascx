@@ -12,7 +12,7 @@
             <div class="sfButtonwrapper">
                 <label class="sfLocale sfBtn">
                     Next <i class="icon-arrow-slimdouble-e"></i>
-                    <asp:Button ID="StartNextButton" CssClass="sfBtn" runat="server" CommandName="MoveNext"
+                    <asp:Button ID="StartNextButton" runat="server" CommandName="MoveNext"
                         Text="" CausesValidation="False" meta:resourcekey="StartNextButtonResource1" />
                 </label>
             </div>
@@ -148,7 +148,7 @@
             <div class="sfButtonwrapper">
              <label class="sfLocale sfBtn">Previous <i class="icon-arrow-slimdouble-w"></i>
                 <asp:Button ID="StepPreviousButton" runat="server" CausesValidation="False" Text=""
-                    CssClass="sfBtn" CommandName="MovePrevious" meta:resourcekey="StepPreviousButtonResource1" />
+                     CommandName="MovePrevious" meta:resourcekey="StepPreviousButtonResource1" />
                    </label>
                     <label class="sfLocale sfBtn">Next <i class="icon-arrow-slimdouble-e"></i>
                 <asp:Button ID="StepNextButton" runat="server" CommandName="MoveNext" Text=""

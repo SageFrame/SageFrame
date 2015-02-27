@@ -4,17 +4,21 @@
 <%@ Register Src="~/Controls/sectionheadcontrol.ascx" TagName="sectionheadcontrol"
     TagPrefix="sfe" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajax" %>
+<script type="text/javascript">
+    $(function () {
+        $('.sfCollapsewrapper div').show();
+        $('.ajax__tab_inner').click(function () {
+            $('.sfCollapsewrapper div').show();
+        });
+    });
+</script> 
 <div class="sfButtonwrapper">
     <asp:LinkButton ID="imbUninstall" runat="server" CausesValidation="False" meta:resourcekey="imbUninstallResource1"
         CssClass="icon-uninstall sfBtn" Text="Uninstall Extension" OnClick="imbUninstall_Click" />
-    <%--<asp:Label ID="lblUnInstallExtension" runat="server" Text="Uninstall Extension" AssociatedControlID="imbUninstall"
-        meta:resourcekey="lblUnInstallExtensionResource1" />--%>
     <asp:LinkButton ID="imbCancel" runat="server" CausesValidation="False" CssClass="icon-close sfBtn"
         OnClick="imbCancel_Click" meta:resourcekey="imbCancelResource1" Text="Cancel" />
-    <%-- <asp:Label ID="lblCancel" runat="server" Text="Cancel" AssociatedControlID="imbCancel"
-        meta:resourcekey="lblCancelResource1" />--%>
 </div>
-<ajax:TabContainer ID="TabContainerManageModules" runat="server" ActiveTabIndex="2"
+<ajax:TabContainer ID="TabContainerManageModules" runat="server" ActiveTabIndex="3"
     meta:resourcekey="TabContainerManageModulesResource1">
     <ajax:TabPanel ID="TabPanelModuleEditor" runat="server" meta:resourcekey="TabPanelModuleEditorResource1">
         <HeaderTemplate>

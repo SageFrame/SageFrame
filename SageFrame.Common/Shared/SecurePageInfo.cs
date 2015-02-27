@@ -14,15 +14,23 @@ using System.Runtime.Serialization;
 
 namespace SageFrame.Common
 {
+    /// <summary>
+    /// Application secure page information.
+    /// </summary>
     [DataContract]
     [Serializable]
     public class SecurePageInfo
     {
-        public SecurePageInfo()
-        {
-        }
+        /// <summary>
+        /// Initializes a new instance of SecurePageInfo.
+        /// </summary>
+        public SecurePageInfo() { }
+
         private string _SecurePageName;
         private bool _IsSecure;
+        /// <summary>
+        /// Get or set secure page name.
+        /// </summary>
         [DataMember]
         public string SecurePageName
         {
@@ -38,6 +46,9 @@ namespace SageFrame.Common
                 }
             }
         }
+        /// <summary>
+        /// Get or set true if page is secure.
+        /// </summary>
         [DataMember]
         public bool IsSecure
         {

@@ -36,7 +36,7 @@ using System.Text;
 namespace SageFrame
 {
     /// <summary>
-    /// Summary description for SageFrameWebService
+    /// Webservice which can connect to remove API from server side.
     /// </summary>
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
@@ -45,6 +45,12 @@ namespace SageFrame
     [System.Web.Script.Services.ScriptService]
     public class SageFrameWebService : WebService
     {
+        /// <summary>
+        /// Returns username list for given text and given number of user.
+        /// </summary>
+        /// <param name="prefixText">Text.</param>
+        /// <param name="count">Count.</param>
+        /// <returns>Array of string containing username.</returns>
         [WebMethod]
         public string[] GetUsernameList(string prefixText, int count)
         {

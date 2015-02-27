@@ -19,7 +19,7 @@
                 case "rbIsList":
                     $('#divListSubSetting,#imgFlagButton').fadeIn("slow");
                     $('#txtFlagButton,#divDropDownSubSetting,#divFlagsDDL,#ddlNames,#carousel_container').hide();
-                    $('#chkFlags,#chkNames').attr("checked", true);
+                    $('#chkFlags,#chkNames').prop('checked', true);
 
                     $('#imgFlagButton li img,#imgFlagButton li span').show();
                     var elem = '';

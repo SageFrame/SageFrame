@@ -426,8 +426,8 @@
                 //jQuery.jqplot.config.enablePlugins = true;
                 plot1 = jQuery.jqplot('BrowserWiseVisit', [s2], {
                     title: 'Browser Wise Visit',
-                    seriesDefaults: { shadow: true, renderer: jQuery.jqplot.PieRenderer, rendererOptions: { showDataLabels: true} },
-                    legend: { show: true },
+                    seriesDefaults: { shadow: false, renderer: jQuery.jqplot.PieRenderer, rendererOptions: {  sliceMargin: 2, showDataLabels: true} },
+                    legend: { show: true, location: 'e' },
                     cursor: { show: false }
                 });
             },
@@ -571,7 +571,10 @@
                         var PageName = [];
                         var VisitTime = [];
                         if (msg.d.length > 0) {
-                            $.each(msg.d, function(index, item) {
+                            $.each(msg.d, function (index, item) {
+                                if (item.VistPageWithoutExtension.length < 1) {
+                                    item.VistPageWithoutExtension = 'default';
+                                }
                                 PageName.push(item.VistPageWithoutExtension);
                                 VisitTime.push(parseInt(item.VisitTime));
                             });

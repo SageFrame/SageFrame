@@ -38,7 +38,7 @@ public partial class FileBrowser : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         PageBase objPageBase = new PageBase();
-        if (!objPageBase.IsUserLoggedIn())
+        if (objPageBase.IsUserLoggedIn())
         {
             if (CheckAuthentication())
             {

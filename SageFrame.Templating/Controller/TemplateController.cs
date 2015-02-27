@@ -13,8 +13,16 @@ using System.Text;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Business logic for TemplateController.
+    /// </summary>
     public class TemplateController
     {
+        /// <summary>
+        /// Activate template during installation.
+        /// </summary>
+        /// <param name="TemplateName">Template name.</param>
+        /// <param name="PortalID">PortalID</param>
         public static void ActivateTemplate(string TemplateName, int PortalID)
         {
             try
@@ -27,7 +35,11 @@ namespace SageFrame.Templating
                 throw;
             }
         }
-
+        /// <summary>
+        ///Obtain active template.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>Object of TemplateInfo class.</returns>
         public static TemplateInfo GetActiveTemplate(int PortalID)
         {
             try
@@ -40,6 +52,11 @@ namespace SageFrame.Templating
                 throw;
             }
         }
+        /// <summary>
+        /// Update active template.
+        /// </summary>
+        /// <param name="TemplateName">Template name.</param>
+        /// <param name="conn">Connection string.</param>
         public static void UpdActivateTemplate(string TemplateName, string conn)
         {
             try
@@ -52,6 +69,11 @@ namespace SageFrame.Templating
                 throw ex;
             }
         }
+        /// <summary>
+        /// Obtain application settings.
+        /// </summary>
+        /// <param name="objSetting">Object of SettingInfo class.</param>
+        /// <returns>Object of SettingInfo class.</returns>
         public static SettingInfo GetSettingByKey(SettingInfo objSetting)
         {
             try
@@ -64,6 +86,10 @@ namespace SageFrame.Templating
                 throw;
             }
         }
+        /// <summary>
+        /// Obtain portal templates.
+        /// </summary>
+        /// <returns>List of TemplateInfo class.</returns>
         public static List<TemplateInfo> GetPortalTemplates()
         {
             return TemplateDataProvider.GetPortalTemplates();

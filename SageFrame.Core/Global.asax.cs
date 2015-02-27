@@ -31,6 +31,9 @@ using System.Web.Mvc;
 
 namespace SageFrame.Core
 {
+    /// <summary>
+    /// Global class of the sytem
+    /// </summary>
     public class Global : Globals
     {
         #region "Public Variables"
@@ -285,6 +288,9 @@ namespace SageFrame.Core
 
         #region "Public Methods"
 
+        /// <summary>
+        /// Runs Scheduler if is actived.
+        /// </summary>
         public static void RunSchedule()
         {
             try
@@ -303,6 +309,11 @@ namespace SageFrame.Core
             }
         }
 
+        /// <summary>
+        /// Application's  prerequest handler execute
+        /// </summary>
+        /// <param name="sender">Object sender</param>
+        /// <param name="e">event arguments.</param>
         public void Application_PreRequestHandlerExecute(object sender, EventArgs e)
         {
             try

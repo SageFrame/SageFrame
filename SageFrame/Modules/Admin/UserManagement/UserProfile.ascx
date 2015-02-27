@@ -2,11 +2,11 @@
 
 <script language="javascript" type="text/javascript">
     //<![CDATA[
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         $("#TabProfile").tabs();
         var btnSave = '<%=btnSave.ClientID%>';
-        $('#' + btnSave).on("click", function() {
+        $('#' + btnSave).on("click", function () {
             ValidationRules();
             ClearField();
         });
@@ -46,20 +46,19 @@
                 '<%=txtLName.UniqueID %>': "<br/>Last Name should not be blank.",
                 '<%=txtEmail1.UniqueID %>': "<br/>Email should not be blank and must be in a correct format.",
                 '<%=txtEmail2.UniqueID %>': "<br/>Email must be in a correct format.",
-                '<%=txtEmail3.UniqueID %>': "<br/>Email must be in a correct format."
-               , '<%=txtResPhone.UniqueID %>': "<br/>Please give Valid Phone No."
-               , '<%=txtMobile.UniqueID %>': "<br/>Please give Valid Mobile No."
+                '<%=txtEmail3.UniqueID %>': "<br/>Email must be in a correct format.",
+                '<%=txtResPhone.UniqueID %>': "<br/>Please give Valid Phone No.",
+                '<%=txtMobile.UniqueID %>': "<br/>Please give Valid Mobile No."
             }
         });
     }
     //]]>	
-    
+
 </script>
 
 <div class="sfEditprofile">
     <div id="sfUserProfile" runat="server" class="sfFormwrapper sfUserprofile clearfix">
-        <h1>
-            User Profile Setting</h1>
+        <h1>User Profile Setting</h1>
         <div id="TabProfile">
             <ul>
                 <li><a href="#ProfileSetting">UserInfo</a></li>
@@ -71,10 +70,10 @@
                         <asp:Label ID="Label1" runat="server" CssClass="sfFormlabel" Text="User Name" meta:resourcekey="Label1Resource1"></asp:Label>
                         <asp:Label ID="lblDisplayUserName" runat="server" CssClass="sfFormlabel sfDefaultName"></asp:Label>
                     </p>
-                   <div class="sfDefaultImage">
+                    <div class="sfDefaultImage">
                         <asp:Image ID="imgUser" runat="server" Width="120px" meta:resourcekey="imgUserResource1" />
-                        </div>
-                         <div class="sfProfileimage" runat="server" id="imgProfileEdit">
+                    </div>
+                    <div class="sfProfileimage" runat="server" id="imgProfileEdit">
                         <label class="sfLocale icon-close">
                             <asp:Button ID="btnDeleteProfilePic" runat="server" OnClick="btnDeleteProfilePic_Click"
                                 meta:resourcekey="btnDeleteProfilePicResource1" /></label><br />
@@ -150,8 +149,7 @@
                         </tr>
                         <tr>
                             <td colspan="3">
-                                <h3>
-                                    Contacts</h3>
+                                <h3>Contacts</h3>
                             </td>
                         </tr>
                         <tr>
@@ -159,21 +157,28 @@
                                 <asp:Label ID="Label18" runat="server" CssClass="sfFormlabel" Text="Email" meta:resourcekey="Label18Resource1"></asp:Label>
                             </td>
                             <td>
-                                <asp:TextBox ID="txtEmail1" runat="server" CssClass="sfInputbox" meta:resourcekey="txtEmail1Resource1"></asp:TextBox>
+                                <asp:TextBox ID="txtEmail1" runat="server" CssClass="sfInputbox"></asp:TextBox>
+                                <asp:RegularExpressionValidator ID="revEmail1" runat="server" ControlToValidate="txtEmail1"
+                                    Display="Dynamic" SetFocusOnError="True" ValidationGroup="rfvUserProfile"
+                                    ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" CssClass="sfError"></asp:RegularExpressionValidator>
                             </td>
                         </tr>
                         <tr>
+                            <td></td>
                             <td>
-                            </td>
-                            <td>
-                                <asp:TextBox ID="txtEmail2" runat="server" CssClass="sfInputbox" meta:resourcekey="txtEmail2Resource1"></asp:TextBox>
+                                <asp:TextBox ID="txtEmail2" runat="server" CssClass="sfInputbox"></asp:TextBox>
+                                <asp:RegularExpressionValidator ID="revEmail2" runat="server" ControlToValidate="txtEmail2"
+                                    Display="Dynamic" SetFocusOnError="True"  ValidationGroup="rfvUserProfile"
+                                    ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" CssClass="sfError"></asp:RegularExpressionValidator>
                             </td>
                         </tr>
                         <tr>
+                            <td></td>
                             <td>
-                            </td>
-                            <td>
-                                <asp:TextBox ID="txtEmail3" runat="server" CssClass="sfInputbox" meta:resourcekey="txtEmail3Resource1"></asp:TextBox>
+                                <asp:TextBox ID="txtEmail3" runat="server" CssClass="sfInputbox"></asp:TextBox>
+                                <asp:RegularExpressionValidator ID="revEmail3" runat="server" ControlToValidate="txtEmail3"
+                                    Display="Dynamic" SetFocusOnError="True"  ValidationGroup="rfvUserProfile"
+                                    ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" CssClass="sfError"></asp:RegularExpressionValidator>
                             </td>
                         </tr>
                         <tr>
@@ -205,8 +210,9 @@
                         </tr>
                     </table>
                     <div class="sfButtonwrapper clearfix sfTopmargin20" id="divSaveProfile" runat="server">
-                  <label class="sfLocale sfBtn">Save
-                        <asp:Button runat="Server" CssClass="sfBtn" ID="btnSave" OnClick="btnSave_Click"
+                        <label class="sfLocale sfBtn">
+                            Save
+                        <asp:Button runat="Server" ID="btnSave" OnClick="btnSave_Click"
                             ValidationGroup="rfvUserProfile" meta:resourcekey="btnSaveResource1" /></label>
                         <asp:LinkButton ID="lnkCancel" CssClass="sfBtn" runat="server" Text="Cancel" OnClick="lnkCancel_Click"
                             meta:resourcekey="lnkCancelResource1"></asp:LinkButton>
@@ -224,7 +230,7 @@
                         <td id="Td3" runat="server">
                             <div class="sfPassword">
                                 <asp:TextBox ID="txtNewPassword" runat="server" MaxLength="20" CssClass="sfInputbox password"
-                                    TextMode="Password" ValidationGroup="vgManagePassword" meta:resourcekey="txtNewPasswordResource1"></asp:TextBox>
+                                    TextMode="Password" ValidationGroup="vgManagePassword" meta:resourcekey="txtNewPasswordResource1" oncopy="return false" onpaste="return false" oncut="return false"></asp:TextBox>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtNewPassword"
                                     ErrorMessage="Password is required." CssClass="sfRequired" ValidationGroup="vgManagePassword"
                                     meta:resourcekey="RequiredFieldValidator1Resource1"></asp:RequiredFieldValidator>
@@ -238,7 +244,7 @@
                         </td>
                         <td id="Td6" runat="server">
                             <asp:TextBox ID="txtRetypeNewPassword" runat="server" MaxLength="20" CssClass="sfInputbox"
-                                TextMode="Password" ValidationGroup="vgManagePassword" meta:resourcekey="txtRetypeNewPasswordResource1"></asp:TextBox>
+                                TextMode="Password" ValidationGroup="vgManagePassword" meta:resourcekey="txtRetypeNewPasswordResource1" oncopy="return false" onpaste="return false" oncut="return false"></asp:TextBox>
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="txtRetypeNewPassword"
                                 ErrorMessage="Type password again." CssClass="sfRequired" ValidationGroup="vgManagePassword"
                                 Display="Dynamic" meta:resourcekey="RequiredFieldValidator5Resource1"></asp:RequiredFieldValidator>
@@ -255,10 +261,11 @@
                         </td>
                         <td id="Td9" runat="server">
                             <div class="sfButtonwrapper">
-                            <label class="sfLocale sfBtn">Save
+                                <label class="sfLocale sfBtn">
+                                    Save
                                 <asp:Button ID="btnManagePasswordSave" runat="server" ValidationGroup="vgManagePassword"
                                     OnClick="btnManagePasswordSave_Click" meta:resourcekey="btnManagePasswordSaveResource1" />
-                                    </label>
+                                </label>
                             </div>
                             <div class="sfValidationsummary">
                                 <label id="lblChangepwdval">
@@ -271,8 +278,7 @@
         </div>
     </div>
     <div id="divUserInfo" runat="server" class="sfUserprofile sfFormwrapper sfUserBasic clearfix">
-        <h1>
-            User Profile</h1>
+        <h1>User Profile</h1>
         <div class="sfViewprofile sfPadding clearfix">
             <table id="tblViewProfile" cellpadding="0" cellspacing="0" width="100%" runat="server">
                 <tr>
@@ -282,8 +288,7 @@
                     <td>
                         <asp:Label ID="lblViewUserName" runat="server" meta:resourcekey="lblViewUserNameResource1"></asp:Label>
                     </td>
-                    <td>
-                    </td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td>
@@ -379,10 +384,11 @@
                 </tr>
             </table>
             <div class="sfButtonwrapper" id="divEditprofile" runat="server">
-            <label class="sfLocale sfBtn">Edit
-                <asp:Button runat="server"  ID="btnEdit" OnClick="btnEdit_Click"
+                <label class="sfLocale sfBtn">
+                    Edit
+                <asp:Button runat="server" ID="btnEdit" OnClick="btnEdit_Click"
                     meta:resourcekey="btnEditResource1" />
-                    </label>
+                </label>
             </div>
         </div>
         <div class="sfProfileimage" runat="server" id="imgProfileView">

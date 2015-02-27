@@ -16,16 +16,22 @@ using System.Text;
 #endregion
 
 
+/// <summary>
+/// Class that inherits ModuleInfo class and has properties gfor module packages.
+/// </summary>
 [Serializable]
-    public class ModuleInfoPackage : ModuleInfo
-    {
-        List<ModuleElement> _moduleElements = new List<ModuleElement>();
-        List<string> _fileNames = new List<string>();
+public class ModuleInfoPackage : ModuleInfo
+{
+    List<ModuleElement> _moduleElements = new List<ModuleElement>();
+    List<string> _fileNames = new List<string>();
+    /// <summary>
+    /// Gets or sets modules's elements.
+    /// </summary>
+    public List<ModuleElement> ModuleElements { get { return _moduleElements; } }
 
-
-       public  List<ModuleElement> ModuleElements { get { return _moduleElements; }}
-       public List<string> FileNames { get { return _fileNames; } }
-
-
-    }
+    /// <summary>
+    /// Gets or sets module file names.
+    /// </summary>
+    public List<string> FileNames { get { return _fileNames; } }
+}
 

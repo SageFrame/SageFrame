@@ -14,8 +14,16 @@ using SageFrame.Web.Utilities;
 
 namespace SageFrame.ModuleControls
 {
+    /// <summary>
+    /// Manupulates data for ModuleControlDataProvider.
+    /// </summary>
     public class ModuleControlDataProvider
     {
+        /// <summary>
+        /// Connect to database and obtain module ID based on user module ID.
+        /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <returns>Module ID.</returns>
         public static int GetModuleID(int UserModuleID)
         {
             SQLHandler Objsql = new SQLHandler();
@@ -34,7 +42,11 @@ namespace SageFrame.ModuleControls
            
            }
         }
-       
+       /// <summary>
+        /// Connect to database and obtain module name based on UserModuleID.
+       /// </summary>
+        /// <param name="UserModuleID">UserModuleID</param>
+       /// <returns>Module name.</returns>
         public static string GetModuleName(int UserModuleID)
         {
             SQLHandler Objsql = new SQLHandler();
@@ -53,7 +65,11 @@ namespace SageFrame.ModuleControls
 
             }
         }
-
+        /// <summary>
+        /// Connect to database and obtain application control type.
+        /// </summary>
+        /// <param name="ModuleDefID">ModuleDefID</param>
+        /// <returns>List of ModuleControlInfo class.</returns>
         public static List<ModuleControlInfo> GetControlType(int ModuleDefID)
         {
             List<ModuleControlInfo> lstControl = new List<ModuleControlInfo>();

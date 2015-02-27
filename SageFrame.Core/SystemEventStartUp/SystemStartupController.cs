@@ -23,17 +23,22 @@ using System.Web;
 namespace SageFrame.Core
 {
     /// <summary>
-    /// 
+    /// Controller class for system event start up.
     /// </summary>
     public class SystemStartupController
     {
         /// <summary>
-        /// 
+        /// Initialiezes an instance of SystemStartupController.
         /// </summary>
         public SystemStartupController()
         {
         }
 
+        /// <summary>
+        /// Connects to database and returns system event start up list.
+        /// </summary>
+        /// <param name="PortalID">portal ID</param>
+        /// <returns>List of SystemEventStartUpInfo containing name of controls to be loaded initially. </returns>
         public List<SystemEventStartUpInfo> GetSystemEventStartUpList(int PortalID)
         {
             try
@@ -50,6 +55,11 @@ namespace SageFrame.Core
                 throw ex;
             }
         }
+        /// <summary>
+        /// Connects to database and returns the startup control's details  by portalStartUpID.
+        /// </summary>
+        /// <param name="PortalStartUpID">PortalStartUpID</param>
+        /// <returns>Details of startup event.</returns>
         public SystemEventStartUpInfo GetSystemEventStartUpDetails(int PortalStartUpID)
         {
             try
@@ -67,6 +77,11 @@ namespace SageFrame.Core
             }
         }
 
+        /// <summary>
+        /// Connects to database and returns the list of portal startup events.
+        /// </summary>
+        /// <param name="IsAdmin">Set true if the startup event are admins.</param>
+        /// <returns>List of portal startup event's details.</returns>
         public List<GetPortalStartUpList> FnGetPortalStartUpList(bool IsAdmin)
         {
             try
@@ -84,6 +99,13 @@ namespace SageFrame.Core
             }
         }
 
+        /// <summary>
+        /// Connects to database and returns array list of startup event's url.
+        /// </summary>
+        /// <param name="Position">Startup event's position.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="IsAdmin">Set true if the startup event is of admin.</param>
+        /// <returns>ArratyList of user startup event.</returns>
         public ArrayList GetStartUpControls(string Position, int PortalID, bool IsAdmin)
         {
             try
@@ -131,6 +153,13 @@ namespace SageFrame.Core
             }
         }
 
+        /// <summary>
+        /// Returns Arraylist extracted from list of startup event details.
+        /// </summary>
+        /// <param name="objNList">List of portal start up.</param>
+        /// <param name="Position">Position of startup event.</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <returns>ArrayList containing the startup events.</returns>
         private ArrayList GetControlList(List<GetPortalStartUpList> objNList, string Position, int PortalID)
         {
             ArrayList arrColl = new ArrayList();
@@ -145,7 +174,18 @@ namespace SageFrame.Core
 
         }
 
-
+        /// <summary>
+        /// Connects to database and updates a startup event and returns list of startup user startup event details.
+        /// </summary>
+        /// <param name="PortalStartUpID">Portal startup ID</param>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="ControlUrl">User control's URL.</param>
+        /// <param name="EventLocation">User startup event's location.</param>
+        /// <param name="IsAdmin">Set true if user startup event is of admin.</param>
+        /// <param name="IsControlUrl">Set true if the URL is of user control.</param>
+        /// <param name="IsActive">Set true if the startup event is active.</param>
+        /// <param name="Username">User's name.</param>
+        /// <returns>List of startup events.</returns>
         public List<SystemEventStartUpInfo> UpdateSystemEventStartUp(int PortalStartUpID, int PortalID, string ControlUrl, string EventLocation, bool IsAdmin, bool IsControlUrl, bool IsActive, string Username)
         {
             try
@@ -170,7 +210,12 @@ namespace SageFrame.Core
             }
         }
 
-
+        /// <summary>
+        /// Connects to database and deletes system startup events.
+        /// </summary>
+        /// <param name="PortalStartUpID">Startup event's ID.</param>
+        /// <param name="UserName">User's name.</param>
+        /// <returns>List of startup events.</returns>
         public List<SystemEventStartUpInfo> DeleteSystemEventStartUp(int PortalStartUpID, string UserName)
         {
             try
@@ -188,6 +233,10 @@ namespace SageFrame.Core
             }
         }
 
+        /// <summary>
+        /// Connects to database and returns startup event's list.
+        /// </summary>
+        /// <returns>List of startup events.</returns>
         public List<SystemEventLocationInfo> GetEventLocationList()
         {
             try

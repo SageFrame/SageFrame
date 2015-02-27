@@ -258,7 +258,8 @@
                     PortalID: TaskToDo.config.PortalID,
                     UserModuleId: TaskToDo.config.UserModuleID,
                     UserName: TaskToDo.config.UserName,
-                    Id: id
+                    Id: id,
+                    secureToken: SageFrameSecureToken
                 });
                 TaskToDo.config.ajaxCallMode = 4;
                 TaskToDo.ajaxCall(TaskToDo.config);
@@ -270,7 +271,9 @@
                     Id: ID[1],
                     PortalID: TaskToDo.config.PortalID,
                     UserModuleId: TaskToDo.config.UserModuleID,
-                    CultureCode: TaskToDo.config.CultureName
+                    CultureCode: TaskToDo.config.CultureName,
+                    secureToken: SageFrameSecureToken,
+                    UserName: TaskToDo.config.UserName
                 });
                 $.ajax({
                     type: TaskToDo.config.type,
@@ -311,7 +314,8 @@
                     UserName: TaskToDo.config.UserName,
                     PortalID: TaskToDo.config.PortalID,
                     UserModuleId: TaskToDo.config.UserModuleID,
-                    CultureCode: TaskToDo.config.CultureName
+                    CultureCode: TaskToDo.config.CultureName,
+                    secureToken: SageFrameSecureToken
                 });
                 TaskToDo.config.ajaxCallMode = 2;
                 TaskToDo.ajaxCall(TaskToDo.config);
@@ -326,6 +330,7 @@
                     offset: Offset,
                     UserName: TaskToDo.config.UserName,
                     str: str,
+                    secureToken: SageFrameSecureToken,
                     SearchDate: $('#txtSearchDate').val()
                 });
                 TaskToDo.config.ajaxCallMode = 3;

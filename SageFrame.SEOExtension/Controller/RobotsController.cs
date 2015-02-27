@@ -13,9 +13,16 @@ using System.Text;
 
 namespace SageFrame.SEOExtension
 {
+    /// <summary>
+    /// Business logic class for SEO.
+    /// </summary>
     public class RobotsController
     {
-
+        /// <summary>
+        ///  Returns list for given PortalID.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>Returns list</returns>
         public static List<RobotsInfo> GetRobots(int PortalID)
         {
             try
@@ -28,6 +35,12 @@ namespace SageFrame.SEOExtension
                 throw;
             }
         }
+        /// <summary>
+        /// Saves page.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserAgent">User Agent(Search Engines)</param>
+        /// <param name="PagePath"> Page path</param>
         public static void SaveRobotsPage(int PortalID, string UserAgent, string PagePath)
         {
             try
@@ -41,6 +54,11 @@ namespace SageFrame.SEOExtension
             }
             
         }
+        /// <summary>
+        /// Generate robots.
+        /// </summary>
+        /// <param name="UserAgent">UserAgent</param>
+        /// <returns>Returns list</returns>
         public static List<RobotsInfo> GenerateRobots(string UserAgent)
         {
             try
@@ -53,6 +71,10 @@ namespace SageFrame.SEOExtension
                 throw;
             }
         }
+        /// <summary>
+        /// Delete existing robots.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
         public static void DeleteExistingRobots(int PortalID)
         {
             try

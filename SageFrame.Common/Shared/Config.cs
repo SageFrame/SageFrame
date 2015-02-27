@@ -19,19 +19,28 @@ using System.Text;
 
 namespace SageFrame.Utilities
 {
+    /// <summary>
+    /// Application configuration.
+    /// </summary>
     public class Config
     {
         public static string DataBaseOwner = GetDataBaseOwner();
         public static string ObjectQualifer = GetObjectQualifer();
         private string _SageFrameInstalled = string.Empty;
-
-        public Config()
-        {
-
-        }
-
+        /// <summary>
+        ///  Initializes a new instance of the Config
+        /// </summary>
+        public Config() { }
+        /// <summary>
+        /// Add on AppSetting
+        /// </summary>
+        /// <param name="xmlDoc">xmlDoc</param>
+        /// <param name="Key">Key</param>
+        /// <param name="Value">Value</param>
+        /// <returns>Modified XML document.</returns>
         public static XmlDocument AddAppSetting(XmlDocument xmlDoc, string Key, string Value)
         {
+            
             XmlElement xmlElement = default(XmlElement);
 
             // retrieve the appSettings node 
@@ -61,7 +70,13 @@ namespace SageFrame.Utilities
             // return the xml doc
             return xmlDoc;
         }
-
+        /// <summary>
+        /// Add site map.
+        /// </summary>
+        /// <param name="providerName">providerName</param>
+        /// <param name="providerType">providerType</param>
+        /// <param name="siteMapPath">siteMapPath</param>
+        /// <param name="securityTrimmingEnabled">securityTrimmingEnabled</param>
         public static void AddSiteMapProvider(string providerName, string providerType, string siteMapPath, string securityTrimmingEnabled)
         {
             XmlDocument xmlDoc = Load();
@@ -93,7 +108,10 @@ namespace SageFrame.Utilities
             }
             Save(xmlDoc);
         }
-
+        /// <summary>
+        /// Delete site map.
+        /// </summary>
+        /// <param name="providerName">providerName</param>
         public static void DeleteSiteMapProvider(string providerName)
         {
             XmlDocument xmlDoc = Load();
@@ -111,7 +129,9 @@ namespace SageFrame.Utilities
             }
             Save(xmlDoc);
         }
-
+        /// <summary>
+        /// Backup old web.config.
+        /// </summary>
         public static void BackupConfig()
         {
             string backupFolder = SystemSetting.glbConfigFolder + "Backup_" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + "\\";
@@ -138,7 +158,9 @@ namespace SageFrame.Utilities
             }
 
         }
-
+        /// <summary>
+        /// Backup old version.config
+        /// </summary>
         public static void BackupVersionConfig()
         {
             string backupFolder = SystemSetting.glbVersionConfigFolder + "BackupVersion_" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + "\\";
@@ -165,7 +187,9 @@ namespace SageFrame.Utilities
             }
 
         }
-
+        /// <summary>
+        /// Backup old ConnString.config
+        /// </summary>
         public static void BackupConnStringConfig()
         {
             string backupFolder = SystemSetting.glbConnStringConfigFolder + "BackupConnString_" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + "\\";
@@ -192,7 +216,11 @@ namespace SageFrame.Utilities
             }
 
         }
-
+        /// <summary>
+        /// Return connection string for application.
+        /// </summary>
+        /// <param name="name">Connection string name.</param>
+        /// <returns>Connection string.</returns>
         public static string GetConnectionString(string name)
         {
             string connectionString = "";
@@ -202,17 +230,30 @@ namespace SageFrame.Utilities
             }
             return connectionString;
         }
-
+        /// <summary>
+        /// Return application settings.
+        /// </summary>
+        /// <param name="setting">setting</param>
+        /// <returns>setting value.</returns>
         public static string GetSetting(string setting)
         {
             return WebConfigurationManager.AppSettings[setting];
         }
-
+        /// <summary>
+        /// Return section.
+        /// </summary>
+        /// <param name="section">section</param>
+        /// <returns>Web application section.</returns>
         public static object GetSection(string section)
         {
             return WebConfigurationManager.GetWebApplicationSection(section);
         }
-
+        /// <summary>
+        /// Return node value based on node name.
+        /// </summary>
+        /// <param name="objNode">objNode</param>
+        /// <param name="NodeName">Node name.</param>
+        /// <returns>Node value.</returns>
         public static string GetNodeValue(XmlNode objNode, string NodeName)
         {
             string DefaultValue = string.Empty;
@@ -228,22 +269,35 @@ namespace SageFrame.Utilities
             }
             return strValue;
         }
-
+        /// <summary>
+        /// Return  web.config.
+        /// </summary>
+        /// <returns>web.config</returns>
         public static XmlDocument Load()
         {
             return Load("web.config");
         }
-
+        /// <summary>
+        /// Return  version.config.
+        /// </summary>
+        /// <returns>version.config</returns>
         public static XmlDocument LoadVersionConfig()
         {
             return Load("version.config");
         }
-
+        /// <summary>
+        /// Return  connectionstring.config.
+        /// </summary>
+        /// <returns>connectionstring.config</returns>
         public static XmlDocument LoadConnStringConfig()
         {
             return Load("connectionstring.config");
         }
-
+        /// <summary>
+        /// Load XmlDocument.
+        /// </summary>
+        /// <param name="filename">filename</param>
+        /// <returns>Replaced XmlDocument.</returns>
         public static XmlDocument Load(string filename)
         {
             SageFrame.Application.Application app = new SageFrame.Application.Application();
@@ -259,22 +313,39 @@ namespace SageFrame.Utilities
             }
             return xmlDoc;
         }
-
+        /// <summary>
+        /// Save web.config.
+        /// </summary>
+        /// <param name="xmlDoc">xmlDoc</param>
+        /// <returns>Saved xmlDoc. </returns>
         public static string Save(XmlDocument xmlDoc)
         {
             return Save(xmlDoc, "web.config");
         }
-
+        /// <summary>
+        /// Save connectionstring.config.
+        /// </summary>
+        /// <param name="xmlDoc">xmlDoc</param>
+        /// <returns>Saved xml. </returns>
         public static string SaveConnStringConfig(XmlDocument xmlDoc)
         {
             return Save(xmlDoc, "connectionstring.config");
         }
-
+        /// <summary>
+        /// Save version.config.
+        /// </summary>
+        /// <param name="xmlDoc">xmlDoc</param>
+        /// <returns>Saved xml.</returns>
         public static string SaveVersionConfig(XmlDocument xmlDoc)
         {
             return Save(xmlDoc, "version.config");
         }
-
+        /// <summary>
+        /// Save XML.
+        /// </summary>
+        /// <param name="xmlDoc">xmlDoc</param>
+        /// <param name="filename">filename</param>
+        /// <returns>Blank if file permissions set properly else return file permissions exception. </returns>
         public static string Save(XmlDocument xmlDoc, string filename)
         {
             try
@@ -305,19 +376,26 @@ namespace SageFrame.Utilities
                 return exc.Message;
             }
         }
-
+        /// <summary>
+        ///Touch web.config file to restart application. 
+        /// </summary>
         public static void Touch()
         {
             SageFrame.Application.Application app = new SageFrame.Application.Application();
             File.SetLastWriteTime(app.ApplicationMapPath + "\\web.config", System.DateTime.Now);
         }
-
+        /// <summary>
+        /// Restart application.
+        /// </summary>
         public static void RestartApplication()
         {
             SageFrame.Application.Application app = new SageFrame.Application.Application();
             File.SetLastWriteTime(app.ApplicationMapPath + "\\version.config", System.DateTime.Now);
         }
-
+        /// <summary>
+        /// Update connection string.
+        /// </summary>
+        /// <param name="conn">Old connection string.</param>
         public static void UpdateConnectionString(string conn)
         {
             //save the current config files
@@ -329,13 +407,13 @@ namespace SageFrame.Utilities
             string name = "SageFrameConnectionString";
             XmlNode xmlConnection = xmlConnString.SelectSingleNode("connectionStrings/add[@name='" + name + "']");
             UpdateAttribute(xmlConnection, "connectionString", conn);
-           
+
 
             //Update AppSetting
             BackupVersionConfig();
             XmlDocument xmlVersion = LoadVersionConfig();
             string key = "IsInstalled";
-            XmlNode xmlInstalled = xmlVersion.SelectSingleNode("appSettings/add[@key='" + key + "']");            
+            XmlNode xmlInstalled = xmlVersion.SelectSingleNode("appSettings/add[@key='" + key + "']");
 
             string dbAppKey = "DatabaseName";
             string dbName = SeparateDatabaseName(conn);
@@ -348,7 +426,11 @@ namespace SageFrame.Utilities
             SaveVersionConfig(xmlVersion);
             Touch();
         }
-
+        /// <summary>
+        ///  Separate database name from connection string.
+        /// </summary>
+        /// <param name="conn">Connection string.</param>
+        /// <returns></returns>
         public static string SeparateDatabaseName(string conn)
         {
             string dbName = string.Empty;
@@ -371,7 +453,10 @@ namespace SageFrame.Utilities
             }
             return dbName;
         }
-
+        /// <summary>
+        /// Update machine key.
+        /// </summary>
+        /// <returns>Exception if occure else blank.</returns>
         public static string UpdateMachineKey()
         {
             string backupFolder = SystemSetting.glbConfigFolder + "Backup_" + DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + "\\";
@@ -395,7 +480,11 @@ namespace SageFrame.Utilities
             strError += SaveVersionConfig(xmlConfig);
             return strError;
         }
-
+        /// <summary>
+        /// Update machine key.
+        /// </summary>
+        /// <param name="xmlConfig"></param>
+        /// <returns>Updated XmlDocument.</returns>
         private static XmlDocument UpdateMachineKey(XmlDocument xmlConfig)
         {
             Config objSecurity = new Config();
@@ -412,7 +501,10 @@ namespace SageFrame.Utilities
             return xmlConfig;
 
         }
-
+        /// <summary>
+        /// Update application version.
+        /// </summary>
+        /// <param name="version">New version.</param>
         public static void UpdateSageFrameVersion(string version)
         {
             //save the current config files
@@ -429,7 +521,11 @@ namespace SageFrame.Utilities
 
             SaveVersionConfig(xmlConfig);
         }
-
+        /// <summary>
+        /// Generate key for security purpose.
+        /// </summary>
+        /// <param name="numBytes">Created key bytes.</param>
+        /// <returns></returns>
         public string CreateKey(int numBytes)
         {
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
@@ -439,7 +535,11 @@ namespace SageFrame.Utilities
 
             return BytesToHexString(buff);
         }
-
+        /// <summary>
+        /// Convert bytes to HexString.
+        /// </summary>
+        /// <param name="bytes">bytes</param>
+        /// <returns>HexString</returns>
         private string BytesToHexString(byte[] bytes)
         {
             StringBuilder hexString = new StringBuilder(64);
@@ -452,7 +552,12 @@ namespace SageFrame.Utilities
 
             return hexString.ToString();
         }
-
+        /// <summary>
+        /// Update xml attribute.
+        /// </summary>
+        /// <param name="node">XML node.</param>
+        /// <param name="attName">XML attribute name.</param>
+        /// <param name="attValue">XML attribute value.</param>
         public static void UpdateAttribute(XmlNode node, string attName, string attValue)
         {
             if ((node != null))
@@ -461,14 +566,21 @@ namespace SageFrame.Utilities
                 attrib.InnerText = attValue;
             }
         }
-
+        /// <summary>
+        /// Return application provider path.
+        /// </summary>
+        /// <param name="type">Provider type.</param>
+        /// <returns>Provider path.</returns>
         public static string GetProviderPath(string type)
         {
             XmlNode section = (XmlNode)GetSection("sageframe/" + type);
             string _providerPath = section.Attributes["providerPath"].ToString();
             return _providerPath;
         }
-
+        /// <summary>
+        /// Return application database owner.
+        /// </summary>
+        /// <returns>Database owner.</returns>
         public static string GetDataBaseOwner()
         {
             string _databaseOwner = GetSetting("databaseOwner").ToString();
@@ -478,7 +590,10 @@ namespace SageFrame.Utilities
             }
             return _databaseOwner;
         }
-
+        /// <summary>
+        /// Return application object qualifer.
+        /// </summary>
+        /// <returns>Object qualifer</returns>
         public static string GetObjectQualifer()
         {
             string _objectQualifier = GetSetting("objectQualifier").ToString();
@@ -488,13 +603,19 @@ namespace SageFrame.Utilities
             }
             return _objectQualifier;
         }
-
+        /// <summary>
+        /// Return application database version.
+        /// </summary>
+        /// <returns>Database version.</returns>
         public static System.Version GetDatabaseVersion()
         {
             string _databaseVersion = GetSetting("databaseVersion").ToString();
             return new System.Version(_databaseVersion);
         }
-
+        /// <summary>
+        /// Check application installed or not.
+        /// </summary>
+        /// <returns>"true" if instaled.</returns>
         public static string GetInstallOrNot()
         {
             string _SageFrameInstalled = GetSetting("installed").ToString();

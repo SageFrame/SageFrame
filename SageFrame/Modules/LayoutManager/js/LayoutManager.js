@@ -8,8 +8,8 @@
             EditFilePath: '',
             UserModuleID: ''
         }, p);
-        var editor = CodeMirror.fromTextArea(document.getElementById("txtLayoutEditor"), { lineNumbers: true, mode: { name: "xml", htmlMode: true} });
-        var editorCreate = CodeMirror.fromTextArea(document.getElementById("txtLayoutCreator"), { lineNumbers: true, mode: { name: "xml", htmlMode: true} });
+        var editor = CodeMirror.fromTextArea(document.getElementById("txtLayoutEditor"), { lineNumbers: true, mode: { name: "xml", htmlMode: true } });
+        var editorCreate = CodeMirror.fromTextArea(document.getElementById("txtLayoutCreator"), { lineNumbers: true, mode: { name: "xml", htmlMode: true } });
         var LayoutManager = {
             config: {
                 isPostBack: false,
@@ -52,7 +52,7 @@
                 SageFrame.tooltip.GetToolTip("imgToolTip4", "#spnHandheld", "This is from where you can include items into your menu");
                 SageFrame.tooltip.GetToolTip("imgToolTip5", "#spnApplytopages", "This is from where you can include items into your menu");
                 $('div.sfLayoutmanager').hide();
-                $('#tabLayoutMgr').tabs({ fx: [null, { height: 'show', opacity: 'show'}] });
+                $('#tabLayoutMgr').tabs({ fx: [null, { height: 'show', opacity: 'show' }] });
                 $('div.sfPresetmessage').hide();
                 LayoutManager.config.pchArr.push("&lt;placeholder");
                 LayoutManager.config.wrapArr.push("&lt;wrap");
@@ -438,6 +438,7 @@
                         break;
                     case 27:
                         LayoutManager.LoadLayoutWireFrame($('#ddlLayoutList option:selected').val());
+                        SageFrame.messaging.show(" Layout saved successfully", "Success");
                         break;
                     case 28:
                         LayoutManager.LoadLayoutWireFrame($('#ddlLayoutList option:selected').val());
@@ -755,10 +756,11 @@
                     };
                     if ($("#button-cancel").prop("checked")) {
 
-                        dialogOptions["buttons"] = { "Cancel": function () {
-                            //;
-                            $(this).dialog("close");
-                        }
+                        dialogOptions["buttons"] = {
+                            "Cancel": function () {
+                                //;
+                                $(this).dialog("close");
+                            }
                         };
                     }
                     //dialog-extend options
@@ -783,20 +785,34 @@
                 });
                 $('#btnCreateLayout').bind("click", function () {
                     var fileName = SageFrame.utils.GetPageSEOName($('#txtNewLayoutName').val());
-
-                    if ($.trim(fileName) == '' || fileName.length == 0) {
-                        SageFrame.messaging.alert("Required Field cannot be blank", '#msgAddLayout');
-                    }
-                    else if (SageFrame.utils.IsNumber(SageFrame.utils.GetFileNameWithoutExtension(fileName))) {
-                        SageFrame.messaging.alert("Layout file cannot be numbers", '#msgAddLayout');
-                    }
-                    else if (editorCreate.getValue() == "") {
-                        SageFrame.messaging.alert("Layout cannot be empty", '#msgAddLayout');
+                    var hasSpace = $('#txtNewLayoutName').val().indexOf(' ');
+                    var regex = /^[A-Za-z]+$/;
+                    var templateName = $('#txtNewLayoutName').val();
+                    if (hasSpace >= 0) {
+                        SageFrame.messaging.alert("Space is not valid for layout name.", '#msgAddLayout');
                     }
                     else {
-                        var xml = editorCreate.getValue();
-                        fileName = SageFrame.utils.GetPageSEOName(fileName);
-                        LayoutManager.CreateLayout(fileName, xml);
+                        if ($.trim(fileName) == '' || fileName.length == 0) {
+                            SageFrame.messaging.alert("Required Field cannot be blank", '#msgAddLayout');
+                        }
+                        else if (SageFrame.utils.IsNumber(SageFrame.utils.GetFileNameWithoutExtension(fileName))) {
+                            SageFrame.messaging.alert("Layout name can contains only alphabets", '#msgAddLayout');
+                        }
+                        else if (editorCreate.getValue() == "") {
+                            SageFrame.messaging.alert("Layout cannot be empty", '#msgAddLayout');
+                        }
+                        else if (!regex.test(fileName)) {
+                            SageFrame.messaging.alert("Layout name can contains only alphabets", '#msgAddLayout');
+                        }
+                        else if ($("select[id$='ddlClonebleLayouts'] option:contains('" + templateName + "')").length > 0) {
+                            SageFrame.messaging.alert("Layout with same name already exists.Please choose different name.", '#msgAddLayout');
+                        }
+                        else {
+
+                            var xml = editorCreate.getValue();
+                            fileName = SageFrame.utils.GetPageSEOName(fileName);
+                            LayoutManager.CreateLayout(fileName, xml);
+                        }
                     }
                 });
                 $('#SaveLayout_Edit').bind("click", function () {
@@ -1344,27 +1360,33 @@
                 this.ajaxCall(this.config);
             },
             BindLayoutList_Visual: function (data) {
+
                 var layouts = data.d;
                 var html = '';
-                $.each(layouts, function (index, item) {
-                    var sn = parseInt(index) + 1;
-                    html += '<option>' + item.Key + '</option>';
-                });
-                html += '</ul>';
-                $('#ddlLayoutList').html(html);
-                $('#imgEditLayout_Visual,#btnDeleteLayout').hide();
-                var layout = $('#ddlLayoutList option:selected').val();
-                LayoutManager.LoadLayoutWireFrame(layout);
-                //$('#btnDeleteLayout').easyconfirm({ locale: { title: 'Select Yes or No', text: 'Are you sure you want to delete this layout?', button: ['No', 'Yes']} });
-                $('#btnDeleteLayout').click(function () {
-                    jConfirm('Are you sure you want to delete this layout?', 'Confirmation Dialog', function (r) {
-                        if (r) {
-                            var result = LayoutManager.ajaxCall_return(LayoutManager.config.baseURL + "DeleteLayout", JSON2.stringify({ TemplateName: LayoutManager.config.Template, Layout: $('#ddlLayoutList').val() }));
-                            SageFrame.messaging.show(SageFrame.messaging.GetLocalizedMessage("en-US", "TemplateManager", "LayoutDeleted"), "Success");
-                            LayoutManager.LoadLayoutList_Visual();
+                if (layouts != null && typeof (layouts) != "undefined" && layouts.length > 0) {
+                    $.each(layouts, function (index, item) {
+                        var sn = parseInt(index) + 1;
+                        if (item != null && typeof (item.Key) != "undefined") {
+                            html += '<option>' + item.Key + '</option>';
                         }
                     });
-                });
+                    html += '</ul>';
+                    $('#ddlLayoutList').html(html);
+                    $('#imgEditLayout_Visual,#btnDeleteLayout').hide().delay(1000);
+                    var layout = $('#ddlLayoutList option:selected').val();
+                    LayoutManager.LoadLayoutWireFrame(layout);
+                    //$('#btnDeleteLayout').easyconfirm({ locale: { title: 'Select Yes or No', text: 'Are you sure you want to delete this layout?', button: ['No', 'Yes']} });
+                    $('#btnDeleteLayout').click(function () {
+                        jConfirm('Are you sure you want to delete this layout?', 'Confirmation Dialog', function (r) {
+                            if (r) {
+                                var result = LayoutManager.ajaxCall_return(LayoutManager.config.baseURL + "DeleteLayout", JSON2.stringify({ TemplateName: LayoutManager.config.Template, Layout: $('#ddlLayoutList').val() }));
+                                SageFrame.messaging.show(SageFrame.messaging.GetLocalizedMessage("en-US", "TemplateManager", "LayoutDeleted"), "Success");
+                                //  LayoutManager.LoadLayoutList_Visual();
+                            }
+                        });
+                        //});
+                    });
+                }
             },
             LoadLayoutWireFrame: function (layout) {
                 this.config.method = "GenerateWireFrame";
@@ -1424,7 +1446,8 @@
 
                     }
                 });
-                $('table thead tr').sortable({ connectWith: '#' + $(this).parents().find('table').prop('id'),
+                $('table thead tr').sortable({
+                    connectWith: '#' + $(this).parents().find('table').prop('id'),
                     stop: function () {
                         $("#" + $(this).parents().find('table').prop('id')).resize();
                     }

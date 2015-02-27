@@ -23,15 +23,26 @@ using SageFrame.SageFrameClass.Services;
 
 namespace SageFrame.Core.Services.Installer
 {
+    /// <summary>
+    /// Class that contains the methods and properties for SFE writer.
+    /// </summary>
     public class SfeWriter : BaseAdministrationUserControl
     {
         private CompositeModule _Package;
 
         #region "Constructors"
+
+        /// <summary>
+        /// Initializes an instance of SfeWriter class.
+        /// </summary>
         protected SfeWriter()
         {
         }
 
+        /// <summary>
+        /// Initializes an instance of SfeWriter class.
+        /// </summary>
+        /// <param name="package">CompositeModule object.</param>
         public SfeWriter(CompositeModule package)
         {
             _Package = package;
@@ -40,8 +51,20 @@ namespace SageFrame.Core.Services.Installer
         #endregion
 
         #region "Public Properties"
+
+        /// <summary>
+        /// Gets or sets temporary folder path.
+        /// </summary>
         public string TempFolderPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets zip path.
+        /// </summary>
         public string ZipPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets CompositeModule object.
+        /// </summary>
         public CompositeModule Package
         {
             get
@@ -55,6 +78,13 @@ namespace SageFrame.Core.Services.Installer
         }
         #endregion
 
+        /// <summary>
+        /// Creates package for the given manifest.
+        /// </summary>
+        /// <param name="archiveName">Archive name.</param>
+        /// <param name="manifestName">Manifest name.</param>
+        /// <param name="response">HttpResponse object.</param>
+        /// <param name="tempFolderPath">Temporary folder path.</param>
         public void CreatePackage(string archiveName, string manifestName, HttpResponse response, string tempFolderPath)//, HttpResponse response
         {
             try
@@ -62,21 +92,24 @@ namespace SageFrame.Core.Services.Installer
                 TempFolderPath = tempFolderPath;
                 AddFile(manifestName);
                 WriteManifest(manifestName);
-              
+
             }
             catch (Exception ex)
             {
                 ProcessException(ex);
             }
             CreateZipFile(archiveName, response);
-      
+
         }
 
+        /// <summary>
+        /// Adds file form the manifest.
+        /// </summary>
+        /// <param name="manifestName">Manifest name.</param>
         private void AddFile(string manifestName)
         {
             string sourcepath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Modules");
             DirectoryInfo dir = new DirectoryInfo(sourcepath);
-
             foreach (Component component in Package.Components)
             {
                 DirectoryInfo[] sourcedir = dir.GetDirectories(component.Name, SearchOption.AllDirectories);
@@ -91,23 +124,27 @@ namespace SageFrame.Core.Services.Installer
             }
 
         }
+
+        /// <summary>
+        /// Creates zip file from temporary folder.
+        /// </summary>
+        /// <param name="archiveName">Archive name.</param>
+        /// <param name="Response">HttpResponse object.</param>
         public void CreateZipFile(string archiveName, HttpResponse Response)//, HttpResponse response
         {
             try
             {
-                string path =  TempFolderPath;
-                
+                string path = TempFolderPath;
                 ZipPath = Path.Combine(path, archiveName + ".zip");
                 List<String> list = new List<string>();
-
-                foreach (string fileName in Directory.GetFiles(TempFolderPath)) 
+                foreach (string fileName in Directory.GetFiles(TempFolderPath))
                 {
                     list.Add(fileName);
                 }
 
                 ZipUtil.CreateZipResponse(list, Response, archiveName, TempFolderPath);
-             //   ZipUtil.ZipFiles(TempFolderPath, ZipPath, string.Empty);
-              
+                //   ZipUtil.ZipFiles(TempFolderPath, ZipPath, string.Empty);
+
                 //System.IO.FileInfo fileInfo = new System.IO.FileInfo(ZipPath);
 
             }
@@ -115,41 +152,46 @@ namespace SageFrame.Core.Services.Installer
             {
                 throw ex;
             }
-            finally { //HttpContext.Current.Response.End();
+            finally
+            { //HttpContext.Current.Response.End();
             }
 
 
         }
+
+        /// <summary>
+        /// Writes the manifest file.
+        /// </summary>
+        /// <param name="manifestName">Manifest name.</param>
         public void WriteManifest(string manifestName)
         {
-
             string manifestfile = "sfe_" + manifestName;
             string manifestPath = Path.Combine(TempFolderPath, manifestfile);
             if (!manifestPath.EndsWith(".sfe"))
             {
                 manifestPath = manifestPath + ".sfe";
             }
-
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.OmitXmlDeclaration = true;
             settings.NewLineOnAttributes = true;
-
             XmlWriter writer = XmlWriter.Create(manifestPath, settings);
-
             WriteManifestStartElement(writer);
-
             WritePackageStartElement(writer);
             WriteComponentStartElement(writer);
             //Close Dotnetnuke Element
             WriteManifestEndElement(writer);
             WriteManifestEndElement(writer);
-
             //Close Writer
             writer.Close();
-
         }
 
+
+
+        /// <summary>
+        /// Writes  package end element for the given XmlWriter object.
+        /// </summary>
+        /// <param name="writer">XmlWriter object where the start of the element is to be insert.</param>
         private void WritePackageEndElement(XmlWriter writer)
         {
             //Close components Element
@@ -159,6 +201,10 @@ namespace SageFrame.Core.Services.Installer
             writer.WriteEndElement();
         }
 
+        /// <summary>
+        /// Writes package start element for the given XmlWriter object.
+        /// </summary>
+        /// <param name="writer">XmlWriter object where the start of the element is to be insert.</param>
         private void WritePackageStartElement(XmlWriter writer)
         {
             //Start package Element
@@ -194,6 +240,10 @@ namespace SageFrame.Core.Services.Installer
             writer.WriteStartElement("modules");
         }
 
+        /// <summary>
+        /// Writes components start element for the given XmlWriter object.
+        /// </summary>
+        /// <param name="writer">XmlWriter object where the start of the element is to be insert.</param>
         private void WriteComponentStartElement(XmlWriter writer)
         {
             foreach (Component component in Package.Components)
@@ -213,6 +263,10 @@ namespace SageFrame.Core.Services.Installer
             }
         }
 
+        /// <summary>
+        ///  Writes manifest end element for the given XmlWriter object.
+        /// </summary>
+        /// <param name="writer">XmlWriter object where the start of the element is to be insert.</param>
         public static void WriteManifestEndElement(XmlWriter writer)
         {
             //Close packages Element
@@ -223,6 +277,11 @@ namespace SageFrame.Core.Services.Installer
 
         }
 
+
+        /// <summary>
+        /// Writes manifest start element for the given XmlWriter object.
+        /// </summary>
+        /// <param name="writer">XmlWriter object where the start of the element is to be insert.</param>
         public static void WriteManifestStartElement(XmlWriter writer)
         {
             //Start the new Root Element
@@ -234,7 +293,10 @@ namespace SageFrame.Core.Services.Installer
             writer.WriteStartElement("folders");
 
         }
-
+        /// <summary>
+        /// Creates temporary folder.
+        /// </summary>
+        /// <param name="manifestName">Manifest name.</param>
         public void GetTempPath(string manifestName)
         {
             string path = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resources");
@@ -254,9 +316,5 @@ namespace SageFrame.Core.Services.Installer
             }
             Directory.CreateDirectory(TempFolderPath);
         }
-
-
     }
-
-
 }

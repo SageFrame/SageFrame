@@ -21,9 +21,9 @@ namespace SageFrame.Templating
         /// Takes the ColumnWidth from the Parent Node which applies to right and left
         /// However the inline "width" attributes overrides the Parent's colwidth attribute
         /// </summary>
-        /// <param name="section"></param>
-        /// <param name="_type"></param>
-        /// <returns></returns>
+        /// <param name="section">XmlTag class containing xml details.</param>
+        /// <param name="_type">Placeholders <see cref="T:SageFrame.Templating.Placeholders"/></param>
+        /// <returns>Column width.</returns>
         public static string CalculateColumnWidth(XmlTag section, Placeholders _type)
         {
             string width = "20";
@@ -60,9 +60,14 @@ namespace SageFrame.Templating
             }
             return width;
         }
-
+        /// <summary>
+        /// Obtain remaing width.
+        /// </summary>
+        /// <param name="arrWidth">Array of string of width.</param>
+        /// <returns>Remain width.</returns>
         public static int GetRemainingWidth(string[] arrWidth)
         {
+
             int sum = 0;
             for (int i = 0; i < arrWidth.Length; i++)
             {
@@ -72,7 +77,15 @@ namespace SageFrame.Templating
             remaining = remaining == 0 ? 100 : remaining;
             return (remaining);
         }
-
+        /// <summary>
+        /// Calculate wrapper width.
+        /// </summary>
+        /// <param name="positionArr">Array of string of  position.</param>
+        /// <param name="arrWidth">>Array of string of width.</param>
+        /// <param name="wrapPositions">Array of string of wrapper position.</param>
+        /// <param name="mode">Wrapper mode.</param>
+        /// <param name="lstPositionWidth">List of position width.</param>
+        /// <returns>Wrapper width.</returns>
         public static int CalculateWrapperWidth(string[] positionArr, string[] arrWidth, string[] wrapPositions, string mode, out List<KeyValue> lstPositionWidth)
         {
             float wrapperwidth = 0;
@@ -89,11 +102,11 @@ namespace SageFrame.Templating
                     {
 
                         if (arrWidth.Length > i)
-                        {                           
-                                if (Decide.Contains(positionArr,wrapPositions))
-                                {
-                                    lstWidths.Add(new KeyValue(positionArr[i], arrWidth[i]));                                    
-                                }                            
+                        {
+                            if (Decide.Contains(positionArr, wrapPositions))
+                            {
+                                lstWidths.Add(new KeyValue(positionArr[i], arrWidth[i]));
+                            }
                         }
                         else if (i == arrWidth.Length)
                         {
@@ -120,7 +133,15 @@ namespace SageFrame.Templating
             return int.Parse(wrapperwidth.ToString());
 
         }
-      
+        
+        ///  Calculate post wrapper width.
+        /// </summary>
+        /// <param name="positionArr">Array of string of  position.</param>
+        /// <param name="currentPosition">Array of string of current position.</param>
+        /// <param name="totalwidth">Wrapper width.</param>
+        /// <param name="mode">Wrapper mode.</param>
+        /// <param name="lstWidths">List of position width.</param>
+        /// <returns>Wrapper width.</returns>
         public static int CalculatePostWrapWidth(string[] positionArr, string currentPosition, int totalwidth, string mode, List<KeyValue> lstWidths)
         {
             float wrapperwidth = 0;
@@ -148,7 +169,10 @@ namespace SageFrame.Templating
 
             return result;
         }
-
+        /// <summary>
+        /// Decrease wrapper width for adjustment.
+        /// </summary>
+        /// <param name="lstWidth">List of position width.</param>
         public static void DecreaseWidthForAdjustment(ref List<KeyValue> lstWidth)
         {
             foreach (KeyValue kvp in lstWidth)
@@ -156,11 +180,15 @@ namespace SageFrame.Templating
                 if (kvp.Value != "NaN" && kvp.Value != "0")
                 {
                     kvp.Value = (double.Parse(kvp.Value.ToString())).ToString();
-                   // kvp.Value = kvp.Value + "%";
+                    // kvp.Value = kvp.Value + "%";
                 }
             }
         }
-
+        /// <summary>
+        /// Calculate middle block width.
+        /// </summary>
+        /// <param name="middleBlock">XmlTag class containing xml details.</param>
+        /// <returns></returns>
         public static List<KeyValue> CalculateMiddleBlockWidth(XmlTag middleBlock)
         {
             double left = 0.0, leftA = 0.0, leftB = 0.0;
@@ -245,7 +273,7 @@ namespace SageFrame.Templating
             leftB = totalWidth - leftA;
             leftB = leftB.ToString() == "NaN" ? 0 : leftB;
             middle = totalWidth - totalleft - totalright;
-                       
+
             List<KeyValue> widthsKvp = new List<KeyValue>();
             widthsKvp.Add(new KeyValue("Left", totalleft.ToString()));
             widthsKvp.Add(new KeyValue("LeftA", leftA.ToString()));
@@ -260,6 +288,6 @@ namespace SageFrame.Templating
             return widthsKvp;
 
         }
-       
+
     }
 }

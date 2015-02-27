@@ -16,8 +16,17 @@ using System.IO;
 
 namespace SageFrame.Templating
 {
+    /// <summary>
+    /// Helper class for preset.
+    /// </summary>
     public class PresetHelper
     {
+        /// <summary>
+        /// Preset parser.
+        /// </summary>
+        /// <param name="xmlFile">String format of XML.</param>
+        /// <param name="startParseNode">Node to start parse.</param>
+        /// <returns>List of PresetInfo class.</returns>
         public static List<PresetInfo> ParsePreset(string xmlFile, string startParseNode)
         {
             List<PresetInfo> lstPreset = new List<PresetInfo>();
@@ -33,7 +42,13 @@ namespace SageFrame.Templating
             }
             return lstPreset;
         }
-
+        /// <summary>
+        /// Preset parser.
+        /// </summary>
+        /// <param name="xmlFile">String format of XML.</param>
+        /// <param name="startParseNode">Node to start parse.</param>
+        /// <param name="lstAllPages">List of pages.</param>
+        /// <returns></returns>
         public static List<PresetInfo> ParsePreset(string xmlFile, string startParseNode,out List<string> lstAllPages)
         {
             List<PresetInfo> lstPreset = new List<PresetInfo>();
@@ -63,7 +78,11 @@ namespace SageFrame.Templating
             lstAllPages = lstAllPagesIn;
             return lstPreset;
         }
-
+        /// <summary>
+        /// List of page.
+        /// </summary>
+        /// <param name="pages">Page name with comma separator.</param>
+        /// <returns>List of page.</returns>
         static List<string> PageList(string pages)
         {
             List<string> lstPages = new List<string>();
@@ -77,7 +96,11 @@ namespace SageFrame.Templating
             }
             return lstPages;
         }
-
+        /// <summary>
+        /// preset details.
+        /// </summary>
+        /// <param name="xmlPath">String format of XML.</param>
+        /// <returns>object of PresetInfo class.</returns>
         public static PresetInfo LoadPresetDetails(string xmlPath)
         {
             if (!File.Exists(xmlPath))
@@ -116,7 +139,11 @@ namespace SageFrame.Templating
             return preset;
 
         }
-
+        /// <summary>
+        /// Write preset.
+        /// </summary>
+        /// <param name="xmlpath">Path for xml file.</param>
+        /// <param name="objPreset">Object of PresetInfo class.</param>
         public static void WritePreset(string xmlpath, PresetInfo objPreset)
         {
             if (File.Exists(xmlpath))
@@ -130,7 +157,11 @@ namespace SageFrame.Templating
                 WriteNewPreset(xmlpath, objPreset);
             }
         }
-
+        /// <summary>
+        /// Write new preset.
+        /// </summary>
+        /// <param name="xmlpath">Path for xml file.</param>
+        /// <param name="objPreset">Object of PresetInfo class.</param>
         static void WriteNewPreset(string xmlpath, PresetInfo objPreset)
         {
             using (XmlTextWriter writer = new XmlTextWriter(xmlpath, Encoding.UTF8))
@@ -163,7 +194,12 @@ namespace SageFrame.Templating
                 writer.Close();
             }
         }
-
+        /// <summary>
+        /// Update preset page.
+        /// </summary>
+        /// <param name="objPreset">Object of PresetInfo class.</param>
+        /// <param name="xmlpath">Path for xml file.</param>
+        /// <returns>0:Everything is normal,  1:A few pages are already applied to presets, 2:All Page is already applied</returns>
         public static int UpdatePresetPages(PresetInfo objPreset, string xmlpath)
         {
             XmlDocument doc = XmlHelper.LoadXMLDocument(xmlpath);
@@ -230,7 +266,11 @@ namespace SageFrame.Templating
 
 
         }
-
+        /// <summary>
+        /// Delete preset from pages.
+        /// </summary>
+        /// <param name="presetName">Preset name.</param>
+        /// <param name="xmlpath">Path for xml file.</param>
         public static void DeletePresetFromPresetPages(string presetName, string xmlpath)
         {
             XmlDocument doc = XmlHelper.LoadXMLDocument(xmlpath);
@@ -250,7 +290,12 @@ namespace SageFrame.Templating
             doc.Save(xmlpath);
 
         }      
-
+        /// <summary>
+        /// Load assigne preset for associate page.
+        /// </summary>
+        /// <param name="TemplateName">Template name.</param>
+        /// <param name="PageName">Page name.</param>
+        /// <returns>Preset path.</returns>
         public static string LoadActivePresetForPage(string TemplateName,string PageName)
         {
             string presetPath = TemplateName.ToLower().Equals("default")?Utils.GetPresetPath_DefaultTemplate(TemplateName):Utils.GetPresetPath(TemplateName);
@@ -297,16 +342,30 @@ namespace SageFrame.Templating
             pagepresetactive =Decide.IsTemplateDefault(TemplateName)?string.Format("~/Core/Template/{1}",TemplateName,pagepresetactive):string.Format("~/Templates/{0}/{1}",TemplateName,pagepresetactive);           
             return pagepresetactive;
         }
-
+        /// <summary>
+        /// Load handheld controls.
+        /// </summary>
+        /// <param name="TemplateName">Templates name.</param>
+        /// <returns>Preset path.</returns>
         public static string LoadHandheldControl(string TemplateName)
         {
             return (Decide.IsTemplateDefault(TemplateName) ? "~/Core/Template/handheld.ascx" : string.Format("~/Templates/{0}/handheld.ascx", TemplateName));
         }
+        /// <summary>
+        /// Load device type 3.
+        /// </summary>
+        /// <param name="TemplateName">Template name.</param>
+        /// <returns>Preset path.</returns>
         public static string LoadDeviceType3(string TemplateName)
         {
             return (Decide.IsTemplateDefault(TemplateName) ? "~/Core/Template/handheld.ascx" : string.Format("~/Templates/{0}/devicetype3.ascx", TemplateName));
         }
-
+        /// <summary>
+        /// Load active page preset.
+        /// </summary>
+        /// <param name="TemplateName">Template name.</param>
+        /// <param name="PageName">Page name.</param>
+        /// <returns>Object of PresetInfo class.</returns>
         public static PresetInfo LoadActivePagePreset(string TemplateName, string PageName)
         {
             string presetPath = TemplateName.ToLower().Equals("default") ? Utils.GetPresetPath_DefaultTemplate(TemplateName) : Utils.GetPresetPath(TemplateName);           
@@ -337,7 +396,11 @@ namespace SageFrame.Templating
             }
             return pagepresetactive;
         }
-
+        /// <summary>
+        /// Update existing preset.
+        /// </summary>
+        /// <param name="preset">Object of PresetInfo class.</param>
+        /// <param name="TemplateName">Template name.</param>
         public static void UpdatePreset(PresetInfo preset, string TemplateName)
         {
             string presetPath = TemplateName.ToLower().Equals("default") ? Utils.GetPresetPath_DefaultTemplate(TemplateName) : Utils.GetPresetPath(TemplateName);

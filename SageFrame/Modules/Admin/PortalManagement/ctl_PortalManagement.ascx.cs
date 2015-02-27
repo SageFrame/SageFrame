@@ -45,10 +45,13 @@ namespace SageFrame.Modules.Admin.PortalManagement
         {
             try
             {
+                ddlAvailablePortal.Visible = false;
+                lblAvailablePortal.Visible = false;
+                lblUrl.Visible = false;
+                txtUrl.Visible = false;
                 appPath = GetApplicationName;
                 if (!IsPostBack)
                 {
-
                     BindPortal();
                     //BindSitePortal();
                     PanelVisibility(false, true);
@@ -111,6 +114,7 @@ namespace SageFrame.Modules.Admin.PortalManagement
         {
             txtEmail.Text = "";
             txtPortalName.Text = "";
+            txtUrl.Text = "";
         }
         protected void imgAdd_Click(object sender, EventArgs e)
         {
@@ -127,6 +131,10 @@ namespace SageFrame.Modules.Admin.PortalManagement
                 hdnPortalID.Value = "0";
                 PanelVisibility(true, false);
                 Flag = true;
+                ddlAvailablePortal.Visible = true;
+                lblAvailablePortal.Visible = true;
+                lblUrl.Visible = true;
+                txtUrl.Visible = true;
                 // BindSitePortal();
             }
             catch (Exception ex)
@@ -390,28 +398,25 @@ namespace SageFrame.Modules.Admin.PortalManagement
                 int portalID = int.Parse(gdvPortal.DataKeys[rowIndex]["PortalID"].ToString());
                 string PortalName = gdvPortal.DataKeys[rowIndex]["Name"].ToString();
                 bool IsParent = bool.Parse(gdvPortal.DataKeys[rowIndex]["IsParent"].ToString());
-               
+
                 if (e.CommandName == "EditPortal")
                 {
                     Flag = false;
                     if (PortalName.ToLower() != "default")
                     {
-                        if (IsParent)
-                        {
-                            ddlAvailablePortal.Visible = true;
-                            lblAvailablePortal.Visible = true;
-                            lblUrl.Visible=true;
-                            txtUrl.Visible = true;
-                        }
+                        //if (IsParent)
+                        //{
 
-                        else
-                        {
-                            ddlAvailablePortal.Visible = false;
-                            lblAvailablePortal.Visible = false;
-                            lblUrl.Visible = false;
-                            txtUrl.Visible = false;
-                        }
-                            
+                        //}
+
+                        //else
+                        //{
+                        ddlAvailablePortal.Visible = false;
+                        lblAvailablePortal.Visible = false;
+                        lblUrl.Visible = false;
+                        txtUrl.Visible = false;
+                        //}
+
 
                         TabPanelPortalModulesManagement.Visible = true;
                         gdvPortalModulesLists.PageIndex = 0;
@@ -497,8 +502,6 @@ namespace SageFrame.Modules.Admin.PortalManagement
                 bool IsParent = ddlAvailablePortal.SelectedIndex == 0 ? true : false;
                 int ParentID = ddlAvailablePortal.SelectedIndex == 0 ? 0 : int.Parse(ddlAvailablePortal.SelectedValue);
                 string PortalURL = ddlAvailablePortal.SelectedIndex == 0 ? txtUrl.Text : txtPortalName.Text;
-
-
                 PortalController.UpdatePortal(Int32.Parse(hdnPortalID.Value), txtPortalName.Text, IsParent, GetUsername, PortalURL, ParentID);
             }
             else
@@ -551,6 +554,9 @@ namespace SageFrame.Modules.Admin.PortalManagement
                         IsParent = true;
                     }
                     PortalMgrController.AddPortal(txtPortalName.Text, IsParent, GetUsername, newPortalname, ParentPortal, PSEOName);
+                    ShowMessage(SageMessageTitle.Information.ToString(),
+                                 GetSageMessage("PortalSettings", "PortalSaveSuccessfully"), "",
+                                 SageMessageType.Success);
                 }
             }
         }

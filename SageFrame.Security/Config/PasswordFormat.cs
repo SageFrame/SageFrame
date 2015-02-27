@@ -13,6 +13,9 @@ using System.Text;
 
 namespace SageFrame.Security.Config
 {
+    /// <summary>
+    /// Enum for password format.
+    /// </summary>
     public enum PasswordFormat
     {
         Clear = 0,

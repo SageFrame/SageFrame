@@ -54,9 +54,11 @@ public partial class Modules_Pages_ManagePages : BaseAdministrationUserControl
     public string UserName = string.Empty, PageName = string.Empty, CultureCode = string.Empty, appPath = string.Empty;
     public string StartupPage;
     public string ActiveTemplateName;
+    //public string HostURL;
     public string PageExtension;
     public int IsSideBarVisible = 0;
     public string ActiveTemplate = string.Empty, PortalName;
+    public string GetURL = string.Empty;
     protected void Page_Load(object sender, EventArgs e)
     {
         PageExtension = SageFrameSettingKeys.PageExtension;
@@ -81,6 +83,8 @@ public partial class Modules_Pages_ManagePages : BaseAdministrationUserControl
         UserModuleID = int.Parse(SageUserModuleID);
         PortalID = GetPortalID;
         UserName = GetUsername;
+        GetURL = Page.Request.Url.Scheme + "://" + Request.Url.Authority + GetApplicationName;
+
         if (!IsPostBack)
         {
             BuildAccessControlledSelection();

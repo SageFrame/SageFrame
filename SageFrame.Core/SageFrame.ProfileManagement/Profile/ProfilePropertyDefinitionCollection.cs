@@ -20,6 +20,9 @@ using SageFrame.ProfileManagement;
 
 namespace SageFrame.Profile
 {
+    /// <summary>
+    /// Profile 
+    /// </summary>
     [Serializable()]
     public class ProfilePropertyDefinitionCollection : System.Collections.CollectionBase
     {
@@ -37,21 +40,39 @@ namespace SageFrame.Profile
         {
         }
 
+        /// <summary>
+        /// Add ranges.
+        /// </summary>
+        /// <param name="definitionsList">Definitions list.</param>
         public ProfilePropertyDefinitionCollection(ArrayList definitionsList)
         {
             AddRange(definitionsList);
         }
 
+        /// <summary>
+        /// Profile property definition collection.
+        /// </summary>
+        /// <param name="collection">ProfilePropertyDefinitionCollection object.</param>
         public ProfilePropertyDefinitionCollection(ProfilePropertyDefinitionCollection collection)
         {
             AddRange(collection);
         }
 
-
+        /// <summary>
+        /// Adss value to list
+        /// </summary>
+        /// <param name="value">ProfileManagementInfo object</param>
+        /// <returns></returns>
         public int Add(ProfileManagementInfo value)
         {
             return List.Add(value);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="PropertyTypeName"></param>
+        /// <returns></returns>
         public ProfilePropertyDefinitionCollection GetByCategory(string PropertyTypeName)
         {
             ProfilePropertyDefinitionCollection collection = new ProfilePropertyDefinitionCollection();
@@ -65,6 +86,11 @@ namespace SageFrame.Profile
             }
             return collection;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="definitionsList"></param>
         public void AddRange(ArrayList definitionsList)
         {
             foreach (ProfileManagementInfo objProfilePropertyDefinition in definitionsList)
@@ -73,6 +99,10 @@ namespace SageFrame.Profile
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="collection"></param>
         public void AddRange(ProfilePropertyDefinitionCollection collection)
         {
             foreach (ProfileManagementInfo objProfilePropertyDefinition in collection)
@@ -80,6 +110,12 @@ namespace SageFrame.Profile
                 Add(objProfilePropertyDefinition);
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public ProfileManagementInfo this[int index]
         {
             get
@@ -92,6 +128,11 @@ namespace SageFrame.Profile
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public ProfileManagementInfo this[string name]
         {
             get
@@ -99,6 +140,12 @@ namespace SageFrame.Profile
                 return GetByName(name);
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public ProfileManagementInfo GetByName(string name)
         {
             ProfileManagementInfo profileItem = null;
@@ -113,11 +160,21 @@ namespace SageFrame.Profile
             return profileItem;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public bool Contains(ProfileManagementInfo value)
         {
             return List.Contains(value);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ProfileManagementInfo GetById(int id)
         {
             ProfileManagementInfo profileItem = null;
@@ -133,22 +190,38 @@ namespace SageFrame.Profile
         }
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public int IndexOf(ProfileManagementInfo value)
         {
             return List.IndexOf(value);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="value"></param>
         public void Insert(int index, ProfileManagementInfo value)
         {
             List.Insert(index, value);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         public void Remove(ProfileManagementInfo value)
         {
             List.Remove(value);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Sort()
         {
             InnerList.Sort(new ProfilePropertyDefinitionComparer());

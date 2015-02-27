@@ -18,12 +18,23 @@ using SageFrame.Web;
 
 namespace SageFrame.Shared
 {
+    /// <summary>
+    /// Application setting provider.
+    /// </summary>
     public class SettingProvider
     {
+        /// <summary>
+        /// Initializes a new instance of the SettingProvider.
+        /// </summary>
         public SettingProvider()
         {
         }
-
+        /// <summary>
+        ///  Connects to database and get settings based on PortalID and SettingType.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="SettingType">Setting type.</param>
+        /// <returns>DataSet</returns>
         private DataSet GetSettingsByPortalAndSettingType(string PortalID, string SettingType)
         {
             try
@@ -41,7 +52,10 @@ namespace SageFrame.Shared
                 throw e;
             }
         }
-
+        /// <summary>
+        ///  Connects to database and get all available portals.
+        /// </summary>
+        /// <returns>DataTable</returns>
         public DataTable GetAllPortals()
         {
             try
@@ -57,7 +71,12 @@ namespace SageFrame.Shared
                 throw e;
             }
         }
-
+        /// <summary>
+        /// Get settings based on PortalID and SettingType.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="SettingType">Setting type.</param>
+        /// <returns>DataTable</returns>
         public DataTable GetSettingsByPortal(string PortalID, string SettingType)
         {
             try
@@ -75,7 +94,14 @@ namespace SageFrame.Shared
                 throw e;
             }
         }
-
+        /// <summary>
+        ///  Connects to database and save application settings.
+        /// </summary>
+        /// <param name="SettingTypes">SettingTypes</param>
+        /// <param name="SettingKeys">SettingKeys</param>
+        /// <param name="SettingValues">SettingValues</param>
+        /// <param name="Username">Username</param>
+        /// <param name="PortalID">PortalID</param>
         public void SaveSageSettings(string SettingTypes, string SettingKeys, string SettingValues, string Username, string PortalID)
         {
             try
@@ -94,7 +120,14 @@ namespace SageFrame.Shared
                 throw e;
             }
         }
-
+        /// <summary>
+        /// Connects to database and save application setting.
+        /// </summary>
+        /// <param name="SettingType">SettingType</param>
+        /// <param name="SettingKey">SettingKey</param>
+        /// <param name="SettingValue">SettingValue</param>
+        /// <param name="Username">Username</param>
+        /// <param name="PortalID">PortalID</param>
         public void SaveSageSetting(string SettingType, string SettingKey, string SettingValue, string Username, string PortalID)
         {
             try
@@ -115,7 +148,11 @@ namespace SageFrame.Shared
         }
 
         #region "Google Analytics"
-
+        /// <summary>
+        /// Returns list of GoogleAnalyticsInfo class.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>List of GoogleAnalyticsInfo.</returns>
         public List<GoogleAnalyticsInfo> GetGoogleAnalyticsActiveOnlyByPortalID(int PortalID)
         {
             try
@@ -131,7 +168,11 @@ namespace SageFrame.Shared
                 throw e;
             }
         }
-
+        /// <summary>
+        /// Returns object of GoogleAnalyticsInfo class based on PortalID.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>Object of GoogleAnalyticsInfo class</returns>
         public GoogleAnalyticsInfo GetGoogleAnalyticsByPortalID(int PortalID)
         {
             try
@@ -147,7 +188,13 @@ namespace SageFrame.Shared
                 throw e;
             }
         }
-
+        /// <summary>
+        ///  Connects to database and add or update Google analytic code.
+        /// </summary>
+        /// <param name="GoogleJSCode">Code</param>
+        /// <param name="IsActive">true if active.</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="AddedBy">User name.</param>
         public void GoogleAnalyticsAddUpdate(string GoogleJSCode, bool IsActive, int PortalID, string AddedBy)
         {
             try
@@ -168,7 +215,10 @@ namespace SageFrame.Shared
         }
 
         #endregion
-
+        /// <summary>
+        /// Return of applicatio's portal list.
+        /// </summary>
+        /// <returns>Applicatio's portal list</returns>
         public List<SagePortals> PortalGetList()
         {
             try
@@ -182,7 +232,12 @@ namespace SageFrame.Shared
                 throw e;
             }
         }
-
+        /// <summary>
+        /// Returns list of role based on User name and PortalID.
+        /// </summary>
+        /// <param name="userName">User name.</param>
+        /// <param name="portalID">PortalID</param>
+        /// <returns>List of user role.</returns>
         public List<SageUserRole> RoleListGetByUsername(string userName, int portalID)
         {
             try
@@ -201,7 +256,11 @@ namespace SageFrame.Shared
         }
 
 
-        //Change portal
+
+        /// <summary>
+        /// Connects to database and change portal.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
         public void ChangePortal(int PortalID)
         {
             try
@@ -216,7 +275,12 @@ namespace SageFrame.Shared
                 throw e;
             }
         }
-
+        /// <summary>
+        /// Returns application settings by individual key based on setting key and PortalID..
+        /// </summary>
+        /// <param name="settingKey">Setting key.</param>
+        /// <param name="portalID">PortalID</param>
+        /// <returns>Returns object of KeyValue class. </returns>
         public KeyValue GetSettingValueByIndividualKey(string settingKey, int portalID)
         {
             KeyValue value = new KeyValue();
@@ -234,7 +298,12 @@ namespace SageFrame.Shared
             }
             return value;
         }
-
+        /// <summary>
+        /// Connects to database and returns application settings.
+        /// </summary>
+        /// <param name="portalID">portalID</param>
+        /// <param name="settingType">Setting type.</param>
+        /// <returns>DataSet</returns>
         public DataSet GetAllSettings(string portalID, string settingType)
         {
             try
@@ -243,7 +312,7 @@ namespace SageFrame.Shared
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@PortalID", portalID));
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@SettingType", settingType));
                 DataSet dataset = new DataSet();
-                SQLHandler sagesql = new SQLHandler();                
+                SQLHandler sagesql = new SQLHandler();
                 dataset = sagesql.ExecuteAsDataSet("dbo.usp_GetAllSettings", ParaMeterCollection);
                 return dataset;
             }
@@ -253,24 +322,29 @@ namespace SageFrame.Shared
             }
         }
     }
-
+    /// <summary>
+    ///  Class holds the properties of application portals.
+    /// </summary>
     public class SagePortals
     {
 
         private int _PortalID;
-
         private string _Name;
-
         private string _SEOName;
-
         private System.Nullable<bool> _IsParent;
-
         private string _DefaultPage;
-
-        public SagePortals()
-        {
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        public SagePortals() { }
+        /// <summary>
+        /// Initializes a new instance of the apllication portals.
+        /// </summary>
+        /// <param name="portalID">portalID</param>
+        /// <param name="name">name</param>
+        /// <param name="sEOName">sEOName</param>
+        /// <param name="isParent">true for parent portal.</param>
+        /// <param name="defaultPage">Portal default page.</param>
         public SagePortals(int portalID, string name, string sEOName, bool isParent, string defaultPage)
         {
             this.PortalID = portalID;
@@ -279,8 +353,9 @@ namespace SageFrame.Shared
             this.IsParent = isParent;
             this.DefaultPage = defaultPage;
         }
-
-
+        /// <summary>
+        /// get or set PortalID.
+        /// </summary>
         public int PortalID
         {
             get
@@ -296,7 +371,9 @@ namespace SageFrame.Shared
             }
         }
 
-
+        /// <summary>
+        /// Get or set portal name.
+        /// </summary>
         public string Name
         {
             get
@@ -312,7 +389,9 @@ namespace SageFrame.Shared
             }
         }
 
-
+        /// <summary>
+        /// Get or set portal SEO name.
+        /// </summary>
         public string SEOName
         {
             get
@@ -328,7 +407,9 @@ namespace SageFrame.Shared
             }
         }
 
-
+        /// <summary>
+        /// Get or set true if portal is parent portal.
+        /// </summary>
         public System.Nullable<bool> IsParent
         {
             get
@@ -344,7 +425,9 @@ namespace SageFrame.Shared
             }
         }
 
-
+        /// <summary>
+        /// Get or set portal default page.
+        /// </summary>
         public string DefaultPage
         {
             get
@@ -360,21 +443,28 @@ namespace SageFrame.Shared
             }
         }
     }
-
+    /// <summary>
+    /// Class holds the properties of application users role.
+    /// </summary>
     public class SageUserRole
     {
 
         private System.Guid _RoleId;
-
-        public SageUserRole()
-        {
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the SageUserRole class.
+        /// </summary>
+        public SageUserRole() { }
+        /// <summary>
+        /// Initializes a new instance of the SageUserRole class
+        /// </summary>
+        /// <param name="roleId">RoleID.</param>
         public SageUserRole(System.Guid roleId)
         {
             this.RoleId = roleId;
         }
-
+        /// <summary>
+        /// Get or set RoleId.
+        /// </summary>
         public System.Guid RoleId
         {
             get
@@ -388,6 +478,6 @@ namespace SageFrame.Shared
                     this._RoleId = value;
                 }
             }
-        }       
+        }
     }
 }

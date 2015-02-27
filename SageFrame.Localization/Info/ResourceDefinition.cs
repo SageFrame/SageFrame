@@ -14,12 +14,27 @@ using System.Text;
 
 namespace SageFrame.Localization
 {
+    /// <summary>
+    /// This class holds the properties for ResourceDefinition.
+    /// </summary>
 
     public class ResourceDefinition
     {
+        /// <summary>
+        /// Gets or sets Key.
+        /// </summary>
         public string Key { get; set; }
+        /// <summary>
+        /// Gets or sets Value.
+        /// </summary>
         public string Value { get; set; }
+        /// <summary>
+        /// Gets or sets DefaultValue.
+        /// </summary>
         public string DefaultValue { get; set; }
+        /// <summary>
+        /// Initializes a new instance of the ResourceDefinition class.
+        /// </summary>
         public ResourceDefinition() { }
     }
 }

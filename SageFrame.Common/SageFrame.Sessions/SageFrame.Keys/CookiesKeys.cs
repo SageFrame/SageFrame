@@ -16,6 +16,9 @@ using System.Text;
 
 namespace SageFrame.Common
 {
+    /// <summary>
+    /// Application cookie keys.
+    /// </summary>
     public static partial class CookiesKeys
     {
         public static string SageUserRolesCookie = "SageUserRolesCookie";

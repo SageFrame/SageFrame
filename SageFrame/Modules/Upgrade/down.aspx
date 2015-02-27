@@ -8,11 +8,13 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div><asp:Image ID="imgUC" ImageUrl="~/Modules/Upgrade/Image/web_under_construct.png"
-    AlternateText="UnderConstructPage" runat="server" /></div>
-    <div>
-    Under Construction...
-    </div>
+        <div>
+            <asp:Image ID="imgUC" ImageUrl="~/Modules/Upgrade/Image/web_under_construct.png"
+                AlternateText="UnderConstructPage" runat="server" />
+        </div>
+        <div>
+            Under Construction...
+        </div>
     </form>
 </body>
 </html>

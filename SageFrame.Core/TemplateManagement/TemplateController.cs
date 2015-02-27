@@ -18,8 +18,17 @@ using System.Text;
 
 namespace SageFrame.Core.TemplateManagement
 {
+    /// <summary>
+    /// Business logic for templates.
+    /// </summary>
     public class TemplateController
     {
+        /// <summary>
+        /// Returns list of template list.
+        /// </summary>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="UserName">User's name.</param>
+        /// <returns>List of template.</returns>
         public static List<TemplateInfo> GetTemplateList(int PortalID, string UserName)
         {
             try
@@ -32,6 +41,12 @@ namespace SageFrame.Core.TemplateManagement
                 throw;
             }
         }
+
+        /// <summary>
+        /// Adds template.
+        /// </summary>
+        /// <param name="obj">TemplateInfo object containing the template details.</param>
+        /// <returns>True if the template is added successfully.</returns>
         public static bool AddTemplate(TemplateInfo obj)
         {
             try

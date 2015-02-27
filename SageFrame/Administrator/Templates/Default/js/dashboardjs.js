@@ -55,7 +55,7 @@ $(function () {
                 });
             });
             $('body').on('click', '#sfPurchase', function () {
-                window.location.href = 'http://license.sageframe.com';
+                window.location.href = 'http://license.sageframe.com?name=sageframe';
             });
         },
         messages: {
@@ -79,7 +79,6 @@ $(function () {
                     isnum = true;
                 }
                 return isnum;
-
             },
             GetFileNameWithoutExtension: function (filename) {
                 if (filename.indexOf(".") > -1) {

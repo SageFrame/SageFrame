@@ -1034,7 +1034,11 @@ public partial class Install_InstallWizard : System.Web.UI.Page
             UpdateTimer.Enabled = false;
             lblInstallErrorOccur.Text = "Installation Error(s): There was an error while running the script.";
             lblInstallError.CssClass = "sfError";
-
         }
+    }
+
+    public string SetFavIcon(string activeTemplate)
+    {
+        return Decide.IsTemplateDefault(activeTemplate) ? ResolveUrl("~/favicon.ico") : ResolveUrl(string.Format("~/Templates/{0}/favicon.ico", activeTemplate));
     }
 }

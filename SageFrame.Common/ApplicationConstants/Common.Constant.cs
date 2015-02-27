@@ -17,6 +17,9 @@ using System.Web;
 
 namespace SageFrame.Common.RegisterModule
 {
+    /// <summary>
+    /// Define application veriables.
+    /// </summary>
     public class Common
     {
         public static string TemporaryFolder = "Install\\Temp";

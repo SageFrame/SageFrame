@@ -16,12 +16,22 @@ using System.Data;
 
 namespace SageFrame.Security.Helpers
 {
+    /// <summary>
+    /// Applicatio sql helper inherited from SQLHandler.
+    /// </summary>
     public class SageFrameSQLHelper:SQLHandler
     {
-        public SageFrameSQLHelper():base()
-        {
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the SageFrameSQLHelper class.
+        /// </summary>
+        public SageFrameSQLHelper() : base() { }
+        /// <summary>
+        ///  ExecuteNonQuery with multiple out put.
+        /// </summary>
+        /// <param name="StroredProcedureName">Strored procedure Name</param>
+        /// <param name="InputParamColl">List of input parameter collecvtion.</param>
+        /// <param name="OutPutParamColl">List of out put parameter collection.</param>
+        /// <returns>List of multipal output.</returns>
         public List<KeyValuePair<int, string>> ExecuteNonQueryWithMultipleOutput(string StroredProcedureName, List<KeyValuePair<string, object>> InputParamColl, List<KeyValuePair<string, object>> OutPutParamColl)
         {
             SqlConnection SQLConn = new SqlConnection(base.connectionString);

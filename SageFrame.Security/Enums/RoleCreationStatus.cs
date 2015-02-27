@@ -13,6 +13,9 @@ using System.Text;
 
 namespace SageFrame.Security.Helpers
 {
+    /// <summary>
+    /// Enum for role creation status.
+    /// </summary>
     public enum RoleCreationStatus
     {
         SUCCESS=1,

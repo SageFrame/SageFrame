@@ -43,6 +43,9 @@ using SageFrame.PortalSetting;
 
 namespace SageFrame.Web
 {
+    /// <summary>
+    /// SageUserControl is the base class of SageFrame which gives all the information related to registered userControl
+    /// </summary>
     [Serializable]
     public partial class SageUserControl : System.Web.UI.UserControl
     {
@@ -53,7 +56,9 @@ namespace SageFrame.Web
         int CustomerID = 0;
         string PortalSEOName = string.Empty;
         private static string _PagePath = string.Empty;
-
+        /// <summary>
+        /// Returns current redirectURL.
+        /// </summary>
         public string aspxRedirectPath
         {
             get
@@ -78,10 +83,11 @@ namespace SageFrame.Web
         #region "Constructors"
 
         /// <summary>
-        /// Constructor
+        /// Initializes a new instance of the SageUserControl class.
         /// </summary>
         public SageUserControl()
         {
+
         }
 
         #endregion
@@ -89,12 +95,12 @@ namespace SageFrame.Web
         #region "Protected Methods"
 
         /// <summary>
-        /// 
+        /// Displays the message with provided message, title, complete message and message type.
         /// </summary>
-        /// <param name="MessageTitle"></param>
-        /// <param name="Message"></param>
-        /// <param name="CompleteMessage"></param>
-        /// <param name="MessageType"></param>
+        /// <param name="MessageTitle">Message title to be display</param>
+        /// <param name="Message">Message to be display</param>
+        /// <param name="CompleteMessage">Complete message to be display</param>
+        /// <param name="MessageType">alert , error or success</param>
         protected void ShowMessage(string MessageTitle, string Message, string CompleteMessage, SageMessageType MessageType)
         {
             ScriptManager scp = (ScriptManager)this.Page.FindControl("ScriptManager1");
@@ -118,7 +124,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Set Current Culture
+        /// Sets Current Culture.
         /// </summary>
         /// <param name="name">UI Culture Name</param>
         /// <param name="locale">Culture Name</param>
@@ -131,7 +137,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Current UI Culture
+        /// Returns Current UI Culture.
         /// </summary>
         /// <returns></returns>
         protected string GetCurrentUICulture()
@@ -140,9 +146,9 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Current Culture
+        /// Returns Current Culture.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Current Culture</returns>
         protected string GetCurrentCulture()
         {
             return Thread.CurrentThread.CurrentCulture.ToString();
@@ -152,6 +158,11 @@ namespace SageFrame.Web
 
         #region "Public Methods"
 
+        /// <summary>
+        /// Encodes and fixes the URL.
+        /// </summary>
+        /// <param name="str">URL</param>
+        /// <returns>Encoded URL</returns>
         public string fixedEncodeURIComponent(string str)
         {
             str = HttpUtility.UrlEncode(str);
@@ -168,7 +179,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// 
+        /// Sets or gets the page path.
         /// </summary>
         public string PagePath
         {
@@ -177,7 +188,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// 
+        /// Sets or gets the UsermoduleID.
         /// </summary>
         public string SageUserModuleID
         {
@@ -199,9 +210,9 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Check Is Request From Handheld Device 
+        /// Checks if the requested request  is from handheld device.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns "True" if the device is handheld</returns>
         public bool IsHandheld()
         {
             SageFrameConfig sfConf = new SageFrameConfig();
@@ -234,11 +245,11 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// 
+        /// Returns message for given modulename with node.
         /// </summary>
-        /// <param name="ModuleName"></param>
-        /// <param name="MessageNode"></param>
-        /// <returns></returns>
+        /// <param name="ModuleName"> SageFrame module name</param>
+        /// <param name="MessageNode"> Message node in XML</param>
+        /// <returns>message</returns>
         public string GetSageMessage(string ModuleName, string MessageNode)
         {
             try
@@ -252,7 +263,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Current User Profile Image
+        /// Get Current User Profile Image.
         /// </summary>
         public string GetUserImage
         {
@@ -285,7 +296,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// 
+        /// Checks weather the usercontrol postback is true or false.
         /// </summary>
         public bool IsControlPostBack
         {
@@ -302,8 +313,8 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Return Application Path With "/" For Virtual Directory
-        /// Return Application Path With "" For Root Domain
+        /// Returns Application Path With "/" For Virtual Directory.
+        /// Returns Application Path With "" For Root Domain.
         /// </summary>
         public string GetApplicationName
         {
@@ -315,7 +326,7 @@ namespace SageFrame.Web
 
 
         /// <summary>
-        /// Return the host path
+        /// Returns the host path.
         /// for eg: http://sageframe.com/ or http://localhost:2511/SageFrame/
         /// </summary>
         /// <returns></returns>
@@ -325,7 +336,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Check and reduce "/" of URL
+        /// Check and reduce "/" of URL.
         /// </summary>
         public string GetReduceApplicationName
         {
@@ -336,11 +347,11 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Image URL For Client Side Web Controls
+        /// Returns image URL for client side web controls.
         /// </summary>
-        /// <param name="imageName">Image Name</param>
-        /// <param name="isServerControl"> Set True For Server Control</param>
-        /// <returns> Get Image Full URL</returns>
+        /// <param name="imageName">Image Name.</param>
+        /// <param name="isServerControl"> Set True For Server Control.</param>
+        /// <returns> Get Image Full URL.</returns>
         public string GetTemplateImageUrl(string imageName, bool isServerControl)
         {
             string path = string.Empty;
@@ -356,11 +367,11 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Image URL For Admin Web Controls
+        /// Returns image URL for admin web controls.
         /// </summary>
-        /// <param name="imageName">Image Name</param>
-        /// <param name="isServerControl">Set True For ASP.NET Server Control</param>
-        /// <returns>Full URL Of Given Image</returns>
+        /// <param name="imageName">Image name</param>
+        /// <param name="isServerControl">Set true for ASP.NET server control</param>
+        /// <returns>Full URL of given image</returns>
         public string GetAdminImageUrl(string imageName, bool isServerControl)
         {
             string path = string.Empty;
@@ -376,7 +387,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Current PortalID
+        /// Gets current portalID.
         /// </summary>
         public Int32 GetPortalID
         {
@@ -392,7 +403,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Check For Parent Portal
+        /// Checks if the currnt portal is parent or not.
         /// </summary>
 
         public bool IsParent
@@ -425,7 +436,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        ///Get Portal Parent URL
+        ///Gets parent portal ID.
         /// </summary>
         public string GetParentURL
         {
@@ -460,7 +471,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Set PortalID
+        /// Set PortalID.
         /// </summary>
         /// <param name="portalID">PortalID</param>
         public void SetPortalID(int portalID)
@@ -469,7 +480,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Current StoreID for AspxCommerce
+        /// Get Current StoreID for AspxCommerce.
         /// </summary>
         public Int32 GetStoreID
         {
@@ -485,16 +496,16 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Set StoreID For AspxCommerce
+        /// Set StoreID For AspxCommerce.
         /// </summary>
-        /// <param name="storeID"></param>
+        /// <param name="storeID">StoreID</param>
         public void SetStoreID(int storeID)
         {
             StoreID = storeID;
         }
 
         /// <summary>
-        /// Get Current CustomerID for AspxCommerce
+        /// Get Current CustomerID for AspxCommerce.
         /// </summary>
         public Int32 GetCustomerID
         {
@@ -510,7 +521,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Set Customer ID For AspxCommerce User
+        /// Set Customer ID For AspxCommerce User.
         /// </summary>
         /// <param name="customerID">CustomerID</param>
         public void SetCustomerID(int customerID)
@@ -519,7 +530,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Current User Name
+        /// Get Current User Name.
         /// </summary>
         public string GetUsername
         {
@@ -541,7 +552,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Active Template Name
+        /// Get Active Template Name.
         /// </summary>
         public string TemplateName
         {
@@ -567,7 +578,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Active Admin Theme
+        /// Get Active Admin Theme.
         /// </summary>
         public string GetActiveAdminTheme
         {
@@ -592,6 +603,9 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// Returns application's secure token value for login user.
+        /// </summary>
         public string SageFrameSecureToken
         {
             get
@@ -604,7 +618,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Preset Details
+        /// Get Preset Details.
         /// </summary>
         public PresetInfo GetPresetDetails
         {
@@ -623,14 +637,13 @@ namespace SageFrame.Web
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
             }
         }
 
         /// <summary>
-        /// Set Active Theme
+        /// Set Active Theme.
         /// </summary>
         /// <param name="newtheme"> Theme Name</param>
         public void SetActiveTheme(string newtheme)
@@ -642,7 +655,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Set Active Width of Preset
+        /// Set Active Width of Preset.
         /// </summary>
         /// <param name="newwidth">Preset Width</param>
         public void SetActiveWidth(string newwidth)
@@ -654,7 +667,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Page SEO Name By Page Path
+        /// Get Page SEO Name By Page Path.
         /// </summary>
         /// <param name="pagePath">Page Path</param>
         /// <returns>Page SEO Name</returns>
@@ -680,9 +693,9 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// 
+        /// Reidirects to the url elimenating the querystring.
         /// </summary>
-        /// <param name="RedirectUrl"></param>
+        /// <param name="RedirectUrl"> URL with  querystring</param>
         public void ProcessCancelRequestBase(string RedirectUrl)
         {
             string strURL = string.Empty;
@@ -695,7 +708,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Portal SEO Name
+        /// Get Portal SEO Name.
         /// </summary>
         protected string GetPortalSEOName
         {
@@ -711,7 +724,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Set Portal SEO Name
+        /// Set Portal SEO Name.
         /// </summary>
         /// <param name="portalSEOName"> Portal SEO Name</param>
         public void SetPortalSEOName(string portalSEOName)
@@ -720,11 +733,11 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// 
+        /// Reduce the rawURL to simple URL, appends the parameter and redirects.
         /// </summary>
-        /// <param name="rawUrl"></param>
-        /// <param name="controlPath"></param>
-        /// <param name="parameter"></param>
+        /// <param name="rawUrl">raw URL</param>
+        /// <param name="controlPath"> control Path</param>
+        /// <param name="parameter">URL parameter to be added</param>
         public void ProcessSourceControlUrlBase(string rawUrl, string controlPath, string parameter)
         {
             //Added For unique Control ID generation
@@ -745,7 +758,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Get Current Culture Name
+        /// Get Current Culture Name.
         /// </summary>
         public string GetCurrentCultureName
         {
@@ -756,15 +769,15 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        ///
+        /// Displays the message.
         /// </summary>
-        /// <param name="ctl"></param>
-        /// <param name="MessageTitle"></param>
-        /// <param name="Message"></param>
-        /// <param name="CompleteMessage"></param>
-        /// <param name="isSageAsyncPostBack"></param>
-        /// <param name="MessageType"></param>
-        /// <param name="strCssClass"></param>
+        /// <param name="ctl">Control</param>
+        /// <param name="MessageTitle">Message title</param>
+        /// <param name="Message">Message</param>
+        /// <param name="CompleteMessage">Complete message</param>
+        /// <param name="isSageAsyncPostBack">set true if is post back</param>
+        /// <param name="MessageType">messagetype: error, success or alert</param>
+        /// <param name="strCssClass">class that wrap the message</param>
         public void Modules_Message_ShowMessage(Control ctl, string MessageTitle, string Message, string CompleteMessage, bool isSageAsyncPostBack, SageMessageType MessageType, string strCssClass)
         {
 
@@ -877,7 +890,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Include Language JS From Modules
+        /// Include Language JS From Modules.
         /// </summary>
         public void IncludeLanguageJS()
         {
@@ -953,7 +966,7 @@ namespace SageFrame.Web
         /// Note :
         /// For This block of code your page must have Literal of ID "SageFrameModuleCSSlinks"
         /// Use only css file except having name other than module.css, module.css file will automatically inlcude in the file is in
-        /// root of module
+        /// root of module.
         /// </summary>
         /// <param name="FileUrl"></param>
         public void IncludeCssFile(string FileUrl)
@@ -972,7 +985,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Register Client Script To Page
+        /// Register Client Script To Page.
         /// </summary>
         /// <param name="Key">Key For Script</param>
         /// <param name="Value">Value For The Key</param>
@@ -993,7 +1006,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Include Js Files in the Page
+        /// Include Js Files in the Page.
         /// </summary>
         /// <param name="ModuleName"> Module Name</param>
         /// <param name="files"> List Of Files</param>
@@ -1023,7 +1036,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Include JS Files in the Page
+        /// Include JS Files in the Page.
         /// </summary>
         /// <param name="ModuleName">Module Name</param>
         /// <param name="AllowCompression">Set True For Compression</param>
@@ -1054,7 +1067,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Include JS In The Top Of Page With List Of JS Files
+        /// Include JS In The Top Of Page With List Of JS Files.
         /// </summary>
         /// <param name="ModuleName">Module Name</param>
         /// <param name="files"> List Of Files</param>
@@ -1084,7 +1097,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Include JS In The Top Of Page With List Of JS Files
+        /// Include JS In The Top Of Page With List Of JS Files.
         /// </summary>
         /// <param name="ModuleName">Module Name</param>
         /// <param name="AllowCompression"> Set True For Compression</param>
@@ -1115,7 +1128,7 @@ namespace SageFrame.Web
         }
 
         /// <summary>
-        /// Include Css with List of Css Path
+        /// Include Css with List of Css Path.
         /// </summary>
         /// <param name="ModuleName">Module Name</param>
         /// <param name="files">List of Files</param>

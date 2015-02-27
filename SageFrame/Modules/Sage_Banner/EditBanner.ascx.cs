@@ -46,7 +46,7 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
                 ClearImageForm();
                 LoadSagePage();
             }
-          //  ImageURL();
+            //  ImageURL();
             UserModuleId = Int32.Parse(SageUserModuleID);
         }
         catch (Exception ex)
@@ -54,7 +54,7 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
             ProcessException(ex);
         }
     }
-   
+
     private void IncludeJS()
     {
         IncludeJs("SageBanner", "/Modules/Sage_Banner/js/jquery.Jcrop.js");
@@ -79,34 +79,34 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         try
         {
 
-             string fName = fuFileUpload.FileName;
-             if (SageFrame.Web.PictureManager.ValidImageExtension(fName))
-             {
+            string fName = fuFileUpload.FileName;
+            //if (SageFrame.Web.PictureManager.ValidImageExtension(fName))
+            //{
 
-                 BannerId = Convert.ToInt32(ViewState["EditBannerID"]);
-                 int ImageID = Convert.ToInt32(Session["EditImageID"]);
-                 if (fuFileUpload.HasFile || ImageID != 0)
-                 {
-                     SaveBannerContent(BannerId, ImageID);
-                     LoadBannerImagesOnGrid(BannerId, Int32.Parse(SageUserModuleID), GetPortalID);
-                     divbannerImageContainer.Attributes.Add("style", "display:block");
-                     divEditBannerImage.Attributes.Add("style", "display:none");
-                     ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "BannerSavedsuccesfully"), "", SageMessageType.Success);
-                     txtWebUrl.Text = string.Empty;
-                     txtBannerDescriptionToBeShown.Text = string.Empty;
-                 }
-                 else
-                 {
-                     rdbReadMorePageType.SelectedValue = "0";
-                     txtWebUrl.Text = string.Empty;
-                     txtBannerDescriptionToBeShown.Text = string.Empty;
-                     ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "NoBannerImage"), "", SageMessageType.Error);
-                 }
-             }
-             else
-             {
-                 ShowMessage("Invalid File Extension", "Invalid File Extension", "The File you want to upload is invalid", SageMessageType.Error);
-             }
+            BannerId = Convert.ToInt32(ViewState["EditBannerID"]);
+            int ImageID = Convert.ToInt32(Session["EditImageID"]);
+            if (fuFileUpload.HasFile || ImageID != 0)
+            {
+                SaveBannerContent(BannerId, ImageID);
+                LoadBannerImagesOnGrid(BannerId, Int32.Parse(SageUserModuleID), GetPortalID);
+                divbannerImageContainer.Attributes.Add("style", "display:block");
+                divEditBannerImage.Attributes.Add("style", "display:none");
+                ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "BannerSavedsuccesfully"), "", SageMessageType.Success);
+                txtWebUrl.Text = string.Empty;
+                txtBannerDescriptionToBeShown.Text = string.Empty;
+            }
+            else
+            {
+                rdbReadMorePageType.SelectedValue = "0";
+                txtWebUrl.Text = string.Empty;
+                txtBannerDescriptionToBeShown.Text = string.Empty;
+                ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "NoBannerImage"), "", SageMessageType.Error);
+            }
+            //}
+            //else
+            //{
+            //    ShowMessage("Invalid File Extension", "Invalid File Extension", "The File you want to upload is invalid", SageMessageType.Error);
+            //}
         }
         catch (Exception ex)
         {
@@ -187,7 +187,7 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
                 Directory.CreateDirectory(TargetLocation);
             }
             string SavePath = string.Empty;
-            SavePath = TargetLocation + fileName;
+            SavePath = Path.Combine(TargetLocation,fileName);
             PictureManager.CreateThmnail(ImageFilePath, TargetSize, SavePath);
         }
         catch (Exception ex)
@@ -204,9 +204,17 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         try
         {
             string fName = fuFileUpload.FileName;
+            if (fuFileUpload.HasFile)
+            {
+                fName = fuFileUpload.FileName;
+            }
+            else
+            {
+                fName = imgEditBannerImageImage.ImageUrl;
+                fName = fName.Substring(fName.LastIndexOf('\\') + 1);
+            }
             if (SageFrame.Web.PictureManager.ValidImageExtension(fName))
             {
-
                 bool isEdit = false;
                 SageBannerInfo obj = new SageBannerInfo();
                 if (Session["EditImageID"] != null && Session["EditImageID"].ToString() != string.Empty)
@@ -277,15 +285,15 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
                 }
                 else
                 {
-                    string target = Server.MapPath("~/Modules/Sage_Banner/images/OriginalImage/");
-                    string thumbLarge = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Large/");
-                    string thumbMedium = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Medium/");
-                    string thumbSmall = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Small/");
-                    string defaultImage = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Default/");
+                    string target = Server.MapPath(@"~/Modules/Sage_Banner/images/OriginalImage/");
+                    string thumbLarge = Server.MapPath(@"~/Modules/Sage_Banner/images/ThumbNail/Large/");
+                    string thumbMedium = Server.MapPath(@"~/Modules/Sage_Banner/images/ThumbNail/Medium/");
+                    string thumbSmall = Server.MapPath(@"~/Modules/Sage_Banner/images/ThumbNail/Small/");
+                    string defaultImage = Server.MapPath(@"~/Modules/Sage_Banner/images/ThumbNail/Default/");
                     System.Drawing.Image.GetThumbnailImageAbort thumbnailImageAbortDelegate = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
                     if (fuFileUpload.HasFile)
                     {
-                        string fileName = fuFileUpload.PostedFile.FileName.Replace(" ", "_");
+                        string fileName = Path.GetFileName(fuFileUpload.PostedFile.FileName.Replace(" ", "_"));
                         int i = 1;
                         while (File.Exists(target + "/" + fileName))
                         {
@@ -294,7 +302,7 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
                         }
                         fuFileUpload.SaveAs(Path.Combine(target, fileName));
                         fuFileUpload.SaveAs(Path.Combine(defaultImage, fileName));
-                        string SourcePath = target + fileName;
+                        string SourcePath = Path.Combine(target, fileName);//target + fileName;
                         SaveThumbnailImages(SourcePath, 320, thumbSmall, fileName);
                         SaveThumbnailImages(SourcePath, 768, thumbMedium, fileName);
                         SaveThumbnailImages(SourcePath, 965, thumbLarge, fileName);
@@ -317,7 +325,7 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         {
             throw ex;
         }
-        
+
         Session["ImageName"] = null;
         Session["EditImageID"] = null;
     }

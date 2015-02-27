@@ -5,9 +5,12 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SageFrame.Web;
-
+/// <summary>
+/// CDNView inherists from BaseAdministrationUserControl class
+/// </summary>
 public partial class Modules_HTML_CDNView : BaseAdministrationUserControl
-{
+{    
+   
     public string ModulePath = "";
     public int UserModuleID = 0;
     public int PortalID = 0;

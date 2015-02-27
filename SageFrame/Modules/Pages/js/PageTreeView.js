@@ -1,5 +1,5 @@
-﻿(function($) {
-    $.createPageTreeView = function(p) {
+﻿(function ($) {
+    $.createPageTreeView = function (p) {
         p = $.extend
         ({
             PortalID: 1,
@@ -10,7 +10,8 @@
             CultureCode: 'en-US',
             baseURL: Path + '/Modules/PageTreeView/MenuWebService.asmx/',
             Mode: false,
-            AppName: '/sageframe',
+            AppName: '',
+            HostURL: "",
             StartupPage: '',
             ActiveTemplateName: 'Default'
         }, p);
@@ -37,11 +38,11 @@
                 Mode: p.Mode,
                 LSTPages: []
             },
-            init: function() {
+            init: function () {
                 this.GetPages();
                 this.BindEvents();
             },
-            ajaxSuccess: function(data) {
+            ajaxSuccess: function (data) {
                 switch (PageTreeView.config.ajaxCallMode) {
                     case 0:
                         break;
@@ -70,8 +71,8 @@
                         break;
                 }
             },
-            BindEvents: function() {
-                $('#imbPageCancel').bind("click", function() {
+            BindEvents: function () {
+                $('#imbPageCancel').bind("click", function () {
                     PageTreeView.ClearControls();
                     PageTreeView.PageShow(2);
                     $('#btnAddpage').removeClass('sfAddActive');
@@ -81,7 +82,7 @@
                 if ($('#rdbFronMenu').attr("checked")) {
                     $('#trShowInDashboard').hide();
                 }
-                $('#btnAddpage').bind("click", function() {
+                $('#btnAddpage').bind("click", function () {
                     PageTreeView.PageShow(1);
                     PageTreeView.ClearControls();
                     //   PageTreeView.GetPages();
@@ -92,7 +93,7 @@
                     $(this).addClass('sfAddActive');
                     $('#categoryTree li.active').addClass('sfTempDeactive');
                 });
-                $('#rdbAdmin, #rdbFronMenu').bind('click', function() {
+                $('#rdbAdmin, #rdbFronMenu').bind('click', function () {
                     PageTreeView.ClearControls();
                     PageTreeView.config.Mode = $(this).attr('id') === 'rdbAdmin' ? true : false;
                     PageMode = PageTreeView.config.Mode;
@@ -122,13 +123,13 @@
                     }
 
                 });
-                $('#navContainer').on('click', '.editPage', function() {
+                $('#navContainer').on('click', '.editPage', function () {
                     PageTreeView.PageShow(1);
                     PageTreeView.ClearControls();
                     var id = $(this).attr('id').replace('imgEditNew_', '');
                     PageTreeView.GetPageDetails(id);
                 });
-                $('#navContainer').on('click', '.deletePage', function() {
+                $('#navContainer').on('click', '.deletePage', function () {
                     var $me = $(this);
                     var id = $me.attr('id').replace('imgDelete_', '');
                     var pageName = $me.parents('li').find('.PageName').text();
@@ -138,7 +139,7 @@
                         $("#dialog").dialog({
                             modal: true,
                             buttons: {
-                                "Cancel": function() {
+                                "Cancel": function () {
                                     $(this).dialog("close");
                                 }
                             }
@@ -149,7 +150,7 @@
                         $("#dialog").dialog({
                             modal: true,
                             buttons: {
-                                "Cancel": function() {
+                                "Cancel": function () {
                                     $(this).dialog("close");
                                 }
                             }
@@ -160,13 +161,13 @@
                         $("#dialog").dialog({
                             modal: true,
                             buttons: {
-                                "Confirm": function() {
+                                "Confirm": function () {
                                     PageTreeView.DeletePage(id, p.UserName, p.PortalID);
                                     $me.parents('li').remove();
                                     $(this).dialog("close");
                                     PageTreeView.ClearControls();
                                 },
-                                "Cancel": function() {
+                                "Cancel": function () {
                                     $(this).dialog("close");
                                 }
                             }
@@ -174,14 +175,14 @@
                     }
                 });
 
-                $('#portalPages').on('click', function() {
+                $('#portalPages').on('click', function () {
                     $('#rdbFronMenu').trigger('click');
                     // $('#chkIsSecure').prop('checked', true)
                     $('#adminPages').removeClass('sfActive');
                     $(this).addClass('sfActive');
                 });
 
-                $('#adminPages').on('click', function() {
+                $('#adminPages').on('click', function () {
                     $('#imgPCSwitch').removeClass('active');
                     $('#imgMobileSwitch').addClass('active');
                     $('#rdbAdmin').trigger('click');
@@ -189,7 +190,7 @@
                     $(this).addClass('sfActive');
                 });
 
-                $('#chkMenu').bind("click", function() {
+                $('#chkMenu').bind("click", function () {
                     if ($(this).prop("checked")) {
                         var selected = $('#categoryTree  span.ui-tree-selected').length;
                         $('#trIncludeInMenu').slideDown();
@@ -202,22 +203,22 @@
                         $('#lblSelectMenu').hide();
                     }
                 });
-                $('#navContainer').on('click', '.sfSearchPages', function() {
+                $('#navContainer').on('click', '.sfSearchPages', function () {
                     $('#txtSearch').width('172');
                     $('#txtSearch').focus();
                 });
-                $('#navContainer').on('click', '#txtSearch', function() {
+                $('#navContainer').on('click', '#txtSearch', function () {
                     $(this).width('172');
                 });
-                $('#navContainer').on('blur', '#txtSearch', function() {
+                $('#navContainer').on('blur', '#txtSearch', function () {
                     $(this).width('20');
                     $(this).val('');
                     $('#categoryTree li').removeClass('sfHighlight').find("ul").css("display", "none");
                 });
             },
-            ajaxFailure: function() {
+            ajaxFailure: function () {
             },
-            ajaxCall: function(config) {
+            ajaxCall: function (config) {
                 $.ajax({
                     type: PageTreeView.config.type,
                     contentType: PageTreeView.config.contentType,
@@ -229,7 +230,7 @@
                     error: PageTreeView.ajaxFailure
                 });
             },
-            GetPages: function() {
+            GetPages: function () {
                 this.config.method = "GetPortalPages";
                 this.config.url = this.config.baseURL + this.config.method;
                 this.config.data = JSON2.stringify({
@@ -242,7 +243,7 @@
                 this.config.ajaxCallMode = 2;
                 this.ajaxCall(this.config);
             },
-            DeletePage: function(pageID, deletedBy, portalId) {
+            DeletePage: function (pageID, deletedBy, portalId) {
                 this.config.method = "DeleteChildPages";
                 this.config.url = this.config.baseURL + this.config.method;
                 this.config.data = JSON2.stringify({
@@ -255,7 +256,7 @@
                 this.config.ajaxCallMode = 5;
                 this.ajaxCall(this.config);
             },
-            UpdatePage: function(pageID, isVisiable, isPublished, portalID, deletedBY, updateFor) {
+            UpdatePage: function (pageID, isVisiable, isPublished, portalID, deletedBY, updateFor) {
                 this.config.method = "UpdatePageAsContextMenu";
                 this.config.url = this.config.baseURL + this.config.method;
                 this.config.data = JSON2.stringify({
@@ -270,7 +271,7 @@
                 this.config.ajaxCallMode = 6;
                 this.ajaxCall(this.config);
             },
-            SortTreeViewMenu: function(pageID, parentID, pageName, BeforeID, AfterID, portalID, userName) {
+            SortTreeViewMenu: function (pageID, parentID, pageName, BeforeID, AfterID, portalID, userName) {
                 if ($('#rdbAdmin').prop("checked")) {
                     parentID = 2;
                 }
@@ -290,11 +291,11 @@
                 this.config.ajaxCallMode = 6;
                 this.ajaxCall(this.config);
             },
-            SortAdminTreeViewMenu: function() {
+            SortAdminTreeViewMenu: function () {
                 var lstPageOrder = [];
                 var html = '';
                 var count = 0;
-                $('#categoryTree li').each(function(ind, itm) {
+                $('#categoryTree li').each(function (ind, itm) {
                     if ($(this).prop('id').trim().length > 0) {
                         lstPageOrder[count] = { "PageID": parseInt($(this).prop('id')), "PageOrder": parseInt(ind), "PortalID": parseInt(p.PortalID) };
                         count++;
@@ -313,7 +314,7 @@
                 this.config.ajaxCallMode = 6;
                 this.ajaxCall(this.config);
             },
-            BuildMenu: function(data) {
+            BuildMenu: function (data) {
                 var setting = data.d;
                 switch (parseInt(setting.MenuType)) {
                     case 0:
@@ -330,7 +331,7 @@
                         break;
                 }
             },
-            BindPages: function(data) {
+            BindPages: function (data) {
                 var pages = data.d;
                 var PageID = "";
                 var parentID = "";
@@ -343,7 +344,7 @@
                 html += '<div class="clear"/>';
                 html += '<ul id="categoryTree">';
                 var levelSelect = PageTreeView.config.Mode ? 1 : 0;
-                $.each(pages, function(index, item) {
+                $.each(pages, function (index, item) {
                     PageID = item.PageID;
                     parentID = item.ParentID;
                     categoryLevel = item.Level;
@@ -385,12 +386,12 @@
                 PageTreeView.AddContextMenu();
                 PageTreeView.BindParentPages(data);
                 LSTSagePages = data.d;
-                $('#navContainer').keyup('#txtSearch', function(event) {
+                $('#navContainer').keyup('#txtSearch', function (event) {
                     //if (event.keyCode == 13) {
                     if ($('#txtSearch').val() != "") {
                         $('#categoryTree li').removeClass('sfHighlight').find("ul").css("display", "none");
                         var categoryTree = $('#categoryTree span');
-                        $.each(categoryTree, function(index, item) {
+                        $.each(categoryTree, function (index, item) {
                             if ($(this).text().search(new RegExp($('#txtSearch').val(), "i")) > -1) {
                                 $(this).parent('li').addClass('sfHighlight');
                                 $(this).parents('ul').css('display', 'block');
@@ -415,7 +416,7 @@
                 var previewCode = $("#categoryTree").find('.ui-tree-selected').find("span.true").attr("preview");
                 $('#btnPreview').attr('name', previewCode);
             },
-            BindPageDetails: function(data) {
+            BindPageDetails: function (data) {
                 $('#divSearchedUsers').html('');
                 $('#txtPageName').val(data.d.PageName);
                 $('#txtTitle').val(data.d.Title);
@@ -437,7 +438,7 @@
                     }
                     else {
                         $('#trIncludeInMenu,#selMenulist').show();
-                        $.each(substr, function(index, item) {
+                        $.each(substr, function (index, item) {
                             $("#selMenulist option[value='" + substr[index] + "']").prop('selected', 'selected');
                         });
                     }
@@ -449,18 +450,18 @@
                 }
                 $('div.cssClassUploadFiles').html('');
                 if (data.d.IconFile != "") {
-                    var filePath = p.AppName + "/PageImages/" + data.d.IconFile;
-                    var html = '<img title="' + data.d.IconFile + '" src="' + filePath + '"/><span class="deleteIcon"><img class="delete" src=' + SageFrame.utils.GetAdminImage("delete.png") + '></span>';
+                    var filePath = SageFrameHostURL + "/PageImages/" + data.d.IconFile;
+                    var html = '<img title="' + data.d.IconFile + '" src="' + filePath + '"/><span class="deleteIcon"><label class="sfBtn icon-close"></label></span>';
                     $('div.cssClassUploadFiles').html(html);
                 }
                 var arr = new Array();
-                $.each(data.d.LstPagePermission, function(inxs, ww) {
+                $.each(data.d.LstPagePermission, function (inxs, ww) {
                     if (jQuery.inArray(ww.Username, arr) == -1)
                         arr.push(ww.Username);
                 });
                 $('#dvUser table').html('').show();
                 var userHtml = "";
-                $.each(arr, function(inx, itw) {
+                $.each(arr, function (inx, itw) {
                     if (itw != "") {
                         var style = inx % 2 == 0 ? 'class="sfEven"' : 'class="sfOdd"';
                         userHtml += '<tr ' + style + '><td width="40%"><label>' + arr[inx] + '</label></td><td width="20%"><input type="checkbox" class="sfCheckbox" title="view"/></td>';
@@ -475,8 +476,8 @@
                     $('#tblUser').hide();
                 var roles = $('div.divPermission tr:gt(0)');
                 var user = $('#dvUser tr');
-                $.each(data.d.LstPagePermission, function(indx, itm) {
-                    $.each(roles, function(index, item) {
+                $.each(data.d.LstPagePermission, function (indx, itm) {
+                    $.each(roles, function (index, item) {
                         if ($(item).prop('id') == itm.RoleID && itm.PermissionID == 1 && itm.Username == "") {
                             $(item).find('input[title="view"]').prop('checked', true);
                         }
@@ -484,7 +485,7 @@
                             $(item).find('input[title="edit"]').prop('checked', true);
                         }
                     });
-                    $.each(user, function(index, ite) {
+                    $.each(user, function (index, ite) {
                         if ($(ite).find('td:eq(0) label').html() == itm.Username && itm.PermissionID == 1) {
                             $(ite).find('input[title="view"]').prop('checked', true);
                         }
@@ -494,14 +495,14 @@
                     });
                 });
             },
-            BindChildCategory: function(response, PageID) {
+            BindChildCategory: function (response, PageID) {
                 var strListmaker = '';
                 var childNodes = '';
                 var path = '';
                 var itemPath = "";
                 itemPath += "";
                 var tabPath = '';
-                $.each(response, function(index, item) {
+                $.each(response, function (index, item) {
                     if (item.Level > 0) {
                         if (item.ParentID == PageID) {
                             itemPath += item.PageName;
@@ -524,7 +525,7 @@
                 });
                 return strListmaker;
             },
-            UpdSettingKeyValue: function(ActiveTemplateName, PageName, OldPageName) {
+            UpdSettingKeyValue: function (ActiveTemplateName, PageName, OldPageName) {
                 this.config.method = "UpdSettingKeyValue";
                 this.config.url = this.config.baseURL + this.config.method;
                 this.config.data = JSON2.stringify({
@@ -539,7 +540,7 @@
                 this.config.ajaxCallMode = 0;
                 this.ajaxCall(this.config);
             },
-            AddDragDrop: function() {
+            AddDragDrop: function () {
                 $('#categoryTree').tree({
                     expand: 'false',
                     droppable: [
@@ -559,12 +560,12 @@
             		                aroundLeft: 0,
             		                aroundRight: 0
             		            }
-            	            ],
-                    drop: function(event, ui) {
+                    ],
+                    drop: function (event, ui) {
 
                         var draggebleSpanID = $('#categoryTree').find('li.ui-draggable-dragging');
                         var dropableSpanID = $('#' + $(this).find('li span.ui-tree-droppable').parents('li').attr("id"));
-                        var mouseTopPosition = event.pageY - dropableSpanID.offset().top;
+                        var mouseTopPosition = event.pageY - draggebleSpanID.offset().top;
 
                         var dropableSpanHeight = $(this).find('li span.ui-tree-droppable').parents('li').height();
                         var portionOne = dropableSpanHeight / 4;
@@ -622,36 +623,36 @@
                                 break;
                         }
                     },
-                    stop: function(event, ui) {
+                    stop: function (event, ui) {
                         if ($('#rdbAdmin').prop("checked")) {
                             PageTreeView.SortAdminTreeViewMenu();
                         }
                     },
-                    over: function(event, ui) {
+                    over: function (event, ui) {
                         $(ui.droppable).addClass('ui-tree-droppable');
                     },
-                    out: function(event, ui) {
+                    out: function (event, ui) {
                         $(ui.droppable).removeClass('ui-tree-droppable');
                     },
-                    overtop: function(event, ui) {
+                    overtop: function (event, ui) {
                         $(ui.droppable).addClass('ui-tree-droppable-top');
                     },
-                    overcenter: function(event, ui) {
+                    overcenter: function (event, ui) {
                         $(ui.droppable).addClass('ui-tree-droppable-center');
                     },
-                    overbottom: function(event, ui) {
+                    overbottom: function (event, ui) {
                         $(ui.droppable).addClass('ui-tree-droppable-bottom');
                     },
-                    outtop: function(event, ui) {
+                    outtop: function (event, ui) {
                         $(ui.droppable).removeClass('ui-tree-droppable-top');
                     },
-                    outcenter: function(event, ui) {
+                    outcenter: function (event, ui) {
                         $(ui.droppable).removeClass('ui-tree-droppable-center');
                     },
-                    outbottom: function(event, ui) {
+                    outbottom: function (event, ui) {
                         $(ui.droppable).removeClass('ui-tree-droppable-bottom');
                     },
-                    dblclick: function(event, ui) {
+                    dblclick: function (event, ui) {
                         var id = ui.draggable[0].id;
                         id = ui.draggable[0].id.replace(/[^0-9]/gi, '');
                         GetCategoryByCagetoryID(id);
@@ -659,25 +660,25 @@
                     }
                 });
             },
-            AddContextMenu: function() {
+            AddContextMenu: function () {
                 var pageTree = $('#categoryTree li');
-                $(pageTree).each(function(i) {
+                $(pageTree).each(function (i) {
                     var self = $(this);
                     $(this).find("span").contextMenu('myMenu1', {
                         bindings: {
-                            'add': function(t) {
+                            'add': function (t) {
                                 PageTreeView.ClearControls();
                                 PageTreeView.PageShow(1);
                                 PageTreeView.ClearControls();
                                 //  location.reload();
                             },
-                            'edit': function(t) {
+                            'edit': function (t) {
                                 if ($(t).parents('li').find('li.required').length > 0 || $(t).parent("li").hasClass("required")) {
                                     $('#sf_lblConfirmation').text("Unable to edit a Portal Start Up Page");
                                     $("#dialog").dialog({
                                         modal: true,
                                         buttons: {
-                                            "Cancel": function() {
+                                            "Cancel": function () {
                                                 $(this).dialog("close");
                                             }
                                         }
@@ -692,29 +693,29 @@
                                     PageTreeView.GetPageDetails(pageID);
                                 }
                             },
-                            'addmodule': function(t) {
+                            'addmodule': function (t) {
                             },
-                            'publish': function(t) {
+                            'publish': function (t) {
                                 PageTreeView.UpdatePage($(t).find('span.ui-tree-selected').parent('li').prop('id'), 0, 1, p.PortalID, p.UserName, "P");
                             },
-                            'ubpublish': function(t) {
+                            'ubpublish': function (t) {
                                 PageTreeView.UpdatePage($(t).find('span.ui-tree-selected').parent('li').prop('id'), 0, 0, p.PortalID, p.UserName, "P");
                             },
-                            'showinmenu': function(t) {
+                            'showinmenu': function (t) {
                                 PageTreeView.UpdatePage($(t).find('span.ui-tree-selected').parent('li').prop('id'), 1, 0, p.PortalID, p.UserName, "M");
                             },
-                            'hideinmenu': function(t) {
+                            'hideinmenu': function (t) {
                                 PageTreeView.UpdatePage($(t).find('span.ui-tree-selected').parent('li').prop('id'), 0, 0, p.PortalID, p.UserName, "M");
                             },
-                            'rename': function(t) {
+                            'rename': function (t) {
                             },
-                            'startpage': function(t) {
+                            'startpage': function (t) {
                                 if ($('#rdbAdmin').prop("checked")) {
                                     $('#sf_lblConfirmation').text("Admin page cannot be start up page.");
                                     $("#dialog").dialog({
                                         modal: true,
                                         buttons: {
-                                            "Cancel": function() {
+                                            "Cancel": function () {
                                                 $(this).dialog("close");
                                             }
                                         }
@@ -729,13 +730,13 @@
                                     $(t).parents('li').addClass('required');
                                 }
                             },
-                            'remove': function(t) {
+                            'remove': function (t) {
                                 if ($(t).text() == "Under Construction") {
                                     $('#sf_lblConfirmation').text("Under Construction page is not deleted.");
                                     $("#dialog").dialog({
                                         modal: true,
                                         buttons: {
-                                            "Cancel": function() {
+                                            "Cancel": function () {
                                                 $(this).dialog("close");
                                             }
                                         }
@@ -746,7 +747,7 @@
                                     $("#dialog").dialog({
                                         modal: true,
                                         buttons: {
-                                            "Cancel": function() {
+                                            "Cancel": function () {
                                                 $(this).dialog("close");
                                             }
                                         }
@@ -757,13 +758,13 @@
                                     $("#dialog").dialog({
                                         modal: true,
                                         buttons: {
-                                            "Confirm": function() {
+                                            "Confirm": function () {
                                                 PageTreeView.DeletePage($(self).find('span.ui-tree-selected').parent('li').prop('id'), p.UserName, p.PortalID);
                                                 $(self).find('span.ui-tree-selected').parent('li').remove();
                                                 $(this).dialog("close");
                                                 PageTreeView.ClearControls();
                                             },
-                                            "Cancel": function() {
+                                            "Cancel": function () {
                                                 $(this).dialog("close");
                                             }
                                         }
@@ -772,205 +773,204 @@
                             }
                         },
                         menuStyle: {
-                        //                                border: '1px solid #000'
-                    },
-                    itemStyle: {
-                    //                                display: 'block',
-                    //                                cursor: 'pointer',
-                    //                                padding: '3px',
-                    //                                border: '1px solid #fff',
-                    //                                backgroundColor: 'transparent'
-                },
-                itemHoverStyle: {
-                //                                border: '1px solid #0a246a',
-                //                                backgroundColor: '#b6bdd2'
-            }
-        });
+                            //                                border: '1px solid #000'
+                        },
+                        itemStyle: {
+                            //                                display: 'block',
+                            //                                cursor: 'pointer',
+                            //                                padding: '3px',
+                            //                                border: '1px solid #fff',
+                            //                                backgroundColor: 'transparent'
+                        },
+                        itemHoverStyle: {
+                            //                                border: '1px solid #0a246a',
+                            //                                backgroundColor: '#b6bdd2'
+                        }
+                    });
 
-    });
-},
-IconUploader: function() {
-    var uploadFlag = false;
-    var upload = new AjaxUpload($('#flIcon'), {
-        action: Path + 'UploadHandler.ashx',
-        name: 'myfile[]',
-        multiple: false,
-        data: { rdbChecked: "NA" },
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: function(file, ext) {
-        },
-        onSubmit: function(file, ext) {
-            ext = ext.toLowerCase();
-            if (ext == "png" || ext == "jpg" || ext == "gif" || ext == "bmp" || ext == "JPEG" || ext == "jpeg" || ext == "ico") {
-                return true;
-            }
-            else {
-                return ConfirmDialog(this, 'message', "Not a valid image file");
-                return false;
-            }
-        },
-        onComplete: function(file, response) {
-            if (response == "large") {
-                return ConfirmDialog(this, 'message', "The image size is too large. Should be less than 1mb");
-            }
-            var pageimage = file.split(" ").join("_");
-            var filePath = p.AppName + "/PageImages/" + pageimage;
-            $('span.filename').text(pageimage);
-            var html = '<img title="' + pageimage + '" src="' + filePath + '" /><span class="deleteIcon"><img class="delete" src=' + SageFrame.utils.GetAdminImage("delete.png") + '></span>';
-            $('div.cssClassUploadFiles').html(html);
-        }
-    });
-},
-PageShow: function(show) {
-    switch (show) {
-        case 1:
-            $('.sfPageModules').hide();
-            $('.sfNewPage').show();
-            $('#divDroppable').hide();
-            $('.divLayoutContainer').hide();
-            $('#divLayout').attr('style', 'margin-right:0px');
-            break;
-        case 2:
-            $('.sfPageModules').show();
-            $('.sfNewPage').hide();
-            $('#divDroppable').show();
-            $('.divLayoutContainer').show();
-            $('#divLayout').attr('style', 'margin-right:200px');
-            break;
-    }
-},
-IconUploaderAdmin: function() {
-    var uploadFlag = false;
-    var upload = new AjaxUpload($('#flIcon'), {
-        action: Path + 'UploadHandler.ashx',
-        name: 'myfile[]',
-        multiple: false,
-        data: { rdbChecked: "A" },
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: function(file, ext) {
-        },
-        onSubmit: function(file, ext) {
-            ext = ext.toLowerCase();
-            if (ext == "png" || ext == "jpg" || ext == "gif" || ext == "bmp" || ext == "JPEG" || ext == "jpeg" || ext == "ico") {
-                return true;
-            }
-            else {
-                return ConfirmDialog(this, 'message', "Not a valid image file");
-                return false;
-            }
-        },
-        onComplete: function(file, response) {
-            if (response == "large") {
-                return ConfirmDialog(this, 'message', "The image size is too large. Should be less than 1mb");
-            }
-            var pageimage = file.split(" ").join("_");
-            var filePath = p.AppName + "/PageImages/" + pageimage;
-            $('span.filename').text(pageimage);
-            var html = '<img title="' + pageimage + '" src="' + filePath + '" /><span class="deleteIcon"><img class="delete" src=' + SageFrame.utils.GetAdminImage("delete.png") + '></span>';
-            $('div.cssClassUploadFiles').html(html);
-        }
-    });
-},
-ClearControls: function() {
-    $('#txtPageName').val('').removeAttr("disabled").removeClass("sfDisable");
-    $('#txtCaption').val('');
-    $('#cboParentPage').val('');
-    $('#flIcon').val('');
-    $('#txtTitle').val('');
-    $('#txtDescription').val('');
-    $('#txtKeyWords').val('');
-    $('#txtStartDate').val('');
-    $('#txtEndDate').val('');
-    $('#txtRefreshInterval').val('');
-    $('#chkIsSecure').prop("checked", false);
-    LstPagePermission: lstPagePermission = [];
-    $('#txtPageName').prop('title', 0);
-    $('#cboPositionTab').val('');
-    $('span.ui-tree-selected').removeClass("ui-tree-selected")
-    $("div.divPermission tr:gt(1)").each(function() {
-        $(this).find("input:checkbox").prop("checked", false);
-    });
-    $('#tblUser tr:gt(0)').remove();
-    $('#tblUser').hide();
-    $('div.cssClassUploadFiles').html('');
-    $('#chkMenu').prop("checked", false);
-    $('#gdvModules,#hdnModules,#divPager').html("");
-    $('#selMenulist').html('').hide();
-    $('#lblSelectMenu').hide();
-    $('label.sfError').remove();
-    $('span.filename').text('No files selected');
-},
-IsUnassignedNode: function(li) {
-    return (li.hasClass('unassigned-attributes'));
-},
-BindParentPages: function(pages) {
-    var parentPages = pages.d;
-    var html = "";
-    if (PageTreeView.config.Mode) {
-        html += '<option value="2">---None---</option>';
-    }
-    else {
-        html += '<option value="0">---None---</option>';
-    }
-    $.each(parentPages, function(index, item) {
-        html += '<option value=' + item.PageID + '>' + item.PageName.replace(new RegExp("-", "g"), ' ') + '</option>';
-    });
-    $('#cboParentPage').html(html);
-},
-//changeed 
-GetPageDetails: function(pageID) {
-    this.config.method = "GetPageDetails";
-    this.config.url = this.config.baseURL + this.config.method;
-    this.config.data = JSON2.stringify({
-        pageID: pageID,
-        userName: p.UserName,
-        portalID: p.PortalID,
-        userModuleID: p.UserModuleID,
-        secureToken: SageFrameSecureToken
-    });
-    this.config.ajaxCallMode = 7;
-    this.ajaxCall(this.config);
-},
-GetMenuList: function() {
-    $.ajax({
-        type: PageTreeView.config.type,
-        contentType: PageTreeView.config.contentType,
-        cache: PageTreeView.config.cache,
-        async: false,
-        url: PageTreeView.config.baseURL + "GetAllMenu",
-        data: JSON2.stringify({
-            userName: p.UserName,
-            portalID: p.PortalID,
-            userModuleID: p.UserModuleID,
-            secureToken: SageFrameSecureToken
-        }),
-        dataType: PageTreeView.config.dataType,
-        success: function(msg) {
-            var LstMenu = msg.d;
-            var html = '';
-            var menulist = '';
-            var check = '';
-            $.each(LstMenu, function(index, item) {
-                if (item != "") {
-                    menulist += '<option value=' + item.MenuID + '>' + item.MenuName + '</li>';
+                });
+            },
+            IconUploader: function () {
+                var uploadFlag = false;
+                var upload = new AjaxUpload($('#flIcon'), {
+                    action: Path + 'UploadHandler.ashx',
+                    name: 'myfile[]',
+                    multiple: false,
+                    data: { rdbChecked: "NA" },
+                    autoSubmit: true,
+                    responseType: 'json',
+                    onChange: function (file, ext) {
+                    },
+                    onSubmit: function (file, ext) {
+                        ext = ext.toLowerCase();
+                        if (ext == "png" || ext == "jpg" || ext == "gif" || ext == "bmp" || ext == "JPEG" || ext == "jpeg" || ext == "ico") {
+                            return true;
+                        }
+                        else {
+                            return ConfirmDialog(this, 'message', "Not a valid image file");
+                            return false;
+                        }
+                    },
+                    onComplete: function (file, response) {
+                        if (response == "large") {
+                            return ConfirmDialog(this, 'message', "The image size is too large. Should be less than 1mb");
+                        }
+                        var pageimage = file.split(" ").join("_");
+                        var filePath = p.HostURL + "/PageImages/" + pageimage;
+                        $('span.filename').text(pageimage);
+                        var html = '<img title="' + pageimage + '" src="' + filePath + '" /><span class="deleteIcon"><label class="sfBtn icon-close"></label></span>';
+                        $('div.cssClassUploadFiles').html(html);
+                    }
+                });
+            },
+            PageShow: function (show) {
+                switch (show) {
+                    case 1:
+                        $('.sfPageModules').hide();
+                        $('.sfNewPage').show();
+                        $('#divDroppable').hide();
+                        $('.divLayoutContainer').hide();
+                        $('#divLayout').attr('style', 'margin-right:0px');
+                        break;
+                    case 2:
+                        $('.sfPageModules').show();
+                        $('.sfNewPage').hide();
+                        $('#divDroppable').show();
+                        $('.divLayoutContainer').show();
+                        $('#divLayout').attr('style', 'margin-right:200px');
+                        break;
                 }
-            });
-            if (LstMenu.length == 0) {
-                menulist = '<option value="0">No Menu Available</option>';
+            },
+            IconUploaderAdmin: function () {
+                var uploadFlag = false;
+                var upload = new AjaxUpload($('#flIcon'), {
+                    action: Path + 'UploadHandler.ashx',
+                    name: 'myfile[]',
+                    multiple: false,
+                    data: { rdbChecked: "A" },
+                    autoSubmit: true,
+                    responseType: 'json',
+                    onChange: function (file, ext) {
+                    },
+                    onSubmit: function (file, ext) {
+                        ext = ext.toLowerCase();
+                        if (ext == "png" || ext == "jpg" || ext == "gif" || ext == "bmp" || ext == "JPEG" || ext == "jpeg" || ext == "ico") {
+                            return true;
+                        }
+                        else {
+                            return ConfirmDialog(this, 'message', "Not a valid image file");
+                            return false;
+                        }
+                    },
+                    onComplete: function (file, response) {
+                        if (response == "large") {
+                            return ConfirmDialog(this, 'message', "The image size is too large. Should be less than 1mb");
+                        }
+                        var pageimage = file.split(" ").join("_");
+                        var filePath = p.HostURL + "/PageImages/" + pageimage;
+                        $('span.filename').text(pageimage);
+                        var html = '<img title="' + pageimage + '" src="' + filePath + '" /><span class="deleteIcon"><label class="sfBtn icon-close"></label></span>';
+                        $('div.cssClassUploadFiles').html(html);
+                    }
+                });
+            },
+            ClearControls: function () {
+                $('#txtPageName').val('').removeAttr("disabled").removeClass("sfDisable");
+                $('#txtCaption').val('');
+                $('#cboParentPage').val('');
+                $('#flIcon').val('');
+                $('#txtTitle').val('');
+                $('#txtDescription').val('');
+                $('#txtKeyWords').val('');
+                $('#txtStartDate').val('');
+                $('#txtEndDate').val('');
+                $('#txtRefreshInterval').val('');
+                $('#chkIsSecure').prop("checked", false);
+                LstPagePermission: lstPagePermission = [];
+                $('#txtPageName').prop('title', 0);
+                $('#cboPositionTab').val('');
+                $('span.ui-tree-selected').removeClass("ui-tree-selected")
+                $("div.divPermission tr:gt(1)").each(function () {
+                    $(this).find("input:checkbox").prop("checked", false);
+                });
+                $('#tblUser tr:gt(0)').remove();
+                $('#tblUser').hide();
+                $('div.cssClassUploadFiles').html('');
+                $('#chkMenu').prop("checked", false);
+                $('#gdvModules,#hdnModules,#divPager').html("");
+                $('#selMenulist').html('').hide();
+                $('#lblSelectMenu').hide();
+                $('label.sfError').remove();
+                $('span.filename').text('No files selected');
+            },
+            IsUnassignedNode: function (li) {
+                return (li.hasClass('unassigned-attributes'));
+            },
+            BindParentPages: function (pages) {
+                var parentPages = pages.d;
+                var html = "";
+                if (PageTreeView.config.Mode) {
+                    html += '<option value="2">---None---</option>';
+                }
+                else {
+                    html += '<option value="0">---None---</option>';
+                }
+                $.each(parentPages, function (index, item) {
+                    html += '<option value=' + item.PageID + '>' + item.PageName.replace(new RegExp("-", "g"), ' ') + '</option>';
+                });
+                $('#cboParentPage').html(html);
+            },
+            //changeed 
+            GetPageDetails: function (pageID) {
+                this.config.method = "GetPageDetails";
+                this.config.url = this.config.baseURL + this.config.method;
+                this.config.data = JSON2.stringify({
+                    pageID: pageID,
+                    userName: p.UserName,
+                    portalID: p.PortalID,
+                    userModuleID: p.UserModuleID,
+                    secureToken: SageFrameSecureToken
+                });
+                this.config.ajaxCallMode = 7;
+                this.ajaxCall(this.config);
+            },
+            GetMenuList: function () {
+                $.ajax({
+                    type: PageTreeView.config.type,
+                    contentType: PageTreeView.config.contentType,
+                    cache: PageTreeView.config.cache,
+                    async: false,
+                    url: PageTreeView.config.baseURL + "GetAllMenu",
+                    data: JSON2.stringify({
+                        userName: p.UserName,
+                        portalID: p.PortalID,
+                        userModuleID: p.UserModuleID,
+                        secureToken: SageFrameSecureToken
+                    }),
+                    dataType: PageTreeView.config.dataType,
+                    success: function (msg) {
+                        var LstMenu = msg.d;
+                        var html = '';
+                        var menulist = '';
+                        var check = '';
+                        $.each(LstMenu, function (index, item) {
+                            if (item != "") {
+                                menulist += '<option value=' + item.MenuID + '>' + item.MenuName + '</li>';
+                            }
+                        });
+                        if (LstMenu.length == 0) {
+                            menulist = '<option value="0">No Menu Available</option>';
+                        }
+                        $('#selMenulist').html(menulist);
+                    }
+                });
             }
-            $('#selMenulist').html(menulist);
-        }
-    });
-}
-};
-PageTreeView.init();
-};
-$.fn.SageTreeBuilder = function(p) {
-    $.createPageTreeView(p);
-};
+        };
+        PageTreeView.init();
+    };
+    $.fn.SageTreeBuilder = function (p) {
+        $.createPageTreeView(p);
+    };
 })(jQuery);
 
-   
-   
+

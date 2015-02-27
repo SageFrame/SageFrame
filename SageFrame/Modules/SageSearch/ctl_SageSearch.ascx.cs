@@ -43,6 +43,7 @@ public partial class Modules_SageSearch_ctl_SageSearch : BaseAdministrationUserC
     {
         GenrateSageSerchForm();
         //SetSearchText();
+        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "SearchVariable", " var SagePageExtension='" + SageFrameSettingKeys.PageExtension + "';", true);
     }
 
     protected void Page_Load(object sender, EventArgs e)

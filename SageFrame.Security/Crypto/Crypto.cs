@@ -15,14 +15,16 @@ using System.IO;
 
 namespace SageFrame.Security.Crypto
 {
-
+    /// <summary>
+    /// Crypto class for protecting application information. 
+    /// </summary>
     public class Crypto
     {
 
-        #region Variables      
+        #region Variables
         HashAlgorithm HashProvider;
         int SalthLength;
-        #endregion       
+        #endregion
 
         #region Constants
         private const int ENCRYPTION_KEY_BYTES = 16;
@@ -32,11 +34,19 @@ namespace SageFrame.Security.Crypto
         #endregion
 
         #region Constructor
+        /// <summary>
+        /// Initializes a new instance of the Crypto class.
+        /// </summary>
+        /// <param name="HashAlgorithm">Object of HashAlgorithm class.</param>
+        /// <param name="theSaltLength">Salt length.</param>
         public Crypto(HashAlgorithm HashAlgorithm, int theSaltLength)
         {
             HashProvider = HashAlgorithm;
             SalthLength = theSaltLength;
         }
+        /// <summary>
+        /// Initializes a new instance of the Crypto class.
+        /// </summary>
         public Crypto()
             : this(new SHA256Managed(), 4)
         {
@@ -44,6 +54,12 @@ namespace SageFrame.Security.Crypto
         #endregion
 
         #region HashPassword
+        /// <summary>
+        /// Compute hash.
+        /// </summary>
+        /// <param name="Data">Bytes array of data.</param>
+        /// <param name="Salt">Bytes array of salt.</param>
+        /// <returns>Bytes array of computing hash value of our plain text with appended salt.</returns>
         private byte[] ComputeHash(byte[] Data, byte[] Salt)
         {
             // Allocate memory to store both the Data and Salt together
@@ -57,6 +73,12 @@ namespace SageFrame.Security.Crypto
             // Compute hash value of our plain text with appended salt.
             return HashProvider.ComputeHash(DataAndSalt);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Data">Bytes array of Data.</param>
+        /// <param name="Hash">Bytes array of Hash.</param>
+        /// <param name="Salt">Bytes array of Salt.</param>
         public void GetHashAndSalt(byte[] Data, out byte[] Hash, out byte[] Salt)
         {
             // Allocate memory for the salt
@@ -72,6 +94,12 @@ namespace SageFrame.Security.Crypto
             // Compute hash value of our data with the salt.
             Hash = ComputeHash(Data, Salt);
         }
+        /// <summary>
+        /// Obtain Hash and Salt string.
+        /// </summary>
+        /// <param name="Data">Data</param>
+        /// <param name="Hash">Hash</param>
+        /// <param name="Salt">Salt</param>
         public void GetHashAndSaltString(string Data, out string Hash, out string Salt)
         {
             byte[] HashOut;
@@ -84,6 +112,13 @@ namespace SageFrame.Security.Crypto
             Hash = Convert.ToBase64String(HashOut);
             Salt = Convert.ToBase64String(SaltOut);
         }
+        /// <summary>
+        /// Verify hash.
+        /// </summary>
+        /// <param name="Data">Bytes array of Data.</param>
+        /// <param name="Hash">Bytes array of Hash.</param>
+        /// <param name="Salt">Bytes array of Salt.</param>
+        /// <returns>True if verified.</returns>
         public bool VerifyHash(byte[] Data, byte[] Hash, byte[] Salt)
         {
             byte[] NewHash = ComputeHash(Data, Salt);
@@ -97,6 +132,13 @@ namespace SageFrame.Security.Crypto
 
             return true;
         }
+        /// <summary>
+        /// Verify hash string.
+        /// </summary>
+        /// <param name="Data">Data</param>
+        /// <param name="Hash">Hash</param>
+        /// <param name="Salt">Salt</param>
+        /// <returns>True if verified.</returns>
         public bool VerifyHashString(string Data, string Hash, string Salt)
         {
             byte[] HashToVerify = Convert.FromBase64String(Hash);
@@ -107,6 +149,11 @@ namespace SageFrame.Security.Crypto
         #endregion
 
         #region EncryptPassword
+        /// <summary>
+        /// Encrypt given value.
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns>Encrypted value.</returns>
         public static string Encrypt(string value)
         {
             MemoryStream memoryStreamIn = new MemoryStream();
@@ -149,7 +196,12 @@ namespace SageFrame.Security.Crypto
             }
 
             return result;
-        }    
+        }
+        /// <summary>
+        /// Decrypt value.
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns>Decrypted value.</returns>
         public static string Decrypt(string value)
         {
             MemoryStream memoryStreamIn = new MemoryStream();
@@ -192,6 +244,11 @@ namespace SageFrame.Security.Crypto
 
             return result;
         }
+        /// <summary>
+        /// Obtain encryption key.
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <returns>Bytes array of encryption key.</returns>
         private static byte[] GetKey(string key)
         {
             string resultKey;

@@ -24,10 +24,18 @@ namespace SageFrame.Web
 {
     public class SessionTrackerController
     {
+        /// <summary>
+        /// Initializes an instance of SessionTrackerController class.
+        /// </summary>
         public SessionTrackerController()
         {
         }
 
+        /// <summary>
+        /// Sets session tracker values for any thing  requested URL.
+        /// </summary>
+        /// <param name="portalID">Portal ID.</param>
+        /// <param name="userName">User's name.</param>
         public void SetSessionTrackerValues(string portalID, string userName)
         {
             SessionTracker sessionTracker = (SessionTracker)HttpContext.Current.Session[SessionKeys.Tracker];
@@ -40,9 +48,6 @@ namespace SageFrame.Web
                 SageFrame.Web.SessionLog SLog = new SageFrame.Web.SessionLog();
                 SLog.SessionTrackerUpdateUsername(sessionTracker, userName, portalID);
                 HttpContext.Current.Session[SessionKeys.Tracker] = sessionTracker;
-                TemplateValidation objValidation = new TemplateValidation();
-                objValidation.Validate();
-
             }
         }
     }

@@ -78,7 +78,7 @@ public partial class Modules_Admin_LoginControl_LoginStatus : SageUserControl
         int UserRegistrationType = sageConfig.GetSettingIntValueByIndividualKey(SageFrameSettingKeys.PortalUserRegistration);
         if (UserRegistrationType > 0)
         {
-            RegisterURL = "<span><a href='" + RegisterURL + "'>" + GetSageMessage("LoginStatus", "Register") + "</a></span>";
+            RegisterURL = "<span><a title='Register' href='" + RegisterURL + "'>" + GetSageMessage("LoginStatus", "Register") + "</a></span>";
         }
         else
         {

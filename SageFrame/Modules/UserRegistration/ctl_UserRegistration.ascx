@@ -1,15 +1,26 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ctl_UserRegistration.ascx.cs"
     Inherits="SageFrame.Modules.UserRegistration.ctl_UserRegistration" %>
 
-<script language="javascript" type="text/javascript">
+<script type="text/javascript">
     //<![CDATA[
-    $(document).ready(function() {
+    $(document).ready(function () {
+        $("#form1").validate({
+            ignore: ':hidden',
+            rules: {
+                '<%=Email.UniqueID %>': { email: true }
+                },
+                messages: {
+                    '<%=Email.UniqueID %>': "<br/>Email must be in a correct format."
+                }
+            });
+
+
         $(".sfLocalee").SystemLocalize();
         var FinishButton = '#' + '<%=FinishButton.ClientID %>';
         var pwdID = '#' + '<%=Password.ClientID%>';
         $('#minchar').remove();
         $(pwdID).val('');
-        $(pwdID).on("change", function() {
+        $(pwdID).on("change", function () {
             var len = $(this).val().length;
             if (len < 4 && len != 0) {
                 $(this).after('<label class="sfError" id="lblPassswordLength"><br/>Password must be at least 4 chars long</label>');
@@ -19,10 +30,10 @@
                 $('#lblPassswordLength').remove();
             }
         });
-        $(pwdID).click(function() {
+        $(pwdID).click(function () {
             $('#lblPassswordLength').remove();
         });
-        $(FinishButton).click(function() {
+        $(FinishButton).click(function () {
             var len = $(pwdID).val().length;
             if (len < 4) {
                 return false;
@@ -36,13 +47,16 @@
         if (args.get_isPartialLoad()) {
             $('.password').pstrength({ minchar: 4 });
         }
+
+
+
     }
     //]]>	
 </script>
 
 <div class="sfUserRegistrationPage">
     <div class="sfUserRegistration">
-    <h2>Registration</h2>
+        <h2>Registration</h2>
         <div class="sfFormwrapper">
             <div class="sfUserRegistrationInfoLeft" id="divRegister" runat="server">
                 <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -165,8 +179,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                        </td>
+                        <td></td>
                         <td>
                             <div class="sfButtonwrapper">
                                 <asp:Button ID="FinishButton" runat="server" AlternateText="Finish" ValidationGroup="CreateUserWizard1"
@@ -182,8 +195,7 @@
                     <%= headerTemplate %>
                 </div>
                 <div id="divRegConfirm" class="sfRegConfirm" runat="server">
-                    <h3>
-                        Registration Successful</h3>
+                    <h3>Registration Successful</h3>
                     <asp:Label ID="lblRegSuccess" runat="server" CssClass="sfFormlabel" meta:resourcekey="lblRegSuccessResource1">  </asp:Label>
                     <asp:Literal ID="USER_RESISTER_SUCESSFUL_INFORMATION" runat="server" meta:resourcekey="USER_RESISTER_SUCESSFUL_INFORMATIONResource1"></asp:Literal>
                     <div class="sfButtonwrapper">

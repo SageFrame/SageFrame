@@ -14,8 +14,18 @@ using SageFrame.Pages;
 
 namespace SageFrame.SageMenu
 {
+    /// <summary>
+    /// Business logic for menu.
+    /// </summary>
     public class MenuController
     {
+        /// <summary>
+        /// Obtain front menu.
+        /// </summary>
+        /// <param name="PortalID"></param>
+        /// <param name="UserName"></param>
+        /// <param name="CultureCode"></param>
+        /// <returns> Return List of MenuInfo class.</returns>
         public static List<MenuInfo> GetMenuFront(int PortalID, string UserName, string CultureCode)
         {
             try
@@ -28,6 +38,13 @@ namespace SageFrame.SageMenu
                 throw;
             }
         }
+        /// <summary>
+        /// Obtain footer menu.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">User name.</param>
+        /// <param name="CultureCode">Culture code.</param>
+        /// <returns>List of MenuInfo class.</returns>
         public static List<MenuInfo> GetFooterMenu(int PortalID, string UserName, string CultureCode)
         {
             try
@@ -40,6 +57,14 @@ namespace SageFrame.SageMenu
                 throw;
             }
         }
+        /// <summary>
+        ///  Obtain side menu.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">User name.</param>
+        /// <param name="menuID">MenuID</param>
+        /// <param name="CultureCode">Culture code.</param>
+        /// <returns>List of MenuInfo class.</returns>
         public static List<MenuInfo> GetSideMenu(int PortalID, string UserName, int menuID, string CultureCode)
         {
             try
@@ -52,7 +77,10 @@ namespace SageFrame.SageMenu
                 throw;
             }
         }
-
+        /// <summary>
+        /// Update menu settings.
+        /// </summary>
+        /// <param name="lstSetting">List of SageMenuSettingInfo clsass.</param>
         public static void UpdateSageMenuSettings(List<SageMenuSettingInfo> lstSetting)
         {
             try
@@ -65,6 +93,12 @@ namespace SageFrame.SageMenu
                 throw;
             }
         }
+        /// <summary>
+        /// Obtain menu settings.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserModuleID">UserModuleID</param>
+        /// <returns>Object of SageMenuSettingInfo.</returns>
         public static SageMenuSettingInfo GetMenuSetting(int PortalID, int UserModuleID)
         {
             try
@@ -77,6 +111,10 @@ namespace SageFrame.SageMenu
                 throw;
             }
         }
+        /// <summary>
+        /// Obtain admin menu.
+        /// </summary>
+        /// <returns>List of MenuInfo class.</returns>
         public static List<MenuInfo> GetAdminMenu()
         {
             try
@@ -89,6 +127,13 @@ namespace SageFrame.SageMenu
                 throw;
             }
         }
+        /// <summary>
+        /// Obtain admin pages.
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="UserName">User name.</param>
+        /// <param name="CultureCode">Culture code.</param>
+        /// <returns>List of MenuInfo class.</returns>
         public static List<MenuInfo> GetAdminPages(int PortalID, string UserName, string CultureCode)
         {
             try
@@ -103,6 +148,14 @@ namespace SageFrame.SageMenu
 
 
         }
+        /// <summary>
+        /// Obtain back end menu.
+        /// </summary>
+        /// <param name="UserName">User name.</param>
+        /// <param name="PortalID">PortalID</param>
+        /// <param name="CultureCode">Culture code</param>
+        /// <param name="UserMode">User mode.</param>
+        /// <returns>List of MenuInfo class.</returns>
         public static List<MenuInfo> GetBackEndMenu(string UserName, int PortalID, string CultureCode, int UserMode)
         {
             try

@@ -21,6 +21,9 @@ using SageFrame.Web;
 
 namespace SageFrame.Framework
 {
+    /// <summary>
+    /// Contains methods that helps in maintaining security in the application
+    /// </summary>
     [Serializable]
     public class SecurityPolicy
     {
@@ -50,7 +53,7 @@ namespace SageFrame.Framework
         #region "Private Methods"
 
         /// <summary>
-        /// 
+        /// Initializes the permissions variables
         /// </summary>
         private static void GetPermissions()
         {
@@ -127,9 +130,9 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Provide IsHosting Permission Granted
+        /// Checks if the server has ASP.NET hosting permission
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns true if the server has ASP.NET hosting permission</returns>
         public static bool HasAspNetHostingPermission()
         {
             GetPermissions();
@@ -137,7 +140,7 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Provide IsReflection Permission Granted
+        /// Checks if the application has reflection permission
         /// </summary>
         /// <returns></returns>
         public static bool HasReflectionPermission()
@@ -199,10 +202,10 @@ namespace SageFrame.Framework
         }
 
         /// <summary>
-        /// Return The Name of the Logged in User by PortalID
+        /// Return the name of the logged in user by portalID
         /// </summary>
-        /// <param name="PortalID">PortalID</param>
-        /// <returns>Logged In UserName</returns>
+        /// <param name="PortalID">portalID</param>
+        /// <returns>Logged in userName</returns>
         public string GetUser(int portalID)
         {
             string user = string.Empty;
@@ -245,10 +248,10 @@ namespace SageFrame.Framework
 
 
         /// <summary>
-        /// Return The Name of the Logged in User by PortalID
+        /// Returns the name of the logged in user by portalID
         /// </summary>
-        /// <param name="PortalID">PortalID</param>
-        /// <returns>Logged In UserName</returns>
+        /// <param name="PortalID">portalID</param>
+        /// <returns>Logged in userName</returns>
         public string GetUser(int portalID, string cookieFormName)
         {
             string user = string.Empty;
@@ -289,6 +292,11 @@ namespace SageFrame.Framework
             return user;
         }
 
+        /// <summary>
+        /// Returns the forms  authentication ticket object that hold the value of logged in username.
+        /// </summary>
+        /// <param name="portalID">portalID</param>
+        /// <returns>Returns forms authentication ticket</returns>
         public FormsAuthenticationTicket GetUserTicket(int portalID)
         {
             PageBase objPageBase = new PageBase();
@@ -309,6 +317,11 @@ namespace SageFrame.Framework
             }
         }
 
+        /// <summary>
+        /// Returns the name of  the  forms cookie of logged in user by portalID
+        /// </summary>
+        /// <param name="portalID">portalID</param>
+        /// <returns>forms cookie name</returns>
         public string FormsCookieName(int portalID)
         {
             string formName = string.Empty;
@@ -320,9 +333,11 @@ namespace SageFrame.Framework
         }
 
 
-        /// <summary>        
-        /// To update Cockies expireTime from browser while refressing page 
+        /// <summary>
+        /// To update cookies expiry time from browser while refressing page 
         /// </summary>
+        /// <param name="userName">logged in userName</param>
+        /// <param name="portalID">portalID</param>
         public void UpdateExpireTime(string userName, int portalID)
         {
             FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1,

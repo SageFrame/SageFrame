@@ -39,6 +39,9 @@ using System.Collections;
 /// 
 namespace SageFrame.Web
 {
+    /// <summary>
+    /// Inherits SageUserControl and provides 
+    /// </summary>
     public partial class BaseUserControl : SageUserControl
     {
         #region "Protected Methods"

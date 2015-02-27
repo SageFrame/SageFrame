@@ -6,8 +6,15 @@ using SageFrame.Web.Utilities;
 
 namespace SageFrame.CDN
 {
+    /// <summary>
+    /// Manipulates data for CDNController Class.
+    /// </summary>
     public class CDNProvider
-    {
+    {  
+        /// <summary>
+        ///  Connects to database and saves CDN link .
+        /// </summary>
+        /// <param name="objInfo">CDNInfo object list</param>
         public void SaveLinks(List<CDNInfo> objInfo)
         {
             SQLHandler sagesql = new SQLHandler();
@@ -34,7 +41,11 @@ namespace SageFrame.CDN
             }
 
         }
-
+        /// <summary>
+        /// Connects to database and get links of CDN .
+        /// </summary>
+        /// <param name="PortalID">Portal id</param>
+        /// <returns>CDNInfo object list</returns>
         public List<CDNInfo> GetCDNLinks(int PortalID)
         {
             SQLHandler sagesql = new SQLHandler();
@@ -54,7 +65,10 @@ namespace SageFrame.CDN
 
 
         }
-
+        /// <summary>
+        /// Connects to database and saves URL loading order of CDN links.
+        /// </summary>
+        /// <param name="objOrder"> List of CDNInfo objects</param>
         public void SaveOrder(List<CDNInfo> objOrder)
         {
             SQLHandler sagesql = new SQLHandler();
@@ -78,7 +92,11 @@ namespace SageFrame.CDN
 
             }
         }
-
+        /// <summary>
+        /// Connects to database and deletes CDN url by PortalID.
+        /// </summary>
+        /// <param name="UrlID">Url id</param>
+        /// <param name="PortalID">Portal id</param>
         public void DeleteURL(int UrlID, int PortalID)
         {
             SQLHandler sagesql = new SQLHandler();

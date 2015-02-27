@@ -20,8 +20,17 @@ using SageFrame.Web.Utilities;
 
 namespace SageFrame.Core.TemplateManagement
 {
+    /// <summary>
+    /// Manipulates the data needed for template.
+    /// </summary>
     public class TemplateDataProvider
     {
+        /// <summary>
+        /// Connects to database and returns list of template list.
+        /// </summary>
+        /// <param name="PortalID">Portal ID.</param>
+        /// <param name="UserName">User's name.</param>
+        /// <returns>List of template.</returns>
         public static List<TemplateInfo> GetTemplateList(int PortalID, string UserName)
         {
             string sp = "[dbo].[sp_TemplateGetList]";
@@ -66,6 +75,11 @@ namespace SageFrame.Core.TemplateManagement
             }
         }
 
+        /// <summary>
+        /// Connects to database and adds template.
+        /// </summary>
+        /// <param name="obj">TemplateInfo object containing the template details.</param>
+        /// <returns>True if the template is added successfully.</returns>
         public static bool AddTemplate(TemplateInfo obj)
         {
             string sp = "[dbo].[sp_TemplateAdd]";

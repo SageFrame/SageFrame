@@ -178,18 +178,18 @@
             </tr>
         </table>
         <div class="sfButtonwrapper">
-            <asp:ImageButton ID="ImbPreview" ToolTip="Preview" runat="server" OnClick="Preview_Click"
+            <asp:LinkButton ID="ImbPreview" ToolTip="Preview" runat="server" Text="Preview" OnClick="Preview_Click" CssClass="sfLocale icon-preview sfBtn"
                 meta:resourcekey="ImbPreviewResource1" />
-            <asp:Label ID="lblPreview" runat="server" Text="Preview" AssociatedControlID="ImbPreview"
-                Style="cursor: pointer;" meta:resourcekey="lblPreviewResource1"></asp:Label>
-            <asp:ImageButton ID="ImbSave" runat="server" ToolTip="Save" OnClick="btnSave_Click"
+            <%--<asp:Label ID="lblPreview" runat="server" Text="Preview" AssociatedControlID="ImbPreview"
+                Style="cursor: pointer;" meta:resourcekey="lblPreviewResource1"></asp:Label>--%>
+            <asp:LinkButton ID="ImbSave" runat="server" Text="Save" ToolTip="Save" OnClick="btnSave_Click" CssClass="sfLocale icon-save sfBtn"
                 meta:resourcekey="ImbSaveResource1" CausesValidation="true" ValidationGroup="adsense" />
-            <asp:Label ID="lblSave" runat="server" Text="Save" AssociatedControlID="ImbSave"
-                Style="cursor: pointer;" meta:resourcekey="lblSaveResource1"></asp:Label>
-            <asp:ImageButton ID="imbDelete" Visible="False" ToolTip="Delete" runat="server" OnClick="imbDelete_Click"
+           <%-- <asp:Label ID="lblSave" runat="server" Text="Save" AssociatedControlID="ImbSave"
+                Style="cursor: pointer;" meta:resourcekey="lblSaveResource1"></asp:Label>--%>
+            <asp:LinkButton ID="imbDelete" Visible="False" Text="Delete" ToolTip="Delete" runat="server" OnClick="imbDelete_Click" CssClass="sfLocale icon-close sfBtn"
                 meta:resourcekey="imbDeleteResource1" />
-            <asp:Label ID="lblDelete" runat="server" Text="Delete" AssociatedControlID="imbDelete"
-                Style="cursor: pointer;" Visible="False" meta:resourcekey="lblDeleteResource1"></asp:Label>
+           <%-- <asp:Label ID="lblDelete" runat="server" Text="Delete" AssociatedControlID="imbDelete"
+                Style="cursor: pointer;" Visible="False" meta:resourcekey="lblDeleteResource1"></asp:Label>--%>
         </div>
         <wwc:AdUnit ID="AdUnit1" runat="server" Visible="False" AdUnitFormat="LeaderBoard_728x90_H"
             AdUnitType="TextAndImage" AffiliateId="" AlternateAdType="PublicServiceAds" AnotherUrl=""
