@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<WorkFlowMessage>
+  <publish>
+    <subject> The  WorkFlow is published.</subject>
+    <message>The WorkFlow Is published.</message>
+  </publish>
+  <reassign>
+    <subject> The  WorkFlow is reassigned.</subject>
+    <message>The WorkFlow Is reassigned.</message>
+  </reassign>
+  <forward>
+    <subject> The  WorkFlow is forwarded.</subject>
+    <message>The WorkFlow is forwarded.</message>
+  </forward>
+  <assign>
+    <subject>The  WorkFlow is assigned.</subject>
+    <message>The WorkFlow Is assigned.</message>
+  </assign>
+  <taskUpdated>
+    <subject>The  Task has been updated.</subject>
+    <message>The  Task has been updated.</message>
+  </taskUpdated>
+</WorkFlowMessage>

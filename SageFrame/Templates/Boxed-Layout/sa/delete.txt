@@ -1,0 +1,39 @@
+--DECLARE  @fldChildParentID INT , @fldChildIsparent INT ,@fldChildPortalID INT ,@PortalID int
+
+--DECLARE  @fldParentID INT , @fldIsparent INT
+
+--SET @PortalID = 5
+
+--SELECT  @fldChildParentID = ParentID , @fldChildIsparent = Isparent FROM portal WHERE PortalID =@PortalID 
+
+--SELECT @fldParentID = ParentID , @fldIsparent = Isparent FROM portal WHERE PortalID = @fldChildParentID
+
+
+
+--select  @fldChildPortalID , @fldChildParentID ,@fldChildIsparent 
+
+--select @fldParentID , @fldIsparent
+
+
+
+--UPDATE portal SET ParentID = @fldChildParentID , Isparent = @fldChildIsparent WHERE PortalID =@fldChildParentID
+
+--UPDATE portal SET ParentID = @fldParentID , Isparent = @fldIsparent WHERE PortalID = @PortalID    
+
+-----delete from Portal where 
+
+
+--select * from portal
+
+-- UPDATE portal SET  Isparent = 1 ,ParentID = 0 WHERE PortalID = 1
+-- UPDATE portal SET  Isparent = 0 ,ParentID = 1 WHERE PortalID = 5
+--  UPDATE portal SET PortalID = 1 where portalid =5  Isparent = 0 ,ParentID = 1 WHERE PortalID = 5
+
+--  set identity column off 
+
+-- 1	default	default	1	0
+--2	sam	http://sam.com	1	0
+--5	sama	sama	0	1
+--6	sasasasas	sasasasas	0	1
+
+--select * from logo

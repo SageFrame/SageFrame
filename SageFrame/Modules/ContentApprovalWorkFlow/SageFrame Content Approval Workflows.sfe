@@ -1,0 +1,55 @@
+﻿<sageframe version="1.0.0.0" type="Module">
+  <folders>
+    <folder>
+      <name>SageFrame Content Approval WorkFlow</name>
+      <friendlyname>SageFrame Content Approval WorkFlow</friendlyname>
+      <foldername>ContentApprovalWorkFlow</foldername>
+      <modulename>ContentApprovalWorkFlow</modulename>
+      <description>SageFrame Content Approval WorkFlow</description>
+      <version>02.05.00</version>
+      <businesscontrollerclass>SageFrame.Modules.SageFrameContentApprovalWorkflows.EventController, SageFrame.Modules.SageFrameContentApprovalWorkflows</businesscontrollerclass>
+      <compatibleversions>^[0]?[4-9]{1}\.[0-9]{1}[7-9]{1}\.[0-9]{1}[0-9]{1}$</compatibleversions>
+      <owner>SageFrame Pvt. Ltd.</owner>
+      <organization>SageFrame Pvt. Ltd</organization>
+      <url>www.sageframe.com</url>
+      <email>info@sageframe.com</email>
+      <releasenotes>SageFrame Content Approval WorkFlow Application Release Notes.</releasenotes>
+      <license>FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER</license>
+      <modules>
+        <module>
+          <friendlyname>SageFrame Content Approval WorkFlow</friendlyname>
+          <cachetime>-1</cachetime>
+          <controls>
+            <control>
+              <key>SageFrame Content Approval WorkFlow View</key>
+              <title>SageFrame Content Approval WorkFlow</title>
+              <src>Modules/ContentApprovalWorkFlow/WFView.ascx</src>
+              <type>View</type>
+              <helpurl>http://www.sageframe.com/default.aspx</helpurl>
+              <supportspartialrendering>False</supportspartialrendering>
+            </control>
+            <control>
+              <key>SageFrame Content Approval WorkFlow Edit</key>
+              <title>SageFrame Content Approval WorkFlow</title>
+              <src>Modules/ContentApprovalWorkFlow/WFEdit.ascx</src>
+              <type>Setting</type>
+              <helpurl>http://www.sageframe.com/default.aspx</helpurl>
+              <supportspartialrendering>False</supportspartialrendering>
+            </control>
+          </controls>
+        </module>
+      </modules>
+      <files>
+        <file>
+          <name>01.00.00.SqlDataProvider</name>
+        </file>
+        <file>
+          <name>SageFrame.WorkFlow.dll</name>
+        </file>
+        <file>
+          <name>Uninstall.SqlDataProvider</name>
+        </file>
+      </files>
+    </folder>
+  </folders>
+</sageframe>

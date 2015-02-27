@@ -1,0 +1,218 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET NOCOUNT ON
+GO
+	
+ALTER PROCEDURE [dbo].[sp_PagesDelete]
+		@PageID int,
+		@DeletedBy nvarchar(256),
+		@PortalID int
+AS
+BEGIN
+
+		DECLARE @PageOrder INT,@ParentID INT
+		SELECT @PageOrder=PageOrder,@ParentID=ParentID FROM [dbo].[Pages] WHERE PageID=@PageID
+		DECLARE @tblChildPages TABLE (RowNum INT Identity(1,1), ChildPageID INT)
+		
+		----- Delete from pagepermission and update history table ---
+		INSERT INTO [PagePermission_History]
+		SELECT  Getdate(),'D',@DeletedBy,* FROM [dbo].[PagePermission] WHERE [dbo].[PagePermission].[PageID] = @PageID And [dbo].[PagePermission].[PortalID] = @PortalID; 
+	
+		UPDATE [PagePermission_History] SET [IsActive] =0 ,[IsDeleted] = 1  WHERE [dbo].[PagePermission_History].[PageID] = @PageID And [dbo].[PagePermission_History].[PortalID] = @PortalID  
+		
+					
+		DELETE FROM  [PagePermission] WHERE	[dbo].[PagePermission].[PageID] = @PageID And [dbo].[PagePermission].[PortalID] = @PortalID;
+		
+	  ----- Delete from pageModules and update history table ---
+		 
+		 INSERT INTO [PageModules_History]
+		SELECT  Getdate(),'D',@DeletedBy,* FROM [dbo].[PageModules] WHERE [dbo].[PageModules].[PageID] = @PageID And [dbo].[PageModules].[PortalID] = @PortalID; 
+	
+		UPDATE [PageModules_History] SET [IsActive] =0 ,[IsDeleted] = 1  WHERE [dbo]. [PageModules_History].[PageID] = @PageID And [dbo]. [PageModules_History].[PortalID] = @PortalID  
+		
+					
+		DELETE FROM  [PageModules] WHERE	[dbo].[PageModules].[PageID] = @PageID And [dbo].[PageModules].[PortalID] = @PortalID;
+		
+			 
+		----- Delete from  usermodules and update history table --- 		
+		
+		EXECUTE [dbo].[usp_UserModuleHistory] @PageID ,@DeletedBy ,@PortalID
+		----------
+			
+		
+		INSERT INTO [Pages_History]
+		SELECT  Getdate(),'D',@DeletedBy,* FROM [dbo].[Pages] WHERE [dbo].[Pages].[PageID] = @PageID And [dbo].[Pages].[PortalID] = @PortalID;
+	
+		UPDATE [Pages_History] SET [IsActive] =0 ,[IsDeleted] = 1  WHERE [dbo].[Pages_History].[PageID] = @PageID And [dbo].[Pages_History].[PortalID] = @PortalID  
+		
+		DELETE FROM  [Pages] WHERE	[dbo].[Pages].[PageID] = @PageID And [dbo].[Pages].[PortalID] = @PortalID;
+		
+
+			EXECUTE [dbo].[usp_PageMenuDelete] @PageID,@DeletedBy
+			
+			
+			UPDATE	[dbo].[Pages]
+			SET		PageOrder = PageOrder - 1 
+			WHERE	PageOrder > @PageOrder AND PortalID = @PortalID 
+					AND ParentID=@ParentID AND (IsDeleted = 0 OR IsDeleted IS NULL)
+			
+			DECLARE @Counter INT, @Count INT
+			SET @Counter=1
+				
+			INSERT INTO @tblChildPages(ChildPageID) SELECT PageID FROM [dbo].Pages WHERE ParentID=@PageID AND (IsDeleted=0 OR IsDeleted IS NULL) 
+			SET @Count = @@ROWCOUNT
+		
+		
+
+	WHILE @Counter<=@Count
+		BEGIN
+			DECLARE @ChildPageID INT
+			SELECT @ChildPageID=ChildPageID FROM @tblChildPages WHERE RowNum=@Counter
+			EXECUTE [dbo].[sp_PagesDelete] @ChildPageID,@DeletedBy,@PortalID
+			EXECUTE [dbo].[usp_PageMenuDelete] @ChildPageID ,@DeletedBy 
+			DELETE FROM [dbo].[MenuItem] WHERE PageID=@ChildPageID 
+			SET @Counter=@Counter+1
+		END
+		
+		DELETE FROM [dbo].[MenuItem] WHERE PageID=@PageID 
+		DELETE FROM [dbo].[MenuItem] WHERE ParentID=@PageID 
+
+END
+
+
+
+GO
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	  CREATE TABLE [dbo].[UserModules_History](
+		[OperationDate] [datetime] NOT NULL   ,
+		[OperationType] [char](1) NOT NULL,
+		[OperationId] [char](24)NOT NULL ,
+		[UserModuleID] [int] NULL,
+		[ModuleDefID] [int] NULL,
+		[UserModuleTitle] [nvarchar](256) NULL,
+		[AllPages] [bit] NULL,
+		[InheritViewPermissions] [bit] NULL,
+		[Header] [ntext] NULL,
+		[Footer] [ntext] NULL,
+		[StartDate] [datetime] NULL,
+		[EndDate] [datetime] NULL,
+		[IsActive] [bit]  NULL,
+		[IsDeleted] [bit]  NULL,
+		[IsModified] [bit]  NULL,
+		[AddedOn] [datetime] NULL,
+		[UpdatedOn] [datetime] NULL,
+		[DeletedOn] [datetime] NULL,
+		[PortalID] [int] NULL,
+		[AddedBy] [nvarchar](256) NULL,
+		[UpdatedBy] [nvarchar](256) NULL,
+		[DeletedBy] [nvarchar](256) NULL,
+		[SEOName] [nvarchar](100) NULL,
+		[ShowInPages] [nvarchar](256) NULL,
+		[IsHandheld] [bit] NULL,
+		[SuffixClass] [nvarchar](max) NULL,
+		[HeaderText] [nvarchar](500) NULL,
+		[ShowHeaderText] [bit] NULL,
+		[IsInAdmin] [bit] NULL )
+	 GO
+	-----------------
+	
+	CREATE TABLE [dbo].[PagePermission_History](
+	[OperationDate] [datetime] NOT NULL,
+	[OperationType] [char](1) NOT NULL,
+	[OperationId] [nvarchar](256) NOT NULL,
+	[PagePermissionID] [int] NULL,
+	[PageID] [int] NULL,
+	[PermissionID] [int] NULL,
+	[AllowAccess] [bit] NULL,
+	[RoleID] [uniqueidentifier] NULL,
+	[Username] [nvarchar](256) NULL,
+	[IsActive] [bit] NULL,
+	[IsDeleted] [bit] NULL,
+	[IsModified] [bit] NULL,
+	[AddedOn] [datetime] NULL,
+	[UpdatedOn] [datetime] NULL,
+	[DeletedOn] [datetime] NULL,
+	[PortalID] [int] NULL,
+	[AddedBy] [nvarchar](256) NULL,
+	[UpdatedBy] [nvarchar](256) NULL,
+	[DeletedBy] [nvarchar](256) NULL
+) ON [PRIMARY]
+
+	
+	GO
+   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET NOCOUNT ON
+GO
+
+CREATE PROCEDURE [usp_UserModuleHistory]
+	@PageID varchar(1000),
+	@DeletedBy nvarchar(256),
+	@PortalID int
+       
+	AS 
+	BEGIN	
+	SET NOCOUNT ON;
+		--- update SHowinpages in History table -- added swantina 20140108
+		
+			DECLARE @PageIdPstnFirstOrMiddle varchar(100) 
+			DECLARE @PageIdPstnEnd varchar(100) 
+
+			SET @PageIdPstnFirstOrMiddle = @PageId + ','			
+			SET @PageIdPstnEnd =  ',' +@PageId 
+			
+
+			IF EXISTS(SELECT CHARINDEX(@PageId,ShowInPages)	
+			FROM   UserModules
+			WHERE  ShowInPages = @PageID AND PortalID = @PortalID) 
+				BEGIN
+
+					INSERT INTO [UserModules_History] 
+					SELECT	Getdate(),'U', @DeletedBy, * FROM [UserModules] WHERE ShowInPages = @PageID;
+
+					UPDATE [UserModules] SET ShowInPages = NULL, [IsActive] =0 ,[IsDeleted] = 1  WHERE   ShowInPages = @PageID AND PortalID = @PortalID;					
+				END	  
+
+			ELSE IF EXISTS(SELECT CHARINDEX(@PageIdPstnFirstOrMiddle,ShowInPages)	
+			FROM   UserModules
+			WHERE  ShowInPages like '%'+@PageIdPstnFirstOrMiddle +'%' AND PortalID = @PortalID ) 
+				BEGIN
+
+							INSERT INTO [UserModules_History] 
+							SELECT	Getdate(),'U', @DeletedBy, * FROM [UserModules] WHERE ShowInPages like '%'+@PageIdPstnFirstOrMiddle +'%' AND PortalID = @PortalID;
+
+							UPDATE	UserModules
+							SET  ShowInPages =	  SUBSTRING(ShowInPages,0,CHARINDEX(@PageIdPstnFirstOrMiddle,ShowInPages))+ SUBSTRING(ShowInPages,CHARINDEX(@PageIdPstnFirstOrMiddle,ShowInPages)+LEN(@PageIdPstnFirstOrMiddle),LEN(ShowInPages))
+								,[IsActive] =0 ,[IsDeleted] = 1 WHERE  ShowInPages like '%'+@PageIdPstnFirstOrMiddle +'%' AND PortalID = @PortalID  
+
+				END
+
+			ELSE IF EXISTS(SELECT CHARINDEX(@PageIdPstnEnd,ShowInPages) 
+					FROM   UserModules
+					WHERE ShowInPages like '%'+@PageIdPstnEnd +'%' AND PortalID = @PortalID ) 
+				BEGIN
+					
+
+						INSERT INTO [UserModules_History] 
+						SELECT	Getdate(),'U', @DeletedBy, * FROM [UserModules] WHERE ShowInPages like '%'+@PageIdPstnEnd +'%' AND PortalID = @PortalID;
+
+						--SUBSTRING(ShowInPages,0,CHARINDEX(@PageIdPstnEnd,ShowInPages)+1)+ SUBSTRING(ShowInPages,CHARINDEX(@PageIdPstnEnd,ShowInPages)+ LEN(@PageIdPstnEnd),LEN(ShowInPages))		
+
+						UPDATE	UserModules 
+						SET     ShowInPages = SUBSTRING(ShowInPages,0,CHARINDEX(@PageIdPstnEnd,ShowInPages))--+ SUBSTRING(ShowInPages,CHARINDEX(@PageIdPstnEnd,ShowInPages)+ LEN(@PageIdPstnEnd),LEN(ShowInPages))		
+								,[IsActive] =0 ,[IsDeleted] = 1
+					 WHERE   ShowInPages like '%'+@PageIdPstnEnd +'%'   AND PortalID = @PortalID
+				END	
+
+	END	
+	
+		GO
+   ---------------------------------------------------------------------------------------------------------------------------------------------------------------------

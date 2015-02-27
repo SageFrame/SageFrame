@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<license>
+  <computerName>MYCOMPUTER</computerName>
+  <expires>2003-09-31T00:00:00</expires>
+  <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <SignedInfo>
+      <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+      <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+      <Reference URI="">
+        <Transforms>
+          <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+        </Transforms>
+        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <DigestValue>eU3Par59M28X1c1DNORnhmW0Z2Y=</DigestValue>
+      </Reference>
+    </SignedInfo>
+    <SignatureValue>
+      1ekOoPv01NgtmTcpcmpq2ahDyAsFfEj6
+    </SignatureValue>
+  </Signature>
+  <SageSinatureValue>
+    epyuHLJbmyscoVMg2pZZAtZJbBHsZFUCwE4Udv+u3TfiAms2HpLgN3cL
+    NtRlxyQpvWt1FKAB/SCk1jr0IaeE7oEjCp2mDOOHhTUTyiv2vMJgCRecC1PLcrmR9ABhqk
+    itsjzrCt7V3eF5SpObdUFqcj+n9gjuFnPQtlQeWcvKEcg=
+  </SageSinatureValue>
+  <SageFrameLicense>/2aNwAta6BB2OpB9f8ZecHDuieHt8Txn</SageFrameLicense>
+</license>
