@@ -6,94 +6,102 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SageFrame.FileManager;
 using System.IO;
+using System.Web.Hosting;
 
 public partial class Modules_FileManager_js_Script : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
         string dir;
-
         HttpContext c = HttpContext.Current;
-        if(c!=null)
+        if (c != null)
         {
-            List<Folder> lstRootFolders = FileManagerController.GetActiveRootFolders();
-        if (c.Request.Form["dir"] == null || c.Request.Form["dir"].Length <= 0)
-            dir = "/";
-        else
-            dir = c.Server.UrlDecode(c.Request.Form["dir"]);
+            if (c.Request.Form["dir"] == null || c.Request.Form["dir"].Length <= 0)
+                dir = "/";
+            else
+                dir = c.Server.UrlDecode(c.Request.Form["dir"]);
 
-        string rootPath = c.Request.PhysicalApplicationPath.ToString(); 
+            string rootPath = string.Format("{0}{1}", c.Request.PhysicalApplicationPath.ToString(), dir);
 
-        
-        c.Response.Write("<ul class=\"jqueryFileTree\" style=\"display: none;\">\n");
-       
-        if (dir.Equals("/"))
-        {
-            foreach (Folder folder in lstRootFolders)
+
+            c.Response.Write("<ul class=\"jqueryFileTree\" style=\"display: none;\">\n");
+
+
+            if (dir.Equals("/Templates/"))
             {
 
-                if (Directory.Exists(Path.Combine(rootPath,folder.FolderPath)))
+                if (Directory.Exists(rootPath))
                 {
-                    DirectoryInfo dirInfo = new DirectoryInfo(folder.FolderPath);                  
-                    switch (folder.StorageLocation)
+                    DirectoryInfo dirInfo = new DirectoryInfo(rootPath);
+
+                    foreach (DirectoryInfo tempdir in dirInfo.GetDirectories())
                     {
-                        case 0:
-                            Response.Write("\t<li class=\"directory collapsed\"><a id=" + folder.FolderId + " href=\"#\" rel=\"" + folder.FolderPath + "/\">" + dirInfo.Name + "</a></li>\n");
-                            break;
-                        case 1:
-                            Response.Write("\t<li class=\"locked collapsed\"><a id=" + folder.FolderId + " href=\"#\" rel=\"" + folder.FolderPath + "/\">" + dirInfo.Name + "</a></li>\n");
-                            break;
-                        case 2:
-                            Response.Write("\t<li class=\"database collapsed\"><a id=" + folder.FolderId + " href=\"#\" rel=\"" + folder.FolderPath + "/\">" + dirInfo.Name + "</a></li>\n");
-                            break;
+                        Response.Write("\t<li class=\"directory collapsed\"><a href=\"#\" rel=\"" + tempdir.FullName + "/\">" + tempdir.Name + "</a></li>\n");
+                    }
+
+                    DirectoryInfo difDefaultTemplate = new DirectoryInfo(string.Format("{0}{1}", c.Request.PhysicalApplicationPath.ToString(), "/Core/"));
+
+                    foreach (DirectoryInfo tempdir in difDefaultTemplate.GetDirectories())
+                    {
+                        if (tempdir.Name.Equals("Template"))
+                        {
+                            Response.Write("\t<li class=\"directory collapsed\"><a href=\"#\" rel=\"" + tempdir.FullName + "/\">Default</a></li>\n");
+                        }
+                    }
+                }
+            }
+            if (dir.Equals("/Modules/"))
+            {
+
+                if (Directory.Exists(rootPath))
+                {
+                    DirectoryInfo dirInfo = new DirectoryInfo(rootPath);
+
+                    foreach (DirectoryInfo tempdir in dirInfo.GetDirectories())
+                    {
+                        Response.Write("\t<li class=\"directory collapsed\"><a href=\"#\" rel=\"" + tempdir.FullName + "/\">" + tempdir.Name + "</a></li>\n");
+                    }
+
+                }
+            }
+            if (dir.Equals("/"))
+            {
+
+                if (Directory.Exists(rootPath))
+                {
+                    DirectoryInfo dirInfo = new DirectoryInfo(rootPath);
+
+                    foreach (DirectoryInfo tempdir in dirInfo.GetDirectories())
+                    {
+                        if (tempdir.Name != "Modules" && tempdir.Name != "Templates")
+                        {
+                            Response.Write("\t<li class=\"directory collapsed\"><a href=\"#\" rel=\"" + tempdir.FullName + "/\">" + tempdir.Name + "</a></li>\n");
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+                if (Directory.Exists(dir))
+                {
+                    DirectoryInfo dirInfo = new DirectoryInfo(dir);
+
+                    foreach (DirectoryInfo tempdir in dirInfo.GetDirectories())
+                    {
+                        Response.Write("\t<li class=\"directory collapsed\"><a href=\"#\" rel=\"" + tempdir.FullName + "/\">" + tempdir.Name + "</a></li>\n");
                     }
                 }
 
             }
-        }
-        else 
-        {
-            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(FileManagerHelper.ReplaceBackSlash(Path.Combine(rootPath,dir)));
-            List<Folder> lstFolders = new List<Folder>();
-            if (!CacheHelper.Get("FileManagerFolders", out lstFolders))
-            {
-                lstFolders = FileManagerController.GetFolders();
-                CacheHelper.Add(lstFolders, "FileManagerFolders");
-            }      
-            
 
-            foreach (System.IO.DirectoryInfo di_child in di.GetDirectories())
-            {
-                string fullPath = di_child.FullName.Replace('\\', '/');
-                int index = lstFolders.FindIndex(
-                    delegate(Folder obj)
-                    {
-                        return (FileManagerHelper.ReplaceBackSlash(Path.Combine(rootPath,obj.FolderPath)) == fullPath);
-                    }
-                    );
-
-                if (index > -1)
-                {
-                    switch (lstFolders[index].StorageLocation)
-                    {
-                        case 0:
-                            c.Response.Write("\t<li class=\"directory collapsed sfChild\"><a id=" + lstFolders[index].FolderId + " href=\"#\" rel=\"" + dir + di_child.Name + "/\">" + di_child.Name + "</a></li>\n");
-                            break;
-                        case 1:
-                            c.Response.Write("\t<li class=\"locked collapsed\"><a id=" + lstFolders[index].FolderId + " href=\"#\" rel=\"" + dir + di_child.Name + "/\">" + di_child.Name + "</a></li>\n");
-                            break;
-                        case 2:
-                            c.Response.Write("\t<li class=\"database collapsed\"><a id=" + lstFolders[index].FolderId + " href=\"#\" rel=\"" + dir + di_child.Name + "/\">" + di_child.Name + "</a></li>\n");
-                            break;
-                    }
-                }
-            }
-          
+            c.Response.Write("</ul>");
         }
-       
-        c.Response.Write("</ul>");
-		}
-		
-    
+    }
+    public static string GetUrlPath(string path)
+    {
+        string relativePathInitial = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + HttpContext.Current.Request.ApplicationPath + "/";
+        return (FileManagerHelper.ReplaceBackSlash(Path.Combine(relativePathInitial, path)));
+
     }
 }

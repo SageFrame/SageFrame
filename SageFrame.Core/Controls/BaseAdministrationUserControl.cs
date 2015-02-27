@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Configuration;
 using System.Data;
@@ -43,26 +31,23 @@ using SageFrame.Web.Common.SEO;
 using SageFrame.Web.Utilities;
 using System.Collections;
 
+#endregion
+
 /// <summary>
 /// Summary description for BaseAdministrationUserControl
 /// </summary>
 /// 
 namespace SageFrame.Web
 {
-    public class BaseAdministrationUserControl : SageUserControl
+    public partial class BaseAdministrationUserControl : SageUserControl
     {
-        //MembershipUser user = Membership.GetUser();
-        public BaseAdministrationUserControl()
-        {
-            //
-            // TODO: Add constructor logic here
-            //
-        }
+        #region "Protectected Methods"
 
         protected void ProcessException(Exception exc)
         {
             int inID = 0;
-            inID = ErrorLogController.InsertLog((int)SageFrame.Web.SageFrameEnums.ErrorType.AdministrationArea, 11, exc.Message, exc.ToString(),
+            ErrorLogController objController = new ErrorLogController();
+            inID = objController.InsertLog((int)SageFrame.Web.SageFrameEnums.ErrorType.AdministrationArea, 11, exc.Message, exc.ToString(),
                 HttpContext.Current.Request.UserHostAddress, Request.RawUrl, true, GetPortalID, GetUsername);
 
             SageFrameConfig pagebase = new SageFrameConfig();
@@ -70,9 +55,27 @@ namespace SageFrame.Web
             {
                 ShowMessage(SageMessageTitle.Exception.ToString(), exc.Message, exc.ToString(), SageMessageType.Error);
             }
-            
-        }        
+        }
 
+        #endregion
+
+        #region "Public Methods"
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public BaseAdministrationUserControl()
+        {
+            //
+            // TODO: Add constructor logic here
+            //
+        }
+
+        /// <summary>
+        /// Get Module Control Types
+        /// </summary>
+        /// <param name="ModuleID">ModuleID</param>
+        /// <returns>Module Information, Control Types, Module Package Detail</returns>
         public DataSet GetExtensionSettings(string ModuleID)
         {
             try
@@ -89,12 +92,16 @@ namespace SageFrame.Web
             {
                 throw e;
             }
-        }                        
+        }
 
+        /// <summary>
+        /// Returns To The URL If The Process Is Cancel 
+        /// </summary>
+        /// <param name="RedirectUrl">Redirect URL</param>
         public void ProcessCancelRequest(string RedirectUrl)
         {
             try
-            {                
+            {
                 ProcessCancelRequestBase(RedirectUrl);
             }
             catch (Exception ex)
@@ -103,39 +110,33 @@ namespace SageFrame.Web
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rawUrl"></param>
+        /// <param name="controlPath"></param>
+        /// <param name="parameter"></param>
         public void ProcessSourceControlUrl(string rawUrl, string controlPath, string parameter)
         {
-              
             ProcessSourceControlUrlBase(rawUrl, controlPath, parameter);
-           
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="RedirectUrl"></param>
+        /// <param name="IsSupress"></param>
+        /// <param name="ExtensionMessage"></param>
         public void ProcessCancelRequestBase(string RedirectUrl, bool IsSupress, string ExtensionMessage)
         {
             string strURL = string.Empty;
-            SageFrameConfig pagebase = new SageFrameConfig();
-            bool IsUseFriendlyUrls = pagebase.GetSettingBollByKey(SageFrameSettingKeys.UseFriendlyUrls);
-            if (!IsUseFriendlyUrls)
+
+            if (RedirectUrl.Contains("?"))
             {
-                string[] arrUrl;
-                arrUrl = Request.RawUrl.Split('&');
-                if (arrUrl.Length > 0)
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        strURL += arrUrl[i] + "&";
-                    }
-                    strURL = strURL.Remove(strURL.LastIndexOf('&'));
-                }
+                string[] d = RedirectUrl.Split('?');
+                strURL = d[0];
             }
-            else
-            {
-                if (RedirectUrl.Contains("?"))
-                {
-                    string[] d = RedirectUrl.Split('?');
-                    strURL = d[0];
-                }
-            }
+
             if (strURL.Contains("?"))
             {
                 strURL += "&ExtensionMessage=" + ExtensionMessage;
@@ -151,5 +152,17 @@ namespace SageFrame.Web
 
             HttpContext.Current.Response.Redirect(strURL, IsSupress);
         }
+
+        /// <summary>
+        /// Splits An Param In An Array
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public string[] GetParam(string param)
+        {
+            string[] stringParam = param.Split('/');
+            return stringParam;
+        }
+        #endregion
     }
 }

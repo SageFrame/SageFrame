@@ -328,15 +328,15 @@ namespace SageFrameAJaxEditorControls
             option.Text = "Georgia";
             options.Add(option);
             option = new AjaxControlToolkit.HTMLEditor.ToolbarButton.SelectOption();
-            option.Value = "tahoma,arial,helvetica,sans-serif";
+            option.Value = "";
             option.Text = "Tahoma";
             options.Add(option);
             option = new AjaxControlToolkit.HTMLEditor.ToolbarButton.SelectOption();
             option.Value = "times new roman,times,serif";
-            option.Text = "Times New Roman";
+            option.Text = "";
             options.Add(option);
             option = new AjaxControlToolkit.HTMLEditor.ToolbarButton.SelectOption();
-            option.Value = "verdana,arial,helvetica,sans-serif";
+            option.Value = "";
             option.Text = "Verdana";
             options.Add(option);
             option = new AjaxControlToolkit.HTMLEditor.ToolbarButton.SelectOption();

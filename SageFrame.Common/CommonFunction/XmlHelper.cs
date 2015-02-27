@@ -1,33 +1,18 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
+#endregion
 
 /// <summary>
 /// Summary description for XmlHelper
@@ -130,8 +115,8 @@ namespace SageFrame.Web
             StringBuilder sb = new StringBuilder();
             using (StringReader sr = new StringReader(dateTime))
             {
-                object test = xmlS.Deserialize(sr);
-                return (DateTime)test;
+                object objDate = xmlS.Deserialize(sr);
+                return (DateTime)objDate;
             }
         }
 
@@ -141,12 +126,6 @@ namespace SageFrame.Web
             doc.Load(target_path);
             XmlNode node = doc.SelectSingleNode("resourcemaps");
             node.RemoveAll();
-            //XmlNodeList nodeList = node.ChildNodes;
-            //var mapCount = nodeList.Count;
-            //for (int i = 0; i < mapCount; i++)
-            //{
-            //    nodeList[i].ParentNode.RemoveChild(nodeList[i]);
-            //}            
             doc.Save(target_path);
         }
         #endregion

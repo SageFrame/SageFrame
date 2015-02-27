@@ -1,4 +1,12 @@
-﻿using System;
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
+*/
+#endregion
+
+#region "References"
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,12 +20,13 @@ using SageFrame.Core.Services.Installer;
 using System.Web.Hosting;
 using System.IO;
 
+#endregion
+
 namespace SageFrame.Modules.Admin.Extensions.Editors
 {
     public partial class EditPackageDefinition : BaseAdministrationUserControl
     {
         private string packageName = string.Empty;
-        //private string packageSettingsHelp = string.Empty;
         private string description = string.Empty;
         private string license = string.Empty;
         private string releaseNotes = string.Empty;
@@ -32,14 +41,13 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
 
         protected void Page_Init(object sender, EventArgs e)
         {
-
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "GlobalVariable1", " var sageRootPath='" + ResolveUrl("~/") + "';", true);
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "GlobalVariable1", " var CancelURL='" + ResolveUrl("~/") + "Admin/Modules" + SageFrameSettingKeys.PageExtension + "';", true);
+            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "GlobalVariable2", " var sageRootPath='" + ResolveUrl("~/") + "';", true);            
         }
         protected void Page_Load(object sender, EventArgs e)
         {
             try
             {
-                //  BindControls();       
                 if (!IsPostBack)
                 {
                     txtPackageName.Text = packageName;
@@ -54,8 +62,9 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                     ddlFirst.SelectedIndex = ddlFirst.Items.IndexOf(ddlFirst.Items.FindByValue(firstVersion));
                     ddlSecond.SelectedIndex = ddlSecond.Items.IndexOf(ddlSecond.Items.FindByValue(secondVersion));
                     ddlLast.SelectedIndex = ddlLast.Items.IndexOf(ddlLast.Items.FindByValue(lastVersion));
-                    AddImageUrls();
+                    //AddImageUrls();
                     BindControls();
+
                 }
             }
             catch (Exception ex)
@@ -64,6 +73,8 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 ProcessException(ex);
             }
         }
+
+
         private void AddImageUrls()
         {
             //imbCreate.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
@@ -97,11 +108,8 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             {
                 ddlFirst.DataSource = SageFrameLists.VersionType();
                 ddlFirst.DataBind();
-                //ddlFirst.Items.FindByValue("01").Selected = true;
-
                 ddlSecond.DataSource = SageFrameLists.VersionType();
                 ddlSecond.DataBind();
-
                 ddlLast.DataSource = SageFrameLists.VersionType();
                 ddlLast.DataBind();
             }
@@ -115,10 +123,8 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
         {
             try
             {
-               string tmpFoldName = String.Format("{0}", DateTime.Now.ToString("dd-MMM-yyyy.hhmmssffff"));
-
-               string tempFolderPath = HostingEnvironment.ApplicationPhysicalPath + GetTempPath(tmpFoldName);
-
+                string tmpFoldName = String.Format("{0}", DateTime.Now.ToString("dd-MMM-yyyy.hhmmssffff"));
+                string tempFolderPath = HostingEnvironment.ApplicationPhysicalPath + GetTempPath(tmpFoldName);
                 Package.Name = txtPackageName.Text.ToString();
                 Package.FriendlyName = txtFriendlyName.Text.ToString();
                 Package.Description = txtDescription.Text.ToString();
@@ -131,7 +137,6 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 Package.URL = txtUrl.Text.ToString();
                 Package.Email = txtEmail.Text.ToString();
                 Package.PackageType = "Composite";
-
                 if (lbModulesList.Items.Count > 0)
                 {
                     List<ModuleInfo> modulesList = (List<ModuleInfo>)ViewState["ModulesList"];
@@ -154,10 +159,8 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                     }
 
                 }
-
                 SfeWriter writer = new SfeWriter(Package);
                 writer.Package = Package;
-
                 txtPackageName.Text = "";
                 txtDescription.Text = "";
                 txtLicense.Text = "";
@@ -166,13 +169,11 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 txtOrganization.Text = "";
                 txtUrl.Text = "";
                 txtEmail.Text = "";
-                writer.CreatePackage(Package.Name, Package.Name, this.Context.Response, tempFolderPath);//, this.Context.Response
-                //ReturnBack();
+                writer.CreatePackage(Package.Name, Package.Name, this.Context.Response, tempFolderPath);//, this.Context.Response                
                 txtEmail.Text = "";
             }
             catch (Exception)
             {
-              // ReturnBack();
             }
         }
 
@@ -180,7 +181,6 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
         {
             ProcessCancelRequest(Request.RawUrl);
         }
-
 
         private string GetTempPath(string tmpFoldName)
         {
@@ -205,7 +205,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 Directory.Delete(folderPath);
             }
             Directory.CreateDirectory(folderPath);
-            return "Resources\\temp\\CompositeModules\\" + tmpFoldName+"\\";
+            return "Resources\\temp\\CompositeModules\\" + tmpFoldName + "\\";
         }
 
         protected void add_Click(object sender, EventArgs e)
@@ -232,7 +232,6 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 }
                 if (isshow)
                     Show(error + " Already exists");
-
             }
 
         }
@@ -250,8 +249,6 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             {
                 Show(" No items selected to remove");
             }
-
-
         }
         protected void ReturnBack()
         {

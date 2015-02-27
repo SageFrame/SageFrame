@@ -1,13 +1,20 @@
-﻿using System;
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
+*/
+#endregion
+
+#region "References"
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#endregion
 
 namespace SageFrame.FileManager
 {
     public class FileManagerController
     {
-        
         public static void AddFolder(Folder folder)
         {
             try
@@ -133,9 +140,7 @@ namespace SageFrame.FileManager
             }
             catch (Exception)
             {
-
                 throw;
-
             }
         }
         public static void CopyFile(int FileID, int FolderID, string Folder, Guid UniqueID, Guid VersionGuid)
@@ -299,9 +304,7 @@ namespace SageFrame.FileManager
             }
             catch (Exception)
             {
-
                 throw;
-
             }
         }
         public static List<FileManagerSettingInfo> GetFileManagerSettings(int UserModuleID, int PortalID)
@@ -326,9 +329,7 @@ namespace SageFrame.FileManager
             }
             catch (Exception)
             {
-
                 throw;
-
             }
         }
 

@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,11 +16,15 @@ using SageFrame.Web;
 using SageFrame.Web.Utilities;
 using System.Collections;
 
+#endregion
+
+
 /// <summary>
 /// Summary description for SessionLog
 /// </summary>
 namespace SageFrame.Web
 {
+    [Serializable]
     public class SessionLog
     {
         public SessionLog()
@@ -48,7 +40,7 @@ namespace SageFrame.Web
             {
                 List<KeyValuePair<string, string>> ParaMeterCollection = new List<KeyValuePair<string, string>>();
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@SessionTrackerID", sessionTracker.SessionTrackerID.ToString()));
-                ParaMeterCollection.Add(new KeyValuePair<string, string>("@Username", GetUsername));
+                ParaMeterCollection.Add(new KeyValuePair<string, string>("@UserName", GetUsername));
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@PortalID", GetPortalID.ToString()));
                 SQLHandler sagesql = new SQLHandler();
                 sagesql.ExecuteNonQuery("dbo.sp_SessionTrackerUpdateUsername", ParaMeterCollection);
@@ -58,7 +50,7 @@ namespace SageFrame.Web
                 throw e;
             }
         }
-		
+
         public void StoreSessionTrackerAdd(SessionTracker sessionTracker, int StoreID, int PortalID)
         {
             try
@@ -82,9 +74,9 @@ namespace SageFrame.Web
             {
                 string hostAddress = tracker.SessionUserHostAddress.ToString();
                 string userAgent = tracker.SessionUserAgent != null ? tracker.SessionUserAgent.ToString() : string.Empty;
-                string browser = tracker.Browser.Browser != null ? tracker.Browser.Browser.ToString() : string.Empty;
+                string browser = tracker.Browser;
                 //string crawler = tracker.Browser.Crawler != null ? tracker.Browser.Crawler.ToString() : string.Empty;
-                string crawler = tracker.Browser.Crawler.ToString();
+                string crawler = tracker.Crawler.ToString();
                 string sessionUrl = tracker.SessionURL != null ? tracker.SessionURL.ToString() : string.Empty;
                 //string visitCount = tracker.VisitCount != null ? tracker.VisitCount.ToString() : string.Empty;
                 string visitCount = tracker.VisitCount.ToString();
@@ -101,7 +93,7 @@ namespace SageFrame.Web
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@SessionVisitCount", visitCount));
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@SessionOriginalReferrer", referrer));
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@SessionOriginalURL", orgUrl));
-                ParaMeterCollection.Add(new KeyValuePair<string, string>("@Username", username));
+                ParaMeterCollection.Add(new KeyValuePair<string, string>("@UserName", username));
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@PortalID", portalID));
                 SQLHandler sagesql = new SQLHandler();
                 int insertedID = sagesql.ExecuteNonQuery("dbo.sp_SessionTrackerAdd", ParaMeterCollection, "@InsertedID");
@@ -136,7 +128,7 @@ namespace SageFrame.Web
                 //ParaMeterCollection.Add(new KeyValuePair<string, string>("@SessionVisitCount", visitCount));
                 //ParaMeterCollection.Add(new KeyValuePair<string, string>("@SessionOriginalReferrer", referrer));
                 //ParaMeterCollection.Add(new KeyValuePair<string, string>("@SessionOriginalURL", orgUrl));
-                //ParaMeterCollection.Add(new KeyValuePair<string, string>("@Username", username));
+                //ParaMeterCollection.Add(new KeyValuePair<string, string>("@UserName", username));
                 //ParaMeterCollection.Add(new KeyValuePair<string, string>("@PortalID", portalID));
                 //SQLHandler sagesql = new SQLHandler();
                 //int insertedID = sagesql.ExecuteNonQuery("dbo.sp_SessionTrackerAdd", ParaMeterCollection, "@InsertedID");

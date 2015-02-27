@@ -1,34 +1,20 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections;
 using System.Text;
 using SageFrame.Web.Utilities;
+using SageFrame.Web;
+#endregion
 
 namespace SageFrame.Shared
 {
@@ -98,7 +84,7 @@ namespace SageFrame.Shared
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@SettingTypes", SettingTypes));
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@SettingKeys", SettingKeys));
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@SettingValues", SettingValues));
-                ParaMeterCollection.Add(new KeyValuePair<string, string>("@Username", Username));
+                ParaMeterCollection.Add(new KeyValuePair<string, string>("@UserName", Username));
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@PortalID", PortalID));
                 SQLHandler sagesql = new SQLHandler();
                 sagesql.ExecuteNonQuery("dbo.sp_InsertUpdateSettings", ParaMeterCollection);
@@ -117,7 +103,7 @@ namespace SageFrame.Shared
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@SettingType", SettingType));
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@SettingKey", SettingKey));
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@SettingValue", SettingValue));
-                ParaMeterCollection.Add(new KeyValuePair<string, string>("@Username", Username));
+                ParaMeterCollection.Add(new KeyValuePair<string, string>("@UserName", Username));
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@PortalID", PortalID));
                 SQLHandler sagesql = new SQLHandler();
                 sagesql.ExecuteNonQuery("dbo.sp_InsertUpdateSetting", ParaMeterCollection);
@@ -179,7 +165,7 @@ namespace SageFrame.Shared
             {
                 throw e;
             }
-        } 
+        }
 
         #endregion
 
@@ -202,7 +188,7 @@ namespace SageFrame.Shared
             try
             {
                 List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Username", userName));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserName", userName));
                 ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", portalID));
                 SQLHandler sqlH = new SQLHandler();
                 List<SageUserRole> sagePortalList = sqlH.ExecuteAsList<SageUserRole>("dbo.sp_RoleGetByUsername", ParaMeterCollection);
@@ -214,17 +200,52 @@ namespace SageFrame.Shared
             }
         }
 
-        public CustomerGeneralInfo CustomerIDGetByUsername(string userName, int portalID, int storeID)
+
+        //Change portal
+        public void ChangePortal(int PortalID)
         {
             try
             {
                 List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Username", userName));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
+                SQLHandler sagesql = new SQLHandler();
+                sagesql.ExecuteNonQuery("dbo.usp_ChangePortal", ParaMeterCollection);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public KeyValue GetSettingValueByIndividualKey(string settingKey, int portalID)
+        {
+            KeyValue value = new KeyValue();
+            try
+            {
+                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
                 ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", portalID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@StoreID", storeID));
-                SQLHandler sqlH = new SQLHandler();
-                CustomerGeneralInfo sageCustInfo = sqlH.ExecuteAsObject<CustomerGeneralInfo>("dbo.usp_Aspx_CustomerIDGetByUsername", ParaMeterCollection);
-                return sageCustInfo;
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@SettingKey", settingKey));
+                SQLHandler sagesql = new SQLHandler();
+                value = sagesql.ExecuteAsObject<KeyValue>("dbo.usp_GetSettingValueByIndividualKey", ParaMeterCollection);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            return value;
+        }
+
+        public DataSet GetAllSettings(string portalID, string settingType)
+        {
+            try
+            {
+                List<KeyValuePair<string, string>> ParaMeterCollection = new List<KeyValuePair<string, string>>();
+                ParaMeterCollection.Add(new KeyValuePair<string, string>("@PortalID", portalID));
+                ParaMeterCollection.Add(new KeyValuePair<string, string>("@SettingType", settingType));
+                DataSet dataset = new DataSet();
+                SQLHandler sagesql = new SQLHandler();                
+                dataset = sagesql.ExecuteAsDataSet("dbo.usp_GetAllSettings", ParaMeterCollection);
+                return dataset;
             }
             catch (Exception e)
             {
@@ -367,94 +388,6 @@ namespace SageFrame.Shared
                     this._RoleId = value;
                 }
             }
-        }
-    }
-
-    public class CustomerGeneralInfo
-    {
-        private int _CustomerID;
-        private string _UserName;
-        private int _PortalID;
-        private int _StoreID;
-        private DateTime _AddedOn;
-
-        public CustomerGeneralInfo()
-        {
-        }
-
-        public int CustomerID
-        {
-            get
-            {
-                return this._CustomerID;
-            }
-            set
-            {
-                if (this._CustomerID != value)
-                {
-                    this._CustomerID = value;
-                }
-            }
-        }
-
-        public string UserName
-        {
-            get
-            {
-                return this._UserName;
-            }
-            set
-            {
-                if (this._UserName != value)
-                {
-                    this._UserName = value;
-                }
-            }
-        }
-
-        public int PortalID
-        {
-            get
-            {
-                return this._PortalID;
-            }
-            set
-            {
-                if (this._PortalID != value)
-                {
-                    this._PortalID = value;
-                }
-            }
-        }
-
-        public int StoreID
-        {
-            get
-            {
-                return this._StoreID;
-            }
-            set
-            {
-                if (this._StoreID != value)
-                {
-                    this._StoreID = value;
-                }
-            }
-        }
-
-        public DateTime AddedOn
-        {
-            get
-            {
-                return this._AddedOn;
-            }
-            set
-            {
-                if (this._AddedOn != value)
-                {
-                    this._AddedOn = value;
-                }
-            }
-        }
+        }       
     }
 }

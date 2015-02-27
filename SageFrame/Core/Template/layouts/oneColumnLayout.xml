@@ -1,16 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<layout name="layout_all">
-  <section name="sfheader">
-    <placeholder name="headers" width="30">logo,search</placeholder>
-    <placeholder name="navigation">navigation</placeholder>
-    <placeholder name="breadcrumb">Breadcrumb</placeholder>
-    <placeholder name="message">message</placeholder>
+<?xml version="1.0" encoding="utf-8"?><layout name="layout_all">
+  <section name="sfHeader">
+    <placeholder name="headers" width="20,60" class="header">logo,navigation,loginstatus</placeholder>
+    <placeholder name="banner" wrapinner="0">banner</placeholder>
   </section>
-  <section name="sfcontent">
+  <section name="sfContent">
     <placeholder name="middlemaincurrent">middlemaincurrent</placeholder>
   </section>
-  <section name="sffooter">
-    <placeholder name="footerBlocks" mode="fixed">testimonials,subscribe,social,contact</placeholder>
-    <placeholder name="copyright">copyright</placeholder>
+  <section name="sfFooter">
+    <placeholder name="copyright" wrapinner="0">copyright</placeholder>
   </section>
 </layout>

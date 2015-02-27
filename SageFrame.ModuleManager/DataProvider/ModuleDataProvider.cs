@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +14,7 @@ using System.Data.SqlClient;
 using SageFrame.ModuleManager;
 using System.Data;
 using SageFrame.Common;
+#endregion
 
 namespace SageFrame.ModuleManager.DataProvider
 {
@@ -81,25 +67,33 @@ namespace SageFrame.ModuleManager.DataProvider
                                                                                 new KeyValuePair<string, object>(
                                                                                     "@ControlCount", 0)                                                                                
                                                                             };
-               
-              
+
+
                 List<KeyValuePair<int, string>> resultColl = new List<KeyValuePair<int, string>>();
                 resultColl = sqlH.ExecuteNonQueryWithMultipleOutput(tran, CommandType.StoredProcedure, "[dbo].[usp_UserModulesAdd]", ParaMeterCollection, ParaMeterInputCollection);
                 if (int.Parse(resultColl[0].Value) > 0)
                 {
                     if (module.InheritViewPermissions)
                     {
+                        //if (module.IsInAdmin)
+                        //{
+                        //    module.PortalID = -1;
+                        //}
                         SetUserModuleInheritedPermission(module.PageID, tran, int.Parse(resultColl[0].Value), module.PortalID, module.AddedBy, module.ModuleDefID);
                     }
                     else
                     {
                         SetUserModulePermission(module.LSTUserModulePermission, tran, int.Parse(resultColl[0].Value), module.PortalID, module.AddedBy, module.ModuleDefID);
                     }
+                    if(module.IsInAdmin)
+                    {
+                        module.PortalID = -1;
+                    }
                     SetPageModules(module, tran, int.Parse(resultColl[0].Value), module.PortalID, module.AddedBy);
 
                 }
                 tran.Commit();
-                return (string.Format("{0}_{1}", resultColl[0].Value.ToString(), resultColl[1].Value.ToString())); 
+                return (string.Format("{0}_{1}", resultColl[0].Value.ToString(), resultColl[1].Value.ToString()));
 
             }
             catch (SqlException sqlEx)
@@ -113,11 +107,11 @@ namespace SageFrame.ModuleManager.DataProvider
             }
         }
 
-        public void SetUserModulePermission(List<ModulePermissionInfo> lstPermission, SqlTransaction tran, int UserModuleID, int PortalID, string AddedBy,int ModuleDefID)
+        public void SetUserModulePermission(List<ModulePermissionInfo> lstPermission, SqlTransaction tran, int UserModuleID, int PortalID, string AddedBy, int ModuleDefID)
         {
             try
             {
-              
+
                 foreach (ModulePermissionInfo objPerm in lstPermission)
                 {
                     if (objPerm == null) continue;
@@ -132,7 +126,7 @@ namespace SageFrame.ModuleManager.DataProvider
                                                                                     new KeyValuePair<string, object>(
                                                                                         "@RoleID", objPerm.RoleID),
                                                                                     new KeyValuePair<string, object>(
-                                                                                        "@Username", objPerm.UserName),
+                                                                                        "@UserName", objPerm.UserName),
                                                                                     new KeyValuePair<string, object>(
                                                                                         "@IsActive", true),
                                                                                     new KeyValuePair<string, object>(
@@ -147,9 +141,9 @@ namespace SageFrame.ModuleManager.DataProvider
                     SQLHandler sqlH = new SQLHandler();
                     sqlH.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[dbo].[usp_UserModulesPermissionAdd]",
                                          ParaMeterCollection);
-                    
+
                 }
-        
+
             }
             catch (Exception ex)
             {
@@ -162,7 +156,7 @@ namespace SageFrame.ModuleManager.DataProvider
             try
             {
 
-                    List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
+                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
                                                                                 {
                                                                                     new KeyValuePair<string, object>(
                                                                                         "@ModuleDefID", ModuleDefID),                                                                                 
@@ -181,11 +175,11 @@ namespace SageFrame.ModuleManager.DataProvider
                                                                                     new KeyValuePair<string, object>(
                                                                                         "@PageID", PageID)
                                                                                 };
-                    SQLHandler sqlH = new SQLHandler();
-                    sqlH.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[dbo].[usp_UserModulesInheritedPermissionAdd]",
-                                         ParaMeterCollection);
+                SQLHandler sqlH = new SQLHandler();
+                sqlH.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[dbo].[usp_UserModulesInheritedPermissionAdd]",
+                                     ParaMeterCollection);
 
-                
+
 
             }
             catch (Exception ex)
@@ -238,8 +232,8 @@ namespace SageFrame.ModuleManager.DataProvider
             try
             {
 
-                
-                    List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
+
+                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
                                                                                 {
                                                                                     new KeyValuePair<string, object>(
                                                                                         "@PageID", module.PageID),                                                                                 
@@ -271,10 +265,10 @@ namespace SageFrame.ModuleManager.DataProvider
                                                                                         "@AddedBy", AddedBy)
 
                                                                                 };
-                    SQLHandler sqlH = new SQLHandler();
-                    sqlH.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[dbo].[usp_PageModulesAdd]",
-                                         ParaMeterCollection);
-             
+                SQLHandler sqlH = new SQLHandler();
+                sqlH.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[dbo].[usp_PageModulesAdd]",
+                                     ParaMeterCollection);
+
             }
             catch (Exception ex)
             {
@@ -284,11 +278,14 @@ namespace SageFrame.ModuleManager.DataProvider
         }
 
 
-        public static List<UserModuleInfo> GetPageModules(int PageID, int PortalID,bool IsHandheld)
+        public static List<UserModuleInfo> GetPageModules(int PageID, int PortalID, bool IsHandheld)
         {
-            List<UserModuleInfo> lstUserModules = new List<UserModuleInfo>();
-            string StoredProcedureName = "[dbo].[usp_ModuleManagerGetPageModules]";
-            List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
+            bool ValidateTemplate = TemplateValidation.GetTemplateValidation();
+             List<UserModuleInfo> lstUserModules = new List<UserModuleInfo>();
+             if (ValidateTemplate)
+             {
+                 string StoredProcedureName = "[dbo].[usp_ModuleManagerGetPageModules]";
+                 List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
                                                                          {
                                                                              new KeyValuePair<string, object>(
                                                                                  "@PageID", PageID),
@@ -297,17 +294,16 @@ namespace SageFrame.ModuleManager.DataProvider
                                                                              new KeyValuePair<string, object>(
                                                                                  "@IsHandheld", IsHandheld),
                                                                          };
-            try
-            {
-                SQLHandler sagesql = new SQLHandler();
-                lstUserModules = sagesql.ExecuteAsList<UserModuleInfo>(StoredProcedureName, ParaMeterCollection);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-
-
+                 try
+                 {
+                     SQLHandler sagesql = new SQLHandler();
+                     lstUserModules = sagesql.ExecuteAsList<UserModuleInfo>(StoredProcedureName, ParaMeterCollection);
+                 }
+                 catch (Exception e)
+                 {
+                     throw e;
+                 }
+             }
             return lstUserModules;
         }
 
@@ -376,7 +372,7 @@ namespace SageFrame.ModuleManager.DataProvider
                                                                                     new KeyValuePair<string, object>(
                                                                                         "@IsAdmin", IsAdmin)                                                                               
                                                                                     
-                                                                                };          
+                                                                                };
             try
             {
                 SQLHandler sagesql = new SQLHandler();
@@ -402,7 +398,7 @@ namespace SageFrame.ModuleManager.DataProvider
                                                                                     new KeyValuePair<string, object>(
                                                                                         "@PortalID",PortalID)
                                                                                 };
-           
+
             try
             {
                 SQLHandler sagesql = new SQLHandler();
@@ -419,7 +415,7 @@ namespace SageFrame.ModuleManager.DataProvider
             return objUserModule;
         }
 
-        public static List<ModulePermissionInfo> GetModulePermission(int UserModuleID,int PortalID)
+        public static List<ModulePermissionInfo> GetModulePermission(int UserModuleID, int PortalID)
         {
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>
                                                                         {
@@ -431,7 +427,7 @@ namespace SageFrame.ModuleManager.DataProvider
             SQLHandler sqlH = new SQLHandler();
             return (sqlH.ExecuteAsList<ModulePermissionInfo>("[usp_UserModuleGetPermissions]", ParaMeterCollection));
 
-           
+
         }
 
 
@@ -476,7 +472,7 @@ namespace SageFrame.ModuleManager.DataProvider
                                                                                     
                                                                             };
 
-                
+
                 sqlH.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[dbo].[usp_UserModulesUpdate]", ParaMeterCollection);
                 if (module.InheritViewPermissions)
                 {
@@ -485,13 +481,13 @@ namespace SageFrame.ModuleManager.DataProvider
                 }
                 else
                 {
-                    UpdateUserModulePermission(module.LSTUserModulePermission, tran, module.UserModuleID, module.PortalID, module.AddedBy, module.ModuleDefID);                  
+                    UpdateUserModulePermission(module.LSTUserModulePermission, tran, module.UserModuleID, module.PortalID, module.AddedBy, module.ModuleDefID);
 
                 }
 
-                
+
                 tran.Commit();
-                
+
 
             }
             catch (SqlException sqlEx)
@@ -537,7 +533,7 @@ namespace SageFrame.ModuleManager.DataProvider
                                                                                     new KeyValuePair<string, object>(
                                                                                         "@RoleID", objPerm.RoleID),
                                                                                     new KeyValuePair<string, object>(
-                                                                                        "@Username", objPerm.UserName),
+                                                                                        "@UserName", objPerm.UserName),
                                                                                     new KeyValuePair<string, object>(
                                                                                         "@IsActive", true),
                                                                                     new KeyValuePair<string, object>(
@@ -560,11 +556,24 @@ namespace SageFrame.ModuleManager.DataProvider
 
                 throw;
             }
-
-              
-              
-
         }
 
+
+        internal static bool PublishPage(int pageId,bool isPublish)
+        {
+            try
+            {
+                List<KeyValuePair<string, object>> para = new List<KeyValuePair<string, object>>();
+                para.Add(new KeyValuePair<string, object>("@PageId", pageId));
+                para.Add(new KeyValuePair<string, object>("@IsPublished",isPublish));
+                SQLHandler handler = new SQLHandler();
+                handler.ExecuteNonQuery("[dbo].[usp_PagePublish]", para);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

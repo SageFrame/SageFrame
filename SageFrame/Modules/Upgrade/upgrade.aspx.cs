@@ -1,24 +1,5 @@
 ﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
 using System;
 using System.Collections;
@@ -71,19 +52,19 @@ public partial class upgrade : System.Web.UI.Page
             ViewState["fileName"] = zipFile;
 
         }
-    } 
+    }
 
     [System.Web.Services.WebMethod(EnableSession = true)]
     [System.Web.Script.Services.ScriptMethod()]
 
     public static string Upgrade(string installerZipFile)
     {
-       
+
         if (!String.IsNullOrEmpty(installerZipFile))
         {
-            
+
             bool dbBackupFlag = false;
-            string tempFolder = HostingEnvironment.ApplicationPhysicalPath + "Upload\\UploadedFiles";                 
+            string tempFolder = HostingEnvironment.ApplicationPhysicalPath + "Upload\\UploadedFiles";
             string zipFilePath = tempFolder + "\\" + installerZipFile;
             string dbBackupPath = string.Empty;
             string extractPath = string.Empty;
@@ -93,7 +74,7 @@ public partial class upgrade : System.Web.UI.Page
                 extractPath = UnZipFiles(zipFilePath, tempFolder);
             }
             catch (Exception e)
-            {            
+            {
                 WriteToLog(e.Message);
             }
 
@@ -103,13 +84,13 @@ public partial class upgrade : System.Web.UI.Page
 
             WriteToLog("Putting site down......");
             UpdateSiteDownFile(true);
-                       
+
             SqlConnection connection = new SqlConnection(SystemSetting.SageFrameConnectionString);
 
             string backupFolder = HostingEnvironment.ApplicationPhysicalPath + "Resources\\BackUp";
-          
+
             if (!Directory.Exists(backupFolder))
-                Directory.CreateDirectory(backupFolder);           
+                Directory.CreateDirectory(backupFolder);
 
             XmlNodeList nodeList = doc.SelectNodes("/CONFIG/FILES/FILE");
 
@@ -118,39 +99,38 @@ public partial class upgrade : System.Web.UI.Page
                 try
                 {
                     WriteToLog("Backing up Files......");
-                   ProcessFiles(nodeList, extractPath);
-                                    
-                   dbBackupPath = Path.Combine(backupFolder, DateTime.Now.Millisecond + ".bak");
-                  
-                   WriteToLog("Backing up database......");
-                   dbBackupFlag = BackupDatabase(SystemSetting.SageFrameDBName, dbBackupPath, connection);
-                  
-                   WriteToLog("Executing SQL scripts......");
-                   ExecuteSqlScript(extractPath);
+                    ProcessFiles(nodeList, extractPath);
 
-                  
+                    dbBackupPath = Path.Combine(backupFolder, DateTime.Now.Millisecond + ".bak");
 
-                   try
-                   {
-                       System.GC.Collect();
-                       System.GC.WaitForPendingFinalizers();
-                      
-                       if (File.Exists(dbBackupPath))
-                       {
-                           File.SetAttributes(dbBackupPath, FileAttributes.Archive);
-                           File.Delete(dbBackupPath);
-                       } 
+                    WriteToLog("Backing up database......");
+                    dbBackupFlag = BackupDatabase(SystemSetting.SageFrameDBName, dbBackupPath, connection);
 
-                       if (Directory.Exists(backupFolder))
-                           Directory.Delete(backupFolder, true);
-                   }
-                   catch (Exception e)
-                   {
-                       WriteToLog("Cannot delete :" + e.Message);
-                   }
-                  
+                    WriteToLog("Executing SQL scripts......");
+                    ExecuteSqlScript(extractPath);
+
+                    try
+                    {
+                        System.GC.Collect();
+                        System.GC.WaitForPendingFinalizers();
+
+                        if (File.Exists(dbBackupPath))
+                        {
+                            File.SetAttributes(dbBackupPath, FileAttributes.Archive);
+                            File.Delete(dbBackupPath);
+                        }
+
+                        if (Directory.Exists(backupFolder))
+                            Directory.Delete(backupFolder, true);
+                    }
+                    catch (Exception e)
+                    {
+                        WriteToLog("Cannot delete :" + e.Message);
+                    }
+
                 }
-                catch (Exception e) {
+                catch (Exception e)
+                {
 
                     WriteToLog("Error Occured during upgrading process.");
                     WriteToLog("Please check Log.txt file on root directory.");
@@ -188,7 +168,8 @@ public partial class upgrade : System.Web.UI.Page
                         if (!string.IsNullOrEmpty(tempFolder) && Directory.Exists(tempFolder))
                             Directory.Delete(tempFolder, true);
                     }
-                    catch (Exception e) {
+                    catch (Exception e)
+                    {
                         WriteToLog("cannot delete" + e.Message);
                     }
                 }
@@ -205,8 +186,8 @@ public partial class upgrade : System.Web.UI.Page
         }
         return "done";
     }
-   
-        
+
+
     public static bool IsFileLocked(FileInfo file)
     {
         FileStream stream = null;
@@ -238,17 +219,17 @@ public partial class upgrade : System.Web.UI.Page
         XmlDocument doc = new XmlDocument();
         try
         {
-            string configFilePath=Path.Combine(extractPath , @"SystemFiles\config.xml");
+            string configFilePath = Path.Combine(extractPath, @"SystemFiles\config.xml");
             WriteToLog("loading xml");
-                //if (File.Exists(configFilePath))
-                //    doc.Load(configFilePath);
+            //if (File.Exists(configFilePath))
+            //    doc.Load(configFilePath);
             TextReader reader = new StreamReader(configFilePath);
             doc.Load(reader);
             WriteToLog("loaded");
             reader.Close();
             WriteToLog("reader close");
             reader.Dispose();
-        
+
         }
         catch (Exception e)
         {
@@ -258,12 +239,12 @@ public partial class upgrade : System.Web.UI.Page
     }
 
     public static void CreateLogFile()
-    {         
+    {
         string path = HostingEnvironment.ApplicationPhysicalPath + "log.txt";
         //if (File.Exists(path))
-            File.WriteAllText(path,"");    
-    
-       // File.Create(path).Close();
+        File.WriteAllText(path, "");
+
+        // File.Create(path).Close();
 
     }
 
@@ -271,27 +252,28 @@ public partial class upgrade : System.Web.UI.Page
     {
         bool isFileBackUpSuccess = false;
         try
-        {           
+        {
             WriteToLog("Updating SageFrame files.....");
             foreach (XmlNode node in nodeList)
             {
                 string backupLocation = "";
                 string unzippedFileLocation = "";
-                string rootPath="";
+                string rootPath = "";
                 var filePath = node.Attributes["path"].Value;
                 if (filePath.StartsWith(@"..\"))
                 {
-                   string path=HostingEnvironment.ApplicationPhysicalPath;
-                   rootPath = path.Substring(0, path.LastIndexOf(@"\"));
-                   rootPath = rootPath.Substring(0, rootPath.LastIndexOf(@"\")+1);
-                   filePath = filePath.Substring(3);
-                   unzippedFileLocation = zipFilePath + "\\UpgradeFiles\\";
-                   backupLocation = @"Resources\BackUp\";
+                    string path = HostingEnvironment.ApplicationPhysicalPath;
+                    rootPath = path.Substring(0, path.LastIndexOf(@"\"));
+                    rootPath = rootPath.Substring(0, rootPath.LastIndexOf(@"\") + 1);
+                    filePath = filePath.Substring(3);
+                    unzippedFileLocation = zipFilePath + "\\UpgradeFiles\\";
+                    backupLocation = @"Resources\BackUp\";
                 }
-                else{
-                    rootPath=HostingEnvironment.ApplicationPhysicalPath;
-                    unzippedFileLocation = zipFilePath + "\\UpgradeFiles\\SageFrame\\";
-                    backupLocation=@"Resources\BackUp\SageFrame\";
+                else
+                {
+                    rootPath = HostingEnvironment.ApplicationPhysicalPath;
+                    unzippedFileLocation = zipFilePath;
+                    backupLocation = @"Resources\BackUp\SageFrame\";
                 }
                 if (File.Exists(rootPath + filePath))
                     isFileBackUpSuccess = FileBackUp(filePath, rootPath + backupLocation, rootPath);
@@ -305,7 +287,7 @@ public partial class upgrade : System.Web.UI.Page
         }
         catch (Exception e) { throw e; }
 
-    }    
+    }
 
     public static void RollBackAllFiles(XmlNodeList nodeList)
     {
@@ -313,8 +295,8 @@ public partial class upgrade : System.Web.UI.Page
         {
             FileRollBack(HostingEnvironment.ApplicationPhysicalPath + @"Modules\Upgrade\BackUp\SageFrame\" + node.Attributes["path"].Value, HostingEnvironment.ApplicationPhysicalPath + node.Attributes["path"].Value);
             WriteToLog("Backing up file: " + node.Attributes["path"].Value);
-                
-        } 
+
+        }
     }
 
     public static string UnZipFiles(string filePath, string outputFolder)
@@ -378,15 +360,12 @@ public partial class upgrade : System.Web.UI.Page
         }
     }
 
-    
-
     public static void UpdateSiteDownFile(bool flag)
     {
         XmlTextWriter tw;
         string isShow = flag ? "true" : "false";
         XmlDocument ConfigDoc = new XmlDocument();
         ConfigDoc.Load(HttpContext.Current.Server.MapPath("~/Modules/Upgrade/SiteMaintainceConfig.xml"));
-
         XmlNode xmlnode = ConfigDoc.SelectSingleNode("/Config/MySection1/isDown");
         string pathRoot = HttpContext.Current.Server.MapPath("~/Modules/Upgrade/SiteMaintainceConfig.xml");
 
@@ -396,32 +375,30 @@ public partial class upgrade : System.Web.UI.Page
         tw.Indentation = 4;
         ConfigDoc.Save(tw);
         tw.Close();
-
     }
 
-
     public static void RollBackDatabase(string databaseName, string bakfilePath)
-    {        
+    {
         SqlConnection.ClearAllPools();
 
         SqlConnection cnn = SetSingleUser(databaseName);
         ServerConnection serverConn = new ServerConnection(cnn);
-        Server server = new Server(serverConn);      
+        Server server = new Server(serverConn);
 
         Database db = server.Databases[cnn.Database];
         Restore restore = new Restore();
         restore.Action = RestoreActionType.Database;
         restore.Devices.AddDevice(bakfilePath, DeviceType.File);
         restore.Database = databaseName;
-        restore.ReplaceDatabase = true;    
+        restore.ReplaceDatabase = true;
         restore.Complete += new ServerMessageEventHandler(Restore_Completed);
         restore.PercentComplete += new PercentCompleteEventHandler(CompletionStatusInPercent);
         restore.PercentCompleteNotification = 10;
 
         SqlCommand cmd = cnn.CreateCommand();
         cmd.CommandText = string.Format("use master");
-        cmd.ExecuteNonQuery(); 
-  
+        cmd.ExecuteNonQuery();
+
 
         restore.SqlRestore(server);
         db = server.Databases[databaseName];
@@ -430,10 +407,10 @@ public partial class upgrade : System.Web.UI.Page
 
         if (server.ConnectionContext.IsOpen)
             server.ConnectionContext.Disconnect();
-    
+
     }
 
- 
+
     private static SqlConnection SetSingleUser(string databaseName)
     {
         string v;
@@ -448,7 +425,7 @@ public partial class upgrade : System.Web.UI.Page
 
         return connection;
     }
-          
+
     private static void Restore_Completed(object sender, ServerMessageEventArgs args)
     {
         WriteToLog("Restoration of existing database completed");
@@ -457,7 +434,7 @@ public partial class upgrade : System.Web.UI.Page
     private static void CompletionStatusInPercent(object sender, PercentCompleteEventArgs args)
     {
 
-        WriteToLog("Percent completed:"+args.Percent+"%.");
+        WriteToLog("Percent completed:" + args.Percent + "%.");
     }
 
     public static bool BackupDatabase(String databaseName, String destinationPath, SqlConnection connection)
@@ -466,35 +443,35 @@ public partial class upgrade : System.Web.UI.Page
         try
         {
             Backup sqlBackup = new Backup();
-           
 
-                sqlBackup.Action = BackupActionType.Database;
-                sqlBackup.BackupSetDescription = "ArchiveDataBase:" +
-                                                 DateTime.Now.ToShortDateString();
-                sqlBackup.BackupSetName = "Archive";
 
-                sqlBackup.Database = databaseName;
+            sqlBackup.Action = BackupActionType.Database;
+            sqlBackup.BackupSetDescription = "ArchiveDataBase:" +
+                                             DateTime.Now.ToShortDateString();
+            sqlBackup.BackupSetName = "Archive";
 
-                BackupDeviceItem deviceItem = new BackupDeviceItem(destinationPath, DeviceType.File);
+            sqlBackup.Database = databaseName;
 
-                ServerConnection serverConn = new ServerConnection(connection);
-                Server sqlServer = new Server(serverConn);
+            BackupDeviceItem deviceItem = new BackupDeviceItem(destinationPath, DeviceType.File);
 
-                //Database db = sqlServer.Databases[databaseName];
+            ServerConnection serverConn = new ServerConnection(connection);
+            Server sqlServer = new Server(serverConn);
 
-                sqlBackup.Initialize = true;
-                sqlBackup.Checksum = true;
-                sqlBackup.ContinueAfterError = true;
-                sqlBackup.Devices.Add(deviceItem);
-                sqlBackup.Incremental = false;
+            //Database db = sqlServer.Databases[databaseName];
 
-                sqlBackup.ExpirationDate = DateTime.Now.AddDays(3);
-                sqlBackup.LogTruncation = BackupTruncateLogType.Truncate;
+            sqlBackup.Initialize = true;
+            sqlBackup.Checksum = true;
+            sqlBackup.ContinueAfterError = true;
+            sqlBackup.Devices.Add(deviceItem);
+            sqlBackup.Incremental = false;
 
-                sqlBackup.FormatMedia = false;
+            sqlBackup.ExpirationDate = DateTime.Now.AddDays(3);
+            sqlBackup.LogTruncation = BackupTruncateLogType.Truncate;
 
-                sqlBackup.SqlBackup(sqlServer);
-                sqlBackup.UnloadTapeAfter = true;
+            sqlBackup.FormatMedia = false;
+
+            sqlBackup.SqlBackup(sqlServer);
+            sqlBackup.UnloadTapeAfter = true;
 
             flag = true;
         }
@@ -505,7 +482,7 @@ public partial class upgrade : System.Web.UI.Page
 
         return flag;
     }
-    
+
     public static void RunSqlScript(string connectionString1, string actualpath, int Counter)
     {
         object obj = new object();
@@ -640,22 +617,22 @@ public partial class upgrade : System.Web.UI.Page
             string path = rootPath + sourcePath;
             if (!Directory.Exists(destFolder))
                 Directory.CreateDirectory(destFolder);
-           
+
 
 
             string fName = Path.GetFileName(path);
-            string destFile = Path.Combine(destPath,sourcePath);
+            string destFile = Path.Combine(destPath, sourcePath);
             File.Copy(path, destFile, true);
             return true;
             //string path = HostingEnvironment.ApplicationPhysicalPath + sourcePath;
-         
+
             //string destFile = Path.Combine(destPath, sourcePath);
             //File.Copy(path, destFile, true);            
             //return true;
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-           throw e;
+            throw e;
         }
     }
 
@@ -664,14 +641,15 @@ public partial class upgrade : System.Web.UI.Page
         try
         {
             string parentFolder = "";
-            string destPath = rootPath + sourcePath;
+            string SrcPath = sourcePath.Replace("SageFrame\\", "");
+            string destPath = rootPath + SrcPath;
             string path = Path.Combine(UnzipFolderPath, sourcePath);
             parentFolder = destPath.Substring(0, destPath.LastIndexOf(@"\") + 1);
             if (!Directory.Exists(parentFolder))
             {
                 Directory.CreateDirectory(parentFolder);
             }
-            File.Copy(path, destPath, true);            
+            File.Copy(path, destPath, true);
             return true;
         }
         catch (Exception e)
@@ -687,7 +665,7 @@ public partial class upgrade : System.Web.UI.Page
             if (File.Exists(destPath))
                 File.Delete(destPath);
 
-            File.Move(sourcePath, destPath);           
+            File.Move(sourcePath, destPath);
             return true;
         }
         catch (Exception e)

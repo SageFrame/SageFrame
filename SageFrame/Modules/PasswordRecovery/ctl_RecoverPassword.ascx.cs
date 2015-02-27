@@ -1,4 +1,5 @@
-﻿/*
+﻿#region "Copyright"
+/*
 SageFrame® - http://www.sageframe.com
 Copyright (c) 2009-2010 by SageFrame
 Permission is hereby granted, free of charge, to any person obtaining
@@ -20,6 +21,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,24 +36,23 @@ using SageFrame.Framework;
 using SageFrame.UserManagement;
 using SageFrame.Web;
 using SageFrame.Message;
-using SageFrameClass.MessageManagement;
-using SageFrame.SageFrameClass.MessageManagement;
 using SageFrame.Security.Helpers;
 using SageFrame.Security.Entities;
 using SageFrame.Security;
+using SageFrameClass.MessageManagement;
+using SageFrame.SageFrameClass.MessageManagement;
+#endregion
 
 namespace SageFrame.Modules.PasswordRecovery
 {
     public partial class ctl_RecoverPassword : BaseUserControl
     {
         public string helpTemplate = string.Empty;
-        SageFrameConfig pb = new SageFrameConfig();
-        bool IsUseFriendlyUrls = true;
         MembershipController m = new MembershipController();
-        ForgetPasswordInfo sageframeuser = new ForgetPasswordInfo();
+        ForgotPasswordInfo sageframeuser = new ForgotPasswordInfo();
         protected void Page_Load(object sender, EventArgs e)
         {
-            ForgetPasswordInfo objInfo = UserManagementController.GetMessageTemplateByMessageTemplateTypeID(SystemSetting.PASSWORD_RECOVERED_HELP, GetPortalID);
+            ForgotPasswordInfo objInfo = UserManagementController.GetMessageTemplateByMessageTemplateTypeID(SystemSetting.PASSWORD_RECOVERED_HELP, GetPortalID);
             if (objInfo != null)
             {
                 helpTemplate = objInfo.Body;
@@ -68,12 +71,10 @@ namespace SageFrame.Modules.PasswordRecovery
                         sageframeuser = UserManagementController.GetUsernameByActivationOrRecoveryCode(hdnRecoveryCode.Value, GetPortalID);
                         if (sageframeuser.CodeForUsername != null)
                         {
-
                             if (sageframeuser.IsAlreadyUsed)
                             {
                                 ShowMessage("", GetSageMessage("PasswordRecovery", "RecoveryCodeAlreadyActivated"), "", SageMessageType.Alert);
                                 divRecoverpwd.Visible = false;
-
                             }
                             else
                             {
@@ -82,23 +83,20 @@ namespace SageFrame.Modules.PasswordRecovery
                         }
                         else
                         {
-                            
                             divRecoverpwd.Visible = false;
-                            ShowMessage("",GetSageMessage("UserManagement" , "UserDoesNotExist"), "",SageMessageType.Alert);
+                            ShowMessage("", GetSageMessage("UserManagement", "UserDoesNotExist"), "", SageMessageType.Alert);
                         }
                     }
                     catch
                     {
-                      ShowMessage("", GetSageMessage("PasswordRecovery", "InvalidRecoveringCode"), "", SageMessageType.Alert);
-                      divRecoverpwd.Visible = false;
-
+                        ShowMessage("", GetSageMessage("PasswordRecovery", "InvalidRecoveringCode"), "", SageMessageType.Alert);
+                        divRecoverpwd.Visible = false;
                     }
                 }
                 else
                 {
-                 ShowMessage("", GetSageMessage("PasswordRecovery", "RecoveringCodeIsNotAvailable"), "", SageMessageType.Error);
-                 divRecoverpwd.Visible = false;
-
+                    ShowMessage("", GetSageMessage("PasswordRecovery", "RecoveringCodeIsNotAvailable"), "", SageMessageType.Error);
+                    divRecoverpwd.Visible = false;
                 }
                 SetValidatorErrorMessage();
             }
@@ -111,7 +109,7 @@ namespace SageFrame.Modules.PasswordRecovery
             wzdPasswordRecover.StepNextButtonImageUrl = GetTemplateImageUrl("imgforward.png", true);
             wzdPasswordRecover.StepPreviousButtonImageUrl = GetTemplateImageUrl("imgback.png", true);
             wzdPasswordRecover.FinishPreviousButtonImageUrl = GetTemplateImageUrl("imgback.png", true);
-            wzdPasswordRecover.FinishCompleteButtonImageUrl = GetTemplateImageUrl("imgfinished.png", true);           
+            wzdPasswordRecover.FinishCompleteButtonImageUrl = GetTemplateImageUrl("imgfinished.png", true);
         }
 
         private void SetValidatorErrorMessage()
@@ -127,26 +125,20 @@ namespace SageFrame.Modules.PasswordRecovery
         protected void wzdPasswordRecover_FinishButtonClick(object sender, WizardNavigationEventArgs e)
         {
             hdnRecoveryCode.Value = "";
-
             GotoLoginPage();
         }
         private void GotoLoginPage()
         {
-            if (IsUseFriendlyUrls)
+            SageFrameConfig objSageConfig = new SageFrameConfig();
+            if (!IsParent)
             {
-                if (GetPortalID > 1)
-                {
-                    Response.Redirect(ResolveUrl("~/portal/" + GetPortalSEOName + "/sf/" + pb.GetSettingsByKey(SageFrameSettingKeys.PlortalLoginpage) + ".aspx"));
-                }
-                else
-                {
-                    Response.Redirect(ResolveUrl("~/sf/" + pb.GetSettingsByKey(SageFrameSettingKeys.PlortalLoginpage) + ".aspx"));
-                }
+                Response.Redirect(GetParentURL + "/portal/" + GetPortalSEOName + "/sf/" + objSageConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalLoginpage) + SageFrameSettingKeys.PageExtension);
             }
             else
             {
-                Response.Redirect(ResolveUrl("~/Default.aspx?ptlid=" + GetPortalID + "&ptSEO=" + GetPortalSEOName + "&pgnm=" + pb.GetSettingsByKey(SageFrameSettingKeys.PlortalLoginpage)));
+                Response.Redirect(GetParentURL + "/sf/" + objSageConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalLoginpage) + SageFrameSettingKeys.PageExtension);
             }
+
         }
         protected void wzdPasswordRecover_NextButtonClick(object sender, WizardNavigationEventArgs e)
         {
@@ -163,17 +155,16 @@ namespace SageFrame.Modules.PasswordRecovery
                     {
                         if (hdnRecoveryCode.Value != "")
                         {
-                           
-                           	sageframeuser = UserManagementController.GetUsernameByActivationOrRecoveryCode(hdnRecoveryCode.Value, GetPortalID);
+                            sageframeuser = UserManagementController.GetUsernameByActivationOrRecoveryCode(hdnRecoveryCode.Value, GetPortalID);
                             if (sageframeuser.CodeForUsername != null)
-                            {                               
-                                UserInfo userOld = m.GetUserDetails(GetPortalID,sageframeuser.CodeForUsername);
+                            {
+                                UserInfo userOld = m.GetUserDetails(GetPortalID, sageframeuser.CodeForUsername);
                                 string Password, PasswordSalt;
                                 PasswordHelper.EnforcePasswordSecurity(m.PasswordFormat, txtPassword.Text, out Password, out PasswordSalt);
                                 UserInfo user = new UserInfo(userOld.UserID, Password, PasswordSalt, m.PasswordFormat);
-                                m.ChangePassword(user);                              
-                                List<ForgetPasswordInfo> messageTemplates = UserManagementController.GetMessageTemplateListByMessageTemplateTypeID(SystemSetting.PASSWORD_RECOVERED_SUCCESSFUL_EMAIL, GetPortalID);
-                                foreach (ForgetPasswordInfo messageTemplate in messageTemplates)
+                                m.ChangePassword(user);
+                                List<ForgotPasswordInfo> messageTemplates = UserManagementController.GetMessageTemplateListByMessageTemplateTypeID(SystemSetting.PASSWORD_RECOVERED_SUCCESSFUL_EMAIL, GetPortalID);
+                                foreach (ForgotPasswordInfo messageTemplate in messageTemplates)
                                 {
                                     DataTable dtTokenValues = UserManagementController.GetPasswordRecoverySuccessfulTokenValue(userOld.UserName, GetPortalID);
                                     string replacedMessageSubject = MessageToken.ReplaceAllMessageToken(messageTemplate.Subject, dtTokenValues);
@@ -184,16 +175,13 @@ namespace SageFrame.Modules.PasswordRecovery
                                     }
                                     catch (Exception)
                                     {
-
                                         ShowMessage("", GetSageMessage("PasswordRecovery", "SecureConnectionFPRError"), "", SageMessageType.Alert);
                                         e.Cancel = true;
                                         divRecoverpwd.Visible = false;
-
                                     }
-
                                 }
                                 UserManagementController.DeactivateRecoveryCode(userOld.UserName, GetPortalID);
-                                ForgetPasswordInfo template = UserManagementController.GetMessageTemplateByMessageTemplateTypeID(SystemSetting.PASSWORD_RECOVERED_SUCESSFUL_INFORMATION, GetPortalID);
+                                ForgotPasswordInfo template = UserManagementController.GetMessageTemplateByMessageTemplateTypeID(SystemSetting.PASSWORD_RECOVERED_SUCESSFUL_INFORMATION, GetPortalID);
                                 if (template != null)
                                 {
                                     ((Literal)WizardStep2.FindControl("litPasswordChangedSuccessful")).Text = template.Body;
@@ -201,21 +189,12 @@ namespace SageFrame.Modules.PasswordRecovery
                             }
                             else
                             {
-                                //ForgetPasswordInfo template = UserManagementController.GetMessageTemplateByMessageTemplateTypeID(SystemSetting.PASSWORD_RECOVERED_SUCESSFUL_INFORMATION, GetPortalID);
-                                //if (template != null)
-                                //{
-                                //    ((Literal)WizardStep2.FindControl("litPasswordChangedSuccessful")).Text = template.Body;
-                                //}
                                 e.Cancel = true;
                                 ShowMessage("", GetSageMessage("PasswordRecovery", "UnknownErrorPleaseTryAgaing"), "", SageMessageType.Alert);
                             }
                         }
                         else
                         {
-                            //ForgetPasswordInfo template = UserManagementController.GetMessageTemplateByMessageTemplateTypeID(SystemSetting.PASSWORD_RECOVERED_SUCESSFUL_INFORMATION, GetPortalID);
-                            //{
-                            //    ((Literal)WizardStep2.FindControl("litPasswordChangedSuccessful")).Text = template.Body;
-                            //}
                             e.Cancel = true;
                             ShowMessage("", GetSageMessage("PasswordRecovery", "UnknownError"), "", SageMessageType.Alert);
                         }
@@ -235,7 +214,7 @@ namespace SageFrame.Modules.PasswordRecovery
 
         protected void CancelButton_Click(object sender, EventArgs e)
         {
-            hdnRecoveryCode.Value = "";
+            hdnRecoveryCode.Value = string.Empty;
             GotoLoginPage();
         }
     }

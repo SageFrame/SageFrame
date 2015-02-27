@@ -87,12 +87,10 @@
 #intabdiv2 h2 {
 	font-size:24px;
 	color:#696868;
-	font-family:Verdana, Geneva, sans-serif;
 }
 #intabdiv2 p {
 	font-size:12px;
 	color:#696868;
-	font-family:Verdana, Geneva, sans-serif;
 	line-height:20px;
 }
 #intabdiv3 {
@@ -101,12 +99,10 @@
 #intabdiv3 h2 {
 	font-size:24px;
 	color:#fff;
-	font-family:Verdana, Geneva, sans-serif;
-}
+	}
 #intabdiv3 p {
 	font-size:12px;
 	color:#fff;
-	font-family:Verdana, Geneva, sans-serif;
 	line-height:20px;
 }
 span.cssClassMessage {
@@ -115,7 +111,7 @@ span.cssClassMessage {
 select.cssClassListMenu {
 	background-color: #FFFFFF;
 	border: 1px solid #97CEE3;
-	font: 11px/20px Arial, Helvetica, sans-serif;
+	font: 11px/20px Tahoma, Geneva, sans-serif;
 	height: 20px;
 	padding: 0 4px;
 	width: 161px;
@@ -136,7 +132,7 @@ span.closePopUp {
 }
 .cssClassFileManagerPopUP h2 {
 	background-color:#f7f4f0;
-	font:bold 18px/24px Arial, Helvetica, sans-serif;
+	font:bold 18px/24px Tahoma, Geneva, sans-serif;
 	color:#716f69;
 	padding:0 0 0 5px;
 }
@@ -157,12 +153,12 @@ span.closePopUp {
 }
 .cssClassClientFileManager .cssClassFileManagerPopUP h2 {
 	background-color:#f2ebe3;
-	font:bold 18px/24px Arial, Helvetica, sans-serif;
+	font:bold 18px/24px Tahoma, Geneva, sans-serif;
 	color:#716f69;
 	padding:0 0 0 5px;
 }
 .cssClassClientFileManager .cssClassFileManagerPopUP span.cssClassLabel {
-	font:bold 11px/30px Arial, Helvetica, sans-serif;
+	font:bold 11px/30px Tahoma, Geneva, sans-serif;
 	color:#8c7431;
 	text-shadow:1px 1px 0 #fff;
 }
@@ -170,7 +166,7 @@ span.closePopUp {
 	width:150px;
 	border:1px solid #e4d8b9;
 	background-color:#fff;
-	font:normal 11px/20px Arial, Helvetica, sans-serif;
+	font:normal 11px/20px Tahoma, Geneva, sans-serif;
 	height:20px;
 	padding:0 4px;
 }
@@ -181,7 +177,7 @@ span.closePopUp {
 	-khtml-border-radius: 5px;
 	border:none;
 	padding:3px !important;
-	font:bold 11px Arial, Helvetica, sans-serif;
+	font:bold 11px Tahoma, Geneva, sans-serif;
 	color:#fff;
 	cursor:pointer;
 	float:none;
@@ -191,7 +187,7 @@ span.closePopUp {
 	background-color:#c5a95d;
 }
 .cssClassFileManagerPopUP span.cssClassLabel {
-	font:bold 11px/30px Arial, Helvetica, sans-serif;
+	font:bold 11px/30px Tahoma, Geneva, sans-serif;
 	color:#8c7431;
 	text-shadow:1px 1px 0 #fff;
 }
@@ -199,7 +195,7 @@ span.closePopUp {
 	width:150px;
 	border:1px solid #e4d8b9;
 	background-color:#fff;
-	font:normal 11px/20px Arial, Helvetica, sans-serif;
+	font:normal 11px/20px Tahoma, Geneva, sans-serif;
 	height:20px;
 	padding:0 4px;
 }
@@ -210,7 +206,7 @@ span.closePopUp {
 	-khtml-border-radius: 5px;
 	border:none;
 	padding:3px !important;
-	font:bold 11px Arial, Helvetica, sans-serif;
+	font:bold 11px Tahoma, Geneva, sans-serif;
 	color:#fff;
 	cursor:pointer;
 	float:none;
@@ -222,7 +218,7 @@ span.closePopUp {
 .cssClassClientFileManager select.cssClassListMenu {
 	background-color: #FFFFFF;
 	border: 1px solid #E4D8B9;
-	font: 11px/20px Arial, Helvetica, sans-serif;
+	font: 11px/20px Tahoma, Geneva, sans-serif;
 	height: 20px;
 	padding: 0 4px;
 	width: 161px;
@@ -230,12 +226,12 @@ span.closePopUp {
 /*--------------------------------------ADMIN POPUP FILE MANAGER------------------------------------*/
 .cssClassAdminFileManager .cssClassFileManagerPopUP h2 {
 	background-color:#e2eef2;
-	font:bold 18px/24px Arial, Helvetica, sans-serif;
+	font:bold 18px/24px Tahoma, Geneva, sans-serif;
 	color:#716f69;
 	padding:0 0 0 5px;
 }
 .cssClassAdminFileManager .cssClassFileManagerPopUP span.cssClassLabel {
-	font:bold 11px/30px Arial, Helvetica, sans-serif;
+	font:bold 11px/30px Tahoma, Geneva, sans-serif;
 	color:#666;
 	text-shadow:1px 1px 0 #fff;
 }
@@ -243,7 +239,7 @@ span.closePopUp {
 	width:150px;
 	border:1px solid #97cee3;
 	background-color:#fff;
-	font:normal 11px/20px Arial, Helvetica, sans-serif;
+	font:normal 11px/20px Tahoma, Geneva, sans-serif;
 	height:20px;
 	padding:0 4px;
 }
@@ -254,7 +250,7 @@ span.closePopUp {
 	-khtml-border-radius: 5px;
 	border:none;
 	padding:3px !important;
-	font:normal 11px Arial, Helvetica, sans-serif;
+	font:normal 11px Tahoma, Geneva, sans-serif;
 	color:#fff;
 	cursor:pointer;
 	float:none;
@@ -303,7 +299,7 @@ width:100%;
 	border-radius: 3px 3px 3px 3px;
 	color: #FFFFFF;
 	cursor: pointer;
-	font: 12px Arial, Helvetica, sans-serif;
+	font: 12px Tahoma, Geneva, sans-serif;
 	padding: 2px 8px !important;
 	text-align: center;
 }

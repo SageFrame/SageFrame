@@ -9,8 +9,7 @@
 	margin:0 3px;
 }
 #divPreview ul.defaultButtonClass li span {
-	float:left;
-	padding:0 8px;
+	float:left; white-space: nowrap;
 }
 .spanPreview {
 	font-weight:bold;
@@ -28,25 +27,20 @@
 .cssClassFlagButtonWrapper {
 	padding:2px;
 }
+.cssClassFlagButtonWrapper select.sfListmenu { width: auto !important; }
 .FlagButtonWrapper li {
 	padding:3px;
 	overflow:hidden;
 }
-.FlagButtonWrapper li span {
-	float:left;
-}
-.FlagButtonWrapper li img {
-	float:left;
-	vertical-align:baseline;
-}
 .defaultButtonClass li {
 }
-.defaultButtonClass li.cssClassFlagButtonHor {
-	float:left;
+.defaultButtonClass li.cssClassFlagButtonHor, div.FlagButtonWrapper li {
+	float:right; display: inline !important; position: static !important; left: 0 !important; top: 0 !important;
 }
 #divPreview .defaultButtonClass li {
 	width:auto;
 	float:left;
+	margin-right: 10px;
 }
 .cssClassListItemStyleHor {
 	float:left;
@@ -76,7 +70,6 @@
 .cssClassFlagButtonHor {
 }
 .cssClassFlagButtonHor span {
-	font:11px Arial, Helvetica, sans-serif;
 	padding:0 5px;
 }
 li.cssClassFlagButtonVer {
@@ -90,7 +83,7 @@ li.cssClassFlagButtonVer {
 }
 .cssClassFlagButtonVer span {
 	float:left;
-	font:11px/16px Arial, Helvetica, sans-serif;
+	font:11px/16px Tahoma, Geneva, sans-serif;
 	padding:0 5px;
 }
 .cssClassFlagButton {
@@ -131,7 +124,7 @@ li.cssClassFlagButtonVer {
 }
 .cssClassDropDownSubSetting span {
 	float: left;
-	font: 11px/13px Arial, Helvetica, sans-serif;
+	font: 11px/13px Tahoma, Geneva, sans-serif;
 	margin: 0;
 	padding: 0 10px 0 5px;
 }
@@ -147,11 +140,12 @@ li.cssClassFlagButtonVer {
 }
 .tooltip {
 	display:none;
-	background-color: #FFF5E1;
+	background-color: #FFF;
 	border: 1px solid #FFFFFF;
 	font-size:12px;
 	min-width:140px;
 	padding-top:3px;
+	padding-bottom:3px;
 	padding-left:5px;
 	padding-right:5px;
 	-webkit-border-radius: 5px;
@@ -172,7 +166,7 @@ li.cssClassFlagButtonVer {
 }
 .cssClassLocalizerSwitchSetting .cssClassRadioBtnWrapper span {
 	float:left;
-	font: 11px/13px Arial, Helvetica, sans-serif;
+	font: 11px/13px Tahoma, Geneva, sans-serif;
 	padding:0 10px 0 5px;
 }
 .cssClassLocalizerSwitchSetting .cssClassCheckBoxWrapper {
@@ -186,7 +180,7 @@ li.cssClassFlagButtonVer {
 }
 .cssClassLocalizerSwitchSetting .cssClassCheckBoxWrapper span {
 	float:left;
-	font: 11px/14px Arial, Helvetica, sans-serif;
+	font: 11px/14px Tahoma, Geneva, sans-serif;
 	padding:0 10px;
 }
 .cssClassLocalizerSwitchSetting .cssClassFlagAlignment {
@@ -200,7 +194,7 @@ li.cssClassFlagButtonVer {
 }
 .cssClassLocalizerSwitchSetting .cssClassFlagAlignment span {
 	float:left;
-	font: 11px/14px Arial, Helvetica, sans-serif;
+	font: 11px/14px Tahoma, Geneva, sans-serif;
 	padding:0 10px;
 	color:#000;
 }
@@ -215,7 +209,7 @@ li.cssClassFlagButtonVer {
 }
 .cssClassLocalizerSwitchSetting .cssClassShowCarousel span {
 	float:left;
-	font: 11px/14px Arial, Helvetica, sans-serif;
+	font: 11px/14px Tahoma, Geneva, sans-serif;
 	padding:0 10px;
 }
 div.cssClassCarousel {
@@ -286,7 +280,8 @@ li.cssClassLanguageFlag {
 }
 li.cssClassLanguageName {
 	float:left;
-	width:220px;
+	width:auto; margin-right: 20px;
+	position: relative; left: 0; top: 0; 
 }
 li.cssClassLanguageFlagVer {
 	width:18px;
@@ -296,4 +291,9 @@ div.FlagButtonWrapper li {
 }
 div.FlagButtonWrapper li:hover {
 	background-color:#fff;
+}
+.sfLanguageContainer span.sfFormlabel
+{
+    text-align:right;
+    display:block;
 }

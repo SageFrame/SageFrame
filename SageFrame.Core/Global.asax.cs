@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,160 +24,313 @@ using System.Web.UI;
 using System.IO.Compression;
 using System.IO;
 using SageFrame.Common;
+using SageFrame.Scheduler;
+using System.Web.Mvc;
 
-namespace SageFrame
+#endregion
+
+namespace SageFrame.Core
 {
-    public class Global : System.Web.HttpApplication
+    public class Global : Globals
     {
+        #region "Public Variables"
+
         public string ANONYMOUS_ROLEID;
+
+        #endregion
+
+        #region "Protected Methods"
+
         protected void Application_Start(object sender, EventArgs e)
         {
             try
             {
-                string IsInstalled = Config.GetSetting("IsInstalled").ToString();
-                string InstallationDate = Config.GetSetting("InstallationDate").ToString();
-                if ((IsInstalled != "" && IsInstalled != "false") && InstallationDate != "")
+                ApplicationController objAppController = new ApplicationController();
+                if (objAppController.IsInstalled())
                 {
-                    SageFrameConfig pagebase = new SageFrameConfig();
-                    RolesManagementInfo res = RolesManagementController.GetRoleIDByRoleName(SystemSetting.AnonymousUsername);
+                    SageFrameConfig SageConfig = new SageFrameConfig();
+                    RolesManagementController objController = new RolesManagementController();
+                    RolesManagementInfo res = objController.GetRoleIDByRoleName(SystemSetting.AnonymousUsername);
                     if (res != null)
                     {
                         SystemSetting.ANONYMOUS_ROLEID = res.RoleId.ToString();
                     }
-                    bool IsUseFriendlyUrls = pagebase.GetSettingBollByKey(SageFrameSettingKeys.UseFriendlyUrls);
-                    if (IsUseFriendlyUrls)
+                    SageFrameSettingKeys.PageExtension = SageConfig.GetSettingsByKey(SageFrameSettingKeys.SettingPageExtension);
+                    bool isSchedulerOn = bool.Parse(SageConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.Scheduler));
+                    RegisterRoutes(RouteTable.Routes);
+                    if (isSchedulerOn)
                     {
-                        RegisterRoutes(RouteTable.Routes);
+                        RunSchedule();
                     }
                 }
             }
             catch
             {
             }
-            
+
         }
+
+        protected void Session_Start(object sender, EventArgs e)
+        {
+            try
+            {
+                HttpContext.Current.Session[SessionKeys.ModuleCss] = new List<CssScriptInfo>();
+                HttpContext.Current.Session[SessionKeys.ModuleJs] = new List<CssScriptInfo>();
+                ApplicationController objAppController = new ApplicationController();
+                if (objAppController.IsInstalled())
+                {
+
+                    HttpContext.Current.Session[SessionKeys.SageFrame_PortalID] = null;
+                    Session[SessionKeys.SageFrame_PortalID] = null;
+                    Session[SessionKeys.SageFrame_PortalSEOName] = null;
+                    SessionTracker sessionTracker = new SessionTracker();
+                    if (sessionTracker != null)
+                    {
+                        SessionLog sLog = new SessionLog();
+                        sLog.SessionLogStart(sessionTracker);
+                    }
+                    HttpContext.Current.Session[SessionKeys.Tracker] = sessionTracker;
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        protected void Application_BeginRequest(object sender, EventArgs e)
+        {
+
+
+        }
+
+        protected void Application_AuthenticateRequest(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            Exception ex = Server.GetLastError();
+            if (null != HttpContext.Current)
+            {
+                string url = HttpContext.Current.Request.Url.ToString();
+                ApplicationController objAppController = new ApplicationController();
+                if (objAppController.IsImageRequest(url))
+                {
+                    ErrorHandler erHandler = new ErrorHandler();
+                    erHandler.LogCommonException(ex);
+                }
+            }
+        }
+
+        protected void Session_End(object sender, EventArgs e)
+        {
+            try
+            {
+                SessionTracker sessionTracker = (SessionTracker)Session[SessionKeys.Tracker];
+                FormsAuthentication.SignOut();
+                if ((sessionTracker == null))
+                {
+                    return;
+                }
+                else
+                {
+                    SessionLog sLog = new SessionLog();
+                    sLog.SessionLogEnd(sessionTracker);
+                }
+
+            }
+            catch
+            {
+            }
+            if (HttpContext.Current != null)
+            {
+                if (null != HttpContext.Current.Session)
+                    HttpContext.Current.Session.Abandon();
+            }
+
+        }
+
+        protected void Application_End(object sender, EventArgs e)
+        {
+
+        }
+
+        #endregion
+
+        #region "Private Methods"
+
         private static void RegisterRoutes(RouteCollection routes)
         {
-            routes.Add(new Route("", new StopRoutingHandler()));
-            routes.Add(new Route("{resource}.axd/{*pathInfo}", new StopRoutingHandler()));
-            routes.RouteExistingFiles = false;
-            routes.Add(new Route("{Template}/{TemplateName}/images/{imagefolder}/{filename}.jpg", new StopRoutingHandler()));
-            routes.Add(new Route("{Template}/{TemplateName}/images/{imagefolder}/{filename}.png", new StopRoutingHandler()));
-            routes.Add(new Route("{Template}/{TemplateName}/images/{imagefolder}/{filename}.gif", new StopRoutingHandler()));
-            routes.Add(new Route("{Template}/{TemplateName}/images/{imagefolder}/{filename}.bmp", new StopRoutingHandler()));
-            routes.Add(new Route("{Template}/{TemplateName}/images/{filename}.png", new StopRoutingHandler()));
-            routes.Add(new Route("{Template}/{TemplateName}/images/{filename}.jpg", new StopRoutingHandler()));
-            routes.Add(new Route("{Template}/{TemplateName}/images/{filename}.gif", new StopRoutingHandler()));
-            routes.Add(new Route("{Template}/{TemplateName}/images/{filename}.bmp", new StopRoutingHandler()));
+            #region "Getting SageFrame Page Extension"
 
+            string ext = SageFrameSettingKeys.PageExtension;
+            if (string.IsNullOrEmpty(ext))
+            {
+                ext = ".htm";
+            }
+
+            #endregion
+
+            #region "SageFrame Ignore Routing"
+
+            routes.RouteExistingFiles = false;
+            routes.Add(new Route("{resource}.axd/{*pathInfo}", new StopRoutingHandler()));
+            routes.IgnoreRoute("{*alljs}", new { alljs = @".*\.(js|asmx|jpg|png|jpeg|css)(/.*)?" });
+            routes.IgnoreRoute("install", new { installwizard = "Install/InstallWizard.aspx" });
+            routes.Add(new Route("Modules/{*pathInfo}", new StopRoutingHandler()));
+
+            #endregion
+
+            #region "SageFrame Core Routing"
+
+            routes.Add("sfPortalfa", new System.Web.Routing.Route("Admin/Admin/Portal.aspx" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfrouting2", new System.Web.Routing.Route("sf/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Admin.aspx")));
+            routes.Add("sfrouting3", new System.Web.Routing.Route("sf/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Admin.aspx")));
+            routes.Add("sfrouting4", new System.Web.Routing.Route("sf/sf/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Admin.aspx")));
+            routes.Add("sfrouting5", new System.Web.Routing.Route("portal/{PortalSEOName}/sf/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Admin.aspx")));
+            routes.Add("sfrouting6", new System.Web.Routing.Route("portal/{PortalSEOName}/sf/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Admin.aspx")));
+            routes.Add("SageFrameRoutingCategory", new Route("category/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("SageFrameRoutingProductDetail", new Route("item/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("SageFrameRoutingTagsAll", new Route("tags/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("SageFrameRoutingBrand", new Route("brand/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("SageFrameRoutingService", new Route("service/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("SageFrameRoutingTagsItems", new Route("tagsitems/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("SageFrameRoutingSearchTerm", new Route("search/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("SageFrameRoutingShoppingOption", new Route("option/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("SageFrameRoutingCouponsAll", new Route("coupons/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
             routes.Add("SageFrameRouting0", new Route("portal/{PortalSEOName}/category/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
             routes.Add("SageFrameRouting01", new Route("portal/{PortalSEOName}/item/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
             routes.Add("SageFrameRouting02", new Route("portal/{PortalSEOName}/tags/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
             routes.Add("SageFrameRouting03", new Route("portal/{PortalSEOName}/tagsitems/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
             routes.Add("SageFrameRouting04", new Route("portal/{PortalSEOName}/search/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
-            routes.Add("SageFrameRouting05", new Route("portal/{PortalSEOName}/option/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));            
+            routes.Add("SageFrameRouting05", new Route("portal/{PortalSEOName}/option/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
 
-            routes.Add("SageFrameRouting12", new System.Web.Routing.Route("sf/{*PagePath}", new SageFrameRouteHandler("~/Sagin/Admin.aspx")));
-            routes.Add("SageFrameRouting13", new System.Web.Routing.Route("portal/{PortalSEOName}/sf/{*PagePath}", new SageFrameRouteHandler("~/Sagin/Admin.aspx")));
-            
-            routes.Add("SageFrameRouting1", new Route("portal/{PortalSEOName}/{UserModuleID}/Sagin/{ControlType}/{*PagePath}", new SageFrameRouteHandler("~/Sagin/ManagePage.aspx")));
-            routes.Add("SageFrameRouting2", new Route("{UserModuleID}/Sagin/{ControlType}/{*PagePath}", new SageFrameRouteHandler("~/Sagin/ManagePage.aspx")));
-            routes.Add("SageFrameRouting3", new System.Web.Routing.Route("portal/{PortalSEOName}/admin/{*PagePath}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
-            routes.Add("SageFrameRouting4", new System.Web.Routing.Route("portal/{PortalSEOName}/Super-User/{*PagePath}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
-            routes.Add("SageFrameRouting10", new System.Web.Routing.Route("admin/{*PagePath}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
-            routes.Add("SageFrameRouting11", new System.Web.Routing.Route("Admin.aspx", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
-            routes.Add("SageFrameRouting5", new System.Web.Routing.Route("Super-User.aspx", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
-            routes.Add("SageFrameRouting6", new System.Web.Routing.Route("Super-User/{*PagePath}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
-            routes.Add("SageFrameRouting7", new System.Web.Routing.Route("portal/{PortalSEOName}/{*PagePath}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
-            
+            #endregion
 
-            //routes.Add("SageFrameRouting8", new System.Web.Routing.Route("/Admin.aspx", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
-            //routes.Add("SageFrameRouting9", new System.Web.Routing.Route("/Super-User.aspx", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
-            routes.Add("SageFrameRoutingCategory", new Route("category/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
-            
-            routes.Add("SageFrameRoutingProductDetail", new Route("item/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
-            
-            routes.Add("SageFrameRoutingTagsAll", new Route("tags/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
-            
-            routes.Add("SageFrameRoutingTagsItems", new Route("tagsitems/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
-            
-            routes.Add("SageFrameRoutingSearchTerm", new Route("search/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            #region "AspxCommerce Routing"
 
-            routes.Add("SageFrameRoutingShoppingOption", new Route("option/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("sfAspx1", new System.Web.Routing.Route("Admin/AspxCommerce/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfAspx2", new System.Web.Routing.Route("admin/AspxCommerce/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfAspx3", new System.Web.Routing.Route("Admin/Admin/AspxCommerce/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfAspx4", new System.Web.Routing.Route("admin/admin/AspxCommerce/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfAspx5", new System.Web.Routing.Route("Admin/AspxCommerce/{parentname}/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfAspx6", new System.Web.Routing.Route("admin/AspxCommerce/{parentname}/{pagepath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfAspx7", new System.Web.Routing.Route("Admin/AspxCommerce/{parentname}/{subparent}/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfAspx8", new System.Web.Routing.Route("admin/AspxCommerce/{parentname}/{subparent}/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfAspx9", new System.Web.Routing.Route("Admin/AspxCommerce/{parentname}/{subparent}/{subsubparent}/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfAspx10", new System.Web.Routing.Route("admin/AspxCommerce/{parentname}/{subparent}/{subsubparent}/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
 
-            routes.Add("SageFrameRoutingCouponsAll", new Route("coupons/{*uniqueWord}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
-            
-            routes.Add("SageFrameRouting9", new Route("{*PagePath}",new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            #endregion
 
-            
+            #region "Routes To ManagePage"
+
+            //  routes to managepage
+            routes.Add("SageFrameRouting1", new Route("portal/{PortalSEOName}/{UserModuleID}/Sagin/{ControlType}/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/ManagePage.aspx")));
+            routes.Add("SageFrameRouting2", new Route("{UserModuleID}/Sagin/{ControlType}/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/ManagePage.aspx")));
+            routes.Add("controlrouting1", new Route("sagin/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/HandleModuleControls.aspx")));
+            routes.Add("controlrouting2", new Route("sagin/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/HandleModuleControls.aspx")));
+            routes.Add("controlrouting3", new Route("sagin/{PagePath}.aspx" + "/{*Param}", new SageFrameRouteHandler("~/Sagin/HandleModuleControls.aspx")));
+
+            #endregion
+
+            #region "Portal Routing"
+
+            //Portal routing
+            routes.Add("sfPortal1", new System.Web.Routing.Route("portal/{PortalSEOName}/Admin/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal2", new System.Web.Routing.Route("portal/{PortalSEOName}/Admin/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal3", new System.Web.Routing.Route("portal/{PortalSEOName}/Admin/Admin/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal4", new System.Web.Routing.Route("portal/{PortalSEOName}/Admin/Admin/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal5", new System.Web.Routing.Route("portal/{PortalSEOName}/Super-User/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal6", new System.Web.Routing.Route("portal/{PortalSEOName}/Super-User/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal7", new System.Web.Routing.Route("Admin/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal8", new System.Web.Routing.Route("Admin/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal9", new System.Web.Routing.Route("Admin/Admin/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal10", new System.Web.Routing.Route("admin/admin/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal11", new System.Web.Routing.Route("portal/{PortalSEOName}/admin/admin/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal12", new System.Web.Routing.Route("portal/{PortalSEOName}/admin/admin/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal13", new System.Web.Routing.Route("portal/{PortalSEOName}/admin/Super-User/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal14", new System.Web.Routing.Route("portal/{PortalSEOName}/admin/Super-User/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal15", new System.Web.Routing.Route("admin/super-user/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal16", new System.Web.Routing.Route("admin/super-user/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal17", new System.Web.Routing.Route("Admin" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal18", new System.Web.Routing.Route("Admin" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal19", new System.Web.Routing.Route("Super-User" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal20", new System.Web.Routing.Route("Super-User" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal21", new System.Web.Routing.Route("Super-User/{PagePath}" + ext, new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal22", new System.Web.Routing.Route("Super-User/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/Sagin/Default.aspx")));
+            routes.Add("sfPortal23", new System.Web.Routing.Route("portal/{PortalSEOName}/{PagePath}" + ext, new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("sfPortal24", new System.Web.Routing.Route("portal/{PortalSEOName}/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+
+            #endregion
+
+            #region "Page Routing"
+
+            //page routing
+            routes.Add("sage", new Route("Default.aspx", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("sage1", new Route("{PagePath}" + ext, new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("sage2", new Route("{parentname}/{PagePath}" + ext, new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("sage3", new Route("{parentname}/{subparent}/{PagePath}" + ext, new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("sage4", new Route("{parentname}/{subparent}/{modulename}/{PagePath}" + ext, new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("sage5", new Route("{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("sage6", new Route("{parentname}/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("sage7", new Route("{parentname}/{subparent}/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("sage8", new Route("{parentname}/{subparent}/{modulename}/{PagePath}" + ext + "/{*Param}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+            routes.Add("allroute", new Route("{*PagePath}", new SageFrameRouteHandler("~/" + CommonHelper.DefaultPage)));
+
+            #endregion
         }
-        protected void Session_Start(object sender, EventArgs e)
+
+        #endregion
+
+        #region "Public Methods"
+
+        public static void RunSchedule()
         {
             try
             {
-
-                HttpContext.Current.Session["ModuleCss"] = new List<CssScriptInfo>();
-                HttpContext.Current.Session["ModuleJs"] = new List<CssScriptInfo>();
-
-                string IsInstalled = Config.GetSetting("IsInstalled").ToString();
-                string InstallationDate = Config.GetSetting("InstallationDate").ToString();
-                if ((IsInstalled != "" && IsInstalled != "false") && InstallationDate != "")
-                {
-                    HttpContext.Current.Cache.Remove("SageSetting");
-                    HttpContext.Current.Session["SageFrame.PortalID"] = null;
-                    SessionTracker sessionTracker = new SessionTracker();
-                    if (sessionTracker != null)
-                    {
-                        SageFrame.Web.SessionLog sLog = new SageFrame.Web.SessionLog();
-                        sLog.SessionLogStart(sessionTracker);
-                    }
-                    HttpContext.Current.Session["Tracker"] = sessionTracker;
-                }
+                Scheduler.Scheduler scheduler = new Scheduler.Scheduler(1);
+                Scheduler.Scheduler.KeepRunning = true;
+                Scheduler.Scheduler.KeepThreadAlive = true;
+                System.Threading.Thread RequestScheduleThread = null;
+                RequestScheduleThread = new System.Threading.Thread(Scheduler.Scheduler.Start);
+                RequestScheduleThread.IsBackground = true;
+                RequestScheduleThread.Start();
             }
             catch
             {
+
             }
         }
 
-       
-
-        
-        protected void Application_BeginRequest(object sender, EventArgs e)
-        {
-
-           
-        }
         public void Application_PreRequestHandlerExecute(object sender, EventArgs e)
         {
             try
             {
-
-                
-                string IsInstalled = Config.GetSetting("IsInstalled").ToString();
-                string InstallationDate = Config.GetSetting("InstallationDate").ToString();
-                if ((IsInstalled != "" && IsInstalled != "false") && InstallationDate != "")
+                ApplicationController objAppController = new ApplicationController();
+                if (objAppController.IsInstalled())
                 {
                     if ((Context.Session != null))
                     {
-                        SessionTracker tracker = (SessionTracker)Session["Tracker"];
+                        SessionTracker tracker = (SessionTracker)Session[SessionKeys.Tracker];
                         if ((tracker != null))
                         {
                             tracker.AddPage(Request.Url.ToString());
                         }
                     }
                 }
-                //else
-                //{
-                //    string path = HttpContext.Current.Server.MapPath("~/");
-                //    HttpContext.Current.Response.Redirect("./Install/InstallWizard.aspx");
-                //}
             }
             catch
             {
             }
         }
 
-        protected void Application_AuthenticateRequest(object sender, EventArgs e)
+        #endregion
+
+        #region "Obsolete Methods"
+
+        [Obsolete("Not used after SageFrame2.0")]
+        private void CompressResponseIfAllowed(object sender, EventArgs e)
         {
             try
             {
@@ -230,7 +371,6 @@ namespace SageFrame
 
                         }
                     }
-
                     // Allow proxy servers to cache encoded and unencoded versions separately
                     Response.AppendHeader("Vary", "Content-Encoding");
                 }
@@ -272,12 +412,14 @@ namespace SageFrame
             }
         }
 
+        [Obsolete("Not used after SageFrame2.0")]
         public bool IsExtensionisAllowedToCompress(HttpRequest SageRequest)
         {
             string RequestRawURL = SageRequest.RawUrl;
             return (CommonHelper.Contains(SystemSetting.INCOMPRESSIBLE_EXTENSIONS, RequestRawURL));
         }
 
+        [Obsolete("Not used after SageFrame2.0")]
         public bool IsCompressionAllowed()
         {
             //Browser supported encoding format
@@ -290,56 +432,8 @@ namespace SageFrame
             }
 
             return false;
-
         }
 
-        protected void Application_Error(object sender, EventArgs e)
-        {
-            Exception ex = Server.GetLastError();
-            if (null != HttpContext.Current)
-            {
-                string url = HttpContext.Current.Request.Url.ToString();
-                if (!url.EndsWith("png") && !url.EndsWith("jpg") && !url.EndsWith("gif") && !url.EndsWith("jpeg") && !url.EndsWith("bmp") )
-                {
-                    ErrorHandler erHandler = new ErrorHandler();
-                    erHandler.LogCommonException(ex);
-                }
-            }
-        }
-
-        protected void Session_End(object sender, EventArgs e)
-        {
-            try
-            {
-                 SessionTracker sessionTracker = (SessionTracker)Session["Tracker"];
-                 FormsAuthentication.SignOut();
-                if ((sessionTracker == null))
-                {
-                    return;
-                }
-                else
-                {
-                    SageFrame.Web.SessionLog sLog = new SageFrame.Web.SessionLog();
-                    sLog.SessionLogEnd(sessionTracker);
-                }
-
-            }
-            catch
-            {
-            }
-            if (HttpContext.Current != null)
-            {
-                if (null != HttpContext.Current.Session)
-                    HttpContext.Current.Session.Abandon();
-            }
-
-        }
-
-        protected void Application_End(object sender, EventArgs e)
-        {
-
-        }
-
-      
+        #endregion
     }
 }

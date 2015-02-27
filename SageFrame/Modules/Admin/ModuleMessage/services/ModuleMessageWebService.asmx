@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using SageFrame.ModuleMessage;
 using System.Collections.Generic;
 using System.Globalization;
+using SageFrame.Services;
 
 /// <summary>
 /// Summary description for ModuleMessageWebService
@@ -16,45 +17,40 @@ using System.Globalization;
 [WebService(Namespace = "http://tempuri.org/")]
 [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
- [System.Web.Script.Services.ScriptService]
-public class ModuleMessageWebService : System.Web.Services.WebService
+[System.Web.Script.Services.ScriptService]
+public class ModuleMessageWebService : AuthenticateService
 {
 
     public ModuleMessageWebService()
     {
-
         //Uncomment the following line if using designed components 
         //InitializeComponent(); 
     }
 
     [WebMethod]
-    public string HelloWorld()
-    {
-        return "Hello World";
-    }
-
-    [WebMethod]
     public List<ModuleMessageInfo> GetModules()
     {
-       
         return (ModuleMessageController.GetAllModules());
     }
-    
+
     [WebMethod]
     public List<KeyValue> GetCultures()
     {
         List<KeyValue> lstAllCultures = new List<KeyValue>();
         foreach (CultureInfo ci in CultureInfo.GetCultures(CultureTypes.SpecificCultures))
-        {           
-            lstAllCultures.Add(new KeyValue(ci.Name,ci.DisplayName));
+        {
+            lstAllCultures.Add(new KeyValue(ci.Name, ci.DisplayName));
         }
         return lstAllCultures;
     }
 
     [WebMethod]
-    public void AddMessage(ModuleMessageInfo objMessage)
+    public void AddMessage(ModuleMessageInfo objMessage, int PortalID, int userModuleId, string UserName, string secureToken)
     {
-        ModuleMessageController.AddModuleMessage(objMessage);
+        if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+        {
+            ModuleMessageController.AddModuleMessage(objMessage);
+        }
     }
 
     [WebMethod]
@@ -63,9 +59,12 @@ public class ModuleMessageWebService : System.Web.Services.WebService
         return (ModuleMessageController.GetModuleMessage(ModuleID, Culture));
     }
     [WebMethod]
-    public void UpdateMessage(int ModuleID, bool IsActive)
+    public void UpdateMessage(int ModuleID, bool IsActive, int PortalID, int userModuleId, string UserName, string secureToken)
     {
-        ModuleMessageController.UpdateMessageStatus(ModuleID, IsActive);
+        if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+        {
+            ModuleMessageController.UpdateMessageStatus(ModuleID, IsActive);
+        }
     }
 
 }

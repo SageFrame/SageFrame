@@ -1,24 +1,5 @@
 ﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
 using System;
 using System.Collections;
@@ -45,20 +26,17 @@ using Microsoft.SqlServer.Management.Common;
 using System.Collections.Specialized;
 using Microsoft.SqlServer.Management.Sdk.Sfc;
 using System.ComponentModel;
-using System.Web.Compilation.XmlSerializer;
 using SageFrame.Utilities;
-public partial class Modules_Upgrade_SageframeUpgrade :  BaseAdministrationUserControl
+public partial class Modules_Upgrade_SageframeUpgrade : BaseAdministrationUserControl
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
         lblErrorMsg.Text = "";
     }
 
     public void WriteToLog(string txt)
     {
         string path = HostingEnvironment.ApplicationPhysicalPath + "log.txt";
-
         object obj = new object();
         lock (obj)
         {
@@ -66,32 +44,27 @@ public partial class Modules_Upgrade_SageframeUpgrade :  BaseAdministrationUserC
             {
                 sw.WriteLine(txt);
                 sw.Dispose();
-
             }
         }
     }
 
     protected void btnUpload_Click(object sender, EventArgs e)
     {
-         
         if (this.fuUpgrade.HasFile && this.fuUpgrade.FileName.ToLower().EndsWith(".zip"))
         {
             string fileName = this.fuUpgrade.FileName;
 
             string tempFolder = HostingEnvironment.ApplicationPhysicalPath + "Upload\\UploadedFiles";
             string savePath = tempFolder + "\\" + fileName;
-            
             if (!Directory.Exists(tempFolder))
-                    Directory.CreateDirectory(tempFolder);
-            
+                Directory.CreateDirectory(tempFolder);
             this.fuUpgrade.SaveAs(savePath);
-
             if (!IsValidVersion(savePath))
             {
                 this.lblErrorMsg.Text = "Your site is already Upgraded with this Version!! Try Another version";
             }
             else
-            {                
+            {
                 Server.Transfer(ResolveUrl("~/Modules/Upgrade/upgrade.aspx?zip=" + fileName));
             }
         }
@@ -103,39 +76,36 @@ public partial class Modules_Upgrade_SageframeUpgrade :  BaseAdministrationUserC
 
     public static bool IsNewVersion(string configFilePath)
     {
-            bool flag=false;
-            XmlDocument doc = new XmlDocument();           
-               
-            doc.Load(configFilePath);
+        bool flag = false;
+        XmlDocument doc = new XmlDocument();
+        doc.Load(configFilePath);
+        XmlNode versionNode = doc.SelectSingleNode("/CONFIG/SAGEFRAME");
+        string installerVersion = versionNode.Attributes["VERSION"].Value;
+        string prevVersion = Config.GetSetting("SageFrameVersion");
 
-            XmlNode versionNode = doc.SelectSingleNode("/CONFIG/SAGEFRAME");
-            string installerVersion = versionNode.Attributes["VERSION"].Value;
-            string prevVersion = Config.GetSetting("SageFrameVersion");
-
-            if (Convert.ToDecimal(installerVersion)>=Convert.ToDecimal(prevVersion))
-            {
-               flag=true;
-            }
-
-          return flag;
+        if (Convert.ToDecimal(installerVersion) >= Convert.ToDecimal(prevVersion))
+        {
+            flag = true;
+        }
+        return flag;
     }
 
     public static bool IsValidVersion(string filePath)
     {
-        bool IsValid=false;
+        bool IsValid = false;
         string outputFolder = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, @"Modules\Upgrade\UploadedFiles");
         string extractPath = string.Empty;
-        bool isConfigFileFound=ZipUtil.UnZipConfigFile(filePath, outputFolder, ref extractPath, "", true,"config.xml");
+        bool isConfigFileFound = ZipUtil.UnZipConfigFile(filePath, outputFolder, ref extractPath, "", true, "config.xml");
 
         if (isConfigFileFound)
         {
             IsValid = IsNewVersion(extractPath + @"\SystemFiles\config.xml");
         }
-      
+
         return IsValid;
     }
-   
-    
+
+
     #region Script Loader
 
     public static void BackupDatabase(String databaseName, String destinationPath, SqlConnection connection)
@@ -149,12 +119,12 @@ public partial class Modules_Upgrade_SageframeUpgrade :  BaseAdministrationUserC
 
         sqlBackup.Database = databaseName;
 
-        BackupDeviceItem deviceItem = new BackupDeviceItem(destinationPath, DeviceType.File);       
+        BackupDeviceItem deviceItem = new BackupDeviceItem(destinationPath, DeviceType.File);
 
         ServerConnection serverConn = new ServerConnection(connection);
         Server sqlServer = new Server(serverConn);
 
-      //Database db = sqlServer.Databases[databaseName];
+        //Database db = sqlServer.Databases[databaseName];
 
         sqlBackup.Initialize = true;
         sqlBackup.Checksum = true;

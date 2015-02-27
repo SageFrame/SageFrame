@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,35 +21,32 @@ using System.Collections;
 using SageFrame.Web.Utilities;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+#endregion
 
 public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserControl
 {
 
-    public string swfFileName = "";
+    public string swfFileName = string.Empty;
     public int UserModuleId;
-    public string modulePath = "";
+    public string modulePath = string.Empty;
     public int BannerId;
-
-
-
+    public int WebUrl = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
         IncludeCss();
         IncludeJS();
         try
         {
+
             modulePath = ResolveUrl(this.AppRelativeTemplateSourceDirectory);
             ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "globalVariables", " var ImagePath='" + ResolveUrl(modulePath) + "';", true);
-        
             if (!IsPostBack)
             {
-                LoadBannerListOnGrid(GetPortalID, Int32.Parse(SageUserModuleID));
+                LoadBannerListOnGrid(GetPortalID, Int32.Parse(SageUserModuleID), GetCurrentCulture());
                 ClearImageForm();
-               
                 LoadSagePage();
             }
-
-            ImageURL();
+          //  ImageURL();
             UserModuleId = Int32.Parse(SageUserModuleID);
         }
         catch (Exception ex)
@@ -72,273 +54,278 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
             ProcessException(ex);
         }
     }
-
-
-    private void ImageURL()
-    {
-
-        imbSave.ImageUrl = GetTemplateImageUrl("btnsave.png", true);
-        imbSaveBanner.ImageUrl = GetAdminImageUrl("add.png", true);
-        imbSaveEditorContent.ImageUrl = GetTemplateImageUrl("btnsave.png", true);
-        _cropCommand.ImageUrl = GetTemplateImageUrl("btnsave.png", true);
-        imbCancelImageEdit.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-        imbCancel.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-        imgCancelHtmlContent.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-
-    }
-
-
+   
     private void IncludeJS()
     {
         IncludeJs("SageBanner", "/Modules/Sage_Banner/js/jquery.Jcrop.js");
+        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "ckEditorUserModuleID", " var ckEditorUserModuleID='" + SageUserModuleID + "';", true);
     }
-
 
     private void IncludeCss()
     {
-        IncludeCss("SageBanner", "/Modules/Sage_banner/css/jquery.Jcrop.css","/Modules/Sage_Banner/css/Module.css");
-
+        IncludeCss("SageBanner", "/Modules/Sage_banner/css/jquery.Jcrop.css", "/Modules/Sage_Banner/css/Module.css");
     }
-
-
-    protected void cvFckDescription_ServerValidate(object source, ServerValidateEventArgs args)
-    {
-        try
-        {
-            if ((txtBannerDescriptionToBeShown.Text == "&nbsp;") || (txtBannerDescriptionToBeShown.Text == "<br />") || (txtBannerDescriptionToBeShown.Text.Length == 0))
-            {
-                cvBannerDesc.ErrorMessage = SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "PleaseEnterSomeContent");
-                args.IsValid = false;
-            }
-            else
-            {
-                args.IsValid = true;
-            }
-        }
-        catch (Exception ex)
-        {
-            ProcessException(ex);
-        }
-    }
-
-
 
     private void LoadSagePage()
     {
-        ddlPagesLoad.DataSource = SageBannerController.GetAllPagesOfSageFrame(GetPortalID); ;
+        SageBannerController obj = new SageBannerController();
+        ddlPagesLoad.DataSource = obj.GetAllPagesOfSageFrame(GetPortalID); ;
         ddlPagesLoad.DataTextField = "PageName";
         ddlPagesLoad.DataValueField = "TabPath";
         ddlPagesLoad.DataBind();
-
     }
-
-
-
-    protected void imbSave_Click(object sender, ImageClickEventArgs e)
+    protected void imbSave_Click(object sender, EventArgs e)
     {
         try
         {
-            BannerId = Convert.ToInt32(ViewState["EditBannerID"]);
-            int ImageID = Convert.ToInt32(Session["EditImageID"]);
-            SaveBannerContent(BannerId, ImageID);
-            LoadBannerImagesOnGrid(BannerId, Int32.Parse(SageUserModuleID), GetPortalID);
+
+             string fName = fuFileUpload.FileName;
+             if (SageFrame.Web.PictureManager.ValidImageExtension(fName))
+             {
+
+                 BannerId = Convert.ToInt32(ViewState["EditBannerID"]);
+                 int ImageID = Convert.ToInt32(Session["EditImageID"]);
+                 if (fuFileUpload.HasFile || ImageID != 0)
+                 {
+                     SaveBannerContent(BannerId, ImageID);
+                     LoadBannerImagesOnGrid(BannerId, Int32.Parse(SageUserModuleID), GetPortalID);
+                     divbannerImageContainer.Attributes.Add("style", "display:block");
+                     divEditBannerImage.Attributes.Add("style", "display:none");
+                     ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "BannerSavedsuccesfully"), "", SageMessageType.Success);
+                     txtWebUrl.Text = string.Empty;
+                     txtBannerDescriptionToBeShown.Text = string.Empty;
+                 }
+                 else
+                 {
+                     rdbReadMorePageType.SelectedValue = "0";
+                     txtWebUrl.Text = string.Empty;
+                     txtBannerDescriptionToBeShown.Text = string.Empty;
+                     ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "NoBannerImage"), "", SageMessageType.Error);
+                 }
+             }
+             else
+             {
+                 ShowMessage("Invalid File Extension", "Invalid File Extension", "The File you want to upload is invalid", SageMessageType.Error);
+             }
         }
         catch (Exception ex)
         {
             ProcessException(ex);
         }
-        divbannerImageContainer.Attributes.Add("style", "display:block");
-        divEditBannerImage.Attributes.Add("style", "display:none");
-        ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "BannerSavedsuccesfully"), "", SageMessageType.Success);
-
     }
 
-    protected void imbCancel_Click(object sender, ImageClickEventArgs e)
+    protected void imbCancel_Click(object sender, EventArgs e)
     {
-        Session.Abandon();
+        Session["EditHTMLContentID"] = null;
+        Session["NavigationImage"] = null;
+        Session["ImageName"] = null;
+        Session["EditImageID"] = null;
+        Session["ActiveTabIndex"] = null;
+        //  Session.Remove("EditImageID");
+        txtBannerDescriptionToBeShown.Text = string.Empty;
+        rdbReadMorePageType.SelectedValue = "0";
         divbannerImageContainer.Attributes.Add("style", "display:block");
         divEditBannerImage.Attributes.Add("style", "display:none");
     }
-
-
     #region CropBanner
 
-    protected void _cropCommand_Click(object sender, ImageClickEventArgs e)
+    protected void _cropCommand_Click(object sender, EventArgs e)
     {
         try
         {
-
             var x = int.Parse(_xField.Value);
-
             var y = int.Parse(_yField.Value);
-
             var width = int.Parse(_widthField.Value);
-
             var height = int.Parse(_heightField.Value);
             string imageName = Convert.ToString(ViewState["ImageToBeEdit"]);
-
             using (var photo =
                   System.Drawing.Image.FromFile(Server.MapPath("~/Modules/Sage_Banner/images/OriginalImage/" + imageName)))
-
             using (var result =
                   new Bitmap(width, height, photo.PixelFormat))
             {
-
                 result.SetResolution(
                         photo.HorizontalResolution,
                         photo.VerticalResolution);
-
-
-
                 using (var g = Graphics.FromImage(result))
                 {
-
                     g.InterpolationMode =
                          InterpolationMode.HighQualityBicubic;
-
                     g.DrawImage(photo,
-
-                         new Rectangle(0, 0, width, height),
-
+                        new Rectangle(0, 0, width, height),
                          new Rectangle(x, y, width, height),
-
                          GraphicsUnit.Pixel);
-
                     photo.Dispose();
+                    result.Save(Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Default/" + imageName));
 
-                    result.Save(Server.MapPath("~/Modules/Sage_Banner/images/CroppedImages/" + imageName));
+                    string soruceFolder = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Default/");
+                    string SourcePath = soruceFolder + imageName;
+                    string thumbMedium = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Medium/");
+                    string thumbSmall = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Small/");
+                    string thumbLarge = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Large/");
 
-
+                    SaveThumbnailImages(SourcePath, 965, thumbLarge, imageName);
+                    SaveThumbnailImages(SourcePath, 768, thumbMedium, imageName);
+                    SaveThumbnailImages(SourcePath, 320, thumbSmall, imageName);
                 }
-
             }
         }
         catch (Exception ex)
         {
             ProcessException(ex);
         }
-        //LoadBannerImagesOnGrid(BannerId, Int32.Parse(SageUserModuleID), GetPortalID);
         divImageEditor.Attributes.Add("style", "display:none");
         pnlBannercontainer.Attributes.Add("style", "display:block");
         ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "ImageEditedSuccesfully"), "", SageMessageType.Success);
-        // pnlBannercontainer.Visible = true;
     }
 
+    public void SaveThumbnailImages(string ImageFilePath, int TargetSize, string TargetLocation, string fileName)
+    {
+        try
+        {
+            if (!Directory.Exists(TargetLocation))
+            {
+                Directory.CreateDirectory(TargetLocation);
+            }
+            string SavePath = string.Empty;
+            SavePath = TargetLocation + fileName;
+            PictureManager.CreateThmnail(ImageFilePath, TargetSize, SavePath);
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
 
     #endregion
-
 
     #region For Image Information
     private void SaveBannerContent(int BannerId, int ImageId)
     {
         try
         {
-            SageBannerInfo obj = new SageBannerInfo();
-
-            if (Session["EditImageID"] != null && Session["EditImageID"].ToString() != string.Empty)
+            string fName = fuFileUpload.FileName;
+            if (SageFrame.Web.PictureManager.ValidImageExtension(fName))
             {
-                obj.ImageID = Int32.Parse(Session["EditImageID"].ToString());
-                if (fuFileUpload.HasFile)
-                {
-                    obj.ImagePath = fuFileUpload.FileName;
-                    obj.NavigationImage = fuFileUpload.FileName;
 
+                bool isEdit = false;
+                SageBannerInfo obj = new SageBannerInfo();
+                if (Session["EditImageID"] != null && Session["EditImageID"].ToString() != string.Empty)
+                {
+                    obj.ImageID = Int32.Parse(Session["EditImageID"].ToString());
+                    if (fuFileUpload.HasFile)
+                    {
+                        obj.ImagePath = fuFileUpload.PostedFile.FileName.Replace(" ", "_");
+                        obj.NavigationImage = fuFileUpload.PostedFile.FileName.Replace(" ", "_");
+                    }
+                    else
+                    {
+                        isEdit = true;
+                        obj.ImagePath = Convert.ToString(Session["ImageName"]);
+                        obj.NavigationImage = Convert.ToString(Session["ImageName"]);
+                    }
                 }
                 else
                 {
-                    obj.ImagePath = Convert.ToString(Session["ImageName"]);
-                    obj.NavigationImage = Convert.ToString(Session["ImageName"]);
+                    obj.ImageID = 0;
+                    obj.ImagePath = fuFileUpload.FileName.Replace(" ", "_");
+                    obj.NavigationImage = fuFileUpload.FileName.Replace(" ", "_");
                 }
-
-            }
-            else
-            {
-                obj.ImageID = 0;
-                obj.ImagePath = fuFileUpload.FileName;
-                obj.NavigationImage = fuFileUpload.FileName;
-            }
-
-            obj.Caption = "";
-
-            if (rdbReadMorePageType.SelectedItem.Text == "Page")
-            {
-
-                obj.ReadMorePage = ddlPagesLoad.SelectedValue.ToString();
-                obj.LinkToImage = string.Empty;
-
-            }
-            if (rdbReadMorePageType.SelectedItem.Text == "WebUrl")
-            {
-               
-                obj.LinkToImage = txtWebUrl.Text;
-                obj.ReadMorePage = string.Empty;
-            }
-            obj.UserModuleID = Int32.Parse(SageUserModuleID);
-            obj.BannerID = BannerId;
-            obj.ImageID = ImageId;
-            obj.ReadButtonText = txtReadButtonText.Text;
-            obj.Description = txtBannerDescriptionToBeShown.Text.Trim();
-            obj.PortalID = GetPortalID;
-
-
-            string swfExt = System.IO.Path.GetExtension(fuFileUpload.PostedFile.FileName);
-            if (swfExt == ".swf")
-            {
-                if (fuFileUpload.FileContent.Length > 0)
+                obj.Caption = string.Empty;
+                if (rdbReadMorePageType.SelectedItem.Text == "Page")
                 {
-                    string Path = GetUplaodImagePhysicalPath();
-                    DirectoryInfo dirUploadImage = new DirectoryInfo(Path);
-                    if (dirUploadImage.Exists == false)
-                    {
-                        dirUploadImage.Create();
-                    }
-                    string fileUrl = Path + fuFileUpload.PostedFile.FileName;
-                    fuFileUpload.PostedFile.SaveAs(fileUrl);
-                    swfFileName = "Modules/Sage_Banner/images/" + fuFileUpload.PostedFile.FileName;
+                    obj.ReadMorePage = ddlPagesLoad.SelectedValue.ToString();
+                    obj.LinkToImage = string.Empty;
                 }
-
-            }
-            else
-            {
-                string target = Server.MapPath("~/Modules/Sage_Banner/images/OriginalImage");
-                string CropImageTarget = Server.MapPath("~/Modules/Sage_banner/images/CroppedImages");
-                string thumbTarget = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail");
-                System.Drawing.Image.GetThumbnailImageAbort thumbnailImageAbortDelegate = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
-                if (fuFileUpload.HasFile)
+                if (rdbReadMorePageType.SelectedItem.Text == "Web Url")
                 {
-                    fuFileUpload.SaveAs(System.IO.Path.Combine(target, fuFileUpload.FileName));
-                    fuFileUpload.SaveAs(System.IO.Path.Combine(CropImageTarget, fuFileUpload.FileName));
-                    using (System.Drawing.Bitmap originalImage = new System.Drawing.Bitmap(fuFileUpload.PostedFile.InputStream))
+                    obj.LinkToImage = txtWebUrl.Text;
+                    obj.ReadMorePage = string.Empty;
+                }
+                obj.UserModuleID = Int32.Parse(SageUserModuleID);
+                obj.BannerID = BannerId;
+                obj.ImageID = ImageId;
+                obj.ReadButtonText = txtReadButtonText.Text;
+                obj.Description = txtBannerDescriptionToBeShown.Text.Trim();
+                obj.PortalID = GetPortalID;
+                obj.CultureCode = GetCurrentCulture();
+                string swfExt = System.IO.Path.GetExtension(fuFileUpload.PostedFile.FileName);
+                if (swfExt == ".swf")
+                {
+                    if (fuFileUpload.FileContent.Length > 0)
                     {
-                        using (System.Drawing.Image thumbnail = originalImage.GetThumbnailImage(80, 80, thumbnailImageAbortDelegate, IntPtr.Zero))
+                        string Path = GetUplaodImagePhysicalPath();
+                        string fileName = fuFileUpload.PostedFile.FileName.Replace(" ", "_");
+                        DirectoryInfo dirUploadImage = new DirectoryInfo(Path);
+                        if (dirUploadImage.Exists == false)
                         {
-                            thumbnail.Save(System.IO.Path.Combine(thumbTarget, fuFileUpload.FileName));
+                            dirUploadImage.Create();
                         }
+                        string fileUrl = Path + fileName;
+                        int i = 1;
+                        while (File.Exists(fileUrl))
+                        {
+
+                            fileName = i + fileName;
+                            fileUrl = Path + i + fileName;
+                            i++;
+                        }
+                        fuFileUpload.PostedFile.SaveAs(fileUrl);
+                        swfFileName = "Modules/Sage_Banner/images/" + fileName;
+                        obj.ImagePath = fileName;
+                        obj.NavigationImage = fileName;
                     }
                 }
-
-
-
-
+                else
+                {
+                    string target = Server.MapPath("~/Modules/Sage_Banner/images/OriginalImage/");
+                    string thumbLarge = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Large/");
+                    string thumbMedium = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Medium/");
+                    string thumbSmall = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Small/");
+                    string defaultImage = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail/Default/");
+                    System.Drawing.Image.GetThumbnailImageAbort thumbnailImageAbortDelegate = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
+                    if (fuFileUpload.HasFile)
+                    {
+                        string fileName = fuFileUpload.PostedFile.FileName.Replace(" ", "_");
+                        int i = 1;
+                        while (File.Exists(target + "/" + fileName))
+                        {
+                            fileName = i + fileName;
+                            i++;
+                        }
+                        fuFileUpload.SaveAs(Path.Combine(target, fileName));
+                        fuFileUpload.SaveAs(Path.Combine(defaultImage, fileName));
+                        string SourcePath = target + fileName;
+                        SaveThumbnailImages(SourcePath, 320, thumbSmall, fileName);
+                        SaveThumbnailImages(SourcePath, 768, thumbMedium, fileName);
+                        SaveThumbnailImages(SourcePath, 965, thumbLarge, fileName);
+                        obj.ImagePath = fileName;
+                        obj.NavigationImage = fileName;
+                    }
+                }
+                SageBannerController objcont = new SageBannerController();
+                objcont.SaveBannerContent(obj);
+                int userModuleID = Int32.Parse(SageUserModuleID);
+                BannerCacheClear();
+                ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "BannerSavedsuccesfully"), "", SageMessageType.Success);
             }
-            SageBannerController objcont = new SageBannerController();
-            objcont.SaveBannerContent(obj);
+            else
+            {
+                ShowMessage("Invalid File Extension", "Invalid File Extension", "The File you want to upload is invalid", SageMessageType.Error);
+            }
         }
         catch (Exception ex)
         {
             throw ex;
         }
-        ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "BannerSavedsuccesfully"), "", SageMessageType.Success);
+        
         Session["ImageName"] = null;
         Session["EditImageID"] = null;
     }
-
 
     string GetUplaodImagePhysicalPath()
     {
         return System.Web.HttpContext.Current.Request.PhysicalApplicationPath + "Modules\\Sage_Banner\\images\\";
     }
-
 
     # endregion
 
@@ -354,30 +341,51 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
     }
     #endregion
 
-
     #region For banner information
 
-
-    protected void imbSaveBanner_Click(object sender, ImageClickEventArgs e)
+    protected void imbSaveBanner_Click(object sender, EventArgs e)
     {
-        SaveBannerInformation();
-
+        List<string> arrBanner = new List<string>();
+        SageBannerController obj = new SageBannerController();
+        List<SageBannerInfo> bannerInfo = obj.LoadBannerListOnGrid(GetPortalID, UserModuleId, GetCurrentCulture());
+        if (bannerInfo != null)
+        {
+            foreach (SageBannerInfo list in bannerInfo)
+            {
+                if (!arrBanner.Contains(list.BannerName))
+                {
+                    arrBanner.Add(list.BannerName.ToLower());
+                }
+            }
+        }
+        if (arrBanner.Contains(txtBannerName.Text.Trim().ToLower()))
+        {
+            ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "DuplicateName"), "", SageMessageType.Error);
+        }
+        else
+        {
+            SaveBannerInformation();
+            BannerCacheClear();
+            UserControl uc1 = (UserControl)this.FindControl("TabContainerManagePages");
+            ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "BannerAddedSucessfully"), "", SageMessageType.Success);
+        }
+        pnlBannercontainer.Attributes.Add("style", "display:none");
+        pnlBannerList.Attributes.Add("style", "display:block");
+        txtBannerName.Text = "";
     }
-
-
     private void SaveBannerInformation()
     {
         try
         {
             SageBannerInfo obj = new SageBannerInfo();
-
-            obj.BannerName = txtBannerName.Text;
+            obj.BannerName = txtBannerName.Text.Trim();
             obj.BannerDescription = txtBannerDescription.Text;
             obj.UserModuleID = Int32.Parse(SageUserModuleID);
             obj.PortalID = GetPortalID;
+            obj.CultureCode = GetCurrentCulture();
             SageBannerController objBcon = new SageBannerController();
             objBcon.SaveBannerInformation(obj);
-            LoadBannerListOnGrid(GetPortalID, Int32.Parse(SageUserModuleID));
+            LoadBannerListOnGrid(GetPortalID, Int32.Parse(SageUserModuleID), GetCurrentCulture());
         }
         catch (Exception ex)
         {
@@ -385,23 +393,27 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         }
 
     }
-
-
     #endregion
-
-
+    protected void imAddHtmlContent_Click(object sender, EventArgs e)
+    {
+        txtBody.Text = string.Empty;
+        divHtmlBannerContainer.Attributes.Add("style", "display:none");
+        divEditWrapper.Attributes.Add("style", "display:block");
+        imgEditNavImage.Attributes.Add("style", "display:none");
+        BannerCacheClear();
+    }
 
     #region Editor Html Content
-
-
-    protected void imbSaveEditorContent_Click(object sender, ImageClickEventArgs e)
+    protected void imbSaveEditorContent_Click(object sender, EventArgs e)
     {
+        bool isNotEmpty = true;
         string target = Server.MapPath("~/Modules/Sage_Banner/images");
         string thumbTarget = Server.MapPath("~/Modules/Sage_Banner/images/ThumbNail");
         System.Drawing.Image.GetThumbnailImageAbort thumbnailImageAbortDelegate = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
         if (fluBannerNavigationImage.HasFile)
         {
-            fluBannerNavigationImage.SaveAs(System.IO.Path.Combine(target, fluBannerNavigationImage.FileName));
+            isNotEmpty = false;
+            fluBannerNavigationImage.SaveAs(System.IO.Path.Combine(target, fluBannerNavigationImage.FileName.Replace(" ", "_")));
             using (System.Drawing.Bitmap originalImage = new System.Drawing.Bitmap(fluBannerNavigationImage.PostedFile.InputStream))
             {
                 using (System.Drawing.Image thumbnail = originalImage.GetThumbnailImage(80, 80, thumbnailImageAbortDelegate, IntPtr.Zero))
@@ -415,52 +427,48 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         string NavImagepath = "";
         if (Session["EditHTMLContentID"] != null && Session["EditHTMLContentID"].ToString() != string.Empty)
         {
+            isNotEmpty = false;
             ImageID = Int32.Parse(Session["EditHTMLContentID"].ToString());
             NavImagepath = Convert.ToString(Session["NavigationImage"]);
         }
         else
         {
             ImageID = 0;
-            NavImagepath = Convert.ToString(fluBannerNavigationImage.FileName);
+            NavImagepath = Convert.ToString(fluBannerNavigationImage.FileName.Replace(" ", "_"));
         }
         try
         {
-
             ArrayList arrColl = null;
             arrColl = IsContentValid(txtBody.Text.ToString());
             if (arrColl.Count > 0 && arrColl[0].ToString().ToLower().Trim() == "true")
             {
-                SQLHandler sq = new SQLHandler();
+                isNotEmpty = false;
                 string HTMLBodyText = arrColl[1].ToString().Trim();
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@NavigationImage", NavImagepath));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Content", HTMLBodyText));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Bannerid", Bannerid));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserModuleId", UserModuleId));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@ImageID", ImageID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", GetPortalID));
-                sq.ExecuteNonQuery("[usp_SageBannerAddHtmlContentToBanner]", ParaMeterCollection);
-
+                SageBannerController objController = new SageBannerController();
+                objController.SaveHTMLContent(NavImagepath, HTMLBodyText, Bannerid, UserModuleId, ImageID, GetPortalID, GetCurrentCulture());
             }
-
-
         }
-
         catch (Exception ex)
         {
             ProcessException(ex);
         }
-        ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "BannerHTMLContentSavedSuccessfully"), "", SageMessageType.Success);
+        if (isNotEmpty)
+        {
+            ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "NoBannerContent"), "", SageMessageType.Error);
+        }
+        else
+        {
 
-        txtBody.Text = string.Empty;
-        Session["EditHTMLContentID"] = null;
-        Session["NavigationImage"] = null;
-       
-        //Session.Clear();
-        LoadHTMLContentOnGrid(Bannerid);
-
+            ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "BannerHTMLContentSavedSuccessfully"), "", SageMessageType.Success);
+            txtBody.Text = string.Empty;
+            Session["EditHTMLContentID"] = null;
+            Session["NavigationImage"] = null;
+            LoadHTMLContentOnGrid(Bannerid);
+            BannerCacheClear();
+            divHtmlBannerContainer.Attributes.Add("style", "display:block");
+            divEditWrapper.Attributes.Add("style", "display:none");
+        }
     }
-
 
     private ArrayList IsContentValid(string str)
     {
@@ -474,7 +482,6 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         return arrColl;
     }
 
-
     public string RemoveUnwantedHTMLTAG(string str)
     {
         str = System.Text.RegularExpressions.Regex.Replace(str, "<br/>$", "");
@@ -485,22 +492,18 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         return str;
     }
 
-
-
     #endregion
-
 
     #region Gridview
 
 
     public void LoadBannerImagesOnGrid(int BannerID, int UserModuleID, int PortalID)
     {
-
-        gdvBannerImages.DataSource = SageBannerController.LoadBannerImagesOnGrid(BannerID, UserModuleID, PortalID);
+        SageBannerController obj = new SageBannerController();
+        gdvBannerImages.DataSource = obj.LoadBannerImagesOnGrid(BannerID, UserModuleID, PortalID, GetCurrentCulture());
         gdvBannerImages.DataBind();
         if (gdvBannerImages.Rows.Count > 0)
         {
-
             if (gdvBannerImages.PageIndex == 0)
             {
                 gdvBannerImages.Rows[0].FindControl("imgListUp").Visible = false;
@@ -510,21 +513,16 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
             {
                 gdvBannerImages.Rows[gdvBannerImages.Rows.Count - 1].FindControl("imgListDown").Visible = false;
             }
-
         }
-
     }
-
 
     protected void gdvBannerImages_PageIndexChanged(object sender, EventArgs e)
     {
 
     }
 
-
     protected void gdvBannerImages_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-
         try
         {
             int ImageId = Int32.Parse(e.CommandArgument.ToString());
@@ -540,39 +538,33 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
                 case "Editimage":
                     divImageEditor.Attributes.Add("style", "display:block");
                     pnlBannercontainer.Attributes.Add("style", "display:none");
-                   // pnlBannercontainer.Attributes.Add("style", "display:none");
-                   //// pnlBannercontainer.Visible = false;
                     EditImageByImageID(ImageId);
                     break;
                 case "SortUp":
                     SageBannerController obj = new SageBannerController();
                     obj.SortImageList(ImageId, true);
                     LoadBannerImagesOnGrid(BannerId, Int32.Parse(SageUserModuleID), GetPortalID);
-                    ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("SageBanner", "TheBannerContentIsShiftedUpSuccessfully"), "", SageMessageType.Success);
+                    ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("Banner", "TheBannerContentIsShiftedUpSuccessfully"), "", SageMessageType.Success);
                     break;
                 case "SortDown":
                     SageBannerController objc = new SageBannerController();
                     objc.SortImageList(ImageId, false);
                     LoadBannerImagesOnGrid(BannerId, Int32.Parse(SageUserModuleID), GetPortalID);
-                    ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("SageBanner", "TheBannerContentIsShiftedDownSuccessfully"), "", SageMessageType.Success);
+                    ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("Banner", "TheBannerContentIsShiftedDownSuccessfully"), "", SageMessageType.Success);
                     break;
-
-
             }
+            BannerCacheClear();
         }
         catch (Exception ex)
         {
             throw (ex);
         }
-
     }
-
 
     protected void gdvBannerImages_RowDataBound(object sender, GridViewRowEventArgs e)
     {
 
     }
-
 
     private void EditImageByImageID(int ImageId)
     {
@@ -580,11 +572,9 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         SageBannerController objcnt = new SageBannerController();
         obj = objcnt.GetImageInformationByID(ImageId);
         _imageEditor.ImageUrl = modulePath + "images/OriginalImage/" + obj.ImagePath;
-        divImageEditor.Attributes.Add("style","display:block");
+        divImageEditor.Attributes.Add("style", "display:block");
         ViewState["ImageToBeEdit"] = obj.ImagePath;
-
     }
-
 
     private void BannerEditByImageID(int ImageId)
     {
@@ -593,29 +583,27 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         SageBannerController objEc = new SageBannerController();
         objEd = objEc.GetImageInformationByID(ImageId);
         txtCaption.Text = objEd.Caption;
-        if (objEd.ReadMorePage != null)
-        {
-            rdbReadMorePageType.SelectedValue = "0";
-            ddlPagesLoad.SelectedItem.Value = objEd.ReadMorePage;
-        }
-        else if (objEd.LinkToImage != null)
+        if (objEd.LinkToImage != null && objEd.LinkToImage != string.Empty)
         {
             rdbReadMorePageType.SelectedValue = "1";
             txtWebUrl.Text = objEd.LinkToImage;
+            WebUrl = 1;
         }
-
+        else if (objEd.ReadMorePage != null)
+        {
+            ddlPagesLoad.SelectedIndex = ddlPagesLoad.Items.IndexOf(ddlPagesLoad.Items.FindByValue(objEd.ReadMorePage));
+            WebUrl = 0;
+        }
         txtReadButtonText.Text = objEd.ReadButtonText;
         Session["ImageName"] = objEd.ImagePath;
-        imgEditBannerImageImage.ImageUrl = modulePath + "images/CroppedImages/" + objEd.ImagePath;
+        imgEditBannerImageImage.ImageUrl = modulePath + "images/Thumbnail/Large/" + objEd.ImagePath;
         txtBannerDescriptionToBeShown.Text = objEd.Description;
         imgEditBannerImageImage.Visible = true;
         divbannerImageContainer.Attributes.Add("style", "display:none");
         divEditBannerImage.Attributes.Add("style", "display:block");
         LoadBannerImagesOnGrid(BannerId, Int32.Parse(SageUserModuleID), GetPortalID);
         Session["EditImageID"] = ImageId;
-
     }
-
 
     private void DeleteBannerContentByID(int ImageId)
     {
@@ -625,15 +613,11 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
             DeleteImageFromFolder(ImageName);
         }
         SageBannerController obDel = new SageBannerController();
-
         obDel.DeleteBannerContentByID(ImageId);
         int BannerId = Convert.ToInt32(ViewState["EditBannerID"]);
         LoadBannerImagesOnGrid(BannerId, Int32.Parse(SageUserModuleID), GetPortalID);
         ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "BannerImageDeletedsuccesfully"), "", SageMessageType.Success);
-
-
     }
-
 
     private string GetFileName(int ImageID)
     {
@@ -641,26 +625,34 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         return OBJC.GetFileName(ImageID);
     }
 
-
     private void DeleteImageFromFolder(string FileName)
     {
         try
         {
-
             string BannerImagePath = Server.MapPath(modulePath + "images/OriginalImage/") + FileName;
-            string ThumbnailBannerImagePath = Server.MapPath(modulePath + "images/ThumbNail/") + FileName;
-            string CroppedImages = Server.MapPath(modulePath + "images/CroppedImages/") + FileName;
+            string largeThumb = Server.MapPath(modulePath + "images/ThumbNail/Large/") + FileName;
+            string mediumThumb = Server.MapPath(modulePath + "images/ThumbNail/Medium/") + FileName;
+            string smallThumb = Server.MapPath(modulePath + "images/ThumbNail/Small/") + FileName;
+            string defaultThumb = Server.MapPath(modulePath + "images/ThumbNail/Default/") + FileName;
             if (File.Exists(BannerImagePath))
             {
                 File.Delete(BannerImagePath);
-            }
-            if (File.Exists(ThumbnailBannerImagePath))
-            {
-                File.Delete(ThumbnailBannerImagePath);
-            }
-            if (File.Exists(CroppedImages))
-            {
-                File.Delete(CroppedImages);
+                if (File.Exists(largeThumb))
+                {
+                    File.Delete(largeThumb);
+                }
+                if (File.Exists(mediumThumb))
+                {
+                    File.Delete(mediumThumb);
+                }
+                if (File.Exists(smallThumb))
+                {
+                    File.Delete(smallThumb);
+                }
+                if (File.Exists(defaultThumb))
+                {
+                    File.Delete(defaultThumb);
+                }
             }
         }
         catch (Exception ex)
@@ -669,61 +661,54 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         }
     }
 
-
     public void LoadHTMLContentOnGrid(int BannerID)
     {
-
-        gdvHTMLContent.DataSource = SageBannerController.LoadHTMLContentOnGrid(BannerID, Int32.Parse(SageUserModuleID), GetPortalID);
+        SageBannerController obj = new SageBannerController();
+        List<SageBannerInfo> info = obj.LoadHTMLContentOnGrid(BannerID, Int32.Parse(SageUserModuleID), GetPortalID, GetCurrentCulture());
+        gdvHTMLContent.DataSource = info;
         gdvHTMLContent.DataBind();
-
     }
 
-
     #endregion
-
 
     #region BannerList Gridview
 
-
-    public void LoadBannerListOnGrid(int PortalID, int UserModuleID)
+    public void LoadBannerListOnGrid(int PortalID, int UserModuleID, string CultureCode)
     {
-
-        gdvBannerList.DataSource = SageBannerController.LoadBannerListOnGrid(PortalID, UserModuleID);
+        SageBannerController obj = new SageBannerController();
+        List<SageBannerInfo> bannerInfo = obj.LoadBannerListOnGrid(PortalID, UserModuleID, CultureCode);
+        gdvBannerList.DataSource = bannerInfo;
         gdvBannerList.DataBind();
     }
 
-
     #endregion
-
 
     protected void gdvBannerImages_RowEditing(object sender, GridViewEditEventArgs e)
     {
 
     }
 
-
     public bool ThumbnailCallback()
     {
         return false;
     }
-
 
     protected void gdvBannerImages_RowDeleting(object sender, GridViewDeleteEventArgs e)
     {
 
     }
 
-
     #region gdvBannerList
-
 
     protected void gdvBannerList_RowCommand(object sender, GridViewCommandEventArgs e)
     {
+        //divbannerImageContainer.Attributes.Add("style", "display:block");
         HttpContext.Current.Session["ActiveTabIndex"] = SageBannerTabcontainer.ActiveTabIndex;
         string[] commandArgsAccept = e.CommandArgument.ToString().Split(new char[] { ',' });
         Int32 BannerID = Int32.Parse(commandArgsAccept[0].ToString());
         if (e.CommandName == "BannerEdit")
         {
+            divbannerImageContainer.Attributes.Add("style", "display:block");
             pnlBannerList.Attributes.Add("style", "display:none");
             LoadBannerImagesOnGrid(BannerID, Int32.Parse(SageUserModuleID), GetPortalID);
             LoadHTMLContentOnGrid(BannerID);
@@ -735,28 +720,24 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         }
         if (e.CommandName == "BannerDelete")
         {
+            string bannerName = txtBannerName.Text.ToLower().Trim();
             DeleteBannerAndItsContentByBannerID(BannerID);
-            LoadBannerListOnGrid(GetPortalID, Int32.Parse(SageUserModuleID));
+            LoadBannerListOnGrid(GetPortalID, Int32.Parse(SageUserModuleID), GetCurrentCulture());
             ShowMessage(SageMessageTitle.Information.ToString(), SageMessage.GetSageModuleLocalMessageByVertualPath("Modules/Sage_Banner/ModuleLocalText", "DeletedSucessfully"), "", SageMessageType.Success);
-
+            pnlBannerList.Attributes.Add("style", "display:block");
+            pnlBannercontainer.Attributes.Add("style", "display:none");
         }
+        BannerCacheClear();
     }
-
-
     public void DeleteBannerAndItsContentByBannerID(int BannerID)
     {
         SageBannerController objDelBanner = new SageBannerController();
         objDelBanner.DeleteBannerAndItsContentByBannerID(BannerID);
     }
-
-
     #endregion
-
-
     protected void gdvHTMLContent_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         int ImageId = Int32.Parse(e.CommandArgument.ToString());
-
         if (e.CommandName == "DeleteHTML")
         {
             DeleteHTMLContentByID(ImageId);
@@ -765,20 +746,18 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
         if (e.CommandName == "EditHTML")
         {
             EditHTMLContentByID(ImageId);
-
         }
         Session["EditHTMLContentID"] = ImageId;
+        BannerCacheClear();
     }
-
 
     public void DeleteHTMLContentByID(int ImageId)
     {
         SageBannerController objDel = new SageBannerController();
         objDel.DeleteHTMLContentByID(ImageId);
         LoadHTMLContentOnGrid(Convert.ToInt32(ViewState["EditBannerID"]));
-
+        BannerCacheClear();
     }
-
 
     private void EditHTMLContentByID(int ImageId)
     {
@@ -793,7 +772,6 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
             Session["NavigationImage"] = objEHtmlContent.NavigationImage;
             divHtmlBannerContainer.Attributes.Add("style", "display:none");
             divEditWrapper.Attributes.Add("style", "display:block");
-            //  ScriptManager.RegisterStartupScript(this, this.GetType(), "rcmd", "showEditorInpopup(this);", true);
             int BannerId = Convert.ToInt32(ViewState["EditBannerID"]);
         }
         catch (Exception ex)
@@ -801,45 +779,50 @@ public partial class Modules_Sage_Banner_EditBanner : BaseAdministrationUserCont
             ProcessException(ex);
         }
     }
-
-
     protected void gdvBannerList_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
-        gdvBannerList.PageIndex = e.NewPageIndex;
-        LoadBannerListOnGrid(GetPortalID, Int32.Parse(SageUserModuleID));
-    }
 
+        gdvBannerList.PageIndex = e.NewPageIndex;
+        LoadBannerListOnGrid(GetPortalID, Int32.Parse(SageUserModuleID), GetCurrentCulture());
+
+    }
 
     protected void gdvBannerImages_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
-
         gdvBannerImages.PageIndex = e.NewPageIndex;
         LoadBannerImagesOnGrid(BannerId, Int32.Parse(SageUserModuleID), GetPortalID);
-
     }
-
 
     protected void gdvHTMLContent_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
+        int bannerId = Convert.ToInt32(ViewState["EditBannerID"]);
         gdvHTMLContent.PageIndex = e.NewPageIndex;
-        LoadHTMLContentOnGrid(BannerId);
-
+        LoadHTMLContentOnGrid(bannerId);
     }
 
-
-    protected void imbCancelImageEdit_Click(object sender, ImageClickEventArgs e)
+    protected void imbCancelImageEdit_Click(object sender, EventArgs e)
     {
-        // divImageEditor.Visible = false;
-        //pnlBannercontainer.Visible = true;
-        //LoadBannerImagesOnGrid(BannerId, Int32.Parse(SageUserModuleID), GetPortalID);
+        txtWebUrl.Text = string.Empty;
         divImageEditor.Attributes.Add("style", "display:none");
         pnlBannercontainer.Attributes.Add("style", "display:block");
     }
 
-    protected void imgCancelHtmlContent_Click(object sender, ImageClickEventArgs e)
+    protected void imgCancelHtmlContent_Click(object sender, EventArgs e)
     {
         divHtmlBannerContainer.Attributes.Add("style", "display:block");
         divEditWrapper.Attributes.Add("style", "display:none");
     }
-
+    private void BannerCacheClear()
+    {
+        HttpRuntime.Cache.Remove("BannerImages_" + GetCurrentCulture() + "_" + UserModuleId.ToString());
+        HttpRuntime.Cache.Remove("BannerSetting_" + GetCurrentCulture() + "_" + UserModuleId.ToString());
+    }
+    protected void imbReturnBack_Click(object sender, EventArgs e)
+    {
+        txtWebUrl.Text = string.Empty;
+        txtBannerDescriptionToBeShown.Text = "";
+        rdbReadMorePageType.SelectedValue = "0";
+        pnlBannercontainer.Attributes.Add("style", "display:none");
+        pnlBannerList.Attributes.Add("style", "display:block");
+    }
 }

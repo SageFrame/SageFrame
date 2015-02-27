@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections;
 using System.Configuration;
@@ -33,23 +18,27 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
 using SageFrame.Web;
+#endregion
 
 public partial class Modules_DashBoard_DashboardManager : BaseAdministrationUserControl
 {
     public string appPath = "";
-    public string Theme = "",UserName="",PortalName="";
-    public int PortalID = 0;
+    public string Theme = "", UserName = "", PortalName = "";
+    public int PortalID = 0, userModuleId = 0;
+    public string PageExtension = string.Empty;
     protected void Page_Load(object sender, EventArgs e)
     {
-        appPath = Request.ApplicationPath != "/" ? Request.ApplicationPath : "";
+        appPath = GetApplicationName;
         PortalID = GetPortalID;
+        userModuleId = int.Parse(SageUserModuleID);
         Page.ClientScript.RegisterClientScriptInclude("J9Conteeeext", ResolveUrl("~/js/jquery.validate.js"));
         Theme = GetActiveAdminTheme;
         UserName = GetUsername;
         PortalName = GetPortalSEOName;
         IncludeJs("Dashboard", "/Administrator/Templates/Default/js/ajaxupload.js");
         IncludeCss("Dashboard", "/Modules/Dashboard/css/module.css");
-       
+        IncludeCss("TaskToDo", "/css/jquery.alerts.css");
+        IncludeJs("TaskToDo", "/js/jquery.alerts.js");
+        PageExtension = SageFrameSettingKeys.PageExtension;
     }
-   
 }

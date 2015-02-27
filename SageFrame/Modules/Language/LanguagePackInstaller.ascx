@@ -1,17 +1,20 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="LanguagePackInstaller.ascx.cs"
     Inherits="Localization_LanguagePackInstaller" %>
-<h2>
+<h1>
     <asp:Label ID="lblLanguagePackInstaller" runat="server" Text="Language Pack Installer"
         meta:resourcekey="lblLanguagePackInstallerResource1"></asp:Label>
-</h2>
+</h1>
 <div class="sfFormwrapper">
-    <asp:Wizard ID="wzrdInstallLanguagePack" runat="server" Style="width: 100%" ActiveStepIndex="0"
-        OnNextButtonClick="wzrdInstallLanguagePack_NextButtonClick" meta:resourcekey="wzrdInstallLanguagePackResource1"
-        OnFinishButtonClick="wzrdInstallLanguagePack_FinishButtonClick">
+    <asp:Wizard ID="wzrdInstallLanguagePack" runat="server" class="hideTD" Style="width: 100%"
+        ActiveStepIndex="0" OnNextButtonClick="wzrdInstallLanguagePack_NextButtonClick"
+        meta:resourcekey="wzrdInstallLanguagePackResource1" OnFinishButtonClick="wzrdInstallLanguagePack_FinishButtonClick">
         <StartNavigationTemplate>
             <div class="sfButtonwrapper">
-                <asp:Button ID="StartNextButton" CssClass="sfBtn" runat="server" CommandName="MoveNext"
-                    Text="Next" CausesValidation="False" meta:resourcekey="StartNextButtonResource1" />
+                <label class="sfLocale sfBtn">
+                    Next <i class="icon-arrow-slimdouble-e"></i>
+                    <asp:Button ID="StartNextButton" CssClass="sfBtn" runat="server" CommandName="MoveNext"
+                        Text="" CausesValidation="False" meta:resourcekey="StartNextButtonResource1" />
+                </label>
             </div>
         </StartNavigationTemplate>
         <WizardSteps>
@@ -25,9 +28,9 @@
             </asp:WizardStep>
             <asp:WizardStep runat="server" meta:resourcekey="WizardStepResource2">
                 <div class="cssClassLanuageInstallerInfo">
-                    <h2>
+                    <h1>
                         Package Information
-                    </h2>
+                    </h1>
                     <ul>
                         <li>
                             <asp:Label ID="lblPackageName" runat="server" CssClass="sfFormlabel cssClassLeftInfo"
@@ -88,9 +91,9 @@
             </asp:WizardStep>
             <asp:WizardStep runat="server" meta:resourcekey="WizardStepResource4">
                 <div class="cssClassLanuageInstallerInfo">
-                    <h2>
+                    <h1>
                         License
-                    </h2>
+                    </h1>
                     <p>
                         <strong>
                             <asp:Label ID="lblLicense" runat="server" meta:resourcekey="lblLicenseResource1"></asp:Label></strong></p>
@@ -108,7 +111,7 @@
                     </h2>
                     <div class="cssClassLanguagePackInstallerTable">
                         <asp:GridView ID="gvLangFiles" runat="server" AutoGenerateColumns="false" GridLines="None"
-                            Style="width: 100%" OnRowDataBound="gvLangFiles_RowDataBound" meta:resourcekey="gvLangFilesResource1">
+                            OnRowDataBound="gvLangFiles_RowDataBound" meta:resourcekey="gvLangFilesResource1">
                             <Columns>
                                 <asp:TemplateField meta:resourcekey="TemplateFieldResource1">
                                     <ItemTemplate>
@@ -126,32 +129,39 @@
             </asp:WizardStep>
             <asp:WizardStep runat="server" meta:resourcekey="WizardStepResource6">
                 <div class="cssClassLanuageInstallerInfo">
-                    <h2>
+                    <h1>
                         Package Installation Report
-                    </h2>
+                    </h1>
                 </div>
             </asp:WizardStep>
         </WizardSteps>
         <FinishNavigationTemplate>
             <div class="sfButtonwrapper">
-                <asp:Button ID="FinishPreviousButton" CssClass="sfBtn" Text="Previous" runat="server"
-                    CausesValidation="False" CommandName="MovePrevious" meta:resourcekey="FinishPreviousButtonResource1" />
-                <asp:Button ID="FinishButton" runat="server" CommandName="MoveComplete" Text="Finish"
-                    CssClass="sfBtn" meta:resourcekey="FinishButtonResource1" />
+                <label class="sfLocale icon-complete sfBtn">
+                    Finish
+                    <asp:Button ID="FinishButton" runat="server" CommandName="MoveComplete" Text="" CssClass="sfBtn"
+                        meta:resourcekey="FinishButtonResource1" />
+                </label>
             </div>
         </FinishNavigationTemplate>
         <StepNavigationTemplate>
             <div class="sfButtonwrapper">
-                <asp:Button ID="StepPreviousButton" runat="server" CausesValidation="False" Text="Previous"
+             <label class="sfLocale sfBtn">Previous <i class="icon-arrow-slimdouble-w"></i>
+                <asp:Button ID="StepPreviousButton" runat="server" CausesValidation="False" Text=""
                     CssClass="sfBtn" CommandName="MovePrevious" meta:resourcekey="StepPreviousButtonResource1" />
-                <asp:Button ID="StepNextButton" runat="server" CommandName="MoveNext" Text="Next"
+                   </label>
+                    <label class="sfLocale sfBtn">Next <i class="icon-arrow-slimdouble-e"></i>
+                <asp:Button ID="StepNextButton" runat="server" CommandName="MoveNext" Text=""
                     CssClass="sfBtn" meta:resourcekey="StepNextButtonResource1" />
             </div>
         </StepNavigationTemplate>
     </asp:Wizard>
 </div>
 <div class="sfButtonwrapper">
-    <asp:ImageButton ID="imbCancel" runat="server" OnClick="imbCancel_Click" meta:resourcekey="imbCancelResource1" />
-    <asp:Label ID="lblInstallLang" runat="server" CssClass="sfFormlabel" Text="Cancel"
-        AssociatedControlID="imbCancel" Style="cursor: pointer;" meta:resourcekey="lblInstallLangResource1"></asp:Label>
+    <label class="sfLocale icon-close sfBtn">
+        Cancel
+        <asp:Button ID="imbCancel" runat="server" OnClick="imbCancel_Click" meta:resourcekey="imbCancelResource1" />
+    </label>
+    <%-- <asp:Label ID="lblInstallLang" runat="server" CssClass="sfFormlabel" Text="Cancel"
+        AssociatedControlID="imbCancel" Style="cursor: pointer;" meta:resourcekey="lblInstallLangResource1"></asp:Label>--%>
 </div>

@@ -1,46 +1,43 @@
 /*
- * jQuery UI Tree 1.7.1
- *
- * Copyright (c) 2009 Titkov Anton, ElSoft company (http://elsoft.tomsk.ru)
- * Dual licensed under the MIT (MIT-LICENSE.txt)
- * and GPL (GPL-LICENSE.txt) licenses.
- *
- * http://elsoft.tomsk.ru/jQuery/
- *
- * Version 0.1
- *
- * Depends:
- *	ui.core.js
- *	ui.draggable.js
- *	ui.droppable.js - modified by Titkov Anton (http://elsoft.tomsk.ru/jQuery)
- */
+* jQuery UI Tree 1.7.1
+*
+* Copyright (c) 2009 Titkov Anton, ElSoft company (http://elsoft.tomsk.ru)
+* Dual licensed under the MIT (MIT-LICENSE.txt)
+* and GPL (GPL-LICENSE.txt) licenses.
+*
+* http://elsoft.tomsk.ru/jQuery/
+*
+* Version 0.1
+*
+* Depends:
+*	ui.core.js
+*	ui.draggable.js
+*	ui.droppable.js - modified by Titkov Anton (http://elsoft.tomsk.ru/jQuery)
+*/
 
 /*
 [
-	{
-		title : '1',
-		className : 'myClass',
-		type : 'node', //or 'list' or undefined(check attr children for define)
-		expand : 'false',//or true
-		img : url,
-		children : null
-	},
-	{
-		title : '1',
-		url : 'gogogo',
-		className : 'myClass',
-		children : null
-	}
+{
+title : '1',
+className : 'myClass',
+type : 'node', //or 'list' or undefined(check attr children for define)
+expand : 'false',//or true
+img : url,
+children : null
+},
+{
+title : '1',
+url : 'gogogo',
+className : 'myClass',
+children : null
+}
 ]
 */
 var g;
 var mas = [];
 (function($) {
-    //alert('callme');
     $.widget("ui.tree", {
-
-        _init: function() {
-            //alert('callme');            
+        _init: function() {        
             var options = $.extend(true, {}, $_ui_tree_defaults, this.options);
             if (this.options.droppable) options.droppable = this.options.droppable;
             if (this.options.draggable) options.draggable = this.options.draggable;
@@ -58,7 +55,6 @@ var mas = [];
             this.dragging = false;
             var self = this;
             var json = this.options.json ? this.options.json : this._getJSON(this.element);
-            //alert(json);
             var ul = this._createBrunch(json).addClass('ui-tree');
             var id = this.element.attr('id');
 
@@ -68,26 +64,10 @@ var mas = [];
             this.element = ul;
             ul.data('tree', this);
             this.removingElements = [];
-            this._setNodeEvents(this.element);
-            //alert(this.options.expand);
-            //debugger;
-            //            if (this.options.expand) {
-            //                $('li').each(function(index) {
-            //                    alert(index + ': ' + $(this).text());
-            //                });
-            //            }
+            this._setNodeEvents(this.element);        
 
             (this.options.expand && $('li', this.element).each(function() { if ($(this).is(self.options.expand)) self.expand(this); }));
-            (this.options.hidden && this.element.hide());
-
-            //CheckBox
-            //var res = "";
-            //this.data = $.extend({}, $_ui_tree_nodedatadefaults, data);
-            // Checkbox mode
-            //            if (this.options.checkbox && this.data.hideCheckbox != true) {
-            //                res += cache.tagCheckbox;
-            //            }       
-            //alert(this.options.checkbox);
+            (this.options.hidden && this.element.hide());         
 
             if (this.options.checkbox) {
                 $('li', this.element).each(function(i) {
@@ -100,7 +80,6 @@ var mas = [];
                             $(this).children("input").remove();
                         });
                     }
-                    //alert(this.id);
                 });
 
                 //                if (this.options.collapsable) {
@@ -209,7 +188,7 @@ var mas = [];
 
         nodeName: function(node) {
             if (node.attr != undefined) {
-                return (node.length ? node.attr('nodeName') : $(node).attr('nodeName')).toLowerCase();
+                return (node.length ? node.prop('nodeName') : $(node).prop('nodeName')).toLowerCase();
             }
         },
 
@@ -405,8 +384,10 @@ var mas = [];
         },
 
         _ui: function(ui, el) {
+            
             ui = ui ? ui : {};
             el = el.length == undefined ? el : $(el);
+
             return {
                 draggable: ui.draggable ? ui.draggable : el,
                 droppable: ui.draggable ? el : null,
@@ -506,6 +487,7 @@ var mas = [];
 
         // bind events and make droppable and draggable elements in brunch el
         _setNodeEvents: function(el) {
+
             var droppable = this.options.droppable.length != undefined ? this.options.droppable : [this.options.droppable];
             var draggable = this.options.draggable.length != undefined ? this.options.draggable : [this.options.draggable];
             var self = this;
@@ -576,7 +558,7 @@ var mas = [];
                 json += "'title' : '" + title + "'";
                 var id = node.attr('id');
                 if (id) json += ", 'id' : '" + id + "'";
-                var className = $.trim(node.attr('className').replace(/ui-[^\s]*/gim, ''));
+                var className = $.trim(node.prop('className').replace(/ui-[^\s]*/gim, ''));
                 if (className) json += ", 'className' : '" + className + "'";
                 var img = $('>span.ui-tree-title>span.ui-tree-title-img>img', node);
                 if (img.length) json += ", 'img' : '" + img.attr('src') + "'";
@@ -609,7 +591,7 @@ var mas = [];
             html += obj.children ? 'ui-tree-node' : 'ui-tree-list';
             html += obj.expand ? ' ui-tree-expand' : '';
             if (obj.className) html += ' ' + obj.className;
-            html += '"><span class="ui-tree-expand-control"/><span class="ui-tree-title"><span class="ui-tree-title-img">';
+            html += '"><span class="ui-tree-expand-control"/><span class="ui-tree-title ui-droppable"><span class="ui-tree-title-img">';
             if (obj.img) html += '<img href="' + obj.img + '"/>';
             html += '</span>';
             if (obj.title) {
@@ -690,8 +672,8 @@ var mas = [];
         multiSelect: false,
         multiSelectKey: 'ctrlKey',
         multiExpand: true,
-       
-         expand: false,
+
+        expand: false,
         selectOn: 'mousedown',
         expandOn: 'mouseover',
         collapseOn: 'mouseover',
@@ -704,8 +686,8 @@ var mas = [];
         collapseOptions: {},
         collapseSpeed: 1000,
         collapseCallback: false,
-        
-      
+
+
         // other options
         IEDragBugFix: true,
 

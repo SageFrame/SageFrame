@@ -1,4 +1,4 @@
-﻿div.cssClassCarousel {
+div.cssClassCarousel {
 	float: left;
 	height: 20px;
 	margin: 0 10px;
@@ -29,8 +29,7 @@ div.cssClassCarousel ul li img {
 div.cssClassLeftScroll, div.cssClassRightScroll {
 	float:left;
 	height:22px;
-	width:15px;
-	padding-top:6px;
+	padding-top:9px;
 }
 div.cssClassLeftScroll img, div.cssClassRightScroll img {
 	cursor: pointer;
@@ -45,13 +44,10 @@ div.cssClassLeftScroll img, div.cssClassRightScroll img {
 	border-radius: 5px;
 }
 .CssClassLanguageWrapperInside {
-	border:1px solid #ddd;
-	background-color:#f5f5f5;
 	overflow:hidden;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
-	padding:5px;
 	width:auto;
 }
 div.cssClassCarousel ul li.cssClassSelectedFlag {

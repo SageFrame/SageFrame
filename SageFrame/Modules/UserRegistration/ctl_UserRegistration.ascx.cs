@@ -1,24 +1,5 @@
 ﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
 using System;
 using System.Collections.Generic;
@@ -32,9 +13,6 @@ using SageFrame.Framework;
 using System.Web.Security;
 using SageFrame.UserManagement;
 using SageFrame.Message;
-using SageFrameClass.MessageManagement;
-using SageFrame.SageFrameClass.MessageManagement;
-using SageFrame.NewLetterSubscriber;
 using SageFrame.Security.Entities;
 using SageFrame.Security.Crypto;
 using SageFrame.Security.Helpers;
@@ -42,41 +20,46 @@ using SageFrame.Security.Providers;
 using SageFrame.Security;
 using System.IO;
 using SageFrame.Web.Utilities;
+using SageFrame.Common;
+using SageFrame.UserProfile;
+using SageFrame.NewsLetter;
+using SageFrame.SageFrameClass.MessageManagement;
+using SageFrameClass.MessageManagement;
 
 namespace SageFrame.Modules.UserRegistration
 {
     public partial class ctl_UserRegistration : BaseAdministrationUserControl
     {
+        string Extension;
         public string headerTemplate = string.Empty;
         private Random random = new Random();
         SageFrameConfig pagebase = new SageFrameConfig();
-        public string LoginPath = "",defpage="";
+        public string LoginPath = string.Empty, defpage = string.Empty;
         MembershipController _member = new MembershipController();
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            Extension = SageFrameSettingKeys.PageExtension;
             IncludeJs("UserRegistration", false, "/js/jquery.pstrength-min.1.2.js");
             IncludeJs("UserRegistrationValidation", "/js/jquery.validate.js");
             try
             {
-                if (GetPortalID > 1)
+                if (!IsParent)
                 {
-                    defpage = ResolveUrl("~/portal/" + GetPortalSEOName + "/" + pagebase.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx");
+                    defpage = ResolveUrl("~/portal/" + GetPortalSEOName + "/" + pagebase.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + Extension);
                 }
                 else
                 {
-                    defpage = ResolveUrl("~/" + pagebase.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx");
+                    defpage = ResolveUrl("~/" + pagebase.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + Extension);
                 }
-                int UserRegistrationType = pagebase.GetSettingIntByKey(SageFrameSettingKeys.PortalUserRegistration);
-                
+                int UserRegistrationType = pagebase.GetSettingIntValueByIndividualKey(SageFrameSettingKeys.PortalUserRegistration);
+
                 if (UserRegistrationType == 0)
                 {
                     Response.Redirect(defpage);
                 }
                 IncludeCss("UserRegistration", "/Administrator/Templates/Default/css/login.css");
-              
-                
-                //IncludeCss("UserRegistration", "/Modules/UserRegistration/css/module.css");
-                ForgetPasswordInfo template = UserManagementController.GetMessageTemplateByMessageTemplateTypeID(SystemSetting.USER_REGISTRATION_HELP, GetPortalID);
+                ForgotPasswordInfo template = UserManagementController.GetMessageTemplateByMessageTemplateTypeID(SystemSetting.USER_REGISTRATION_HELP, GetPortalID);
                 if (template != null)
                 {
                     headerTemplate = "<div>" + template.Body + "</div>";
@@ -86,6 +69,7 @@ namespace SageFrame.Modules.UserRegistration
                     if (_member.EnableCaptcha)
                     {
                         InitializeCaptcha();
+                        GenerateCaptchaImage();
                     }
                     else { HideCaptcha(); }
                     SetValidatorErrorMessage();
@@ -93,16 +77,14 @@ namespace SageFrame.Modules.UserRegistration
                     this.divRegister.Visible = true;
                     this.divRegistration.Visible = false;
                     this.divRegConfirm.Visible = false;
-
                 }
-               
-                if (GetPortalID > 1)
+                if (!IsParent)
                 {
-                    LoginPath = ResolveUrl("~/portal/" + GetPortalSEOName + "/sf/" + pagebase.GetSettingsByKey(SageFrameSettingKeys.PlortalLoginpage) + ".aspx");
+                    LoginPath = ResolveUrl("~/portal/" + GetPortalSEOName + pagebase.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalLoginpage) + Extension);
                 }
                 else
                 {
-                    LoginPath = ResolveUrl("~/sf/" + pagebase.GetSettingsByKey(SageFrameSettingKeys.PlortalLoginpage) + ".aspx");
+                    LoginPath = ResolveUrl("~/" + pagebase.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalLoginpage) + Extension);
                 }
             }
             catch (Exception ex)
@@ -112,15 +94,14 @@ namespace SageFrame.Modules.UserRegistration
         }
         private void InitializeCaptcha()
         {
-            CaptchaValue.Text = "";
-            if (this.Session["CaptchaImageText"] == null)
+            CaptchaValue.Text = string.Empty;
+            if (this.Session[SessionKeys.CaptchaImageText] == null)
             {
-                this.Session["CaptchaImageText"] = GenerateRandomCode();
+                this.Session[SessionKeys.CaptchaImageText] = GenerateRandomCode();
             }
-            cvCaptchaValue.ValueToCompare = this.Session["CaptchaImageText"].ToString();
+            //  cvCaptchaValue.ValueToCompare = this.Session[SessionKeys.CaptchaImageText].ToString();
             CaptchaImage.ImageUrl = "~/CaptchaImageHandler.aspx";
             Refresh.ImageUrl = GetTemplateImageUrl("imgrefresh.png", true);
-
             captchaTR.Visible = true;
             CaptchaImage.Visible = true;
             CaptchaLabel.Visible = true;
@@ -129,14 +110,13 @@ namespace SageFrame.Modules.UserRegistration
             Refresh.Visible = true;
             DataLabel.Visible = true;
             rfvCaptchaValueValidator.Enabled = true;
-
         }
         private void HideCaptcha()
         {
             captchaTR.Visible = false;
             CaptchaImage.Visible = false;
             CaptchaLabel.Visible = false;
-            CaptchaValue.Visible = false;           
+            CaptchaValue.Visible = false;
             Refresh.Visible = false;
             DataLabel.Visible = false;
             rfvCaptchaValueValidator.Enabled = false;
@@ -155,7 +135,7 @@ namespace SageFrame.Modules.UserRegistration
             //rfvAnswerRequired.Text = "*";
             rfvCaptchaValueValidator.Text = "*";
             cvPasswordCompare.Text = "*";
-            cvCaptchaValue.Text = "*";
+            // cvCaptchaValue.Text = "*";
             revEmail.Text = "*";
             rfvUserNameRequired.ErrorMessage = GetSageMessage("UserRegistration", "UserNameIsRequired");
             rfvPasswordRequired.ErrorMessage = GetSageMessage("UserRegistration", "PasswordIsRequired");
@@ -164,18 +144,16 @@ namespace SageFrame.Modules.UserRegistration
             rfvLastName.ErrorMessage = GetSageMessage("UserRegistration", "LastNameIsRequired");
             rfvEmailRequired.ErrorMessage = GetSageMessage("UserRegistration", "EmailAddressIsRequired");
             //rfvQuestionRequired.ErrorMessage = GetSageMessage("UserRegistration", "SecurityQuestionIsRequired");
-           // rfvAnswerRequired.ErrorMessage = GetSageMessage("UserRegistration", "SecurityAnswerIsRequired");
+            // rfvAnswerRequired.ErrorMessage = GetSageMessage("UserRegistration", "SecurityAnswerIsRequired");
             rfvCaptchaValueValidator.ErrorMessage = GetSageMessage("UserRegistration", "EnterTheCorrectCapchaCode");
             cvPasswordCompare.ErrorMessage = GetSageMessage("UserRegistration", "PasswordRetypeMatch");
-            cvCaptchaValue.ErrorMessage = GetSageMessage("UserRegistration", "EnterTheCorrectCapchaCode");
+            // cvCaptchaValue.ErrorMessage = GetSageMessage("UserRegistration", "EnterTheCorrectCapchaCode");
             revEmail.ErrorMessage = GetSageMessage("UserRegistration", "EmailAddressIsNotValid");
         }
 
-       
-
         protected void Refresh_Click(object sender, EventArgs e)
         {
-		    //changes made by hari for multiportal captcha
+            //changes made by hari for multiportal captcha
             //try
             //{
             //    this.Session["CaptchaImageText"] = GenerateRandomCode();
@@ -189,15 +167,20 @@ namespace SageFrame.Modules.UserRegistration
             //}
             GenerateCaptchaImage();
         }
-		
+
         private void GenerateCaptchaImage()
         {
             try
             {
-                this.Session["CaptchaImageText"] = GenerateRandomCode();
-                cvCaptchaValue.ValueToCompare = this.Session["CaptchaImageText"].ToString();
+                this.Session[SessionKeys.CaptchaImageText] = GenerateRandomCode();
+                // cvCaptchaValue.ValueToCompare = this.Session[SessionKeys.CaptchaImageText].ToString();
                 CaptchaImage.ImageUrl = ResolveUrl("~") + "CaptchaImageHandler.aspx?=dummy" + DateTime.Now.ToLongTimeString();
                 CaptchaValue.Text = "";
+                Refresh.ImageUrl = GetTemplateImageUrl("imgrefresh.png", true);
+                captchaValidator.Visible = false;
+                this.divRegister.Visible = true;
+                this.divRegistration.Visible = false;
+                this.divRegConfirm.Visible = false;
             }
             catch (Exception ex)
             {
@@ -214,13 +197,13 @@ namespace SageFrame.Modules.UserRegistration
             return s;
         }
 
-
         protected void FinishButton_Click(object sender, EventArgs e)
         {
-            this.Session["CaptchaImageText"] = null;
+            //  this.Session[SessionKeys.CaptchaImageText] = null;
             if (_member.EnableCaptcha)
             {
-                if (ValidateCaptcha())
+                bool testValid = ValidateCaptcha();
+                if (testValid)
                 {
                     RegisterUser();
                 }
@@ -233,32 +216,37 @@ namespace SageFrame.Modules.UserRegistration
 
         private bool ValidateCaptcha()
         {
-
-            if (!(cvCaptchaValue.ValueToCompare == CaptchaValue.Text))
+            string captchaText = string.Empty;
+            if (Session[SessionKeys.CaptchaImageText] != null)
+            {
+                captchaText = Session[SessionKeys.CaptchaImageText].ToString();
+            }
+            this.Session[SessionKeys.CaptchaImageText] = null;
+            if (!(captchaText == CaptchaValue.Text))
             {
                 ShowMessage("", GetSageMessage("UserRegistration", "EnterTheCorrectCapchaCode"), "", SageMessageType.Error);
+                GenerateCaptchaImage();
+                this.divRegistration.Visible = false;
                 return false;
             }
-
-            return true;
+            else
+            {
+                return true;
+            }
         }
 
         private void RegisterUser()
         {
             try
             {
-                //MessageTemplateDataContext dbMessageTemplate = new MessageTemplateDataContext(SystemSetting.SageFrameConnectionString);
-
                 if (string.IsNullOrEmpty(UserName.Text) || string.IsNullOrEmpty(FirstName.Text) || string.IsNullOrEmpty(LastName.Text) || string.IsNullOrEmpty(Email.Text))
                 {
                     ShowMessage("", GetSageMessage("UserRegistration", "PleaseEnterAllRequiredFields"), "", SageMessageType.Alert);
                 }
                 else
                 {
-                    int UserRegistrationType = pagebase.GetSettingIntByKey(SageFrameSettingKeys.PortalUserRegistration);
-
+                    int UserRegistrationType = pagebase.GetSettingIntValueByIndividualKey(SageFrameSettingKeys.PortalUserRegistration);
                     bool isUserActive = UserRegistrationType == 2 ? true : false;
-
                     UserInfo objUser = new UserInfo();
                     objUser.ApplicationName = Membership.ApplicationName;
                     objUser.FirstName = FirstName.Text;
@@ -281,10 +269,10 @@ namespace SageFrame.Modules.UserRegistration
                     objUser.AddedBy = GetUsername;
                     objUser.UserID = Guid.NewGuid();
                     objUser.RoleNames = SystemSetting.REGISTER_USER_ROLENAME;
-
+                    objUser.StoreID = GetStoreID;
+                    objUser.CustomerID = 0;
                     UserCreationStatus status = new UserCreationStatus();
                     CheckRegistrationType(UserRegistrationType, ref objUser);
-
                     MembershipDataProvider.CreatePortalUser(objUser, out status, UserCreationMode.REGISTER);
                     if (status == UserCreationStatus.DUPLICATE_USER)
                     {
@@ -310,24 +298,18 @@ namespace SageFrame.Modules.UserRegistration
                         }
                         catch (Exception)
                         {
-
                             ShowMessage("", GetSageMessage("UserManagement", "SecureConnection"), "", SageMessageType.Alert);
                         }
-
                     }
- 
                 }
             }
-
             catch (Exception ex)
             {
                 ProcessException(ex);
-                
             }
-
         }
 
-        private void clearField()        
+        private void clearField()
         {
             FirstName.Text = string.Empty;
             LastName.Text = string.Empty;
@@ -338,9 +320,9 @@ namespace SageFrame.Modules.UserRegistration
 
         private void ManageNewsLetterSubscription(string email, ref int? newID)
         {
-           
-            string clientIP = Request.UserHostAddress.ToString();           
-            NewLetterSubscriberController.AddNewLetterSubscribers(email, clientIP, true, GetUsername, DateTime.Now, GetPortalID);
+            string clientIP = Request.UserHostAddress.ToString();
+            NL_Controller objController = new NL_Controller();
+            objController.SaveEmailSubscriber(email, Int32.Parse(SageUserModuleID), GetPortalID, GetUsername, clientIP);
         }
 
         private void CheckRegistrationType(int UserRegistrationType, ref UserInfo user)
@@ -366,7 +348,7 @@ namespace SageFrame.Modules.UserRegistration
             switch (UserRegistrationType)
             {
                 case 0:
-                    ForgetPasswordInfo template = UserManagementController.GetMessageTemplateByMessageTemplateTypeID(SystemSetting.USER_RESISTER_SUCESSFUL_INFORMATION_NONE, GetPortalID);
+                    ForgotPasswordInfo template = UserManagementController.GetMessageTemplateByMessageTemplateTypeID(SystemSetting.USER_RESISTER_SUCESSFUL_INFORMATION_NONE, GetPortalID);
                     if (template != null)
                     {
                         USER_RESISTER_SUCESSFUL_INFORMATION.Text = template.Body;
@@ -381,8 +363,6 @@ namespace SageFrame.Modules.UserRegistration
                     this.divRegistration.Visible = true;
                     this.divRegConfirm.Visible = true;
                     this.divRegister.Visible = false;
-
-
                     break;
                 case 3:
                     template = UserManagementController.GetMessageTemplateByMessageTemplateTypeID(SystemSetting.USER_RESISTER_SUCESSFUL_INFORMATION_VERIFIED, GetPortalID);
@@ -390,23 +370,21 @@ namespace SageFrame.Modules.UserRegistration
                     {
                         USER_RESISTER_SUCESSFUL_INFORMATION.Text = template.Body;
                     }
-                   
-                    List<ForgetPasswordInfo> objFpwd = UserManagementController.GetMessageTemplateListByMessageTemplateTypeID(SystemSetting.ACCOUNT_ACTIVATION_EMAIL, GetPortalID);
-                    foreach (ForgetPasswordInfo messageTemplate in objFpwd)
+
+                    List<ForgotPasswordInfo> objFpwd = UserManagementController.GetMessageTemplateListByMessageTemplateTypeID(SystemSetting.ACCOUNT_ACTIVATION_EMAIL, GetPortalID);
+                    foreach (ForgotPasswordInfo messageTemplate in objFpwd)
                     {
                         CommonFunction comm = new CommonFunction();
                         DataTable dtActivationTokenValues = UserManagementController.GetActivationTokenValue(UserName.Text, GetPortalID);
                         string replaceMessageSubject = MessageToken.ReplaceAllMessageToken(messageTemplate.Subject, dtActivationTokenValues);
-                        string replacedMessageTemplate = MessageToken.ReplaceAllMessageToken(messageTemplate.Body, dtActivationTokenValues);
+                        string replacedMessageTemplate = MessageToken.ReplaceAllMessageToken(messageTemplate.Body, UserName.Text, GetPortalID);
+                        //  string replacedMessageTemplate = MessageToken.ReplaceAllMessageToken(messageTemplate.Body, dtActivationTokenValues);
                         MailHelper.SendMailNoAttachment(messageTemplate.MailFrom, Email.Text, replaceMessageSubject, replacedMessageTemplate, string.Empty, string.Empty);
                     }
-                   // CheckDivVisibility(false, true);
+                    // CheckDivVisibility(false, true);
                     this.divRegistration.Visible = true;
                     this.divRegConfirm.Visible = true;
                     this.divRegister.Visible = false;
-
-
-
                     break;
                 case 2:
                     template = UserManagementController.GetMessageTemplateByMessageTemplateTypeID(SystemSetting.USER_RESISTER_SUCESSFUL_INFORMATION_PUBLIC, GetPortalID);
@@ -421,8 +399,8 @@ namespace SageFrame.Modules.UserRegistration
 
         private void CheckDivVisibility(bool RegistrationDiv, bool RegistrationConfDiv)
         {
-           /// this.divRegistration.Visible = RegistrationDiv;
-           // this.divRegConfirm.Visible = RegistrationConfDiv;
+            /// this.divRegistration.Visible = RegistrationDiv;
+            // this.divRegConfirm.Visible = RegistrationConfDiv;
         }
 
         private void LogInPublicModeRegistration()
@@ -441,10 +419,10 @@ namespace SageFrame.Modules.UserRegistration
                     if (strRoles.Length > 0)
                     {
                         SetUserRoles(strRoles);
-                        SessionTracker sessionTracker = (SessionTracker)Session["Tracker"];
+                        SessionTracker sessionTracker = (SessionTracker)Session[SessionKeys.Tracker];
                         sessionTracker.PortalID = GetPortalID.ToString();
                         sessionTracker.Username = UserName.Text;
-                        Session["Tracker"] = sessionTracker;
+                        Session[SessionKeys.Tracker] = sessionTracker;
                         SageFrame.Web.SessionLog SLog = new SageFrame.Web.SessionLog();
                         SLog.SessionTrackerUpdateUsername(sessionTracker, sessionTracker.Username, GetPortalID.ToString());
                         {
@@ -460,60 +438,54 @@ namespace SageFrame.Modules.UserRegistration
                             string encTicket = FormsAuthentication.Encrypt(ticket);
 
                             // Create the cookie.
-                            Response.Cookies.Add(new HttpCookie(FormsAuthentication.FormsCookieName, encTicket));
-                            bool IsUseFriendlyUrls = pagebase.GetSettingBollByKey(SageFrameSettingKeys.UseFriendlyUrls);
-                            if (IsUseFriendlyUrls)
+                            string randomCookieValue = GenerateRandomCookieValue();
+                            Session[SessionKeys.RandomCookieValue] = randomCookieValue;
+                            SecurityPolicy objSecurity = new SecurityPolicy();
+                            HttpCookie cookie = new HttpCookie(objSecurity.FormsCookieName(GetPortalID), encTicket);
+                            SageFrameConfig objConfig = new SageFrameConfig();
+                            string ServerCookieExpiration = objConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.ServerCookieExpiration);
+                            int expiryTime = Math.Abs(int.Parse(ServerCookieExpiration));
+                            expiryTime = expiryTime < 5 ? 5 : expiryTime;
+                            cookie.Expires = DateTime.Now.AddMinutes(expiryTime);
+                            Response.Cookies.Add(cookie);
+                          
+                            if (!IsParent)
                             {
-                                if (GetPortalID > 1)
-                                {
-                                    Response.Redirect(ResolveUrl("~/portal/" + GetPortalSEOName + "/" + pagebase.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx"), false);
-                                }
-                                else
-                                {
-                                    Response.Redirect(ResolveUrl("~/" + pagebase.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx"), false);
-                                }
+                                Response.Redirect(ResolveUrl("~/portal/" + GetPortalSEOName + "/" + pagebase.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + Extension), false);
                             }
                             else
                             {
-                                Response.Redirect(ResolveUrl("~/Default.aspx?ptlid=" + GetPortalID + "&ptSEO=" + GetPortalSEOName + "&pgnm=" + pagebase.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage)), false);
+                                Response.Redirect(ResolveUrl("~/" + pagebase.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + Extension), false);
                             }
-
                         }
                     }
-
                 }
-
             }
+        }
+        private string GenerateRandomCookieValue()
+        {
+            string s = "";
+            string[] CapchaValue = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+            for (int i = 0; i < 10; i++)
+                s = String.Concat(s, CapchaValue[this.random.Next(36)]);
+            return s;
         }
 
         public void SetUserRoles(string strRoles)
         {
-            Session["SageUserRoles"] = strRoles;
-            HttpCookie cookie = HttpContext.Current.Request.Cookies["SageUserRolesCookie"];
+            Session[SessionKeys.SageUserRoles] = strRoles;
+            HttpCookie cookie = HttpContext.Current.Request.Cookies[CookiesKeys.SageUserRolesCookie];
             if (cookie == null)
             {
-                cookie = new HttpCookie("SageUserRolesCookie");
+                cookie = new HttpCookie(CookiesKeys.SageUserRolesCookie);
             }
-            cookie["SageUserRolesProtected"] = strRoles;
+            cookie[CookiesKeys.SageUserRolesProtected] = strRoles;
             HttpContext.Current.Response.Cookies.Add(cookie);
         }
 
         public bool UpdateCartAnonymoususertoRegistered(int storeID, int portalID, int customerID, string sessionCode)
         {
-            try
-            {
-                List<KeyValuePair<string, object>> ParaMeter = new List<KeyValuePair<string, object>>();
-                ParaMeter.Add(new KeyValuePair<string, object>("@StoreID", storeID));
-                ParaMeter.Add(new KeyValuePair<string, object>("@PortalID", portalID));
-                ParaMeter.Add(new KeyValuePair<string, object>("@CustomerID", customerID));
-                ParaMeter.Add(new KeyValuePair<string, object>("@SessionCode", sessionCode));
-                SQLHandler sqlH = new SQLHandler();
-                return sqlH.ExecuteNonQueryAsBool("usp_Aspx_UpdateCartAnonymoususertoRegistered", ParaMeter, "@IsUpdate");
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return UserProfileController.UpdateCartAnonymoususertoRegistered(storeID, portalID, customerID, sessionCode);
         }
     }
 }

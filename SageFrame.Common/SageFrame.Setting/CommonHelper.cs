@@ -1,35 +1,20 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Data;
 using System.Data.Linq;
 using SageFrame.Setting;
 using System.Xml;
 using System.Text;
-using SageFrame.Common.SageFrame.Setting;
+#endregion
+
 /// <summary>
 /// Summary description for CommonHelper
 /// </summary>
@@ -38,7 +23,7 @@ namespace SageFrame.Web
 {
     public static class CommonHelper
     {      
-        public static SettingDataContext dbSetting = new SettingDataContext(SystemSetting.SageFrameConnectionString);
+        
         public static string ServerVariables(string Name)
         {
             string tmpS = String.Empty;
@@ -96,31 +81,6 @@ namespace SageFrame.Web
             HttpContext.Current.Response.Redirect(URL);
         }
 
-        public static string GetStoreHost(bool UseSSL,int PortalID)
-        {
-            string result = "http://" + ServerVariables("HTTP_HOST");
-            if (!result.EndsWith("/"))
-                result += "/";
-
-            if (UseSSL)
-            {
-                string str = dbSetting.sp_SettingPortalBySettingID((int)SettingKey.Common_SharedSSL, PortalID).SingleOrDefault().Value;
-                if (!String.IsNullOrEmpty(str))
-                {
-                    result = str;
-                }
-                else
-                {
-                    result = result.Replace("http:/", "https:/");
-                    result = result.Replace("www.www", "www");
-                }
-            }
-
-            if (!result.EndsWith("/"))
-                result += "/";
-
-            return result;
-        }
 
         public static string GetStoreLocation(bool UseSSL, int PortalID)
         {
@@ -182,10 +142,7 @@ namespace SageFrame.Web
             return URL;
         }
 
-        public static string GetCurrentVersion(int PortalID)
-        {
-            return dbSetting.sp_SettingPortalBySettingID((int)SettingKey.Common_CurrentVersion, PortalID).SingleOrDefault().Value;
-        }
+       
 
         public static void WriteResponseXML(string xml, string Filename)
         {
@@ -223,15 +180,7 @@ namespace SageFrame.Web
         public static string LogInPage = "Login.aspx";
         public static string SelectedCountryName = "United States";
 
-        public static bool GetSettingValueBoolean(int SettingID,int PortalID)
-        {
-            return bool.Parse(dbSetting.sp_SettingPortalBySettingID(SettingID, PortalID).SingleOrDefault().Value);
-        }
-
-        public static string GetSettingValue(int SettingID, int PortalID)
-        {
-            return dbSetting.sp_SettingPortalBySettingID(SettingID, PortalID).SingleOrDefault().Value;
-        }
+      
 
         public static string ShortTimeReturn(System.Nullable<DateTime> ndate)
         {
@@ -248,9 +197,54 @@ namespace SageFrame.Web
             bool status=false;
             foreach (string word in arrColl)
             {
-                status = parentString.Contains(word) ? true : false;               
+                status = parentString.Contains(word) ? false : true;
+                if (!status)
+                {
+                    break;
+                }
             }
             return status;
+        }
+        
+        public static string GetStoreHost(bool UseSSL, int PortalID)
+        {
+            string result = "http://" + ServerVariables("HTTP_HOST");
+            if (!result.EndsWith("/"))
+                result += "/";
+
+            if (UseSSL)
+            {
+                //string str = dbSetting.sp_SettingPortalBySettingID((int)SettingKey.Common_SharedSSL, PortalID).SingleOrDefault().Value;
+                //if (!String.IsNullOrEmpty(str))
+                //{
+                //    result = str;
+                //}
+                //else
+                //{
+                //    result = result.Replace("http:/", "https:/");
+                //    result = result.Replace("www.www", "www");
+                //}
+            }
+
+            if (!result.EndsWith("/"))
+                result += "/";
+
+            return result;
+        }
+        [Obsolete("not Used in SageFrame2.1")]
+        public static void GetCurrentVersion(int PortalID)
+        {
+            //return dbSetting.sp_SettingPortalBySettingID((int)SettingKey.Common_CurrentVersion, PortalID).SingleOrDefault().Value;
+        }
+        [Obsolete("not Used in SageFrame2.1")]
+        public static void GetSettingValueBoolean(int SettingID, int PortalID)
+        {
+            //return bool.Parse(dbSetting.sp_SettingPortalBySettingID(SettingID, PortalID).SingleOrDefault().Value);
+        }
+        [Obsolete("not Used in SageFrame2.1")]
+        public static void GetSettingValue(int SettingID, int PortalID)
+        {
+            //return dbSetting.sp_SettingPortalBySettingID(SettingID, PortalID).SingleOrDefault().Value;
         }
     }
 }

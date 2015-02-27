@@ -1,40 +1,24 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
+#endregion
 
 namespace SageFrame.Web
 {
     public static class SystemSetting
     {
+        #region "Declaration"
         public static string glbDefaultPane = "ContentPane";
         public static string glbImageFileTypes = "jpg,jpeg,jpe,gif,bmp,png,swf";
         public static string SageFrameDBName = System.Configuration.ConfigurationManager.AppSettings["DatabaseName"].ToString();
         public static string SageFrameConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["SageFrameConnectionString"].ToString();
-        //providerName="System.Data.SqlClient"
-        //public static string SageFrameProviderName = System.Configuration.ConfigurationManager.GetSection("providerName").ToString();
         public static string Register = "Register";
         public static string Login = "Login";
         public static string Logout = "Logout";
@@ -64,20 +48,23 @@ namespace SageFrame.Web
         public static Int32 USER_RESISTER_SUCESSFUL_INFORMATION_PUBLIC = 9;
         public static Int32 ACTIVATION_SUCCESSFUL_INFORMATION = 10;
         public static Int32 ACTIVATION_FAIL_INFORMATION = 11;
-        public static Int32 PASSWORD_FORGET_HELP = 12;
+        public static Int32 PASSWORD_FORGOT_HELP = 12;
         public static Int32 PASSWORD_RECOVERED_SUCESSFUL_INFORMATION = 13;
         public static Int32 PASSWORD_RECOVERD_FAIL_INFORMATION = 14;
-        public static Int32 PASSWORD_FORGET_USERNAME_PASSWORD_MATCH = 15;
+        public static Int32 PASSWORD_FORGOT_USERNAME_PASSWORD_MATCH = 15;
         public static Int32 PASSWORD_RECOVERED_HELP = 16;
         public static Int32 ORDER_PLACED = 17;
         public static Int32 ORDER_STATUS_CHANGED = 18;
         public static Int32 SHARED_WISHED_LIST = 19;
         public static Int32 REFER_A_FRIEND_EMAIL = 20;
+        public static Int32 OUT_OF_STOCK_NOTIFICATION = 21;
         public static string glbConfigFolder = "\\Config\\";
         public static string glbVersionConfigFolder = "\\Config\\VersionConfig\\";
         public static string glbConnStringConfigFolder = "\\Config\\ConnStringConfig\\";
         public static string[] INCOMPRESSIBLE_EXTENSIONS = { ".gif", ".jpg", ".png", ".axd", ".asmx", ".css", ".js", "Fconnector.aspx", ".html", ".htm", "connector.aspx?", "fckstyles.xml" };
         public static string[] ALLOWED_EXTENSIONS = { ".gif", ".jpg", ".png" };
+        public static string[] ALLOWED_FILES = { ".gif", ".jpg", ".png", ".htm", ".xml", ".html", ".cs", ".ascx", ".js", ".asmx",".css" };
+        #endregion
 
         public static string GetDataBaseOwner()
         {

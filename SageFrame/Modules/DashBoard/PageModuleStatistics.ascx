@@ -2,11 +2,10 @@
     Inherits="Modules_DashBoard_PageModuleStatistics" %>
 
 <script type="text/javascript">
+//<![CDATA[ 
 $(function(){
  $('#tabPortalStat').tabs({ fx: [null, { height: 'show', opacity: 'show'}] });
 });
-
-
 $(function() {
     var PageModuleStatistics = {
         config: {
@@ -31,13 +30,10 @@ $(function() {
             TemplateName: '<%=TemplateName%>'
         },
         init: function() {
-
             PageModuleStatistics.GetGeneralSnapShot();
-
             $('#liPages').click(function() {
                 PageModuleStatistics.GetPageName();
-                $("#tblPages").quickPager({ pagerClass: "sfPagination" });
-                
+                $("#tblPages").quickPager({ pagerClass: "sfPagination" });                
             });
             $('#liModules').click(function() {
                 PageModuleStatistics.GetModules();
@@ -47,7 +43,6 @@ $(function() {
                 PageModuleStatistics.GetUsers();
                 $("#tblUser").quickPager({ pagerClass: "sfPagination" });
             });
-
         },
         ajaxCall: function(config) {
             $.ajax({
@@ -62,7 +57,6 @@ $(function() {
                 error: PageModuleStatistics.ajaxFailure
             });
         },
-
         GetPageName: function() {
             this.config.method = "GetPageName";
             this.config.url = PageModuleStatistics.config.baseURL + this.config.method;
@@ -80,7 +74,6 @@ $(function() {
             $('#tblPages').html(html);
 
         },
-
         GetModules: function() {
             this.config.method = "GetModules";
             this.config.url = PageModuleStatistics.config.baseURL + this.config.method;
@@ -101,10 +94,8 @@ $(function() {
             var lblTotalUserCount = '<%=lblTotalUserCount.ClientID%>';
             var lblPortalName = '<%=lblPortalName.ClientID%>';
             var lblUserName = '<%=lblUserName.ClientID%>';
-            var lblTemplate = '<%=lblTemplate.ClientID%>';
-            
+            var lblTemplate = '<%=lblTemplate.ClientID%>';            
             var Snapshot = data.d;
-
             $('#' + lblUserName).text(PageModuleStatistics.config.UserName);
             $('#' + lblUserCount).text('AnonymousUser-' + Snapshot.AnonymousUser + ' & ' + 'LoginUser-' + Snapshot.LoginUser);
             $('#' + lblPageCount).text(Snapshot.PageCount);
@@ -112,17 +103,14 @@ $(function() {
             $('#' + lblPortalName).text(PageModuleStatistics.config.PortalName);
             $('#' + lblTemplate).text(PageModuleStatistics.config.TemplateName);
         },
-
         BindModules: function(data) {
             var html = '';
             var ModuleList = data.d;
-
             $.each(ModuleList, function(index, item) {
                 var style = index % 2 == 0 ? "sfEven" : "sfOdd";
                 html += '<tr class= ' + style + '><td>' + item.FriendlyName + '</td></tr>';
             });
             $('#tblModules').html(html);
-
         },
         GetUsers: function() {
             this.config.method = "GetUsers";
@@ -134,13 +122,11 @@ $(function() {
         BindUsers: function(data) {
             var html = '';
             var UserList = data.d;
-
             $.each(UserList, function(index, item) {
                 var style = index % 2 == 0 ? "sfEven" : "sfOdd";
                 html += '<tr class= ' + style + '><td>' + item.UserName + '</td></tr>';
             });
             $('#tblUser').html(html);
-
         },
         ajaxSuccess: function(data) {
         $('#ajaxBusy').hide();
@@ -159,97 +145,91 @@ $(function() {
                 case 4:
                     PageModuleStatistics.BindGeneralSnapShot(data);
                     break;
-
             }
         }
-
     };
     PageModuleStatistics.init();
 });
-
-
-
-
+//]]>
 </script>
 
-<h1>
-    Your Portal Snapshot</h1>
-<div class="sfFormwrapper" id="tabPortalStat">    
-        <ul>
-            <li><a id="liGeneral" href="#dvGeneral">General Snapshot</a></li>
-            <li><a id="liPages" href="#dvPages">Pages</a></li>
-            <li><a id="liModules" href="#dvModules">Modules</a></li>
-            <li><a id="liUser" href="#dvUsers">Users</a></li>
-        </ul>
-        <div id="dvGeneral" class="sfSnapshotTabDiv sfGridwrapper">
-            <table cellpadding="0" cellspacing="0" width="100%">
-                <tr class="sfOdd">
-                    <td>
-                        <label class="sfFormlabel">
-                            You are:</label>
-                    </td>
-                    <td>
-                        <asp:Label ID="lblUserName"  runat="server"></asp:Label>
-                    </td>
-                </tr>
-                <tr class="sfEven">
-                    <td>
-                        <label class="sfFormlabel">
-                            Portal Name:</label>
-                    </td>
-                    <td>
-                        <asp:Label ID="lblPortalName"  runat="server"></asp:Label>
-                    </td>
-                </tr>
-                <tr class="sfOdd">
-                    <td>
-                        <label class="sfFormlabel">
-                            Pages Count:</label>
-                    </td>
-                    <td>
-                        <asp:Label ID="lblPageCount"  runat="server"></asp:Label>
-                    </td>
-                </tr>
-                <tr class="sfEven">
-                    <td>
-                        <label class="sfFormlabel">
-                            Total No Of Users:</label>
-                    </td>
-                    <td>
-                        <asp:Label ID="lblTotalUserCount" runat="server" ></asp:Label>
-                    </td>
-                </tr>
-                <tr class="sfOdd">
-                    <td>
-                        <label class="sfFormlabel">
-                            Users Online:</label>
-                    </td>
-                    <td>
-                        <asp:Label ID="lblUserCount"  runat="server"></asp:Label>
-                    </td>
-                </tr>
-                <tr class="sfEven">
-                    <td>
-                        <label class="sfFormlabel">
-                            Active Template:</label>
-                    </td>
-                    <td>
-                        <asp:Label ID="lblTemplate"  runat="server"></asp:Label>                        
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div id="dvPages" class="sfGridwrapper">
-            <table id="tblPages" width="100%" cellpadding="0" cellspacing="0">
-            </table>
-        </div>
-        <div id="dvModules" class="sfGridwrapper">
-            <table id="tblModules" width="100%" cellpadding="0" cellspacing="0">
-            </table>
-        </div>
-        <div id="dvUsers" class="sfGridwrapper">
-            <table id="tblUser" width="100%" cellpadding="0" cellspacing="0">
-            </table>
-        </div>
+<h2>
+    Your Portal Snapshot</h2>
+<div class="sfFormwrapper" id="tabPortalStat">
+    <ul>
+        <li><a id="liGeneral" href="#dvGeneral">General Snapshot</a></li>
+        <li><a id="liPages" href="#dvPages">Pages</a></li>
+        <li><a id="liModules" href="#dvModules">Modules</a></li>
+        <li><a id="liUser" href="#dvUsers">Users</a></li>
+    </ul>
+    <div id="dvGeneral" class="sfSnapshotTabDiv sfGridwrapper">
+        <table cellpadding="0" cellspacing="0" width="100%">
+            <tr class="sfOdd">
+                <td>
+                    <label class="sfFormlabel">
+                        You are:</label>
+                </td>
+                <td>
+                    <asp:Label ID="lblUserName" runat="server"></asp:Label>
+                </td>
+            </tr>
+            <tr class="sfEven">
+                <td>
+                    <label class="sfFormlabel">
+                        Portal Name:</label>
+                </td>
+                <td>
+                    <asp:Label ID="lblPortalName" runat="server"></asp:Label>
+                </td>
+            </tr>
+            <tr class="sfOdd">
+                <td>
+                    <label class="sfFormlabel">
+                        Pages Count:</label>
+                </td>
+                <td>
+                    <asp:Label ID="lblPageCount" runat="server"></asp:Label>
+                </td>
+            </tr>
+            <tr class="sfEven">
+                <td>
+                    <label class="sfFormlabel">
+                        Total No Of Users:</label>
+                </td>
+                <td>
+                    <asp:Label ID="lblTotalUserCount" runat="server"></asp:Label>
+                </td>
+            </tr>
+            <tr class="sfOdd">
+                <td>
+                    <label class="sfFormlabel">
+                        Users Online:</label>
+                </td>
+                <td>
+                    <asp:Label ID="lblUserCount" runat="server"></asp:Label>
+                </td>
+            </tr>
+            <tr class="sfEven">
+                <td>
+                    <label class="sfFormlabel">
+                        Active Template:</label>
+                </td>
+                <td>
+                    <asp:Label ID="lblTemplate" runat="server"></asp:Label>
+                </td>
+            </tr>
+        </table>
     </div>
-
+    <div id="dvPages" class="sfGridwrapper">
+        <table id="tblPages" width="100%" cellpadding="0" cellspacing="0">
+        </table>
+    </div>
+    <div id="dvModules" class="sfGridwrapper">
+        <table id="tblModules" width="100%" cellpadding="0" cellspacing="0">
+        </table>
+    </div>
+    <div id="dvUsers" class="sfGridwrapper">
+        <table id="tblUser" width="100%" cellpadding="0" cellspacing="0">
+        </table>
+    </div>
+</div>

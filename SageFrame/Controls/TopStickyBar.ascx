@@ -1,13 +1,19 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="TopStickyBar.ascx.cs"
+<%@ Control Language="C#" AutoEventWireup="true" CodeFile="TopStickyBar.ascx.cs"
     Inherits="Controls_TopStickyBar" %>
 <%@ Register Src="LoginStatus.ascx" TagName="LoginStatus" TagPrefix="uc1" %>
 <script type="text/javascript">
-    $(function() {
-        $('#imgAdmin').attr("src", SageFrame.utils.GetAdminImage("admin-icon.png"));
+    //<![CDATA[
+    $(function () {
+        //myProfileDrop
+       
+        
+
+        $(".sfLocalee").SystemLocalize();
+        $('#imgAdmin').attr("src", SageFrameAppPath + "/Administrator/Templates/Default/images/admin-icon.png");
         $('#rdbEdit').attr("checked", true);
         $('span.sfPosition').hide();
         $('div.sfModule').append('<div class="sfClearDivTemp" style="clear:both"></div>');
-        $('input[name="mode"]').live("click", function() {
+        $('input[name="mode"]').on("click", function () {
             switch ($(this).attr("id")) {
                 case "rdbEdit":
                     $('div.sfModuleControl').show();
@@ -17,28 +23,21 @@
                     $('div.sfWrapper').removeClass("sfLayoutmode");
                     $('span.sfUsermoduletitle').hide();
                     $('div.sfWrapper div').css("opacity", "1");
-                    //$('div.sfWrapper').css("opacity", "1");
                     break;
                 case "rdbLayout":
                     $('span.sfPosition').show();
                     $('div.sfModuleControl').hide();
                     $('div.sfModule').append('<div class="sfClearDivTemp" style="clear:both"></div>');
-                                        
                     var positions = $('div.sfWrapper');
-                    $.each(positions, function() {
+                    $.each(positions, function () {
                         $(this).addClass("sfLayoutmode");
                     });
-                    
                     $('div.sfLayoutmode div.sfModule').css("opacity", "0.5");
-
                     $('span.sfUsermoduletitle').show();
-
-                    $('div.sfLayoutmode').hover(function() {
+                    $('div.sfLayoutmode').hover(function () {
                         $(this).css("opacity", "1");
                         $(this).find("div.sfModule").css("opacity", "1");
-                    }, function() { $(this).find("div.sfModule").css("opacity", "0.5"); });
-
-
+                    }, function () { $(this).find("div.sfModule").css("opacity", "0.5"); });
                     break;
                 case "rdbNone":
                     $('div.sfModuleControl').hide();
@@ -47,84 +46,138 @@
                     $('div.sfWrapper').removeClass("sfLayoutmode");
                     $('span.sfUsermoduletitle').hide();
                     $('div.sfWrapper div').css("opacity", "1");
-                    //$('div.sfWrapper').css("opacity", "1");
                     break;
             }
         });
+        //        $(".signin").click(function(e) {
+        //            e.preventDefault();
+        //            $("div#signin_menu").toggle();
+        //            $(".signin").toggleClass("menu-open");
+        //        });
+        //        $("div#signin_menu").mouseup(function() {
+        //            return false
+        //        });
+        //        $(document).mouseup(function(e) {
+        //            if ($(e.target).parent("a.signin").length == 0) {
+        //                $(".signin").removeClass("menu-open");
+        //                $("div#signin_menu").hide();
+        //            }
+        //        });
 
-        $(".signin").click(function(e) {
-            e.preventDefault();
-            $("fieldset#signin_menu").toggle();
-            $(".signin").toggleClass("menu-open");
+        $('.sfCpanel').on('click', function () {
+            var divHeight = 0;
+            if ($('#divCpanel').hasClass('On')) {
+                // divHeight = parseInt($('.sfMiddle').height()) - parseInt($('#templateChangeWrapper').height());
+                divHeight = -254;
+                $('#divCpanel').removeClass('On').addClass('Off');
+            }
+            else {
+                divHeight = 0;
+                $('#divCpanel').removeClass('Off').addClass('On');
+            }
+            $('#divCpanel').animate({
+                top: divHeight
+            });
         });
+        if (ValidTemplate == "False")
+            $('.myProfileDrop').remove();
 
-        $("fieldset#signin_menu").mouseup(function() {
-            return false
-        });
-        $(document).mouseup(function(e) {
-            if ($(e.target).parent("a.signin").length == 0) {
-                $(".signin").removeClass("menu-open");
-                $("fieldset#signin_menu").hide();
+        $('.myProfile').on('click', function () {
+            if ($('.myProfileDrop').hasClass('Off')) {
+                $('.myProfileDrop').removeClass('Off');
+                $('.myProfileDrop').show();
+            }
+            else {
+                $('.myProfileDrop').addClass('Off');
+                $('.myProfileDrop').hide();
             }
         });
-
     });
+    //]]>	
 </script>
-
 <div class="sfTopbar clearfix">
-  <ul class="left">
-    <li> <img src="#" id="imgAdmin" alt="Admin Icon" />
-      <asp:Literal ID="litUserName" runat="server" Text="Logged In As"></asp:Literal>
-      &nbsp;<strong><%= Page.User == null ? "" : Page.User.Identity.Name %></strong></li>
-    <li class="sfDashBoard">
-      <asp:HyperLink ID="hlnkDashboard" runat="server">Dashboard</asp:HyperLink>
-    </li>
-  </ul>
-   <div id="cpanel"  runat="server">
-    <div id="divCpanel">
-      <div id="topnav" class="topnav"><a href="login" class="signin"><span>CPANEL</span></a> </div>
-      <fieldset id="signin_menu">
-        <ul>
-          <li> <strong class="sfSeperator1">Customize:</strong>
-            <p>
-              <label> Themes:</label>
-              <asp:DropDownList ID="ddlThemes" runat="server"> </asp:DropDownList>
-            </p>
-            <p>
-              <label> Screen:</label>
-              <asp:DropDownList ID="ddlScreen" runat="server">
-                <asp:ListItem Value="0">fluid</asp:ListItem>
-                <asp:ListItem Value="1">wide</asp:ListItem>
-                <asp:ListItem Value="2">narrow</asp:ListItem>
-              </asp:DropDownList>
-            </p>
-            <p>
-              <label> Layouts:</label>
-              <asp:DropDownList ID="ddlLayout" runat="server"> </asp:DropDownList>
-            </p>
-            <p>
-              <asp:Button ID="btnApply" OnClick="btnApply_Click" runat="server" Text="Apply" CssClass="sfBtn" />
-            </p>
-            <p class="sfMode"> <strong>Mode:</strong>
-              <input id="rdbEdit" name="mode" type="radio" />
-              <label>Edit</label>
-              <input id="rdbLayout" name="mode" type="radio" />
-              <label>Layout</label>
-              <input id="rdbNone" name="mode" type="radio" />
-              <label>None</label>
-              
-            </p>
-          </li>
-        </ul>
-      </fieldset>
+    <ul class="left">
+        <li>
+            <div class="sfLogo">
+                <asp:HyperLink ID="hypLogo" runat="server">Dashboard</asp:HyperLink>
+                <asp:Label runat="server" ID="lblVersion"></asp:Label>
+            </div>
+        </li>
+    </ul>
+    <ul class="right">
+    </ul>
+    <div id="cpanel" runat="server">
+        <div id="divCpanel" style="top: -254px;">
+            <div id="signin_menu" class="clearfix">
+                <ul>
+                    <li>
+                        <h6 class="sfLocalee">
+                            Customize:</h6>
+                        <p>
+                            <label class="sfLocalee">
+                                Themes:</label>
+                            <asp:DropDownList ID="ddlThemes" runat="server" meta:resourcekey="ddlThemesResource1">
+                            </asp:DropDownList>
+                        </p>
+                        <p>
+                            <label class="sfLocalee">
+                                Screen:</label>
+                            <asp:DropDownList ID="ddlScreen" runat="server" meta:resourcekey="ddlScreenResource1">
+                                <asp:ListItem Value="0" meta:resourcekey="ListItemResource1">fluid</asp:ListItem>
+                                <asp:ListItem Value="1" meta:resourcekey="ListItemResource2">wide</asp:ListItem>
+                                <asp:ListItem Value="2" meta:resourcekey="ListItemResource3">narrow</asp:ListItem>
+                            </asp:DropDownList>
+                        </p>
+                        <p>
+                            <label class="sfLocalee">
+                                Layouts:</label>
+                            <asp:DropDownList ID="ddlLayout" runat="server" meta:resourcekey="ddlLayoutResource1">
+                            </asp:DropDownList>
+                        </p>
+                        <p>
+                            <asp:Button ID="btnApply" OnClick="btnApply_Click" runat="server" Text="Apply" CssClass="sfBtn"
+                                meta:resourcekey="btnApplyResource1" />
+                        </p>
+                        <div class="sfMode">
+                            <h6 class="sfLocalee">
+                                Mode:</h6>
+                            <label class="sfLocale">
+                                <input id="rdbEdit" name="mode" type="radio" />
+                                Edit</label>
+                            <label class="sfLocale">
+                                <input id="rdbLayout" name="mode" type="radio" />
+                                Layout</label>
+                            <label class="sfLocale">
+                                <input id="rdbNone" name="mode" type="radio" />
+                                None</label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <span class="sfCpanel icon-themesetting signin"></span>
+        </div>
     </div>
-  </div>
-  <ul class="right">
-    <li class="myaccount">
-      <asp:HyperLink runat="server" ID="lnkAccount" Text="My Account"></asp:HyperLink>
-    </li>
-    <li class="logout">
-      <uc1:LoginStatus ID="LoginStatus1" runat="server" />
-    </li>
-  </ul>
+    <ul class="right">
+        <li class="sfDashBoard">
+            <asp:HyperLink ID="hlnkDashboard" CssClass="icon-dashboard" runat="server" meta:resourcekey="hlnkDashboardResource1">Dashboard</asp:HyperLink>
+        </li>
+        <li class="loggedin"><span class="icon-user">
+            <asp:Literal ID="litUserName" runat="server" Text="Logged As" meta:resourcekey="litUserNameResource1">
+            </asp:Literal></span> &nbsp;<strong><%= userName%></strong> </li>
+        <li class="logout"><span class='myProfile  icon-arrow-s'></span>
+            <div class="myProfileDrop Off" style="display: none;">
+                <ul>
+                    <li>
+                        <%= userName%>
+                    </li>
+                    <li class="myaccount">
+                        <asp:HyperLink runat="server" ID="lnkAccount" Text="My Account" meta:resourcekey="lnkAccountResource1"></asp:HyperLink>
+                    </li>
+                    <li>
+                        <uc1:LoginStatus ID="LoginStatus2" runat="server" />
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
 </div>

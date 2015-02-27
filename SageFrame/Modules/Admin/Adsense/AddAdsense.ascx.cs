@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,13 +16,13 @@ using SFE.GoogleAdUnit;
 using System.Collections;
 using SageFrame.Framework;
 using SageFrame.GoogleAdsense;
+#endregion
 
 
 namespace SageFrame.Modules.Admin.Adsense
 {
     public partial class AddAdsense : BaseAdministrationUserControl
     {
-       
         int _userModuleCount = 0;
         public Int32 userModuleID = 0;
         SageFrameConfig pb = new SageFrameConfig();
@@ -45,7 +30,7 @@ namespace SageFrame.Modules.Admin.Adsense
         protected void Page_Init(object sender, EventArgs e)
         {
             userModuleID = Int32.Parse(SageUserModuleID);
-            AdUnit1.AffiliateId = pb.GetSettingsByKey(SageFrameSettingKeys.PortalGoogleAdSenseID);
+            AdUnit1.AffiliateId = pb.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalGoogleAdSenseID);
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -57,7 +42,8 @@ namespace SageFrame.Modules.Admin.Adsense
                 BindDropDowns();
                 try
                 {
-                    _userModuleCount = GoogleAdsenseController.CountAdsenseSettings(userModuleID, GetPortalID);
+                    GoogleAdsenseController objController = new GoogleAdsenseController();
+                    _userModuleCount = objController.CountAdsenseSettings(userModuleID, GetPortalID);
                 }
                 catch (Exception ex)
                 {
@@ -88,8 +74,9 @@ namespace SageFrame.Modules.Admin.Adsense
         {
             try
             {
-                
-                List<GoogleAdsenseInfo> adsenseSetting = GoogleAdsenseController.GetAdSenseSettingsByUserModuleID(userModuleID, GetPortalID);
+                bool isPublic = false;
+                GoogleAdsenseController objController = new GoogleAdsenseController();
+                List<GoogleAdsenseInfo> adsenseSetting = objController.GetAdSenseSettingsByUserModuleID(userModuleID, GetPortalID);
                 foreach (GoogleAdsenseInfo adsContent in adsenseSetting)
                 {
                     switch (adsContent.SettingName)
@@ -152,23 +139,35 @@ namespace SageFrame.Modules.Admin.Adsense
                         case "AdsenseAnotherURL":
                             if (adsContent.SettingValue.Trim() != "")
                             {
-                                txtanotherURL.Text = adsContent.SettingValue;
-                                anotherURL.Visible = true;
-                                solidFill.Visible = false;
+                                if (isPublic == false)
+                                {
+                                    txtanotherURL.Text = adsContent.SettingValue;
+                                    anotherURL.Visible = true;
+                                    solidFill.Visible = false;
+                                }
                             }
                             break;
                         case "AdsenseSolidFillColor":
                             if (adsContent.SettingValue.Trim() != "")
                             {
-                                txtSolidFill.Text = adsContent.SettingValue;
-                                solidFill.Visible = true;
-                                anotherURL.Visible = false;
+                                if (isPublic == false)
+                                {
+                                    txtSolidFill.Text = adsContent.SettingValue;
+                                    solidFill.Visible = true;
+                                    anotherURL.Visible = false;
+                                }
                             }
                             break;
                         case "AdsenseAlternateAds":
                             ddlAlternateAds.SelectedValue = adsContent.SettingValue;
                             if (adsContent.SettingValue == "-1")
                             {
+                                solidFill.Visible = false;
+                                anotherURL.Visible = false;
+                            }
+                            if (adsContent.SettingValue == "0")
+                            {
+                                isPublic = true;
                                 solidFill.Visible = false;
                                 anotherURL.Visible = false;
                             }
@@ -214,7 +213,7 @@ namespace SageFrame.Modules.Admin.Adsense
         {
             AdUnit1.Visible = true;
             SageFrameConfig pb = new SageFrameConfig();
-            AdUnit1.AffiliateId = pb.GetSettingsByKey(SageFrameSettingKeys.PortalGoogleAdSenseID);
+            AdUnit1.AffiliateId = pb.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalGoogleAdSenseID);
             string unitFormat = ddlUnitFormat.SelectedItem.Text;
             string unitType = ddlAddType.SelectedItem.Text;
 
@@ -226,7 +225,6 @@ namespace SageFrame.Modules.Admin.Adsense
             {
                 AdUnit1.AdUnitType = (AdUnitType)Enum.Parse(typeof(AdUnitType), unitType, true);
             }
-
 
             AdUnit1.ChannelId = txtChannelID.Text;
             if (txtbackcolor.Text.Trim() != "")
@@ -304,43 +302,43 @@ namespace SageFrame.Modules.Admin.Adsense
                 }
                 else
                 {
-                    channelID = pb.GetSettingsByKey(SageFrameSettingKeys.PortalGoogleAdsenseChannelID);
+                    channelID = pb.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalGoogleAdsenseChannelID);
                 }
 
-                
-                GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseShow", chkShow.Checked.ToString(), IsActive, GetPortalID, GetUsername, updateFlag);
-                GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseUnitFormat", ddlUnitFormat.SelectedValue, IsActive, GetPortalID, GetUsername, updateFlag);
-                GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseUnitType", ddlAddType.SelectedValue, IsActive, GetPortalID, GetUsername, updateFlag);
-                GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseChannelID", channelID, IsActive, GetPortalID, GetUsername, updateFlag);
-                GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseBorderColor", txtBorder.Text, IsActive, GetPortalID, GetUsername, updateFlag);
-                GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseBackColor", txtbackcolor.Text, IsActive, GetPortalID, GetUsername, updateFlag);
-                GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseLinkColor", txtLink.Text, IsActive, GetPortalID, GetUsername, updateFlag);
-                GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseTextColor", txtText.Text, IsActive, GetPortalID, GetUsername, updateFlag);
-                GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseURLColor", txtURL.Text, IsActive, GetPortalID, GetUsername, updateFlag);
+                GoogleAdsenseController objController = new GoogleAdsenseController();
+
+                objController.AddUpdateAdSense(userModuleID, "AdsenseShow", chkShow.Checked.ToString(), IsActive, GetPortalID, GetUsername, updateFlag);
+                objController.AddUpdateAdSense(userModuleID, "AdsenseUnitFormat", ddlUnitFormat.SelectedValue, IsActive, GetPortalID, GetUsername, updateFlag);
+                objController.AddUpdateAdSense(userModuleID, "AdsenseUnitType", ddlAddType.SelectedValue, IsActive, GetPortalID, GetUsername, updateFlag);
+                objController.AddUpdateAdSense(userModuleID, "AdsenseChannelID", channelID, IsActive, GetPortalID, GetUsername, updateFlag);
+                objController.AddUpdateAdSense(userModuleID, "AdsenseBorderColor", txtBorder.Text, IsActive, GetPortalID, GetUsername, updateFlag);
+                objController.AddUpdateAdSense(userModuleID, "AdsenseBackColor", txtbackcolor.Text, IsActive, GetPortalID, GetUsername, updateFlag);
+                objController.AddUpdateAdSense(userModuleID, "AdsenseLinkColor", txtLink.Text, IsActive, GetPortalID, GetUsername, updateFlag);
+                objController.AddUpdateAdSense(userModuleID, "AdsenseTextColor", txtText.Text, IsActive, GetPortalID, GetUsername, updateFlag);
+                objController.AddUpdateAdSense(userModuleID, "AdsenseURLColor", txtURL.Text, IsActive, GetPortalID, GetUsername, updateFlag);
                 if (ddlAlternateAds.SelectedValue != "-1")
                 {
-                    GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseAlternateAds", ddlAlternateAds.SelectedValue, IsActive, GetPortalID, GetUsername, updateFlag);
+                    objController.AddUpdateAdSense(userModuleID, "AdsenseAlternateAds", ddlAlternateAds.SelectedValue, IsActive, GetPortalID, GetUsername, updateFlag);
                     if (ddlAlternateAds.SelectedValue == "1")
                     {
-                        
-                        GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseAnotherURL", txtanotherURL.Text, IsActive, GetPortalID, GetUsername, updateFlag);
-                        GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseSolidFillColor", "", IsActive, GetPortalID, GetUsername, updateFlag);
+
+                        objController.AddUpdateAdSense(userModuleID, "AdsenseAnotherURL", txtanotherURL.Text, IsActive, GetPortalID, GetUsername, updateFlag);
+                        objController.AddUpdateAdSense(userModuleID, "AdsenseSolidFillColor", "", IsActive, GetPortalID, GetUsername, updateFlag);
                     }
                     else if (ddlAlternateAds.SelectedValue == "2")
                     {
-                        
-                        GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseSolidFillColor", txtSolidFill.Text, IsActive, GetPortalID, GetUsername, updateFlag);
-                        GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseAnotherURL", "", IsActive, GetPortalID, GetUsername, updateFlag);
+
+                        objController.AddUpdateAdSense(userModuleID, "AdsenseSolidFillColor", txtSolidFill.Text, IsActive, GetPortalID, GetUsername, updateFlag);
+                        objController.AddUpdateAdSense(userModuleID, "AdsenseAnotherURL", "", IsActive, GetPortalID, GetUsername, updateFlag);
                     }
                 }
                 else
                 {
-                    
-                    GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseAlternateAds", ddlAlternateAds.SelectedValue, IsActive, GetPortalID, GetUsername, updateFlag);
-                    GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseAnotherURL", "", IsActive, GetPortalID, GetUsername, updateFlag);
-                    GoogleAdsenseController.AddUpdateAdSense(userModuleID, "AdsenseSolidFillColor", "", IsActive, GetPortalID, GetUsername, updateFlag);
+
+                    objController.AddUpdateAdSense(userModuleID, "AdsenseAlternateAds", ddlAlternateAds.SelectedValue, IsActive, GetPortalID, GetUsername, updateFlag);
+                    objController.AddUpdateAdSense(userModuleID, "AdsenseAnotherURL", "", IsActive, GetPortalID, GetUsername, updateFlag);
+                    objController.AddUpdateAdSense(userModuleID, "AdsenseSolidFillColor", "", IsActive, GetPortalID, GetUsername, updateFlag);
                 }
-                // ShowMessage(SageMessageTitle.Information.ToString(), "Adsense Saved Successfully.", "", SageMessageType.Success);
                 ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("Adsense", "AdsenseSavedSuccessfully"), "", SageMessageType.Success);
 
             }
@@ -354,7 +352,8 @@ namespace SageFrame.Modules.Admin.Adsense
         {
             try
             {
-                GoogleAdsenseController.CountAdsenseSettings(userModuleID, GetPortalID);
+                GoogleAdsenseController objController = new GoogleAdsenseController();
+                objController.CountAdsenseSettings(userModuleID, GetPortalID);
                 ClearForm();
             }
             catch (Exception ex)
@@ -372,8 +371,8 @@ namespace SageFrame.Modules.Admin.Adsense
         {
             try
             {
-                GoogleAdsenseController.DeleteAdSense(userModuleID, GetPortalID);
-                //  ShowMessage(SageMessageTitle.Information.ToString(), "Adsense Deleted Successfully.", "", SageMessageType.Success);
+                GoogleAdsenseController objController = new GoogleAdsenseController();
+                objController.DeleteAdSense(userModuleID, GetPortalID);
                 ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("Adsense", "AdsenseDeletedSuccessfully"), "", SageMessageType.Success);
 
             }
@@ -417,7 +416,8 @@ namespace SageFrame.Modules.Admin.Adsense
             }
             try
             {
-                _userModuleCount = GoogleAdsenseController.CountAdsenseSettings(userModuleID, GetPortalID);
+                GoogleAdsenseController objController = new GoogleAdsenseController();
+                _userModuleCount = objController.CountAdsenseSettings(userModuleID, GetPortalID);
             }
             catch (Exception ex)
             {
@@ -429,7 +429,6 @@ namespace SageFrame.Modules.Admin.Adsense
                 UpdateFlag = true;
             }
             SaveAdsense(IsActive, UpdateFlag);
-            //Redirect();
             PreviewAds();
         }
     }

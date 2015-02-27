@@ -4,20 +4,18 @@
 <h1>
     SEO Extension
 </h1>
-<div class="sfFormwrapper sfPadding">
+<div>
     <cc1:TabContainer ID="TabContainer1" runat="server" ActiveTabIndex="0" 
         meta:resourcekey="TabContainer1Resource1">
         <cc1:TabPanel ID="tpGoogleAnalytics" runat="server" 
             HeaderText="Google Analytics" meta:resourcekey="tpGoogleAnalyticsResource1">
             <ContentTemplate>
+            <div class="sfFormwrapper sfPadding">
                 <table border="0" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
                         <td width="10%">
                             <asp:Label ID="lblvalue" runat="server" Text="Google JS" ToolTip="Javascript code provided by google, paste here."
                                 CssClass="sfFormlabel" meta:resourcekey="lblvalueResource1"></asp:Label>
-                        </td>
-                        <td width="30">
-                            :
                         </td>
                         <td>
                             <asp:TextBox ID="txtvalue" runat="server" TextMode="MultiLine" Rows="10" ValidationGroup="GJSC"
@@ -30,11 +28,8 @@
                     </tr>
                     <tr>
                         <td valign='top'>
-                            <asp:Label ID="lblisActive" runat="server" Text="Is Active" 
+                            <asp:Label ID="lblisActive" runat="server" Text="Active" 
                                 CssClass="sfFormlabel" meta:resourcekey="lblisActiveResource1"></asp:Label>
-                        </td>
-                        <td width="30">
-                            :
                         </td>
                         <td>
                             <asp:CheckBox ID="chkIsActive" runat='server' ValidationGroup="GJSC" 
@@ -42,31 +37,31 @@
                         </td>
                     </tr>
                 </table>
+                </div>
                 <div class="sfButtonwrapper">
-                    <asp:ImageButton ID="imbSave" runat="server" OnClick="imbSave_Click" ToolTip="Save"
+                <label  class="icon-update sfBtn">Update
+                    <asp:Button ID="imbSave" runat="server" OnClick="imbSave_Click" ToolTip="Save" 
                         CausesValidation="False" ValidationGroup="GJSC" 
-                        meta:resourcekey="imbSaveResource1" />
-                    <asp:Label ID="lblSave" runat="server" Text="Update" ToolTip="Save" AssociatedControlID="imbSave"
-                        Style="cursor: pointer;" meta:resourcekey="lblSaveResource1"></asp:Label>
-                    <asp:ImageButton ID="imbRefresh" runat="server" ToolTip="Refresh" OnClick="imbRefresh_Click"
-                        CausesValidation="False" meta:resourcekey="imbRefreshResource1" />
-                    <asp:Label ID="lblRefresh" runat="server" Text="Refresh" ToolTip="Refresh" AssociatedControlID="imbRefresh"
-                        Style="cursor: pointer;" meta:resourcekey="lblRefreshResource1"></asp:Label>
+                        meta:resourcekey="imbSaveResource1"  /></label>
+                    <%--<asp:Label ID="lblSave" runat="server" Text="Update" ToolTip="Save" AssociatedControlID="imbSave"
+                        Style="cursor: pointer;" meta:resourcekey="lblSaveResource1"></asp:Label>--%>
+                <label  class="icon-refresh sfBtn">Refresh
+                    <asp:Button ID="imbRefresh" runat="server" ToolTip="Refresh" OnClick="imbRefresh_Click"
+                        CausesValidation="False" meta:resourcekey="imbRefreshResource1" /></label>
+                   <%-- <asp:Label ID="lblRefresh" runat="server" Text="Refresh" ToolTip="Refresh" AssociatedControlID="imbRefresh"
+                        Style="cursor: pointer;" meta:resourcekey="lblRefreshResource1"></asp:Label>--%>
                 </div>
             </ContentTemplate>
         </cc1:TabPanel>
         <cc1:TabPanel ID="tpSitemap" runat="server" HeaderText="Sitemap" 
             meta:resourcekey="tpSitemapResource1">
             <ContentTemplate>
-                <div id="divSitemap">
+                <div id="divSitemap" class="sfFormwrapper sfPadding">
                     <table cellpadding="0" cellspacing="0" width="100%">
                         <tr>
                             <td width="27%">
                                 <asp:Label ID="lblPriorityValues" runat="server" Text="Priority Values" 
                                     CssClass="sfFormlabel" meta:resourcekey="lblPriorityValuesResource1"></asp:Label>
-                            </td>
-                            <td width="30">
-                                :
                             </td>
                             <td>
                                 <asp:DropDownList ID="ddlPriorityValues" runat="server" CssClass="sfListmenu" 
@@ -90,9 +85,6 @@
                                 <asp:Label ID="lblChangeFequency" runat="server" Text="Change Frequency" 
                                     CssClass="sfFormlabel" meta:resourcekey="lblChangeFequencyResource1"></asp:Label>
                             </td>
-                            <td width="30">
-                                :
-                            </td>
                             <td>
                                 <asp:DropDownList ID="ddlChangeFrequency" runat="server" CssClass="sfListmenu" 
                                     meta:resourcekey="ddlChangeFrequencyResource1">
@@ -111,22 +103,16 @@
                                 <asp:Label ID="lblDisplay" runat="server" Text="Generate Sitemap" 
                                     CssClass="sfFormlabel" meta:resourcekey="lblDisplayResource1"></asp:Label>
                             </td>
-                            <td width="30">
-                                :
-                            </td>
-                            <td>
-                                <asp:Button ID="BtnGenerateSitemap" class="sfBtn" runat="server" Text="Generate"
+                            <td><label class="sfLocale icon-generate sfBtn">Generate
+                                <asp:Button ID="BtnGenerateSitemap" runat="server" Text=""
                                     OnClick="btnGenerateSitemap_Click" 
-                                    meta:resourcekey="BtnGenerateSitemapResource1" />
+                                    meta:resourcekey="BtnGenerateSitemapResource1" /></label>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <asp:Label ID="lblDisplaySearchEngine" runat="server" Text="Submit Sitemap to Search Engines"
                                     CssClass="sfFormlabel" meta:resourcekey="lblDisplaySearchEngineResource1"></asp:Label>
-                            </td>
-                            <td width="30">
-                                :
                             </td>
                             <td>
                                 <div class="sfCheckbox">
@@ -145,10 +131,10 @@
                             <td>
                             </td>
                             <td>
-                            </td>
-                            <td>
-                                <asp:Button ID="btnSubmit" CssClass="sfBtn" runat="server" Text="Submit" 
+                            <label class="icon-send sfBtn">Submit
+                                <asp:Button ID="btnSubmit" runat="server" 
                                     OnClick="btnSubmit_Click" meta:resourcekey="btnSubmitResource1" />
+                                    </label>
                             </td>
                         </tr>
                     </table>
@@ -173,9 +159,10 @@
                                 </div>
                             </td>
                             <td>
+                            <label class="sfLocale icon-generate sfBtn">Generate Robots
                                 <asp:Button ID="btnGenerateRobots" runat="server" ValidationGroup="checkselected"
-                                    CssClass="sfBtn" Text="Generate Robots" OnClick="btnGenerateRobots_Click" 
-                                    meta:resourcekey="btnGenerateRobotsResource1"></asp:Button>
+                                     Text="" OnClick="btnGenerateRobots_Click" 
+                                    meta:resourcekey="btnGenerateRobotsResource1"></asp:Button></label>
                             </td>
                         </tr>
                         <td colspan="2">

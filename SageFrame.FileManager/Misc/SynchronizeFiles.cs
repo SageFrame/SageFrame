@@ -10,9 +10,11 @@ namespace SageFrame.FileManager
     
     public class SynchronizeFiles
     {
+        #region "Declaration"
         public static string UserName { get; set; }
         public static int PortalID { get; set; }
         public static string absolutePath { get; set; }
+        #endregion
 
         /// <summary>
         /// The list of folders in the database is fetched at once into this
@@ -28,8 +30,6 @@ namespace SageFrame.FileManager
             if (arrExt.Contains(ext) || arrExt.Contains(ext.Substring(1,ext.Length-1)))
                 return true;
             else return false;
-
-
         }
 
         /// <summary>
@@ -133,9 +133,6 @@ namespace SageFrame.FileManager
                             }
                         }
                     }
-
-                   
-                    
                 }
             }
             foreach (DirectoryInfo di_child in di.GetDirectories())
@@ -177,7 +174,5 @@ namespace SageFrame.FileManager
             return(FileManagerHelper.ReplaceBackSlash(folderPath.Replace(absolutePath,"")));
             
         }
-
-        
     }
 }

@@ -3,6 +3,7 @@
     TagPrefix="sfe" %>
 
 <script language="javascript" type="text/javascript">
+    //<![CDATA[ 
     function flipFlopException(eTarget) {
         if (document.getElementById(eTarget).style.display == 'none') {
             document.getElementById(eTarget).style.display = '';
@@ -18,11 +19,11 @@
 
         var userGrid = '#' + '<%=gdvLog.ClientID%>';
         $(userGrid).find("tr:first input:checkbox").bind("click", function() {
-            if ($(this).attr("checked")) {
-                $(userGrid).find("tr input:checkbox").attr("checked", true);
+            if ($(this).prop("checked")) {
+                $(userGrid).find("tr input:checkbox").prop("checked", true);
             }
             else {
-                $(userGrid).find("tr input:checkbox").attr("checked", false);
+                $(userGrid).find("tr input:checkbox").prop("checked", false);
             }
         });
 
@@ -44,50 +45,52 @@
         });
 
     });
-
     function BindEvents() {
         $(function() {
             var logGrid = '#' + '<%=gdvLog.ClientID%>';
-            $(logGrid).find('input[id*="imbDelete"]').live("click", function(e) {
-                return ConfirmDialog($(this), 'Confirmation', 'Are you sure you want to delete this event log11?');
+            $(logGrid).find('input[id*="imbDelete"]').on("click", function(e) {
+                return ConfirmDialog($(this), 'Confirmation', 'Are you sure you want to delete this event log?');
             });
-
-
         });
     }
-
-
-  
-     
-            
+    //]]>	            
 </script>
 
 <h1>
     <asp:Label ID="lblEventViewerManagement" runat="server" Text="Event Viewer Management"
         meta:resourcekey="lblEventViewerManagementResource1"></asp:Label>
 </h1>
-<div class="sfFormwrapper sfPadding">
-    <table id="tblEventViewer" cellspacing="0" cellpadding="0" runat="server">
+<div class="sfButtonwrapper">
+    <label class="sfLocale icon-clear-log sfBtn">
+        Clear Log
+        <asp:Button ID="imgLogClear" runat="server" ToolTip="Clear all Logs" OnClick="imgLogClear_Click"
+            CausesValidation="False" meta:resourcekey="imgLogClearResource1" /></label>
+    <label class="sfLocale icon-delete sfBtn">
+        Delete Selected Logs
+        <asp:Button ID="imgLogDelete" runat="server" ToolTip="Delete Selected Logs" CausesValidation="False"
+            OnClick="imgLogDelete_Click" meta:resourcekey="imgLogDeleteResource1" />
+    </label>
+</div>
+<div class="sfFormwrapper sfPadding sfTableOption">
+    <table id="tblEventViewer" cellspacing="0" cellpadding="0" runat="server" width="100%">
         <tr>
             <td>
-                <asp:Label ID="lblLogType" runat="server" CssClass="sfFormlabel" Text="Type" 
-                    meta:resourcekey="lblLogTypeResource1" />
+                <p class="sfNote">
+                    <i class="icon-info" ></i>
+                    <asp:Label ID="lblClickRow" runat="server" Text="Click on row for details" meta:resourcekey="lblClickRowResource1" /></p>
             </td>
-            <td width="30">
-                :
+            <td class="sfTxtAlignRgt">
+                <asp:Label ID="lblLogType" runat="server" CssClass="sfFormlabel" Text="Type :" meta:resourcekey="lblLogTypeResource1" />
             </td>
             <td>
                 <asp:DropDownList ID="ddlLogType" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlLogType_SelectedIndexChanged"
                     CssClass="sfListmenu" meta:resourcekey="ddlLogTypeResource1" />
             </td>
-            <td>
+            <td class="sfTxtAlignRgt">
                 <asp:Label ID="lblRecordsPage" runat="server" CssClass="sfFormlabel" Text="Show rows :"
                     meta:resourcekey="lblRecordsPageResource1" />
             </td>
-            <td width="30">
-                :
-            </td>
-            <td width="80">
+            <td width="80" class="sfTxtAlignRgt">
                 <asp:DropDownList ID="ddlRecordsPerPage" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlRecordsPerPage_SelectedIndexChanged"
                     CssClass="sfListmenu sfAuto" meta:resourcekey="ddlRecordsPerPageResource1">
                     <asp:ListItem Value="10" meta:resourcekey="ListItemResource1">10</asp:ListItem>
@@ -102,23 +105,11 @@
         </tr>
     </table>
 </div>
-<h2 class="sfMargintop">
-    <asp:Label ID="lblClickRow" runat="server" Text="Click on row for details" meta:resourcekey="lblClickRowResource1" /></h2>
-<div class="sfButtonwrapper">
-    <asp:ImageButton ID="imgLogClear" runat="server" ToolTip="Clear all Logs" OnClick="imgLogClear_Click"
-        CausesValidation="False" meta:resourcekey="imgLogClearResource1" />
-    <asp:Label ID="lblClearLog" runat="server" Text="Clear Log" AssociatedControlID="imgLogClear"
-        Style="cursor: pointer;" meta:resourcekey="lblClearLogResource1"></asp:Label>
-    <asp:ImageButton ID="imgLogDelete" runat="server" ToolTip="Delete Selected Logs"
-        CausesValidation="False" OnClick="imgLogDelete_Click" meta:resourcekey="imgLogDeleteResource1" />
-    <asp:Label ID="lblLogDelete" runat="server" Text="Delete Selected Logs" AssociatedControlID="imgLogDelete"
-        Style="cursor: pointer;" meta:resourcekey="lblLogDeleteResource1"></asp:Label>
-</div>
-<%--<asp:UpdatePanel ID="updPanel" runat="server">
-    <ContentTemplate>--%>
 
 <script type="text/javascript">
+    //<![CDATA[
     Sys.Application.add_load(BindEvents);
+    //]]>	
 </script>
 
 <div class="sfGridwrapper sfEventview">
@@ -143,20 +134,17 @@
                     <asp:Label runat="server" Text='<%# Eval("AddedOn") %>' ID="lblDate" meta:resourcekey="lblDateResource1" />
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:TemplateField HeaderText="LogType" 
-                meta:resourcekey="TemplateFieldResource3">
+            <asp:TemplateField HeaderText="LogType" meta:resourcekey="TemplateFieldResource3">
                 <ItemTemplate>
                     <asp:Literal ID="ltrLogType" runat="server" Text='<%# Eval("LogTypeName") %>'></asp:Literal>
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:TemplateField HeaderText="Portal Name" 
-                meta:resourcekey="TemplateFieldResource4">
+            <asp:TemplateField HeaderText="Portal Name" meta:resourcekey="TemplateFieldResource4">
                 <ItemTemplate>
                     <asp:Label runat="server" Text='<%# Eval("PortalName") %>' ID="lblPortalName" meta:resourcekey="lblPortalNameResource1" />
                 </ItemTemplate>
             </asp:TemplateField>
-            <asp:TemplateField HeaderText="Client IP" 
-                meta:resourcekey="TemplateFieldResource5">
+            <asp:TemplateField HeaderText="Client IP" meta:resourcekey="TemplateFieldResource5">
                 <ItemTemplate>
                     <asp:Label runat="server" Text='<%# Eval("ClientIPAddress") %>' ID="lblClientIP"
                         meta:resourcekey="lblClientIPResource1" />
@@ -170,10 +158,8 @@
             </asp:TemplateField>
             <asp:TemplateField HeaderStyle-CssClass="sfDelete" meta:resourcekey="TemplateFieldResource3">
                 <ItemTemplate>
-                    <asp:ImageButton ID="imbDelete" runat="server" CausesValidation="False" CommandArgument='<%# Eval("LogID") %>'
-                        CommandName="Delete" 
-                        ImageUrl='<%# GetTemplateImageUrl("imgdelete.png", true) %>' 
-                        meta:resourcekey="imbDeleteResource1" />
+                    <asp:LinkButton ID="imbDelete" runat="server" CausesValidation="False" CommandArgument='<%# Eval("LogID") %>'
+                        CommandName="Delete" CssClass="icon-delete" meta:resourcekey="imbDeleteResource1" />
                 </ItemTemplate>
                 <HeaderStyle VerticalAlign="Top" />
                 <ItemStyle VerticalAlign="Top" />
@@ -210,21 +196,22 @@
         <AlternatingRowStyle CssClass="sfEven" />
     </asp:GridView>
 </div>
-<%--    </ContentTemplate>
-</asp:UpdatePanel>--%>
-<div class="sfFormwrapper">
-    <asp:Panel ID="pnlSendExceptions" runat="server" meta:resourcekey="pnlSendExceptionsResource1">
-        <sfe:sectionheadcontrol ID="shcEventSettings" runat="server" Section="tblSendException"
-            IncludeRule="true" IsExpanded="false" Text="Send Exceptions" />
-        <div class="sfFormwrapper">
-            <table id="tblSendException" runat="server" cellpadding="0" cellspacing="0" width="100%">
-                <tr runat="server">
-                    <td colspan="2" runat="server">
-                        <asp:Label ID="Label4" runat="server" Text="<b>Please note:</b> By using these features below, you may be sending sensitive data over the Internet in clear text (not encrypted). Before sending your exception submission, please review the contents of your exception log to verify that no sensitive data is contained within it. The row that is checked is sent as an email along with the optional message."></asp:Label>
-                    </td>
-                </tr>
-                <tr runat="server">
-                    <td style="vertical-align: top;" runat="server">
+<div>
+    <div class="sfExceptions">
+        <h3>
+            Send Exceptions</h3>
+        <table id="tblSendException" runat="server" cellpadding="0" cellspacing="0" width="100%">
+            <tr runat="server">
+                <td colspan="2" runat="server">
+                    <p class="sfNote">
+                        <i class="icon-info"></i>
+                        <asp:Label ID="Label4" runat="server" Text="<strong>Please note:</strong> By using these features below, you may be sending sensitive data over the Internet in clear text (not encrypted). Before sending your exception submission, please review the contents of your exception log to verify that no sensitive data is contained within it. The row that is checked is sent as an email along with the optional message."></asp:Label>
+                    </p>
+                </td>
+            </tr>
+            <tr runat="server">
+                <td style="vertical-align: top;" runat="server">
+                    <div class="sfFormwrapper">
                         <table id="tblSendExceptionsInfo" runat="server" width="100%" cellpadding="0" cellspacing="0">
                             <tr id="tr1" runat="server">
                                 <td class="SubHead" style="width: 175px" valign="top" runat="server">
@@ -256,7 +243,7 @@
                                 </td>
                                 <td runat="server">
                                     <asp:TextBox ID="txtMessage1" CssClass="sfTextarea" runat="server" Rows="6" Columns="25"
-                                        TextMode="MultiLine"></asp:TextBox>
+                                        TextMode="MultiLine" Width="350px" Height="150px"></asp:TextBox>
                                 </td>
                             </tr>
                             <tr runat="server">
@@ -265,17 +252,18 @@
                                 </td>
                                 <td runat="server">
                                     <div class="sfButtonwrapper">
-                                        <asp:ImageButton ID="imgSendEmail" runat="server" ToolTip="Send Email" OnClick="imgSendEmail_Click"
-                                            ValidationGroup="sendMail" />
-                                        <asp:Label ID="lblSendEmail" runat="server" Text="Send" AssociatedControlID="imgSendEmail"
-                                            Style="cursor: pointer;"></asp:Label>
+                                        <label class="sfLocale icon-send sfBtn">
+                                            Send
+                                            <asp:Button ID="imgSendEmail" runat="server" ToolTip="Send Email" OnClick="imgSendEmail_Click"
+                                                ValidationGroup="sendMail" />
+                                        </label>
                                     </div>
                                 </td>
                             </tr>
                         </table>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </asp:Panel>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>

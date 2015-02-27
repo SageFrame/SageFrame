@@ -4,48 +4,48 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Fallback Page</title>
-
-    <script src="../js/jquery-1.4.4.js" type="text/javascript"></script>
-
-    <script src="../js/json2.js" type="text/javascript"></script>
-
+    <script src="../js/jquery-1.4.4.min.js" type="text/javascript"></script>
+    <script src="../js/json2.min.js" type="text/javascript"></script>
     <link href="../Administrator/Templates/Default/css/login.css" rel="stylesheet" type="text/css" />
-
-    <script type="text/javascript">
-
-    var fallBackPath = '<%=fallBackPath %>';
-    $(function() {
-        $('div.sfExceptionHead').bind("click", function() {
-            $(this).next("div").slideToggle("fast");
-        });
-
-        $('#btnActivate').bind("click", function() {
-            var param = JSON2.stringify({ PortalID: parseInt(1) });
-            $.ajax({
-                isPostBack: false,
-                type: 'POST',
-                contentType: "application/json; charset=utf-8",
-                dataType: 'json',
-                url: "<%=appPath%>" + "/Services/SageFrameGlobalWebService.asmx/" + "ActivateDefaultTemplate",
-                data: param,
-                success: function(msg) {
-                    window.location = fallBackPath;
-                }
-
+    <%--<script type="text/javascript">
+        //<![CDATA[
+        var fallBackPath = '<%=fallBackPath %>';
+        $(function () {
+            $('div.sfExceptionHead').bind("click", function () {
+                $(this).next("div").slideToggle("fast");
             });
+            $('#btnActivate').bind("click", function () {
+                var param = JSON2.stringify({ PortalID: parseInt(1) });
+                $.ajax({
+                    isPostBack: false,
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    url: "<%=appPath%>" + "/Services/SageFrameGlobalWebService.asmx/" + "ActivateDefaultTemplate",
+                    data: param,
+                    success: function (msg) {
+                        window.location = fallBackPath;
+                    }
+                });
+            });
+            var link = document.createElement('link');
+            link.type = 'image/x-icon';
+            link.rel = 'shortcut icon';
+            link.href = '<%=templateFavicon %>';
+            document.getElementsByTagName('head')[0].appendChild(link);
         });
-    });
-    </script>
-
+    //]]>	
+    </script>--%>
     <style type="text/css">
-        </style>
+        
+    </style>
 </head>
 <body>
     <form id="form1" runat="server">
     <div class="sfFallback">
         <div class="sfLogoholder">
             <a class="sflogo" target="_blank" href="http://www.sageframe.com/">
-              <asp:Image ID="imgLogo" runat="server" alt="SageFrame"/>
+                <asp:Image ID="imgLogo" runat="server" alt="SageFrame" />
             </a>
         </div>
         <div class="sfFallbackHolder">
@@ -64,7 +64,10 @@
                 <div class="sfButtonWrapper">
                     <h4>
                         Do you want to switch to the default template?</h4>
-                    <span id="btnActivate" class="sfBtn">Yes, Switch to default</span></div>
+<%--                    <span id="btnActivate" class="sfBtn">Yes, Switch to default</span>--%>
+                    <asp:Button runat="server" ID="btnFallback" Text="Yes, Switch to Default" 
+                        CssClass="sfBtn" onclick="btnFallback_Click" />
+                </div>
             </div>
         </div>
     </div>

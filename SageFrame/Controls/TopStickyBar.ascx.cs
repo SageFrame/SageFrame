@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Configuration;
 using System.Data;
@@ -16,35 +16,56 @@ using System.IO;
 using System.Collections.Generic;
 using SageFrame.Common;
 using SageFrame.Security;
+using SageFrame.Framework;
+using SageFrame.Core;
 
 public partial class Controls_TopStickyBar : BaseAdministrationUserControl
 {
-    public string appPath = "";
+    public string appPath = string.Empty;
+    public string Extension;
+    public string userName = string.Empty;
+    public string logoNavigation = string.Empty;
+
+    protected void Page_Init(object sender, EventArgs e)
+    {
+        
+        BindThemes();
+        BindLayouts();
+        BindValues();
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
-        appPath = Request.ApplicationPath == "/" ? "" : Request.ApplicationPath;
-       
+        IncludeLanguageJS();
+        appPath = GetApplicationName;
+        SecurityPolicy objSecurity = new SecurityPolicy();
+        userName = objSecurity.GetUser(GetPortalID);
+        Extension = SageFrameSettingKeys.PageExtension;
+
+
         if (!IsPostBack)
         {
-            BindThemes();
-            BindLayouts();
-            BindValues();
-
+            // BindThemes();
+            //BindLayouts();
+            //BindValues();
             hlnkDashboard.Visible = false;
             SageFrameConfig conf = new SageFrameConfig();
-            string ExistingPortalShowProfileLink = conf.GetSettingsByKey(SageFrameSettingKeys.PortalShowProfileLink);
+            string ExistingPortalShowProfileLink = conf.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalShowProfileLink);
+            lnkAccount.NavigateUrl = GetProfileLink();
             if (ExistingPortalShowProfileLink == "1")
             {
-                lnkAccount.NavigateUrl = GetProfileLink();
+                lnkAccount.Visible = true;
             }
             else
             {
                 lnkAccount.Visible = false;
             }
-
+            SageFrame.Application.Application app = new SageFrame.Application.Application();
+            lblVersion.Text = string.Format("V {0}", app.FormatShortVersion(app.Version, true));
         }
-       
-         RoleController _role = new RoleController();
+        hypLogo.NavigateUrl = GetPortalAdminPage();
+        hypLogo.ImageUrl = appPath + "/Administrator/Templates/Default/images/sageframe.png";
+        RoleController _role = new RoleController();
         string[] roles = _role.GetRoleNames(GetUsername, GetPortalID).ToLower().Split(',');
         if (roles.Contains(SystemSetting.SUPER_ROLE[0].ToLower()) || roles.Contains(SystemSetting.SITEADMIN.ToLower()))
         {
@@ -56,46 +77,50 @@ public partial class Controls_TopStickyBar : BaseAdministrationUserControl
         {
             cpanel.Visible = false;
         }
-
+        TemplateValidation objValidation = new TemplateValidation();
+        objValidation.Validate();
+        
     }
-   
 
     public void BindValues()
     {
         PresetInfo preset = GetPresetDetails;
-        if (preset.ActiveTheme == "")
+        if (preset.ActiveTheme == string.Empty)
         {
             preset.ActiveTheme = "default";
         }
         ddlThemes.Items.FindByText(preset.ActiveTheme.ToLower()).Selected = true;
-        if (preset.ActiveWidth == "")
+        if (preset.ActiveWidth == string.Empty)
         {
             preset.ActiveWidth = "Wide";
-        }       
+        }
         ddlScreen.Items.FindByText(preset.ActiveWidth.ToLower()).Selected = true;
         string activeLayout = string.Empty;
         string pageName = Request.Url.ToString();
         SageFrameConfig sfConfig = new SageFrameConfig();
         pageName = Path.GetFileNameWithoutExtension(pageName);
-        pageName = pageName.ToLower().Equals("default") ? sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) : pageName;   
-        foreach(KeyValue kvp in preset.lstLayouts)
+        pageName = pageName.ToLower().Equals("default") ? sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) : pageName;
+        foreach (KeyValue kvp in preset.lstLayouts)
         {
             string[] arrLayouts = kvp.Value.Split(',');
-            if(arrLayouts.Contains(pageName))
+            if (arrLayouts.Contains(pageName))
             {
                 activeLayout = kvp.Key;
             }
         }
-        if (activeLayout != "")
+        if (activeLayout != null && activeLayout != string.Empty)
         {
-            ddlLayout.Items.FindByText(string.Format("{0}.ascx", activeLayout.ToLower())).Selected = true;
+            if (ddlLayout.Items.FindByText(string.Format("{0}.ascx", activeLayout)) != null)
+            {
+                ddlLayout.Items.FindByText(string.Format("{0}.ascx", activeLayout)).Selected = true;
+            }
         }
     }
 
     protected void btnApply_Click(object sender, EventArgs e)
     {
-        HttpContext.Current.Cache.Remove("SageFrameCss");
-        HttpContext.Current.Cache.Remove("SageFrameJs");
+        HttpRuntime.Cache.Remove(CacheKeys.SageFrameJs);
+        HttpRuntime.Cache.Remove(CacheKeys.SageFrameCss);
         string optimized_path = Server.MapPath(SageFrameConstants.OptimizedResourcePath);
         IOHelper.DeleteDirectoryFiles(optimized_path, ".js,.css");
         if (File.Exists(Server.MapPath(SageFrameConstants.OptimizedCssMap)))
@@ -106,32 +131,47 @@ public partial class Controls_TopStickyBar : BaseAdministrationUserControl
         {
             XmlHelper.DeleteNodes(Server.MapPath(SageFrameConstants.OptimizedJsMap), "resourcemap/resourcemap");
         }
-
         PresetInfo preset = new PresetInfo();
-        preset = GetPresetDetails;
-        preset.ActiveTheme = ddlThemes.SelectedItem.ToString();
-        preset.ActiveWidth = ddlScreen.SelectedItem.ToString();
-        preset.ActiveLayout = Path.GetFileNameWithoutExtension(ddlLayout.SelectedItem.ToString());
+        preset = PresetHelper.LoadActivePagePreset(TemplateName, GetPageSEOName(Request.Url.ToString()));
+        if (ddlScreen.SelectedItem.ToString() != string.Empty)
+        {
+            preset.ActiveWidth = ddlScreen.SelectedItem.ToString();
+        }
+        if (ddlThemes.SelectedItem != null && ddlThemes.SelectedItem.ToString() != string.Empty)
+        {
+            preset.ActiveTheme = ddlThemes.SelectedItem.ToString();
+        }
+        if (ddlLayout.SelectedItem != null && ddlLayout.SelectedItem.ToString() != string.Empty)
+        {
+            preset.ActiveLayout = Path.GetFileNameWithoutExtension(ddlLayout.SelectedItem.ToString());
+        }
         List<KeyValue> lstLayouts = preset.lstLayouts;
-
         string pageName = Request.Url.ToString();
         SageFrameConfig sfConfig = new SageFrameConfig();
         pageName = Path.GetFileNameWithoutExtension(pageName);
-        pageName = pageName.ToLower().Equals("default") ? sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) : pageName;   
-
-     
+        pageName = pageName.ToLower().Equals("default") ? sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) : pageName;
         bool isNewLayout = false;
+        int oldPageCount = 0;
+        bool isNewPage = false;
+        bool deleteRepeat = false;
+        bool duplicateLayout = false;
+        List<string> pageList = new List<string>();
         foreach (KeyValue kvp in lstLayouts)
         {
+            if (kvp.Key == preset.ActiveLayout)
+            {
+                duplicateLayout = true;
+            }
             string[] pages = kvp.Value.Split(',');
-            if (pages.Count() == 1 && pages.Contains(pageName))
+            pageList.Add(string.Join(",", pages));
+            if (pages.Count() == 1 && pages.Contains(pageName)) // for single pagename and if page = currentpageName
             {
                 kvp.Key = preset.ActiveLayout;
             }
-            else if (pages.Count() > 1 && pages.Contains(pageName))
+            else if (pages.Count() > 1 && pages.Contains(pageName))// for multiple pagename and if page = currentpageName
             {
-                isNewLayout = true;
-                List<string> lstnewpage=new List<string>();
+                isNewLayout = true;                             //its because we have to insert another layout
+                List<string> lstnewpage = new List<string>();
                 foreach (string page in pages)
                 {
                     if (page.ToLower() != pageName.ToLower())
@@ -139,56 +179,128 @@ public partial class Controls_TopStickyBar : BaseAdministrationUserControl
                         lstnewpage.Add(page);
                     }
                 }
-                kvp.Value = lstnewpage.ToString();
+                kvp.Value = string.Join(",", lstnewpage.ToArray());
+                pageList.Add(kvp.Value);
+            }
+            else
+            {
+                oldPageCount++;
+            }
+            if (kvp.Value == "All" && kvp.Key == preset.ActiveLayout)
+            {
+                deleteRepeat = true;
             }
         }
-        if (isNewLayout)
+        if (lstLayouts.Count == oldPageCount)
         {
-            lstLayouts.Add(new KeyValue(preset.ActiveLayout, pageName));
+            isNewPage = true;
+        }
+        List<KeyValue> lstNewLayouts = new List<KeyValue>();
+        if (isNewPage)
+        {
+            bool isAppended = false;
+            foreach (KeyValue kvp in lstLayouts)
+            {
+                if (kvp.Key == preset.ActiveLayout)
+                {
+                    if (kvp.Value.ToLower() != "all")
+                    {
+                        kvp.Value += "," + pageName;
+                    }
+                    isAppended = true;
+                }
+                lstNewLayouts.Add(new KeyValue(kvp.Key, kvp.Value));
+            }
+            if (!isAppended)
+            {
+                lstNewLayouts.Add(new KeyValue(preset.ActiveLayout, pageName));
+            }
+            lstLayouts = lstNewLayouts;
+        }
+        else if (isNewLayout)
+        {
+            bool isAppended = false;
+            bool isAll = false;
+            foreach (KeyValue kvp in lstLayouts)
+            {
+                if (kvp.Key == preset.ActiveLayout)
+                {
+                    if (kvp.Value.ToLower() != "all")
+                    {
+                        kvp.Value += "," + pageName;
+                        isAll = true;
+                    }
+                    isAppended = true;
+                }
+                lstNewLayouts.Add(new KeyValue(kvp.Key, kvp.Value));
+            }
+            if (!isAppended && !isAll)
+            {
+                lstNewLayouts.Add(new KeyValue(preset.ActiveLayout, pageName));
+            }
+            lstLayouts = lstNewLayouts;
+        }
+        else if (deleteRepeat)
+        {
+            foreach (KeyValue kvp in lstLayouts)
+            {
+                if (kvp.Value.ToLower() != pageName.ToLower())
+                {
+                    lstNewLayouts.Add(new KeyValue(kvp.Key, kvp.Value));
+                }
+            }
+            lstLayouts = lstNewLayouts;
+        }
+        else if (duplicateLayout)
+        {
+            string key = preset.ActiveLayout;
+            List<string> pages = new List<string>();
+            foreach (KeyValue kvp in lstLayouts)
+            {
+                if (kvp.Key.ToLower() != preset.ActiveLayout.ToLower())
+                {
+                    lstNewLayouts.Add(new KeyValue(kvp.Key, kvp.Value));
+                }
+                else
+                {
+                    pages.Add(kvp.Value);
+                }
+            }
+            lstNewLayouts.Add(new KeyValue(key, string.Join(",", pages.ToArray())));
+            lstLayouts = lstNewLayouts;
         }
         preset.lstLayouts = lstLayouts;
         string presetPath = Decide.IsTemplateDefault(TemplateName.Trim()) ? Utils.GetPresetPath_DefaultTemplate(TemplateName) : Utils.GetPresetPath(TemplateName);
         string pagepreset = presetPath + "/" + TemplateConstants.PagePresetFile;
         presetPath += "/" + "pagepreset.xml";
-
+        AppErazer.ClearSysHash(ApplicationKeys.ActivePagePreset + "_" + GetPortalID);
         PresetHelper.WritePreset(presetPath, preset);
+        SageFrame.Common.CacheHelper.Clear("PresetList");
         Response.Redirect(Request.Url.OriginalString);
     }
 
     public string GetPortalAdminPage()
     {
         string sageNavigateUrl = string.Empty;
-        SageFrameConfig sfConfig = new SageFrameConfig();        
-            if (GetPortalID > 1)
-            {
-                sageNavigateUrl = ResolveUrl(string.Format("~/portal/{0}/Admin/Admin.aspx",GetPortalSEOName));
-            }
-            else
-            {
-                sageNavigateUrl = ResolveUrl("~/Admin/Admin.aspx");
-            }
-
-            return sageNavigateUrl;
-        
-
-      
+        SageFrameConfig sfConfig = new SageFrameConfig();
+        if (!IsParent)
+        {
+            sageNavigateUrl = string.Format("{0}/portal/{1}/Admin/Admin" + Extension, GetParentURL, GetPortalSEOName);
+        }
+        else
+        {
+            sageNavigateUrl = GetParentURL + "/Admin/Admin" + Extension;
+        }
+        return sageNavigateUrl;
     }
+
     private string GetProfileLink()
     {
-        string profileURL = "";
+        string profileURL = string.Empty;
         SageFrameConfig sfConfig = new SageFrameConfig();
-
-        string profilepage = sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalUserProfilePage);
-        profilepage = profilepage.ToLower().Equals("user-profile") ? string.Format("/sf/{0}",profilepage) : string.Format("/{0}",profilepage);
-            if (GetPortalID > 1)
-            {
-                profileURL = ResolveUrl("~/portal/" + GetPortalSEOName + profilepage + ".aspx");
-            }
-            else
-            {
-                profileURL = ResolveUrl("~"+profilepage+".aspx");
-            }
-       
+        string profilepage = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalUserProfilePage);
+        profilepage = profilepage.ToLower().Equals("user-profile") ? string.Format("/sf/{0}", profilepage) : string.Format("/{0}", profilepage);
+        profileURL = !IsParent ? string.Format("{0}/portal/{1}/{2}" + Extension, GetParentURL, GetPortalSEOName, profilepage) : string.Format("{0}/{1}" + Extension, GetParentURL, profilepage);
         return profileURL;
     }
 
@@ -198,7 +310,7 @@ public partial class Controls_TopStickyBar : BaseAdministrationUserControl
         List<KeyValue> lstThemes = new List<KeyValue>();
         if (Directory.Exists(themePath))
         {
-            DirectoryInfo dir=new DirectoryInfo(themePath);
+            DirectoryInfo dir = new DirectoryInfo(themePath);
             foreach (DirectoryInfo theme in dir.GetDirectories())
             {
                 lstThemes.Add(new KeyValue(theme.Name, theme.Name));
@@ -210,10 +322,12 @@ public partial class Controls_TopStickyBar : BaseAdministrationUserControl
         ddlThemes.DataTextField = "Value";
         ddlThemes.DataBind();
     }
+
     public void BindLayouts()
     {
         string templatePath = Decide.IsTemplateDefault(TemplateName) ? Utils.GetTemplatePath_Default(TemplateName) : Utils.GetTemplatePath(TemplateName);
         List<KeyValue> lstLayouts = new List<KeyValue>();
+        int count = 0;
         if (Directory.Exists(templatePath))
         {
             DirectoryInfo dir = new DirectoryInfo(templatePath);
@@ -221,12 +335,13 @@ public partial class Controls_TopStickyBar : BaseAdministrationUserControl
             {
                 if (layout.Extension.Contains("ascx"))
                 {
-                    lstLayouts.Add(new KeyValue(layout.Name.ToLower(), layout.Name.ToLower()));
+                    lstLayouts.Add(new KeyValue(count.ToString(), layout.Name));
+                    count++;
                 }
             }
-        }        
+        }
         ddlLayout.DataSource = lstLayouts;
-        ddlLayout.DataTextField = "Key";
+        ddlLayout.DataValueField = "Key";
         ddlLayout.DataTextField = "Value";
         ddlLayout.DataBind();
     }

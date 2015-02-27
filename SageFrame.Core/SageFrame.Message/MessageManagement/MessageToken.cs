@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -31,6 +19,9 @@ using SageFrame.Message;
 using System.Web.Security;
 using SageFrame.Web;
 using SageFrame.UserManagement;
+
+#endregion
+
 
 
 namespace SageFrameClass.MessageManagement
@@ -119,26 +110,29 @@ namespace SageFrameClass.MessageManagement
 
         public static string GetUserFirstName(string username, Int32 PortalID)
         {
-            MessageManagementInfo objInfo = MessageManagementController.GetUserFirstName(username, PortalID);
+            MessageManagementController objController = new MessageManagementController();
+            MessageManagementInfo objInfo = objController.GetUserFirstName(username, PortalID);
             return objInfo.FirstName;
         }
 
         public static string GetUserLastName(string username, Int32 PortalID)
         {
-            MessageManagementInfo objInfo = MessageManagementController.GetUserLastName(username, PortalID);
+            MessageManagementController objController = new MessageManagementController();
+            MessageManagementInfo objInfo = objController.GetUserLastName(username, PortalID);
             return objInfo.LastName;
         }
 
         public static string GetUserEmail(string username, Int32 PortalID)
         {
-            MessageManagementInfo objInfo = MessageManagementController.GetUserEmail(username, PortalID);
+            MessageManagementController objController = new MessageManagementController();
+            MessageManagementInfo objInfo = objController.GetUserEmail(username, PortalID);
             return objInfo.Email;
         }
 
         public static string GetUserActivationCode(string username, Int32 PortalID)
         {
-         
-            MessageManagementInfo objInfo = MessageManagementController.GetUserActivationCode(username, PortalID);
+            MessageManagementController objController = new MessageManagementController();
+            MessageManagementInfo objInfo = objController.GetUserActivationCode(username, PortalID);
             return objInfo.UserId.ToString();
 
         }

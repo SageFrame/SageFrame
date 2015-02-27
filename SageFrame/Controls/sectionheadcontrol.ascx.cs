@@ -1,24 +1,5 @@
 ﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
 using System;
 using System.Collections.Generic;
@@ -33,26 +14,12 @@ namespace SageFrame.Controls
 {
     public partial class sectionheadcontrol : BaseAdministrationUserControl
     {
-        //protected System.Web.UI.WebControls.Label lblTitle;
-
-        //protected System.Web.UI.WebControls.ImageButton imgIcon;
-
-        //protected System.Web.UI.WebControls.Panel pnlRule;
-
         private bool _includeRule = false;
-
         private bool _isExpanded = true;
-
-
-
         private string _javaScript = "__sfe_SectionMaxMin";
-
         private string _maxImageUrl = string.Empty;
-
         private string _minImageUrl = string.Empty;
-
         private string _resourceKey;
-
         private string _section;
 
         /// -----------------------------------------------------------------------------
@@ -94,20 +61,8 @@ namespace SageFrame.Controls
         {
             get
             {
-                //if (_isExpanded != null)
-                //{
-                //    return _isExpanded;
-                //}
-                //else if (ViewState["IsExpanded"] != null)
-                //{
-                //    bool temp = bool.Parse(ViewState["IsExpanded"].ToString());
-                //    return temp;
-                //}
-                //else
-                //{
                 return _isExpanded;
-                //}
-
+               
             }
             set
             {
@@ -131,7 +86,7 @@ namespace SageFrame.Controls
         {
             get
             {
-                return GetTemplateImageUrl("plus.png",false); 
+                return GetTemplateImageUrl("plus.png", false);
             }
             set
             {
@@ -205,20 +160,12 @@ namespace SageFrame.Controls
             {
                 if (!IsPostBack)
                 {
-                    //HtmlControl ctl = ((HtmlControl)(this.Parent.FindControl(Section)));
-                    //if (!(ctl == null))
-                    //{
-                        
-                    //}
-
-                    // set the resourcekey attribute to the label
-                    if ((ResourceKey != ""))
+                    if ((ResourceKey != string.Empty))
                     {
                         //lblTitle.Attributes["resourcekey"] = ResourceKey;
                         lblTitle.Text = Text;
                     }
                 }
-               
             }
             catch (Exception exc)
             {
@@ -241,9 +188,7 @@ namespace SageFrame.Controls
         /// -----------------------------------------------------------------------------
         protected void Page_PreRender(object sender, System.EventArgs e)
         {
-           
-        }
 
-       
+        }
     }
 }

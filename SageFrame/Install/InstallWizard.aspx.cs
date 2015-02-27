@@ -1,24 +1,5 @@
 ﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
 using System;
 using System.Collections.Generic;
@@ -122,7 +103,7 @@ public partial class Install_InstallWizard : System.Web.UI.Page
 
     }
 
-    
+
     private void AddImageUrls()
     {
         imgDBProgress.ImageUrl = "~/Install/images/progressbar.gif";
@@ -135,20 +116,20 @@ public partial class Install_InstallWizard : System.Web.UI.Page
 
 
         //lblChooseDatabase.Text = "Select Database:";
-        lblServer.Text = "Server:";
-        lblServerHelp.Text = "Enter the Name or IP Address of the computer where the Database is located.";
+        lblServer.Text = "Server";
+        //lblServerHelp.Text = "Enter the Name or IP Address of the computer where the Database is located.";
         //lblDataBase.Text = "Database:";
         //lblDatabaseHelp.Text = "Enter the Database name";
-        lblIntegrated.Text = "Integrated Security:";
-        lblIntegratedHelp.Text = "Check if the access to SQL server is in Windows Authentication mode. Uncheck if the access to the server is in SQL Server Authentication mode where you will need to provide the username and password.";
-        lblUserID.Text = "User ID:";
-        lblUserHelp.Text = "User ID to access the server";
-        lblPassword.Text = "Password:";
-        lblPasswordHelp.Text = "Password to access the server";
+        lblIntegrated.Text = "Integrated Security";
+        lblIntegratedHelp.Text = "Check if the access to SQL server is in Windows Authentication mode. <br/>Uncheck if the access to the server is in SQL Server Authentication mode where you will need to provide the username and password.";
+        lblUserID.Text = "User ID ";
+        //lblUserHelp.Text = "User ID to access the server";
+        lblPassword.Text = "Password";
+        //lblPasswordHelp.Text = "Password to access the server";
 
-        lblNewDatabaseHelp.Text = "Enter the New Database Name";
-        lblExistingDatabaseHelp.Text = "Enter the Existing Database Name.";
-        lblDatabaseNameHelp.Text = "Enter a database name";
+        //lblNewDatabaseHelp.Text = "Enter the New Database Name";
+        //lblExistingDatabaseHelp.Text = "Enter the Existing Database Name.";
+        //lblDatabaseNameHelp.Text = "Enter a database name";
 
         //lblOwner.Text = "Run as Owner:";
         //lblOwnerHelp.Text = "Check if you are running the database as Database Owner or you will need to provide the User ID.";
@@ -172,7 +153,7 @@ public partial class Install_InstallWizard : System.Web.UI.Page
     {
         string thumbpath = "";
         if (TemplateName == "Default")
-            thumbpath = "~/images/defaulttemplate.jpg";
+            thumbpath = "~/Core/Template/screenshots/_Thumbs/default.jpg";
         else
         {
             thumbpath = "../images" + TemplateConstants.NoImageImag;
@@ -288,10 +269,9 @@ public partial class Install_InstallWizard : System.Web.UI.Page
         //txtPassword.Text = "";
 
     }
-    
+
     protected void btnTestPermission_Click(object sender, EventArgs e)
     {
-      
         BindPermissions(false);
         TestDatabaseConnection();
     }
@@ -309,14 +289,14 @@ public partial class Install_InstallWizard : System.Web.UI.Page
             //FolderCreate
             ListItem permissionItem = new ListItem();
             if (test)
-                status= VerifyFolderCreate();
+                status = VerifyFolderCreate();
             permissionItem.Selected = status;
             if (!status)
             {
             }
             permissionItem.Enabled = false;
             permissionItem.Text = "Create Folder";
-           
+
 
             //FileCreate
             permissionItem = new ListItem();
@@ -328,42 +308,42 @@ public partial class Install_InstallWizard : System.Web.UI.Page
             }
             permissionItem.Enabled = false;
             permissionItem.Text = "Create File";
-           
+
 
             //FileDelete
             permissionItem = new ListItem();
             if (test)
-               status= VerifyFileDelete();
+                status = VerifyFileDelete();
             permissionItem.Selected = status;
             if (!status)
             {
             }
             permissionItem.Enabled = false;
             permissionItem.Text = "Delete File";
-           
+
 
             //FolderDelete
             permissionItem = new ListItem();
             if (test)
-                status= VerifyFolderDelete();
+                status = VerifyFolderDelete();
             permissionItem.Selected = status;
             if (!status)
             {
             }
             permissionItem.Enabled = false;
             permissionItem.Text = "Delete Folder";
-            
+
         }
-        catch 
+        catch
         {
-          
+
         }
         ///Test Strategy 2
 
         bool checkPermission = true;
         string rootDir = HttpContext.Current.Server.MapPath("~/");
         List<KeyValuePair<string, string>> dirsToCheck = new List<KeyValuePair<string, string>>();
-        dirsToCheck.Add(new KeyValuePair<string, string>(rootDir, Request.ApplicationPath.ToString()));        
+        dirsToCheck.Add(new KeyValuePair<string, string>(rootDir, Request.ApplicationPath.ToString()));
         dirsToCheck.Add(new KeyValuePair<string, string>(rootDir + "Install", "Install"));
         dirsToCheck.Add(new KeyValuePair<string, string>(rootDir + "XMLMessage", "XMLMessage"));
         dirsToCheck.Add(new KeyValuePair<string, string>(rootDir + "SiteMap", "SiteMap"));
@@ -397,7 +377,7 @@ public partial class Install_InstallWizard : System.Web.UI.Page
             sb.Append(String.Join(",", fileList.ToArray()).ToString());
             string strPermissionsError = sb.ToString() + "<br> Your site failed the permissions check. Using Windows Explorer, browse to the root folder of the website ( {0} ). Right-click the folder and select Sharing and Security from the popup menu. Select the Security tab. Add the appropriate User Account and set the Permissions.<h3>If using Windows 2000 - IIS5</h3>The {Server}\\ASPNET User Account must have Read, Write, and Change Control of the virtual root of your website.<h3>If using Windows 2003, Windows Vista or Windows Server 2008 and  IIS6 or IIS7</h3>The NT AUTHORITY\\NETWORK SERVICE User Account must have Read, Write, and Change Control of the virtual root of your Website.<h3>If using Windows 7 or Windows Server 2008 R2 and  IIS7.5</h3>The IIS AppPool\\DefaultAppPool User Account must have Read, Write, and Change Control of the virtual root of your Website.";
             lblPermissionsError.Text = strPermissionsError.Replace("{0}", Request.ApplicationPath);
-            lblPermissionsError.CssClass = "cssClasssNormalRed";
+            lblPermissionsError.CssClass = "sfError";
 
         }
         else
@@ -434,7 +414,7 @@ public partial class Install_InstallWizard : System.Web.UI.Page
         catch
         {
             verified = false;
-           
+
         }
         if (!verified)
             PermissionsValid = false;
@@ -454,10 +434,10 @@ public partial class Install_InstallWizard : System.Web.UI.Page
             {
                 Directory.Delete(verifyPath);
             }
-            catch 
+            catch
             {
                 verified = false;
-               
+
             }
         }
         if (!verified)
@@ -484,10 +464,10 @@ public partial class Install_InstallWizard : System.Web.UI.Page
                 Stream fileStream = File.Create(verifyPath);
                 fileStream.Close();
             }
-            catch 
+            catch
             {
                 verified = false;
-              
+
             }
         }
         if (!verified)
@@ -508,10 +488,10 @@ public partial class Install_InstallWizard : System.Web.UI.Page
             {
                 File.Delete(verifyPath);
             }
-            catch 
+            catch
             {
                 verified = false;
-               
+
             }
         }
         if (!verified)
@@ -650,83 +630,75 @@ public partial class Install_InstallWizard : System.Web.UI.Page
         return ((mode & rule.FileSystemRights) == mode ? true : false);
     }
 
-    //protected void btnTestDatabaseCon_Click(object sender, EventArgs e)
-    //{
-    //    TestDatabaseConnection();
-        
-    //}
-
+    
     private bool TestDatabaseConnection()
     {
         bool success = false;
         string DatabaseName = "";
 
 
-      
-            DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
 
-            if (!string.IsNullOrEmpty(txtServer.Text))
-            {
-                builder["Data Source"] = txtServer.Text;
-                ViewState["DataSource"] = builder["Data Source"];
-            }
+        DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
 
-            //////////////////////change/////////////////////////
+        if (!string.IsNullOrEmpty(txtServer.Text))
+        {
+            builder["Data Source"] = txtServer.Text;
+            ViewState["DataSource"] = builder["Data Source"];
+        }
 
-            if (chkIntegrated.Checked)
-            {
-                builder["integrated security"] = "true";
-                ViewState["IntegratedSecurity"] = builder["integrated security"];
-            }
-            if (!string.IsNullOrEmpty(txtUserId.Text))
-            {
-                builder["uid"] = txtUserId.Text;
-                ViewState["uid"] = this.txtUserId.Text;
+        if (chkIntegrated.Checked)
+        {
+            builder["integrated security"] = "true";
+            ViewState["IntegratedSecurity"] = true;
+        }
+        if (!string.IsNullOrEmpty(txtUserId.Text))
+        {
+            builder["uid"] = txtUserId.Text;
+            ViewState["uid"] = this.txtUserId.Text;
 
-            }
-            if (!string.IsNullOrEmpty(txtPassword.Text))
-            {
-                builder["pwd"] = txtPassword.Text;
-                Session["UserPassword"] = builder["pwd"];
-                ViewState["UserPassword"] = this.txtPassword.Text;
-            }
+        }
+        if (!string.IsNullOrEmpty(txtPassword.Text))
+        {
+            builder["pwd"] = txtPassword.Text;
+            Session["UserPassword"] = builder["pwd"];
+            ViewState["UserPassword"] = this.txtPassword.Text;
+        }
 
-            string owner = txtUserId.Text + ".";
-            //if (chkOwner.Checked)
-            //{
-            //    owner = "dbo.";
-            //}
+        string owner = txtUserId.Text + ".";
+        //if (chkOwner.Checked)
+        //{
+        //    owner = "dbo.";
+        //}
 
-            if (!string.IsNullOrEmpty(txtDataBase.Text))
-            {
-                builder["Initial Catalog"] = txtDataBase.Text;
-            }
-            if (!string.IsNullOrEmpty(txtExistingDatabaseName.Text))
-            {
-                builder["Initial Catalog"] = txtExistingDatabaseName.Text;
-                DatabaseName = txtExistingDatabaseName.Text;
-            }
-            if (!string.IsNullOrEmpty(txtNewDataBaseName.Text))
-            {
-                builder["Initial Catalog"] = txtNewDataBaseName.Text;
-                DatabaseName = txtNewDataBaseName.Text;
+        if (!string.IsNullOrEmpty(txtDataBase.Text))
+        {
+            builder["Initial Catalog"] = txtDataBase.Text;
+        }
+        if (!string.IsNullOrEmpty(txtExistingDatabaseName.Text))
+        {
+            builder["Initial Catalog"] = txtExistingDatabaseName.Text;
+            DatabaseName = txtExistingDatabaseName.Text;
+        }
+        if (!string.IsNullOrEmpty(txtNewDataBaseName.Text))
+        {
+            builder["Initial Catalog"] = txtNewDataBaseName.Text.Trim();
+            DatabaseName = txtNewDataBaseName.Text.Trim();
+        }
 
-            }
-
-            if (DatabaseName != string.Empty)
-            {
-                connectionString = CreateConnectionString(this.TrustedConnection, ViewState["DataSource"].ToString(), "master", ViewState["uid"].ToString(), ViewState["UserPassword"].ToString(), 120);
-                CreateDatabase(DatabaseName, connectionString);
-                hdnConnectionStringForAll.Value = CreateConnectionString(this.TrustedConnection, ViewState["DataSource"].ToString(), DatabaseName, ViewState["uid"].ToString(), ViewState["UserPassword"].ToString(), 120);
-            }
-            else
-            {
-                connectionString = TestConnection(builder, owner);
-                hdnConnectionStringForAll.Value = connectionString;
-            }
-
+        if (DatabaseName != string.Empty)
+        {
+            connectionString = CreateConnectionString(this.TrustedConnection, ViewState["DataSource"].ToString(), "master", ViewState["uid"].ToString(), ViewState["UserPassword"].ToString(), 120);
+            CreateDatabase(DatabaseName, connectionString);
+            hdnConnectionStringForAll.Value = CreateConnectionString(this.TrustedConnection, ViewState["DataSource"].ToString(), DatabaseName, ViewState["uid"].ToString(), ViewState["UserPassword"].ToString(), 120);
+        }
+        else
+        {
             connectionString = TestConnection(builder, owner);
-        
+            hdnConnectionStringForAll.Value = connectionString;
+        }
+
+        connectionString = TestConnection(builder, owner);
+
 
         if (connectionString.StartsWith("ERROR:"))
         {
@@ -870,7 +842,7 @@ public partial class Install_InstallWizard : System.Web.UI.Page
     {
         lock (this)
         {
-            
+
             try
             {
                 switch (Counter)
@@ -911,7 +883,7 @@ public partial class Install_InstallWizard : System.Web.UI.Page
                 UpdateTimer.Enabled = false;
                 lblInstallErrorOccur.Text = "Installation Error(s): There was an error while running the script.";
                 lblInstallError.CssClass = "sfError";
-              
+
             }
         }
     }
@@ -929,17 +901,18 @@ public partial class Install_InstallWizard : System.Web.UI.Page
         try
         {
             ExecuteLongSql(sqlcon, script);
+
         }
-        catch 
+        catch
         {
-               
+
         }
         finally
         {
             reader.Close();
             sqlcon.Close();
         }
-            
+
     }
 
     public void ExecuteLongSql(SqlConnection connection, string Script)
@@ -967,7 +940,7 @@ public partial class Install_InstallWizard : System.Web.UI.Page
                     catch
                     {
                         transaction.Rollback();
-                       
+
                     }
                 }
             }
@@ -975,7 +948,7 @@ public partial class Install_InstallWizard : System.Web.UI.Page
         transaction.Commit();
     }
 
-    #endregion  
+    #endregion
 
     protected void btnInstall_Click(object sender, EventArgs e)
     {
@@ -995,7 +968,7 @@ public partial class Install_InstallWizard : System.Web.UI.Page
             UpdateTimer.Enabled = true;
             TimedPanel.Visible = true;
             pnlStartInstall.Visible = false;
-        }       
+        }
     }
 
     public void UpdateSageFrameVersion()
@@ -1009,7 +982,7 @@ public partial class Install_InstallWizard : System.Web.UI.Page
     public void UpdateTemplate()
     {
         TemplateController.UpdActivateTemplate(ViewState["ActiveTemplate"].ToString(), hdnConnectionStringForAll.Value.ToString());
-    
+
     }
 
     public static bool IsBusy = false;
@@ -1037,9 +1010,10 @@ public partial class Install_InstallWizard : System.Web.UI.Page
                         lblInstallError.CssClass = "sfSuccess";
                         lblInstallErrorOccur.Text = "Script executed successfully ...";
                         Config.UpdateConnectionString(hdnConnectionStringForAll.Value);
-                        UpdateTemplate();                       
+                        UpdateTemplate();
                         UpdateSageFrameVersion();
-                       Response.Redirect(Page.ResolveUrl("~/" + CommonHelper.DefaultPage), true);
+                        Response.Redirect(Page.ResolveUrl("~/" + CommonHelper.DefaultPage), true);
+                        Response.Redirect(Request.RawUrl);
                     }
                     else
                     {
@@ -1060,7 +1034,7 @@ public partial class Install_InstallWizard : System.Web.UI.Page
             UpdateTimer.Enabled = false;
             lblInstallErrorOccur.Text = "Installation Error(s): There was an error while running the script.";
             lblInstallError.CssClass = "sfError";
-           
+
         }
     }
 }

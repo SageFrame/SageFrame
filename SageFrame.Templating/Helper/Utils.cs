@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +13,8 @@ using System.IO;
 using SageFrame.Templating.xmlparser;
 using System.Web;
 using System.Text.RegularExpressions;
+using SageFrame.Web;
+#endregion
 
 namespace SageFrame.Templating
 {
@@ -45,7 +32,7 @@ namespace SageFrame.Templating
 
         public static bool IsValidTag(XmlTag tag)
         {
-            return(Enum.IsDefined(typeof(XmlTagTypes),tag.TagName.ToUpper())); 
+            return (Enum.IsDefined(typeof(XmlTagTypes), tag.TagName.ToUpper()));
         }
 
         public static string GetTemplateInfoFilePath(string TemplateName)
@@ -90,7 +77,7 @@ namespace SageFrame.Templating
 
         public static string GetPresetPath_DefaultTemplate(string TemplateName)
         {
-            return (GetAbsolutePath(string.Format("{0}Template",TemplateConstants.DefaultTemplateDir)));
+            return (GetAbsolutePath(string.Format("{0}Template", TemplateConstants.DefaultTemplateDir)));
         }
 
         public static string ReplaceBackSlash(string filepath)
@@ -164,7 +151,7 @@ namespace SageFrame.Templating
 
         public static string GetFileNameWithExtension(string filename, string ext)
         {
-            
+
             if (Path.HasExtension(filename))
             {
                 filename = Path.GetFileNameWithoutExtension(filename);
@@ -179,12 +166,9 @@ namespace SageFrame.Templating
 
         public static bool ContainsXmlHeader(string xml)
         {
-               // string pattern = "\\s*<\\?xml\\s*version\\s*=\\s*\"[^\"]*\"\\s*encoding\\s*=\\s*\"\\s*utf-8\\s*\"\\s*\\?>";
 
-               // string text = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-               // Match m = Regex.Match(text, pattern);
-                return(xml.Contains("<?xml"));
-                //return(m.Success?true:false);
+            return (xml.Contains("<?xml"));
+
         }
 
         public static string GetAttributeValueByName(XmlTag tag, XmlAttributeTypes _type)
@@ -215,7 +199,7 @@ namespace SageFrame.Templating
             return attr == null ? defaultValue : attr.Value;
         }
 
-        public static string GetTagInnerHtml(Placeholders pch,XmlTag middleBlock)
+        public static string GetTagInnerHtml(Placeholders pch, XmlTag middleBlock)
         {
             XmlTag currentTag = new XmlTag();
             currentTag = middleBlock.LSTChildNodes.Find(
@@ -226,7 +210,6 @@ namespace SageFrame.Templating
                 );
             return currentTag.InnerHtml;
         }
-
         public static string UppercaseFirst(string s)
         {
             // Check for empty string.
@@ -238,10 +221,20 @@ namespace SageFrame.Templating
             return char.ToUpper(s[0]) + s.Substring(1);
         }
 
-        public static string BuildURL(string item,string appPath,string PortalSEOName,int PortalID)
+        public static string BuildURL(string item, string appPath, string PortalSEOName, int PortalID)
         {
-            string portalchange = PortalID > 1 ? string.Format("/portal/{0}", PortalSEOName) : "";
-            string url = string.Format("{0}{1}/Admin{2}.aspx",appPath,portalchange,item);
+            SageFrameConfig objsfConfig = new SageFrameConfig();
+            string portalchange = !objsfConfig.IsParent ? string.Format("/portal/{0}", PortalSEOName) : "";
+            string url = string.Empty;
+            if (item == "/Admin" + SageFrameSettingKeys.PageExtension)
+            {
+                url = string.Format("{0}{1}/Admin{2}", appPath, portalchange, item);
+            }
+            else
+            {
+                url = string.Format("{0}{1}{2}", appPath, portalchange, item);
+            }
+
             return url;
         }
 
@@ -251,8 +244,7 @@ namespace SageFrame.Templating
         }
 
         public static string FormatHtmlOutput(string content)
-        {            
-            //content = Regex.Replace(content, "</div>", string.Format("</div>{0}",Environment.NewLine), RegexOptions.IgnoreCase);
+        {
             string pattern1 = "</div>";
             MatchCollection collection1 = Regex.Matches(content, pattern1, RegexOptions.IgnoreCase);
             List<string> matchListClosingDiv = new List<string>();
@@ -265,13 +257,13 @@ namespace SageFrame.Templating
             int i = 0;
             foreach (string match in matchListClosingDiv)
             {
-                string elementPattern = string.Format("{0}\n{1}",GetIndentTabs(i),match);
+                string elementPattern = string.Format("{0}\n{1}", GetIndentTabs(i), match);
                 content = Regex.Replace(content, match, elementPattern);
                 i++;
             }
 
             string pattern = "\\<div\\s*[^>]*\\>";
-            MatchCollection collection = Regex.Matches(content, pattern, RegexOptions.IgnoreCase);            
+            MatchCollection collection = Regex.Matches(content, pattern, RegexOptions.IgnoreCase);
 
             List<string> matchList = new List<string>();
             foreach (Match tmpmatch in collection)
@@ -286,7 +278,7 @@ namespace SageFrame.Templating
                 content = Regex.Replace(content, match, elementPattern);
             }
             return content;
-           
+
         }
 
         public static string GetIndentTabs(int tabCount)
@@ -300,7 +292,7 @@ namespace SageFrame.Templating
         }
 
         public static string CleanFilePath(string illegal)
-        {   
+        {
             string regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
             Regex r = new Regex(string.Format("[{0}]", Regex.Escape(regexSearch)));
             illegal = r.Replace(illegal, "");
@@ -321,9 +313,47 @@ namespace SageFrame.Templating
 
         public static string GetSeoName(string value)
         {
-            return(value.Replace("","-"));
+            return (value.Replace("", "-"));
         }
 
-
+        public static string FallbackLayout()
+        {
+            string xml = "";
+            StringBuilder sb = new StringBuilder();
+            sb.Append(@"<?xml version=""1.0"" encoding=""utf-8""?>");
+            sb.Append(@"<layout name=""layout_all"">");
+            sb.Append(@"<section name=""sfHeader"">");
+            sb.Append(@"<placeholder name=""headertop"">headertop</placeholder>");
+            sb.Append(@"<placeholder name=""banner"">banner</placeholder>");
+            sb.Append(@"<placeholder name=""navigation"">navigation</placeholder>");
+            sb.Append(@"<placeholder name=""spotlight"" mode=""fixed"">pos1,pos2,pos3</placeholder>");
+            sb.Append(@"</section>");
+            sb.Append(@"<section name=""sfContent"" colwidth=""20"">");
+            sb.Append(@"<placeholder name=""fulltopspan"">FullTopSpan</placeholder>");
+            sb.Append(@"<placeholder name=""lefttop"" class=""sftest"">LeftTop</placeholder>");
+            sb.Append(@"<placeholder name=""leftA"" class=""leftaclass"">LeftA</placeholder>");
+            sb.Append(@"<placeholder name=""leftB"">LeftB</placeholder>");
+            sb.Append(@"<placeholder name=""leftbottom"">LeftBottom</placeholder>");
+            sb.Append(@"<placeholder name=""righttop"">RightTop</placeholder>");
+            sb.Append(@"<placeholder name=""rightA"">RightA</placeholder>");
+            sb.Append(@"<placeholder name=""rightB"">RightB</placeholder>");
+            sb.Append(@"<placeholder name=""rightbottom"">RightBottom</placeholder>");
+            sb.Append(@"<placeholder name=""middletop"">MiddleTop</placeholder>");
+            sb.Append(@"<placeholder name=""middlebottom"">MiddleBottom</placeholder>");
+            sb.Append(@"<placeholder name=""middlemaintop"">MiddleMainTop</placeholder>");
+            sb.Append(@"<placeholder name=""MiddleMainBottom"">MiddleMainBottom</placeholder>");
+            sb.Append(@"<placeholder name=""middlemaincurrent"">middlemaincurrent</placeholder>");
+            sb.Append(@"<placeholder name=""fullbottomspan"">FullBottomSpan</placeholder>");
+            sb.Append(@"</section>");
+            sb.Append(@"<section name=""sfFooter"">");
+            sb.Append(@"<placeholder name=""footer"">footer</placeholder>");
+            sb.Append(@"</section>");
+            sb.Append(@"<wrappers>");
+            sb.Append(@"<wrap type=""placeholder"" class=""testblock"" depth=""3"">middle,right</wrap>");
+            sb.Append(@"</wrappers>");
+            sb.Append(@"</layout>");
+            xml = sb.ToString();
+            return xml;
+        }
     }
 }

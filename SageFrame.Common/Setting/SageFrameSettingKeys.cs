@@ -1,32 +1,18 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
+#endregion
 
 namespace SageFrame.Web
 {
+
     public static class SageFrameSettingKeys
     {
         public static string IconFile = "IconFile";
@@ -113,7 +99,7 @@ namespace SageFrame.Web
         public static string PortalSearchEngine = "PortalSearchEngine";
         public static string PortalCssTemplate = "PortalCssTemplate";
         public static string PortalUserRegistration = "PortalUserRegistration";
-        public static string PlortalLoginpage = "PlortalLoginpage";
+        public static string PortalLoginpage = "PortalLoginpage";
 
         public static string PortalUserProfilePage = "PortalUserProfilePage";
         public static string PortalDefaultPage = "PortalDefaultPage";
@@ -142,7 +128,7 @@ namespace SageFrame.Web
         public static string PortalGoogleAdsenseChannelID = "PortalGoogleAdsenseChannelID";//Not Used
 
         public static string PortalUserActivation = "PortalUserActivation";
-        public static string PortalForgetPassword = "PortalForgetPassword";
+        public static string PortalForgotPassword = "PortalForgotPassword";
         public static string PortalPageNotAccessible = "PortalPageNotAccessible";
         public static string PortalPageNotFound = "PortalPageNotFound";
         public static string PortalPasswordRecovery = "PortalPasswordRecovery";
@@ -161,10 +147,55 @@ namespace SageFrame.Web
         public static string OptimizeCss = "OptimizeCss";
         public static string OptimizeJs = "OptimizeJs";
         public static string EnableLiveFeeds = "EnableLiveFeeds";
-        public static string ShowSideBar = "ShowSideBar";
+        public static string ShowSideBar = "ShowSideBar";       
+        public static string SettingPageExtension = "PageExtension";
+        private static string _PageExtension = string.Empty;
+        public static string PageExtension
+        {
+            get { return _PageExtension; }
+            set { _PageExtension = value; }
+        }
 
-        
-        
 
+        //Added by Bj for OpenID consumer key and Secret key
+
+
+        public static string ShowOpenID = "ShowOpenID";
+        public static string FaceBookConsumerKey = "FaceBookConsumerKey";
+        public static string FaceBookSecretkey = "FaceBookSecretkey";
+        public static string LinkedInConsumerKey = "LinkedInConsumerKey";
+        public static string LinkedInSecretKey = "LinkedInSecretKey";
+
+        //Message Setting
+        public static string MessageTemplate = "MessageTemplate";
+
+        //Enable Heavy Cache
+        private static bool _FrontMenu = true;
+        public static bool FrontMenu
+        {
+            get { return _FrontMenu; }
+            set { _FrontMenu = value; }
+        }
+        private static bool _SideMenu = true;
+        public static bool SideMenu
+        {
+            get { return _SideMenu; }
+            set { _SideMenu = value; }
+        }
+        private static bool _FooterMenu = true;
+        public static bool FooterMenu
+        {
+            get { return _FooterMenu; }
+            set { _FooterMenu = value; }
+        }
+
+        //Scheduler
+        public static string Scheduler = "Scheduler";
+        public static string UserAgentMode = "UserAgentMode";
+        public static string AdminSidebarPosition = "AdminSidebarPosition";
+        public static string EnableCDN = "EnableCDN";
+        public static string EnableDasboardHelp = "EnableDasboardHelp";
+        public static string ServerCookieExpiration = "ServerCookieExpiration";
+        
     }
 }

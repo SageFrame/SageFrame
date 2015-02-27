@@ -3,7 +3,7 @@
 
 <script language="javascript" type="text/javascript">
 
-
+//<![CDATA[   
 $(function(){
         var EnableLiveFeed='<%=LoadLiveFeed%>';       
         if(EnableLiveFeed=="True")
@@ -11,16 +11,13 @@ $(function(){
             DashBoardGrid.Init();
         }   
 });
-
-var DashBoardGrid={
-  
+var DashBoardGrid={  
    Init:function(){
                this.TutorialList();
                this.ModuleList();
                this.BlogList();  
                this.NewsList();
-            }, 
-  
+            },   
    ModuleList:function(){          
                           this.JsonRequest('<%=appPath%>'+'/Modules/Dashboard/Services/ModuleHandler.ashx', JSON2.stringify({count:5}),
                                  DashBoardGrid.successFunction, function(msg) {DashBoardGrid.GetDefaultModuleList();},false);
@@ -91,8 +88,7 @@ var DashBoardGrid={
                                                     {
                                                         strTemp =strTemp.substring(0,200);  
                                                         strTemp += "...";                     
-                                                    }   
-                                                                                                       
+                                                    }                                                                                                          
                                                    content+=strTemp;
                                                    
                                                    if(pubDate) content+="    "+pubDate;
@@ -152,17 +148,11 @@ var DashBoardGrid={
                                                               success:DashBoardGrid.successFunction,
                                                               error: function(msg) {                                    
                                                             $("div.moduleList").html("No record found for Module with name "+searhKey+" .");                                     
-                                                             }});
-                                                      
-                                                      
-                                                      
-                     
+                                                             }});                     
                                                 });
                                               }                                
-                },    
-                            
-   JsonRequest:function(url,data,successFn,errorFn,isCrossDomain){                   
-                   
+                },                                
+   JsonRequest:function(url,data,successFn,errorFn,isCrossDomain){  
                    var  contentType="application/json; charset=utf-8";
                    var  dataType="json";                      
                                       
@@ -176,9 +166,8 @@ var DashBoardGrid={
                               error:function(data){errorFn(data)}          
                        });                                     
                   }
-
 }
-
+ //]]>	
 
 </script>
 
@@ -293,8 +282,8 @@ var DashBoardGrid={
                 <ul>
                     <li><a target="new" href="http://www.sageframe.com/Blog.aspx?RSS=Blog&amp;blogid=15">
                         Developing a website with SageFrame - The dynamic Asp.Net CMS</a></li><li><a target="new"
-                            href="http://www.sageframe.com/Blog.aspx?RSS=Blog&amp;blogid=12">How to
-                            create a module on SageFrame</a></li><li><a target="new" href="http://www.sageframe.com/Blog.aspx?RSS=Blog&amp;blogid=11">
+                            href="http://www.sageframe.com/Blog.aspx?RSS=Blog&amp;blogid=12">How to create a
+                            module on SageFrame</a></li><li><a target="new" href="http://www.sageframe.com/Blog.aspx?RSS=Blog&amp;blogid=11">
                                 A website in SageFrame</a></li><li><a target="new" href="http://www.sageframe.com/Blog.aspx?RSS=Blog&amp;blogid=10">
                                     SageFrame Installation Guide for Windows7</a></li><li><a target="new" href="http://www.sageframe.com/Blog.aspx?RSS=Blog&amp;blogid=9">
                                         Installing Sageframe Visual Studio (VS) Template and Module Starter Kit</a></li></ul>

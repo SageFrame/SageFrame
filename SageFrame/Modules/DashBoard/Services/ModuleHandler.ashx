@@ -10,11 +10,10 @@ using System.Collections.Generic;
 namespace SageFrame.Modules.DashBoard
 {
     [System.Web.Script.Services.ScriptService]
-public class ModuleHandler : IHttpHandler {
-
+    public class ModuleHandler : IHttpHandler
+    {
         public void ProcessRequest(HttpContext context)
         {
-
             string service = "DashBoardSectionsWebService";
             string method = "GetModules";
             string[] args = new string[1];
@@ -29,28 +28,25 @@ public class ModuleHandler : IHttpHandler {
                     if (match.Success)
                     {
                         searchKey = match.Groups[1].Value;
-
                         method = "SearchModules";
                         args[0] = searchKey;
                     }
                 }
             }
-
             WebServiceInvoker invoker =
                 new WebServiceInvoker(
                     new Uri("http://www.sageframe.com/Modules/Dashboard/Services/DashBoardSectionsWebService.asmx"));
-
             string result = invoker.InvokeMethod<string>(service, method, args);
-
             context.Response.ContentType = "application/json";
             context.Response.Write(result);
         }
-
-        public bool IsReusable {
-        get {
-            return false;
+                
+        public bool IsReusable
+        {
+            get
+            {
+                return false;
+            }
         }
     }
-
-}
 }

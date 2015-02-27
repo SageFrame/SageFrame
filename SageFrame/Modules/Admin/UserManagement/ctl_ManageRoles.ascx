@@ -4,17 +4,14 @@
     <asp:Label ID="lblRolesManagement" runat="server" Text="Roles Management"></asp:Label>
 </h1>
 <asp:Panel ID="pnlRole" runat="server">
-    <div class="sfFormwrapper sfPadding">
+    <div class="sfFormwrapper">
         <h2>
-            <asp:Label ID="lblAddRoles" runat="server" Text="Add Roles"></asp:Label>
+            <asp:Label ID="lblAddRoles" runat="server" Text="Add New Role"></asp:Label>
         </h2>
         <table cellpadding="0" cellspacing="0" width="100%">
             <tr>
                 <td width="15%">
-                    <asp:Label ID="lblRole" runat="server" CssClass="sfFormlabel" Text="Role name"></asp:Label>
-                </td>
-                <td width="30px" align="center">
-                    :
+                    <asp:Label ID="lblRole" runat="server" CssClass="sfFormlabel" Text="Role Name"></asp:Label>
                 </td>
                 <td>
                     <asp:TextBox ID="txtRole" runat="server" CssClass="sfInputbox"></asp:TextBox>
@@ -25,20 +22,16 @@
         </table>
     </div>
     <div class="sfButtonwrapper">
-        <asp:ImageButton ID="imgAdd" runat="server" ValidationGroup="SageFrameRole" OnClick="imgAdd_Click"
-            ToolTip="save" />
-        <asp:Label ID="lblSave" runat="server" AssociatedControlID="imgAdd" Text="Save"></asp:Label>
-        <asp:ImageButton ID="imgCancel" runat="server" CausesValidation="False" OnClick="imgCancel_Click"
-            ToolTip="cancel" />
-        <asp:Label ID="lblCancel" runat="server" AssociatedControlID="imgCancel" Text="Cancel"></asp:Label>
+        <asp:LinkButton ID="imgAdd" runat="server" ValidationGroup="SageFrameRole" OnClick="imgAdd_Click"
+            ToolTip="save" CssClass="icon-save sfBtn" Text="Save" />
+        <asp:LinkButton ID="imgCancel" runat="server" CausesValidation="False" OnClick="imgCancel_Click"
+            ToolTip="cancel" CssClass="icon-close sfBtn" Text="Cancel" />
     </div>
 </asp:Panel>
 <asp:Panel ID="pnlRoles" runat="server">
     <div class="sfButtonwrapper">
-        <asp:ImageButton ID="imbAddNewRole" runat="server" OnClick="imbAddNewRole_Click"
-            ToolTip="Add new role" />
-        <asp:Label ID="lblAddNewRole" runat="server" Text="Add new role" AssociatedControlID="imbAddNewRole"
-            Style="cursor: pointer;"></asp:Label>
+        <asp:LinkButton ID="imbAddNewRole" runat="server" OnClick="imbAddNewRole_Click" ToolTip="Add New Role"
+            CssClass="icon-addnew sfBtn" Text="Add New Role" />
     </div>
     <div class="sfGridwrapper">
         <asp:GridView ID="gdvRoles" runat="server" AutoGenerateColumns="False" GridLines="None"
@@ -48,9 +41,9 @@
                 <asp:BoundField DataField="Role" HeaderText="Roles" />
                 <asp:TemplateField HeaderStyle-CssClass="sfDelete">
                     <ItemTemplate>
-                        <asp:ImageButton ID="imbDelete" runat="server" CausesValidation="False" CommandArgument='<%#Container.DataItemIndex%>'
-                            CommandName="Delete" OnClientClick="return ConfirmDialog(this, 'Confirmation', 'Are you sure you delete this role?');"
-                            ImageUrl='<%# GetTemplateImageUrl("imgdelete.png", true) %>' ToolTip="Delete the role" />
+                        <asp:LinkButton ID="imbDelete" runat="server" CausesValidation="False" CommandArgument='<%#Container.DataItemIndex%>'
+                            CommandName="Delete" OnClientClick="return ConfirmDialog(this, 'Confirmation', 'Are you sure you want to delete this role?');"
+                            CssClass="icon-delete" ToolTip="Delete the role" />
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>

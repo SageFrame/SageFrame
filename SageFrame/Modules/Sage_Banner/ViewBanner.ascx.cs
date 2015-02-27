@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +15,10 @@ using SageFrame.Web;
 using SageFrame.SageBannner.SettingInfo;
 using SageFrame.Web.Utilities;
 using SageFrame.SageBannner.Controller;
+using SageFrame.SageBannner.Info;
+using System.Text;
+using SageFrame.Web.Common.SEO;
+#endregion
 
 public partial class Modules_Sage_Banner_ViewBanner : BaseAdministrationUserControl
 {
@@ -49,25 +38,26 @@ public partial class Modules_Sage_Banner_ViewBanner : BaseAdministrationUserCont
     public int UserModuleId;
     public int PortalId;
     public string SageURL = "";
+    public string Extension;
+    string modulePath = string.Empty;
+    public int bannerCount = 0;
+    public string Fullpath = string.Empty;
     #endregion
 
-
-    
     protected void Page_Load(object sender, EventArgs e)
     {
+        Extension = SageFrameSettingKeys.PageExtension;
         SageURL = string.Format("{0}{1}", Request.ApplicationPath == "/" ? "" : Request.ApplicationPath, SageURL);
         UserModuleId = Int32.Parse(SageUserModuleID);
         PortalId = GetPortalID;
-        string modulePath = ResolveUrl(this.AppRelativeTemplateSourceDirectory);
+        modulePath = ResolveUrl(this.AppRelativeTemplateSourceDirectory);
         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "globalVariables", " var SageBannerServicePath='" + ResolveUrl(modulePath) + "';", true);
         IncludeJS();
         IncludeCss();
-
         EnableControl = true;
+        Fullpath = !IsParent ? SageURL + "/portal/" + GetPortalSEOName : SageURL;
         GetBannerSetting();
-
     }
-
 
     private void GetBannerSetting()
     {
@@ -82,36 +72,143 @@ public partial class Modules_Sage_Banner_ViewBanner : BaseAdministrationUserCont
         Speed = obj.Speed;
         TransitionMode = obj.TransitionMode;
         BannerId = obj.BannerToUse;
+        GetBannerImages(int.Parse(BannerId), UserModuleId, PortalId, GetCurrentCulture());
     }
 
 
     private void IncludeCss()
     {
-        IncludeCss("Sage_Banner", "/Modules/Sage_Banner/css/bx_styles.css", "/Modules/Sage_Banner/css/Module.css");        
+        IncludeCss("SageResponsiveBanner", "/Modules/Sage_Banner/css/bx_styles.css", "/Modules/Sage_Banner/css/Module.css");
     }
-
 
     private void IncludeJS()
     {
-        IncludeJs("SageBanner",false,"/Modules/Sage_Banner/js/JSFullSageBanner.js");
-       // IncludeJs("SageBanner", "/Modules/Sage_Banner/js/jquery.easing.1.3.js");
-        IncludeJs("SageBanner",false,"/Modules/Sage_Banner/js/jquery.bxSlider.js");        
-    }
+        IncludeJs("Sage_Banner", "/Modules/Sage_Banner/js/jquery.bxslider.js");
+        IncludeJs("Sage_Banner", "/Modules/Sage_Banner/js/picturefill.js", "/Modules/Sage_Banner/js/matchmedia.js"); 
+        IncludeJs("Sage_Banner", "/Modules/Sage_Banner/js/SageBannerView.js");
 
+    }
 
     public SageBannerSettingInfo GetSageBannerSettingList(int PortalID, int UserModuleID)
     {
         try
         {
             SageBannerController objc = new SageBannerController();
-            return objc.GetSageBannerSettingList(PortalID, UserModuleID);
+            return objc.GetSageBannerSettingList(PortalID, UserModuleID, GetCurrentCulture());
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             throw ex;
         }
-      
     }
 
+    public void GetBannerImages(int BannerID, int UserModuleID, int PortalID, string CultureCode)
+    {
+        try
+        {
+            List<SageBannerInfo> objSageBannerLst = new List<SageBannerInfo>();
+            SageBannerController obj = new SageBannerController();
+            objSageBannerLst = obj.GetBannerImages(BannerID, UserModuleID, PortalID, CultureCode);
+            StringBuilder elem = new StringBuilder();
+            elem.Append("<ul id=\"sfSlider\">");
+            if (objSageBannerLst.Count > 0)
+            {
+                foreach (SageBannerInfo banner in objSageBannerLst)
+                {
+                    if (banner.ImagePath.Length == 0)
+                    {
+                        elem.Append("<li>");
+                        elem.Append(banner.HTMLBodyText);
+                        elem.Append("</li>");
+                    }
+                    else
+                    {
+                        string target = "#";
+                        string readmoreLink = "#";
+                        if (banner.LinkToImage != string.Empty)
+                        {
+                            readmoreLink = banner.LinkToImage;
+                            target = "_blank";
+                        }
+                        else if (banner.ReadMorePage != string.Empty)
+                        {
+                            readmoreLink = Fullpath + banner.ReadMorePage + Extension;
+                        }
+                        else
+                        {
+                            readmoreLink = Fullpath + banner.ReadMorePage + Extension;
+                        }
+                        elem.Append("<li style=\"position:relative;\">");
+                        elem.Append("<div class='bannerImageWrapper'>");
+                        elem.Append("<div class='sfImageholder'>");
 
+                        //Responsive Images
+
+                        elem.Append("<div data-alt=\"SageFrame Banner Images\" data-picture=\"\">");
+
+                        elem.Append("<div data-media=\"(min-width: 0px)\" data-src=");
+                        elem.Append(ResolveUrl(modulePath));
+                        elem.Append("images/ThumbNail/Small/");
+                        elem.Append(banner.ImagePath);
+                        elem.Append("></div>");
+
+                        elem.Append("<div data-media=\"(min-width: 320px)\" data-src=");
+                        elem.Append(ResolveUrl(modulePath));
+                        elem.Append("images/ThumbNail/Medium/");
+                        elem.Append(banner.ImagePath);
+                        elem.Append("></div>");
+
+                        elem.Append("<div data-media=\"(min-width: 768px)\" data-src=");
+                        elem.Append(ResolveUrl(modulePath));
+                        elem.Append("images/ThumbNail/Large/");
+                        elem.Append(banner.ImagePath);
+                        elem.Append("></div>");
+
+                        elem.Append("<div data-media=\"(min-width: 960px)\" data-src=");
+                        elem.Append(ResolveUrl(modulePath));
+                        elem.Append("images/ThumbNail/Default/");
+                        elem.Append(banner.ImagePath);
+                        elem.Append("></div>");
+
+                        //elem.Append("<noscript><img alt=\"Sageframe Bannner Images\" src=\"");
+                        //elem.Append(ResolveUrl(modulePath));
+                        //elem.Append("images/ThumbNail/Default/");
+                        //elem.Append(banner.ImagePath);
+                        //elem.Append("/></noscript>");
+                        elem.Append("</div>");
+                        elem.Append("</div>");
+                        SEOHelper seoHelper = new SEOHelper();
+                        string unwantedTag = seoHelper.RemoveUnwantedHTMLTAG(banner.Description);
+                        if (banner.Description != null && banner.Description.Trim() != string.Empty && banner.Description.Trim() != "" && unwantedTag.Trim().Length > 0)
+                        {
+                            elem.Append("<div  class='sfBannerDesc'><p>");
+                            elem.Append(banner.Description + "</p>");
+                            elem.Append("<a target=\" " + target + " \" class='sfReadmore' href=\"");
+                            elem.Append(readmoreLink);
+                            elem.Append("\">");
+                            elem.Append("<span>");
+                            elem.Append(banner.ReadButtonText);
+                            elem.Append("</span></a></div></div></li>");
+                        }
+                        else
+                        {
+                            elem.Append("</li>");
+                        }
+                    }
+                }
+                bannerCount++;
+            }
+            else
+            {
+                bannerCount = 0;
+                elem.Append("No Banner To Display");
+            }
+            elem.Append("</ul>");
+            sageSlider.Text = elem.ToString();
+        }
+        catch (Exception ex)
+        {
+            ProcessException(ex);
+        }
+    }
 }

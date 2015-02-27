@@ -1,25 +1,11 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2010 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,11 +20,13 @@ using SageFrame.Modules;
 using SageFrame.ModuleControls;
 using SageFrame.Web.Utilities;
 using RegisterModule;
-using SageFrame.SageFrameClass.Services;
+using SageFrame.SageFrameClass.Services; 
+
+#endregion
 
 namespace SageFrame.Modules.Admin.Extensions.Editors
 {
-    
+
     /// <summary>
     /// <remarks>This class is used for Editing the module definitions 
     /// </remarks>
@@ -48,7 +36,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
         string path = HttpContext.Current.Server.MapPath("~/");
         string Exceptions = string.Empty;
         System.Nullable<Int32> _newModuleID = 0;
-        System.Nullable<Int32> _newModuleDefID = 0;        
+        System.Nullable<Int32> _newModuleDefID = 0;
         System.Nullable<Int32> _newPortalmoduleID = 0;
         System.Nullable<Int32> _moduleControlID = 0;
 
@@ -64,7 +52,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             {
                 if (!IsPostBack)
                 {
-                    AddImageUrls();
+                    //AddImageUrls();
                     LoadOwnerFolders(string.Empty);
                     LoadModuleFolders(string.Empty);
                 }
@@ -72,14 +60,14 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             catch (Exception ex)
             {
                 ProcessException(ex);
-            }           
+            }
         }
 
-        private void AddImageUrls()
-        {
-            imbCreate.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
-            imbBack.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-        }
+        //private void AddImageUrls()
+        //{
+        //    imbCreate.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
+        //    imbBack.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
+        //}
 
         /// <summary>
         /// This populates the owner folders
@@ -94,7 +82,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 if (!strFolder.ToLower().Contains(".svn"))
                 {
                     //exclude Module folders
-                    string[] files = Directory.GetFiles(strFolder, "*.ascx");                    
+                    string[] files = Directory.GetFiles(strFolder, "*.ascx");
                     if (files.Length == 0 || strFolder.ToLower() == "admin")
                     {
                         ListItem item = new ListItem(strFolder.Replace(Path.GetDirectoryName(strFolder) + "\\", ""));
@@ -181,20 +169,20 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
 
             //if (!string.IsNullOrEmpty(ddlFiles.SelectedItem.Value))
             //{
-                if (string.IsNullOrEmpty(strFolder))
+            if (string.IsNullOrEmpty(strFolder))
+            {
+                strFolder = Server.MapPath("~/Modules/" + GetSourceFolder());
+            }
+            string[] arrFiles = Directory.GetFiles(strFolder);
+            foreach (string strFile in arrFiles)
+            {
+                string strExtension = Path.GetExtension(strFile).Replace(".", "");
+                if (strExtensions.Contains(strExtension))
                 {
-                    strFolder = Server.MapPath("~/Modules/" + GetSourceFolder());
+                    ddlIcon.Items.Add(new ListItem(Path.GetFileName(strFile), Path.GetFileName(strFile).ToLower()));
                 }
-                string[] arrFiles = Directory.GetFiles(strFolder);
-                foreach (string strFile in arrFiles)
-                {
-                    string strExtension = Path.GetExtension(strFile).Replace(".", "");
-                    if (strExtensions.Contains(strExtension))
-                    {
-                        ddlIcon.Items.Add(new ListItem(Path.GetFileName(strFile), Path.GetFileName(strFile).ToLower()));
-                    }
-                }
-           // }
+            }
+            // }
         }
 
         /// <summary>
@@ -251,9 +239,9 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
         protected void ddlOwner_SelectedIndexChanged(object sender, EventArgs e)
         {
             SetupOwnerFolders();
-        }       
+        }
 
-        protected void imbCreate_Click(object sender, ImageClickEventArgs e)
+        protected void imbCreate_Click(object sender, EventArgs e)
         {
             try
             {
@@ -265,14 +253,13 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                         case "Control":
 
                             string message = ImportControl(ddlFiles.SelectedItem.Value);
-                            ProcessCancelRequestBase(Request.RawUrl, false, message);
-                            //ProcessCancelRequest(Request.RawUrl);
+                            ProcessCancelRequestBase(Request.RawUrl, false, message);                            
                             break;
                     }
                 }
                 else
                 {
-                    ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ModuleExtensionSourceIsEmpty"), "", SageMessageType.Alert);
+                    ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ModuleExtensionSourceIsEmpty"), "", SageMessageType.Alert);
                 }
             }
             catch (Exception ex)
@@ -327,14 +314,11 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                     objModule.CompatibleVersions = "";
                     objModule.dependencies = "";
                     objModule.permissions = "";
-
+                    ModuleController objController = new ModuleController();
                     try
                     {
-                        
                         int[] outputValue;
-                        
-                        outputValue = ModuleController.AddModules(objModule, false, 0, true, DateTime.Now, GetPortalID, GetUsername);
-
+                        outputValue = objController.AddModules(objModule, false, 0, true, DateTime.Now, GetPortalID, GetUsername);
                         objModule.ModuleID = outputValue[0];
                         objModule.ModuleDefID = outputValue[1];
                         _newModuleID = objModule.ModuleID;
@@ -348,7 +332,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                     try
                     {
                         //insert into ProtalModule table
-                        _newPortalmoduleID = ModuleController.AddPortalModules(GetPortalID, _newModuleID, true, DateTime.Now, GetUsername);
+                        _newPortalmoduleID = objController.AddPortalModules(GetPortalID, _newModuleID, true, DateTime.Now, GetUsername);
                     }
                     catch (Exception ex)
                     {
@@ -358,11 +342,10 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                     try
                     {
                         // get the default module VIEW permissions
-                        
-                        int _permissionIDView = ModuleController.GetPermissionByCodeAndKey("SYSTEM_VIEW", "VIEW");                        
-                        ModuleController.AddModulePermission(_newModuleDefID, _permissionIDView, GetPortalID, _newPortalmoduleID, true, GetUsername, true, DateTime.Now, GetUsername);
-                        int _permissionIDEdit = ModuleController.GetPermissionByCodeAndKey("SYSTEM_EDIT", "EDIT");                       
-                        ModuleController.AddModulePermission(_newModuleDefID, _permissionIDEdit, GetPortalID, _newPortalmoduleID, true, GetUsername, true, DateTime.Now, GetUsername);
+                        int _permissionIDView = objController.GetPermissionByCodeAndKey("SYSTEM_VIEW", "VIEW");
+                        objController.AddModulePermission(_newModuleDefID, _permissionIDView, GetPortalID, _newPortalmoduleID, true, GetUsername, true, DateTime.Now, GetUsername);
+                        int _permissionIDEdit = objController.GetPermissionByCodeAndKey("SYSTEM_EDIT", "EDIT");
+                        objController.AddModulePermission(_newModuleDefID, _permissionIDEdit, GetPortalID, _newPortalmoduleID, true, GetUsername, true, DateTime.Now, GetUsername);
                     }
                     catch (Exception ex)
                     {
@@ -371,8 +354,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
 
                     try
                     {
-                        //Logic for modulecontrol installation             
-
+                        //Logic for modulecontrol installation
                         string _moduleControlKey = txtKey.Text;
                         string _moduleControlTitle = txtTitle.Text;
                         string _moduleControlSrc = moduleControl;
@@ -385,15 +367,15 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                             _iconFile = ddlIcon.SelectedItem.Value;
                         }
                         int _displayOrder = int.Parse(txtDisplayOrder.Text);
-                        
-                        _moduleControlID = ModuleController.AddModuleCoontrols( _newModuleDefID, _moduleControlKey, _moduleControlTitle, _moduleControlSrc,
+
+                        _moduleControlID = objController.AddModuleCoontrols(_newModuleDefID, _moduleControlKey, _moduleControlTitle, _moduleControlSrc,
                             _iconFile, _controlType, _displayOrder, _moduleControlHelpUrl, _moduleSupportsPartialRendering, true, DateTime.Now,
                             GetPortalID, GetUsername);
-                        ExtensionMessage = GetSageMessage("Extensions_Editors", "ModuleExtensionIsAddedSuccessfully");                        
+                        ExtensionMessage = GetSageMessage("Extensions", "ModuleExtensionIsAddedSuccessfully");
                     }
                     catch (Exception ex)
                     {
-                        Exceptions = ex.Message; 
+                        Exceptions = ex.Message;
                     }
 
                     if (Exceptions != string.Empty)
@@ -412,7 +394,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                         //Delete Module info from data base
                         install.ModulesRollBack(objModule.ModuleID, GetPortalID);
                     }
-                }                
+                }
             }
             return ExtensionMessage;
         }
@@ -434,7 +416,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 return strSource;
             }
         }
-        
+
         /// <summary>
         /// gives name for the package name
         /// </summary>
@@ -454,9 +436,9 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             return strClass;
         }
 
-        protected void imbBack_Click(object sender, ImageClickEventArgs e)
-        {         
+        protected void imbBack_Click(object sender, EventArgs e)
+        {
             ProcessCancelRequest(Request.RawUrl);
-        } 
+        }
     }
 }

@@ -37,19 +37,15 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
 {
     public partial class ModuleControlsDetails : BaseAdministrationUserControl
     {
-        
         CommonFunction LToDCon = new CommonFunction();
-        System.Nullable<Int32> _newmoduleControlID = 0;
-        System.Nullable<Int32> _controlCount = 0;
         string ApplicationPath = HttpContext.Current.Server.MapPath("~/");
-
         protected void Page_Load(object sender, EventArgs e)
         {
             try
             {
                 if (!IsPostBack)
                 {
-                    AddImageUrls();
+                   // AddImageUrls();
                     LoadControlType();
 
                     if (Request.QueryString["moduledef"] != null || Request.QueryString["modulecontrol"] != null)
@@ -71,12 +67,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             }
         }
 
-        private void AddImageUrls()
-        {
-            imbUpdateModlueControl.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
-            imbCancelModlueControl.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-        }
-
+     
         private void BindControls()
         {
             try
@@ -92,14 +83,13 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 if (HttpContext.Current.Session["ModuleDefinitionName"] != null)
                 {
                     lblDefinitionD.Text = HttpContext.Current.Session["ModuleDefinitionName"].ToString();
-                }
-                //}
+                }                
                 LoadSources(Server.MapPath("~/Modules"));
                 LoadIcons(SystemSetting.glbImageFileTypes);
-
                 if (Request.QueryString["modulecontrol"] != null)
                 {
-                    ModuleEntities module=ModuleController.ModuleControlsGetByModuleControlID(int.Parse(Request.QueryString["modulecontrol"]));
+                    ModuleController objController = new ModuleController();
+                    ModuleEntities module = objController.ModuleControlsGetByModuleControlID(int.Parse(Request.QueryString["modulecontrol"]));
                     if (module.ControlSrc != null)
                     {
                         ddlSource.ClearSelection();
@@ -111,7 +101,6 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                         ddlIcon.SelectedIndex = ddlIcon.Items.IndexOf(ddlIcon.Items.FindByText(module.IconFile.ToString()));
                     }
                     ddlType.SelectedIndex = ddlType.Items.IndexOf(ddlType.Items.FindByValue(module.ControlType.ToString()));
-
                     txtKey.Text = module.ControlKey;
                     txtTitle.Text = module.ControlTitle;
                     txtDisplayOrder.Text = module.DisplayOrder.ToString();
@@ -173,8 +162,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 ProcessException(ex);
             }
         }
-
-        protected void imbUpdateModlueControl_Click(object sender, ImageClickEventArgs e)
+        protected void imbUpdateModlueControl_Click(object sender, EventArgs e)
         {
             string ExtensionMessage = string.Empty;
             if (Request.QueryString["moduledef"] != null)
@@ -200,10 +188,11 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                         }
                         int _displayOrder = int.Parse(txtDisplayOrder.Text);
                         //add into module control table
-                        ModuleController.AddModuleCoontrols(_moduledefid, _moduleControlKey, _moduleControlTitle, _moduleControlSrc,
+                        ModuleController objController = new ModuleController();
+                        objController.AddModuleCoontrols(_moduledefid, _moduleControlKey, _moduleControlTitle, _moduleControlSrc,
                             _iconFile, _controlType, _displayOrder, _moduleControlHelpUrl, _moduleSupportsPartialRendering, true, DateTime.Now,
                             GetPortalID, GetUsername);
-                        ExtensionMessage = GetSageMessage("Extensions_Editors", "ModuleControlIsAddedSuccessfully");
+                        ExtensionMessage = GetSageMessage("Extensions", "ModuleControlIsAddedSuccessfully");
                         ClearSessions();
                         string ControlPath = "/Modules/Admin/Extensions/Editors/ModuleEditor.ascx&moduleid=" + HttpContext.Current.Session["moduleid"] + "&ExtensionMessage=" + ExtensionMessage;
                         ProcessSourceControlUrl(Request.RawUrl, ControlPath, "extension");
@@ -211,7 +200,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                     else
                     {
                         lblErrorControlType.Visible = true;
-                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ModuleControlAlreadyExists"), "", SageMessageType.Alert);
+                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ModuleControlAlreadyExists"), "", SageMessageType.Alert);
                     }
                 }
                 catch (Exception ex)
@@ -244,10 +233,11 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                         int _displayOrder = int.Parse(txtDisplayOrder.Text);
 
                         //update into module control table
-                        ModuleController.UpdateModuleCoontrols(_modulecontriolid, _moduleControlKey, _moduleControlTitle, _moduleControlSrc,
+                        ModuleController objController = new ModuleController();
+                        objController.UpdateModuleCoontrols(_modulecontriolid, _moduleControlKey, _moduleControlTitle, _moduleControlSrc,
                             _iconFile, _controlType, _displayOrder, _moduleControlHelpUrl, _moduleSupportsPartialRendering, true, true, DateTime.Now,
                             GetPortalID, GetUsername);
-                        ExtensionMessage = GetSageMessage("Extensions_Editors", "ModuleControlIsUpdatedSuccessfully");
+                        ExtensionMessage = GetSageMessage("Extensions", "ModuleControlIsUpdatedSuccessfully");
                         ClearSessions();
                         string ControlPath = "/Modules/Admin/Extensions/Editors/ModuleEditor.ascx&moduleid=" + HttpContext.Current.Session["moduleid"] + "&ExtensionMessage=" + ExtensionMessage;
                         ProcessSourceControlUrl(Request.RawUrl, ControlPath, "extension");
@@ -255,22 +245,23 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                     else
                     {
                         lblErrorControlType.Visible = true;
-                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ModuleControlAlreadyExists"), "", SageMessageType.Alert);
+                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ModuleControlAlreadyExists"), "", SageMessageType.Alert);
                     }
                 }
                 catch (Exception ex)
                 {
                     ProcessException(ex);
                 }
-            }            
+            }
         }
 
         private Int32 CheckUniqueControlType(int _modulecontriolid, int _moduledefid, int _controlType, int _portalId, bool _isEdit)
         {
-            return ModuleController.CheckUnquieModuleControlsControlType(_modulecontriolid, _moduledefid, _controlType, _portalId, _isEdit);            
+            ModuleController objController = new ModuleController();
+            return objController.CheckUnquieModuleControlsControlType(_modulecontriolid, _moduledefid, _controlType, _portalId, _isEdit);
         }
 
-        protected void imbCancelModlueControl_Click(object sender, ImageClickEventArgs e)
+        protected void imbCancelModlueControl_Click(object sender, EventArgs e)
         {
             ClearSessions();
             string ControlPath = "/Modules/Admin/Extensions/Editors/ModuleEditor.ascx&moduleid=" + HttpContext.Current.Session["moduleid"];

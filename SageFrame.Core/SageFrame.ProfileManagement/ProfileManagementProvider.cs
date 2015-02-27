@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,12 +15,15 @@ using System.Text;
 using SageFrame.Web.Utilities;
 using System.Data.SqlClient;
 
+#endregion
+
+
 namespace SageFrame.ProfileManagement
 {
     public class ProfileManagementProvider
     {
 
-        public static List<ProfileManagementInfo> GetPropertyTypeList()
+        public List<ProfileManagementInfo> GetPropertyTypeList()
         {
             string sp = "sp_PropertyTypeList";
             SQLHandler sageSql = new SQLHandler();
@@ -47,7 +38,7 @@ namespace SageFrame.ProfileManagement
             }
         }
         
-        public static List<ProfileManagementInfo> GetProfileList(int PortalID)
+        public List<ProfileManagementInfo> GetProfileList(int PortalID)
         {
             try
             {
@@ -66,7 +57,7 @@ namespace SageFrame.ProfileManagement
         }
       
 
-        public static int AddProfile(string Name, int PropertyTypeID, string DataType, bool IsRequired, bool IsActive, DateTime AddedOn, int PortalID, string AddedBy)
+        public int AddProfile(string Name, int PropertyTypeID, string DataType, bool IsRequired, bool IsActive, DateTime AddedOn, int PortalID, string AddedBy)
         {
             try
             {
@@ -92,7 +83,7 @@ namespace SageFrame.ProfileManagement
                 throw;
             }
         }
-        public static int AddProfileValue(int? ProfileID, string Name, bool IsActive, DateTime? AddedOn, int? PortalID, string AddedBy)
+        public int AddProfileValue(int? ProfileID, string Name, bool IsActive, DateTime? AddedOn, int? PortalID, string AddedBy)
         {
             try
             {
@@ -116,7 +107,7 @@ namespace SageFrame.ProfileManagement
             }
         }
         
-        public static void DeleteProfileValueByProfileID(int ProfileID, int PortalID, string UserName)
+        public void DeleteProfileValueByProfileID(int ProfileID, int PortalID, string UserName)
         {
             try
             {
@@ -137,7 +128,7 @@ namespace SageFrame.ProfileManagement
             }
         }
         
-        public static void DeleteProfileByProfileID(int DeleteID,  string UserName)
+        public void DeleteProfileByProfileID(int DeleteID,  string UserName)
         {
             try
             {
@@ -158,15 +149,16 @@ namespace SageFrame.ProfileManagement
             }
         }
         
-        public static ProfileManagementInfo GetProfileByProfileID(int EditID)
+        public ProfileManagementInfo GetProfileByProfileID(int EditID)
         {
+            SqlDataReader reader = null;
             try
             {
                 string sp = "[dbo].[sp_ProfileGetByProfileID]";
                 SQLHandler SQLH = new SQLHandler();
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
                 ParamCollInput.Add(new KeyValuePair<string, object>("@ProfileID", EditID));
-                SqlDataReader reader = null;
+
                 reader = SQLH.ExecuteAsDataReader(sp, ParamCollInput);
                 ProfileManagementInfo objList = new ProfileManagementInfo();
 
@@ -193,13 +185,20 @@ namespace SageFrame.ProfileManagement
             }
             catch (Exception)
             {
-                
+
                 throw;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
             }
         }
 
 
-        public static void UpdateProfile(int ProfileID, string Name, int PropertyTypeID, string DataType, bool IsRequired, bool IsActive, bool IsModified, DateTime UpdatedOn, int PortalID, string UpdatedBy)
+        public void UpdateProfile(int ProfileID, string Name, int PropertyTypeID, string DataType, bool IsRequired, bool IsActive, bool IsModified, DateTime UpdatedOn, int PortalID, string UpdatedBy)
         {
             try
             {
@@ -229,7 +228,7 @@ namespace SageFrame.ProfileManagement
         
             
 
-        public static List<ProfileManagementInfo> GetActiveProfileValueByProfileID(int ProfileID ,int PortalID)
+        public List<ProfileManagementInfo> GetActiveProfileValueByProfileID(int ProfileID ,int PortalID)
         {
             try
             {
@@ -247,7 +246,7 @@ namespace SageFrame.ProfileManagement
             }
 
         }
-        public static void UpdateProfileDisplayOrderAndIsActiveOnly(int ProfileID, int DisplayOrder, bool IsActive, DateTime UpdatedOn, int PortalID, string Username)
+        public void UpdateProfileDisplayOrderAndIsActiveOnly(int ProfileID, int DisplayOrder, bool IsActive, DateTime UpdatedOn, int PortalID, string Username)
         {
             try
             {
@@ -270,7 +269,7 @@ namespace SageFrame.ProfileManagement
                 throw;
             }
         }
-        public static List<ProfileManagementInfo> GetActiveProfileList(int PortalID)
+        public List<ProfileManagementInfo> GetActiveProfileList(int PortalID)
         {
             try
             {
@@ -287,7 +286,7 @@ namespace SageFrame.ProfileManagement
             }
 
         }
-        public static List<ProfileManagementInfo> GetListEntrybyNameAndID(string ListName,int EntryID, string Culture )
+        public List<ProfileManagementInfo> GetListEntrybyNameAndID(string ListName,int EntryID, string Culture )
         {
             try
             {
@@ -306,14 +305,14 @@ namespace SageFrame.ProfileManagement
             }
 
         }
-        public static List<ProfileManagementInfo> GetUserProfileActiveListByUsername(string Username, int PortalID)
+        public List<ProfileManagementInfo> GetUserProfileActiveListByUsername(string Username, int PortalID)
         {
             try
             {
 
                 SQLHandler SQLH = new SQLHandler();
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", Username));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", Username));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
 
                 return SQLH.ExecuteAsList<ProfileManagementInfo>("[dbo].[sp_UserProfileActiveListByUsername]", ParamCollInput);
@@ -325,7 +324,7 @@ namespace SageFrame.ProfileManagement
             }
 
         }
-        public static List<ProfileManagementInfo> GetListEntriesByNameParentKeyAndPortalID(string ListName, string ParentKey, int PortalID, string Culture)
+        public List<ProfileManagementInfo> GetListEntriesByNameParentKeyAndPortalID(string ListName, string ParentKey, int PortalID, string Culture)
         {
             try
             {
@@ -346,7 +345,7 @@ namespace SageFrame.ProfileManagement
             }
 
         }
-        public static List<ProfileManagementInfo> GetProfileImageFolders(string EditUserName, int ProfileID, int PortalID)
+        public List<ProfileManagementInfo> GetProfileImageFolders(string EditUserName, int ProfileID, int PortalID)
         {
             try
             {
@@ -356,8 +355,6 @@ namespace SageFrame.ProfileManagement
                 ParamCollInput.Add(new KeyValuePair<string, object>("@EditUserName", EditUserName));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@ProfileID", ProfileID));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-
-
                 return SQLH.ExecuteAsList<ProfileManagementInfo>("[dbo].[sp_ProfileImageFoldersGet]", ParamCollInput);
             }
             catch (Exception ex)
@@ -367,14 +364,14 @@ namespace SageFrame.ProfileManagement
             }
 
         }
-        public static int AddUserProfile(string Username, int ProfileID, string Value, bool IsActive, DateTime AddedOn, int PortalID, string AddedBy)
+        public int AddUserProfile(string Username, int ProfileID, string Value, bool IsActive, DateTime AddedOn, int PortalID, string AddedBy)
         {
             try
             {
                 string sp = "[dbo].[sp_UserProfileAdd]";
                 SQLHandler SQLH = new SQLHandler();
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", Username));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", Username));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@ProfileID", ProfileID));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Value", Value));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@IsActive", IsActive));

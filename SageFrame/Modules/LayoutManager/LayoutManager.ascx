@@ -3,20 +3,26 @@
 <h1>
     <asp:Label ID="lblTemplateMgr" runat="server" Text="Template Manager"></asp:Label>
 </h1>
-<div class="sfFormwrapper sfPadding">
+<div class="clearfix">
     <div class="sfTemplatemanger clearfix">
-        <div class="sftype1 sfCreatetemplate">
-            <asp:Label ID="lblUploadTemp" CssClass="sfFormlabel" runat="server">Upload Template</asp:Label>
-            <asp:FileUpload ID="fupUploadTemp" runat="server" />
-            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Please Choose Template"
-                ControlToValidate="fupUploadTemp" ValidationGroup="rfvTemplate"></asp:RequiredFieldValidator>
-            <asp:Button ID="btnUpload" runat="server" Text="Upload" CssClass="sfBtn" OnClick="btnUpload_Click"
-                ValidationGroup="rfvTemplate" />
-            <input type="button" id="btnCreateTemplate" class="sfBtn" value="Create Template" />
-            <div id="sfCreateTemplate" style="display: none" class="clearfix">
+        <h3>
+            Available Templates</h3>
+        <div class="sftype1 sfCreatetemplate sfTableOption">
+            <div class="sfUploadTemplate">
+                <asp:Label ID="lblUploadTemp" CssClass="sfFormlabel" runat="server">Upload Template</asp:Label>
+                <asp:FileUpload ID="fupUploadTemp" runat="server" />
+                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Please Choose Template"
+                 CssClass="sfUploadError"   ControlToValidate="fupUploadTemp" Display="Dynamic" ValidationGroup="rfvTemplate"></asp:RequiredFieldValidator>
+                <label class="sfLocale icon-upload sfBtn">
+                    Upload
+                    <asp:Button ID="btnUpload" runat="server" OnClick="btnUpload_Click" ValidationGroup="rfvTemplate" /></label></div>
+            <div id="sfCreateTemplate" style="display: none" class="clearfix sfFloatRight">
                 <input type="text" id="txtNewTemplate" class="sfInputbox" />
                 <input type="button" id="btnSaveTemplate" class="sfBtn" value="Ok" />
             </div>
+            <label class="sfLocale icon-addnew sfBtn sfFloatRight">
+                Create Template
+                <input type="button" id="btnCreateTemplate" /></label>
         </div>
         <div id="templateList" class="clearfix">
         </div>
@@ -24,64 +30,61 @@
     <div class="sfLayoutmanager" style="display: none">
         <div id="tabLayoutMgr">
             <ul>
-                <li><a id="lnkBasicSettings" href="#basicsDiv">Basic Settings</a></li>
-                <li><a id="lnkThemes" href="#themesDiv">Themes</a></li>
+                <li><a id="lnkBasicSettings" href="#basicsDiv">Basic Details</a></li>
+                <%--<li><a id="lnkThemes" href="#themesDiv">Themes</a></li>--%>
                 <li><a id="lnkPresets" href="#presetsDiv">Presets</a></li>
                 <li><a id="lnkVisualLayoutMgr" href="#visualLayoutMgr">Layout Manager</a></li>
             </ul>
             <div id="basicsDiv" style="display: none">
                 <div class="sfTemplateinfo">
-                    <fieldset title="Basics">
-                        <legend>Template Details</legend>
-                        <div class="sfGridwrapper">
-                            <table width="100%" cellpadding="0" cellspacing="0">
-                                <tr class="sfOdd">
-                                    <td width="15%">
-                                        <span class="sfLabel">Template Name</span>
-                                    </td>
-                                    <td width="30">
-                                        :
-                                    </td>
-                                    <td>
-                                        <span class="sfValue" id="spnTemplateName"></span>
-                                    </td>
-                                </tr>
-                                <tr class="sfEven">
-                                    <td>
-                                        <span class="sfLabel">Template Author</span>
-                                    </td>
-                                    <td width="30">
-                                        :
-                                    </td>
-                                    <td>
-                                        <span class="sfValue" id="spnAuthor"></span>
-                                    </td>
-                                </tr>
-                                <tr class="sfOdd">
-                                    <td>
-                                        <span class="sfLabel">Description</span>
-                                    </td>
-                                    <td width="30">
-                                        :
-                                    </td>
-                                    <td>
-                                        <span class="sfValue" id="spnDescription"></span>
-                                    </td>
-                                </tr>
-                                <tr class="sfEven">
-                                    <td>
-                                        <span class="sfLabel">Website</span>
-                                    </td>
-                                    <td width="30">
-                                        :
-                                    </td>
-                                    <td>
-                                        <span class="sfValue" id="spnWebsite"></span>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </fieldset>
+                    <div class="sfGridwrapper">
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                            <tr class="sfOdd">
+                                <td width="15%">
+                                    <span class="sfLabel">Template Name</span>
+                                </td>
+                                <td width="30">
+                                    :
+                                </td>
+                                <td>
+                                    <span class="sfValue" id="spnTemplateName"></span>
+                                </td>
+                            </tr>
+                            <tr class="sfEven">
+                                <td>
+                                    <span class="sfLabel">Template Author</span>
+                                </td>
+                                <td width="30">
+                                    :
+                                </td>
+                                <td>
+                                    <span class="sfValue" id="spnAuthor"></span>
+                                </td>
+                            </tr>
+                            <tr class="sfOdd">
+                                <td>
+                                    <span class="sfLabel">Description</span>
+                                </td>
+                                <td width="30">
+                                    :
+                                </td>
+                                <td>
+                                    <span class="sfValue" id="spnDescription"></span>
+                                </td>
+                            </tr>
+                            <tr class="sfEven">
+                                <td>
+                                    <span class="sfLabel">Website</span>
+                                </td>
+                                <td width="30">
+                                    :
+                                </td>
+                                <td>
+                                    <span class="sfValue" id="spnWebsite"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div id="themesDiv" style="display: none">
@@ -91,39 +94,36 @@
             <div id="presetsDiv" style="display: none">
                 <div id="divMsgTemplate">
                 </div>
-                <fieldset>
-                    <legend>Template Settings</legend>
-                    <div class="sfGridwrapper">
-                        <h2>
-                            Layouts</h2>
-                        <div id="activeLayoutList">
-                        </div>
-                        <div class="sfHolder clearfix">
-                            <div class="sfTheme">
-                                <h2>
-                                    Select Themes</h2>
-                                <div id="activeThemeList" class="clearfix">
-                                </div>
+                <div class="sfGridwrapper sfFormwrapper">
+                    <h2>
+                        Layouts</h2>
+                    <div id="activeLayoutList">
+                    </div>
+                    <div class="sfHolder clearfix">
+                        <div class="sfTheme">
+                            <h2>
+                                Select Themes</h2>
+                            <div id="activeThemeList" class="clearfix">
                             </div>
-                            <div class="sfScreen">
-                                <h2>
-                                    Select Screen</h2>
-                                <div id="activeWidthList" class="clearfix">
-                                    <ul>
-                                        <li class="sfCurve">Wide</li>
-                                        <li class="sfCurve">Narrow</li>
-                                        <li class="sfCurve">Fluid</li>
-                                    </ul>
-                                </div>
+                        </div>
+                        <div class="sfScreen">
+                            <h2>
+                                Select Screen</h2>
+                            <div id="activeWidthList" class="clearfix">
+                                <ul>
+                                    <li class="sfCurve">Wide</li>
+                                    <li class="sfCurve">Narrow</li>
+                                    <li class="sfCurve">Fluid</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                </div>
                 <div id="presetControls">
                     <div style="width: 100%">
                         <div class="controls">
                             <div class="sfButtonwrapper sftype1">
-                                <label id="btnSavePreset" class="sfSave">
+                                <label id="btnSavePreset" class="icon-save sfBtn">
                                     Save Preset</label>
                             </div>
                         </div>
@@ -133,15 +133,15 @@
                 </div>
             </div>
             <div id="visualLayoutMgr">
-                <div id="divControls" class="clearfix">
+                <div id="divControls" class="sfFormwrapper sfPadding clearfix">
                     <select id="ddlLayoutList" class="sfListmenu">
                     </select>
                     <div class="sftype1">
-                        <label id="imgAddLayout" class="sfAdd">
-                            Add</label>
-                        <label id="imgEditLayout_Visual" class="sfUpdate">
+                        <label id="imgAddLayout" class="icon-addnew sfBtn">
+                            Create Layout</label>
+                        <label id="imgEditLayout_Visual" class="icon-update sfBtn">
                             Edit</label>
-                        <label id="btnDeleteLayout" class="sfDelete">
+                        <label id="btnDeleteLayout" class="icon-close sfBtn">
                             Delete</label>
                     </div>
                 </div>
@@ -152,8 +152,10 @@
             </div>
         </div>
         <div class="sfButtonwrapper sftype1">
-            <label id="lblCancelEditMode" class="sfCancel">
+            <label id="lblCancelEditMode" class="icon-close sfBtn">
                 Cancel</label>
+            <label id="lblSaveLayoutChange" class="icon-save sfBtn" style="display: none">
+                Save</label>
         </div>
     </div>
     <div id="divEditXML" style="display: none">
@@ -237,7 +239,7 @@
                                 &gt;</label>
                             <input type="text" id="txtPositions" title="wrapvalue" class="sfInputbox sfInputlm" />
                             <label>
-                                &lt;wrap/&gt;
+                                &lt;/wrap&gt;
                             </label>
                         </td>
                     </tr>
@@ -261,7 +263,7 @@
             </div>
             <textarea id="txtLayoutEditor" class="sfTextarea sfEditor"></textarea>
             <div class="sfButtonwrapper sftype1">
-                <label class="sfSave" id="SaveLayout_Edit">
+                <label class="icon-save sfBtn" id="SaveLayout_Edit">
                     Save</label>
             </div>
         </div>
@@ -293,10 +295,16 @@
                 </tr>
             </table>
             <div class="sfButtonwrapper sftype1">
-                <label id="btnCreateLayout" class="sfAdd">
+                <label id="btnCreateLayout" class="icon-addnew sfBtn">
                     Create</label>
             </div>
             <textarea id="txtLayoutCreator" class="sfTextarea sfEditor"></textarea>
+        </div>
+    </div>
+    <div id="divEditLayout" style="display: none; width: 100%;">
+        <div id="msgEditLayOut">
+        </div>
+        <div id="tblResize">
         </div>
     </div>
     <div id="divEditHTML" class="sfPopup" style="display: none">
@@ -312,7 +320,7 @@
             <div id="pageList">
             </div>
             <div class="sfButtonwrapper sftype1">
-                <label id="spnSavePagePreset" class="sfSave">
+                <label id="spnSavePagePreset" class="icon-apply sfBtn">
                     Apply</label>
             </div>
         </div>
@@ -324,18 +332,19 @@
         </div>
     </div>
 </div>
+<input type="hidden" id="hdnPanName" />
+<input type="hidden" id="hdnTableName" />
 
 <script type="text/javascript">
 
     $(function() {
-    
-          
-       $(this).LayoutManager({
+        $(this).LayoutManager({
             PortalID: '<%=PortalID%>',
-            AppPath: '<%=appPath%>'            
+            AppPath: '<%=appPath%>',
+            Extension: '<%=Extension %>',
+            EditFilePath: '<%=EditFiles %>',
+            UserModuleID: '<%=UserModuleID %>'
         });
-       
-
     });
 </script>
 

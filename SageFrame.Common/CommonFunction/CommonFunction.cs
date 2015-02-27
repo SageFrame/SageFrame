@@ -1,31 +1,15 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.Resources;
 using System.Web.UI.WebControls;
-using System.Linq;
 using System.Web;
 using System.Data;
 using System.Reflection;
@@ -34,6 +18,10 @@ using System.Data.SqlClient;
 using System.Xml.Xsl;
 using System.Xml;
 using System.IO;
+using System.Web.Security;
+using SageFrame.Utilities;
+#endregion
+
 /// <summary>
 /// Summary description for CommonFunction
 /// </summary>
@@ -44,7 +32,7 @@ namespace SageFrame.Web
     {
         public CommonFunction()
         {
-            
+
         }
 
         public object[] DataTableToObject(DataTable dtReturn)
@@ -417,10 +405,98 @@ namespace SageFrame.Web
             }
             return filepath;
         }
+        /// <summary>
+        /// Return The Name of the Logged in User by PortalID
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>Logged In UserName</returns>
+
+        public string GetUser(int portalID)
+        {
+
+            HttpCookie authCookie = HttpContext.Current.Request.Cookies[FormsCookieName(portalID)];
+            string user = string.Empty;
+            if (authCookie != null && authCookie.Value != string.Empty)
+            {
+                FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authCookie.Value);
+                if (ticket != null)
+                {
+                    user = ticket.Name;
+                }
+                else
+                {
+                    user = "anonymoususer";
+                }
+            }
+            else
+            {
+                user = "anonymoususer";
+            }
+            return user;
+        }
+
+        public FormsAuthenticationTicket GetUserTicket(int portalID)
+        {
+            HttpCookie authCookie = HttpContext.Current.Request.Cookies[FormsCookieName(portalID)];
+            if (authCookie != null && authCookie.Value != string.Empty)
+            {
+                FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authCookie.Value);
+                return ticket;
+            }
+            else
+            {
+                FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, "anonymoususer", DateTime.Now,
+                                                                            DateTime.Now.AddMinutes(30),
+                                                                              true,
+                                                                              portalID.ToString(),
+                                                                              FormsAuthentication.FormsCookiePath);
+                return ticket;
+            }
+        }
+
+        public static string GetApplicationName
+        {
+            get
+            {
+                return (HttpContext.Current.Request.ApplicationPath == "/" ? "" : HttpContext.Current.Request.ApplicationPath);
+            }
+        }
+
+        /// <summary>
+        /// Replace last occurance of string in a main string
+        /// </summary>
+        /// <param name="Source">Main String</param>
+        /// <param name="Find">What To Search</param>
+        /// <param name="Replace">What To Replace</param>
+        /// <returns>Replaced String </returns>
+        public static string ReplaceLastOccurrence(string Source, string Find, string Replace)
+        {
+            int Place = Source.LastIndexOf(Find);
+            string result = Source.Remove(Place, Find.Length).Insert(Place, Replace);
+            return result;
+        }
+
+        /// <summary>
+        /// To Check Whether SageFrame Is Installed Or Not
+        /// </summary>
+        /// <returns>True If It Is Install</returns>
+        public bool IsInstalled()
+        {
+            bool isInstalled = false;
+            string IsInstalled = Config.GetSetting("IsInstalled").ToString();
+            string InstallationDate = Config.GetSetting("InstallationDate").ToString();
+            if ((IsInstalled != "" && IsInstalled != "false") && InstallationDate != "")
+            {
+                isInstalled = true;
+            }
+            return isInstalled;
+        }
+
+        public string FormsCookieName(int portalID)
+        {
+            string formName = string.Empty;
+            formName = FormsAuthentication.FormsCookieName + HttpContext.Current.Session + portalID.ToString();
+            return formName;
+        }
     }
 }
-
-
-
-
-

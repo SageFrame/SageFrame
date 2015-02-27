@@ -2,8 +2,7 @@
 	float:left;
 	min-width:25%;
 	margin:0 20px 0 0;
-	background:#E8F5FF;
-	border:1px solid #A6C9E2;
+	background:#485F7E;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
@@ -30,8 +29,9 @@ img.sfEdit {
 	height:45px;
 }
 .sfLanguage td.sfSelectednode a {
-	background:#fff;
-	border:1px dashed #1e9fd0;
-	padding:5px 10px;
-	margin:0 0 0 5px;
+	background:#7C8EA4;
+	padding:2px 10px;
+	margin:0px;
+	border-radius:3px; -webkit-border-radius:3px; -ms-border-radius:3px; -o-border-radius:3px;
 }
+table.hideTD tr td:first-child { padding:0;}

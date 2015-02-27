@@ -1,7 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ctl_SageSearchExtensions.ascx.cs"
     Inherits="Modules_SageSearch_ctl_SageSearchExtensions" %>
- 
-    <h2><asp:Label ID="lblSageSearchExtensionManagement" runat="server" Text="Search Extension Management"></asp:Label> </h2>
+<h2>
+    <asp:Label ID="lblSageSearchExtensionManagement" runat="server" Text="Search Extension Management"></asp:Label>
+</h2>
 <div class="sfButtonwrapper" id="actionWrapper" runat="server">
     <asp:ImageButton ID="imbAddNew" runat="server" CausesValidation="False" OnClick="imbAddNew_Click" />
     <asp:Label ID="lblAddNew" runat="server" Text="Add New" AssociatedControlID="imbAddNew"
@@ -14,7 +15,7 @@
         OnRowEditing="gdvList_RowEditing" OnRowUpdating="gdvList_RowUpdating">
         <Columns>
             <asp:TemplateField HeaderText="Title">
-                <ItemTemplate>                    
+                <ItemTemplate>
                     <asp:LinkButton ID="lnkUsername" runat="server" CommandArgument='<%# Eval("SageFrameSearchProcedureID")%>'
                         CommandName="Edit" Text='<%# Eval("SageFrameSearchTitle")%>'></asp:LinkButton>
                 </ItemTemplate>
@@ -63,8 +64,10 @@
                         ToolTip="Fill the tile for your search"></asp:Label>
                 </td>
                 <td>
-                    <asp:TextBox ID="txtSageFrameSearchTitle" runat="server" ValidationGroup="SearchExtensionValidation" CssClass="sfInputbox"></asp:TextBox>
-                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="SearchExtensionValidation" ControlToValidate="txtSageFrameSearchTitle"  runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
+                    <asp:TextBox ID="txtSageFrameSearchTitle" runat="server" ValidationGroup="SearchExtensionValidation"
+                        CssClass="sfInputbox"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="SearchExtensionValidation"
+                        ControlToValidate="txtSageFrameSearchTitle" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
                 </td>
             </tr>
             <tr>
@@ -73,9 +76,10 @@
                         CssClass="sfFormlabel"></asp:Label>
                 </td>
                 <td>
-                    <asp:TextBox ID="txtSageFrameSearchProcedureName" runat="server" ValidationGroup="SearchExtensionValidation" CssClass="sfInputbox"></asp:TextBox>
-                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="SearchExtensionValidation" ControlToValidate="txtSageFrameSearchProcedureName"  runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
-                    
+                    <asp:TextBox ID="txtSageFrameSearchProcedureName" runat="server" ValidationGroup="SearchExtensionValidation"
+                        CssClass="sfInputbox"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="SearchExtensionValidation"
+                        ControlToValidate="txtSageFrameSearchProcedureName" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
                 </td>
             </tr>
             <tr>
@@ -84,17 +88,17 @@
                         CssClass="sfFormlabel" ToolTip="like dbo"></asp:Label>
                 </td>
                 <td>
-                    <asp:TextBox ID="txtSageFrameSearchProcedureExecuteAs" ValidationGroup="SearchExtensionValidation" Text="dbo" runat="server"
-                        CssClass="sfInputbox"></asp:TextBox>
-                    <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="SearchExtensionValidation" ControlToValidate="txtSageFrameSearchProcedureExecuteAs"  runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
-                        
-                        
+                    <asp:TextBox ID="txtSageFrameSearchProcedureExecuteAs" ValidationGroup="SearchExtensionValidation"
+                        Text="dbo" runat="server" CssClass="sfInputbox"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="SearchExtensionValidation"
+                        ControlToValidate="txtSageFrameSearchProcedureExecuteAs" runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
                 </td>
             </tr>
         </table>
     </div>
     <div class="sfButtonwrapper">
-        <asp:ImageButton ID="imbSave" runat="server" ValidationGroup="SearchExtensionValidation" OnClick="imbSave_Click" />
+        <asp:ImageButton ID="imbSave" runat="server" ValidationGroup="SearchExtensionValidation"
+            OnClick="imbSave_Click" />
         <asp:Label ID="lblSave" runat="server" Text="Save" AssociatedControlID="imbSave"
             Style="cursor: pointer;"></asp:Label>
         <asp:ImageButton ID="imbCancel" runat="server" OnClick="imbCancel_Click" />

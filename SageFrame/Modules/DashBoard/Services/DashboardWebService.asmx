@@ -14,6 +14,7 @@ using SageFrame.Pages;
 using SageFrame.ModuleManager;
 using SageFrame.Security.Entities;
 using SageFrame.Security;
+using SageFrame.Services;
 
 /// <summary>
 /// Summary description for DashboardWebService
@@ -21,8 +22,8 @@ using SageFrame.Security;
 [WebService(Namespace = "http://tempuri.org/")]
 [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
- [System.Web.Script.Services.ScriptService]
-public class DashboardWebService : System.Web.Services.WebService
+[System.Web.Script.Services.ScriptService]
+public class DashboardWebService : AuthenticateService
 {
 
     public DashboardWebService()
@@ -33,103 +34,138 @@ public class DashboardWebService : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public string HelloWorld()
+    public List<Link> GetPages(int PortalID, int userModuleId, string UserName, string secureToken)
     {
-        return "Hello World";
+        if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+        {
+            return DashboardController.GetAdminPages(PortalID);
+        }
+        else
+        {
+            return null;
+        }
     }
 
     [WebMethod]
-    public List<Link> GetPages(int PortalID)
-    {
-        return DashboardController.GetAdminPages(PortalID);
-    }
-
-    [WebMethod]
-    public void AddLink(QuickLink linkObj)
+    public void AddLink(QuickLink linkObj, int PortalID, int userModuleId, string UserName, string secureToken)
     {
         try
         {
-            linkObj.ImagePath = linkObj.ImagePath == null || linkObj.ImagePath == "" ? "" : linkObj.ImagePath;
-            DashboardController.AddQuickLink(linkObj);
+            if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+            {
+                linkObj.ImagePath = linkObj.ImagePath == null || linkObj.ImagePath == "" ? "" : linkObj.ImagePath;
+                DashboardController.AddQuickLink(linkObj);
+            }
         }
         catch (Exception)
         {
-            
+
             throw;
         }
     }
 
     [WebMethod]
-    public List<QuickLink> GetQuickLinks(string UserName,int PortalID)
+    public List<QuickLink> GetQuickLinks(string UserName, int PortalID, int userModuleId, string secureToken)
     {
         try
         {
-            return (DashboardController.GetQuickLinksAll(UserName, PortalID));
+            if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+            {
+                return (DashboardController.GetQuickLinksAll(UserName, PortalID));
+            }
+            else
+            {
+                return null;
+            }
         }
         catch (Exception)
         {
-            
+
             throw;
         }
     }
     [WebMethod]
-    public void DeleteQuickLink(int QuickLinkID)
+    public void DeleteQuickLink(int QuickLinkID, string UserName, int PortalID, int userModuleId, string secureToken)
     {
-        DashboardController.DeleteQuickLink(QuickLinkID);
+        if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+        {
+            DashboardController.DeleteQuickLink(QuickLinkID);
+        }
 
     }
 
     [WebMethod]
-    public List<Sidebar> GetSidebar(string UserName,int PortalID)
+    public List<Sidebar> GetSidebar(string UserName, int PortalID, int userModuleId, string secureToken)
     {
         try
         {
-            return (DashboardController.GetSidebarAll(UserName,PortalID));
-        }
-        catch (Exception)
-        {
-            
-            throw;
-        }
-    }
-    [WebMethod]
-    public List<Sidebar> GetParentLinks(int SidebarItemID)
-    {
-        try
-        {
-            return(DashboardController.GetParentLinks(SidebarItemID));
-        }
-        catch (Exception)
-        {
-            
-            throw;
-        }
-    }
-    [WebMethod]
-    public void AddSidebar(Sidebar sidebarObj)
-    {
-        try
-        {
-            sidebarObj.ImagePath = sidebarObj.ImagePath == null || sidebarObj.ImagePath == "" ? "" : sidebarObj.ImagePath;
-    DashboardController.AddSidebar(sidebarObj);
-        }
-        catch (Exception)
-        {
-            
-            throw;
-        }
-    }
-    [WebMethod]
-    public void DeleteSidebarItem(int SidebarItemID)
-    {
-        try
-        {
-            DashboardController.DeleteSidebarItem(SidebarItemID);
+            if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+            {
+                return (DashboardController.GetSidebarAll(UserName, PortalID));
+            }
+            else
+            {
+                return null;
+            }
 
         }
         catch (Exception)
         {
-            
+
+            throw;
+        }
+    }
+    [WebMethod]
+    public List<Sidebar> GetParentLinks(int SidebarItemID, string UserName, int PortalID, int userModuleId, string secureToken)
+    {
+        try
+        {
+            if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+            {
+                return (DashboardController.GetParentLinks(SidebarItemID));
+            }
+            else
+            {
+                return null;
+            }
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+    [WebMethod]
+    public void AddSidebar(Sidebar sidebarObj, string UserName, int PortalID, int userModuleId, string secureToken)
+    {
+        try
+        {
+            if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+            {
+                sidebarObj.ImagePath = sidebarObj.ImagePath == null || sidebarObj.ImagePath == "" ? "" : sidebarObj.ImagePath;
+                DashboardController.AddSidebar(sidebarObj);
+            }
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+    [WebMethod]
+    public void DeleteSidebarItem(int SidebarItemID, string UserName, int PortalID, int userModuleId, string secureToken)
+    {
+        try
+        {
+            if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+            {
+                DashboardController.DeleteSidebarItem(SidebarItemID);
+            }
+
+        }
+        catch (Exception)
+        {
+
             throw;
         }
     }
@@ -143,7 +179,7 @@ public class DashboardWebService : System.Web.Services.WebService
         }
         catch (Exception)
         {
-            
+
             throw;
         }
     }
@@ -164,24 +200,14 @@ public class DashboardWebService : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public void ReorderSidebar(List<DashboardKeyValue> OrderList)
+    public void ReorderSidebar(List<DashboardKeyValue> OrderList, string UserName, int PortalID, int userModuleId, string secureToken)
     {
         try
         {
-            DashboardController.ReorderSidebarLink(OrderList);
-        }
-        catch (Exception)
-        {
-            
-            throw;
-        }
-    }
-    [WebMethod]
-    public void ReorderQuickLinks(List<DashboardKeyValue> OrderList)
-    {
-        try
-        {
-            DashboardController.ReorderQuickLinks(OrderList);
+            if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+            {
+                DashboardController.ReorderSidebarLink(OrderList);
+            }
         }
         catch (Exception)
         {
@@ -189,29 +215,15 @@ public class DashboardWebService : System.Web.Services.WebService
             throw;
         }
     }
-
     [WebMethod]
-    public void UpdateSidebarLinks(Sidebar sidebarObj)
+    public void ReorderQuickLinks(List<DashboardKeyValue> OrderList, string UserName, int PortalID, int userModuleId, string secureToken)
     {
         try
         {
-            sidebarObj.ImagePath = sidebarObj.ImagePath != null ? sidebarObj.ImagePath : "";
-            DashboardController.UpdateSidebar(sidebarObj);
-        }
-        catch (Exception)
-        {
-            
-            throw;
-        }
-    }
-
-    [WebMethod]
-    public void UpdateLink(QuickLink linkObj)
-    {
-        try
-        {
-            linkObj.ImagePath = linkObj.ImagePath != null ? linkObj.ImagePath : "";
-            DashboardController.UpdateLink(linkObj);
+            if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+            {
+                DashboardController.ReorderQuickLinks(OrderList);
+            }
         }
         catch (Exception)
         {
@@ -220,24 +232,59 @@ public class DashboardWebService : System.Web.Services.WebService
         }
     }
 
+    [WebMethod]
+    public void UpdateSidebarLinks(Sidebar sidebarObj, int PortalID, int userModuleId, string UserName, string secureToken)
+    {
+        try
+        {
+            if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+            {
+                sidebarObj.ImagePath = sidebarObj.ImagePath != null ? sidebarObj.ImagePath : "";
+                DashboardController.UpdateSidebar(sidebarObj);
+            }
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
 
     [WebMethod]
-    public DashboardInfo GetDashboardLinks(string UserName,int PortalID)
+    public void UpdateLink(QuickLink linkObj, int PortalID, int userModuleId, string UserName, string secureToken)
     {
-        DashboardInfo dashObj = new DashboardInfo();
-        dashObj.LSTQuickLinks = DashboardController.GetQuickLinks(UserName, PortalID);       
+        try
+        {
+            if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
+            {
+                linkObj.ImagePath = linkObj.ImagePath != null ? linkObj.ImagePath : "";
+                DashboardController.UpdateLink(linkObj);
+            }
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
+
+
+    [WebMethod]
+    public DashboardQuickInfo GetDashboardLinks(string UserName, int PortalID)
+    {
+        DashboardQuickInfo dashObj = new DashboardQuickInfo();
+        dashObj.LSTQuickLinks = DashboardController.GetQuickLinks(UserName, PortalID);
         return dashObj;
-       
     }
 
     [WebMethod]
-    public string GetLocalizedMessage(string CultureCode,string ModuleName,string MessageType)
+    public string GetLocalizedMessage(string CultureCode, string ModuleName, string MessageType)
     {
         return (SageMessage.ProcessSageMessage(CultureCode, ModuleName, MessageType));
     }
 
     [WebMethod]
-    public void UpdateSidebar(string status,int PortalID,string UserName)
+    public void UpdateSidebar(string status, int PortalID, string UserName)
     {
         DashbordSettingInfo objSetting = new DashbordSettingInfo();
         objSetting.SettingKey = DashboardSettingKeys.SIDEBAR_MODE.ToString();
@@ -250,27 +297,30 @@ public class DashboardWebService : System.Web.Services.WebService
         }
         catch (Exception)
         {
-            
+
             throw;
         }
     }
     [WebMethod]
-    public void UpdateAppearance(string theme, int PortalID, string UserName)
+    public void UpdateAppearance(string theme, int PortalID, string UserName, int userModuleId, string secureToken)
     {
-        DashbordSettingInfo objSetting = new DashbordSettingInfo();
-        objSetting.SettingKey = DashboardSettingKeys.DASHBOARD_THEME.ToString();
-        objSetting.SettingValue = theme;
-        objSetting.PortalID = PortalID;
-        objSetting.UserName = UserName;
-        try
+        if (IsPostAuthenticated(PortalID, userModuleId, UserName, secureToken))
         {
-            DashboardController.AddUpdateDashboardSettings(objSetting);
-          
-        }
-        catch (Exception)
-        {
+            DashbordSettingInfo objSetting = new DashbordSettingInfo();
+            objSetting.SettingKey = DashboardSettingKeys.DASHBOARD_THEME.ToString();
+            objSetting.SettingValue = theme;
+            objSetting.PortalID = PortalID;
+            objSetting.UserName = UserName;
+            try
+            {
+                DashboardController.AddUpdateDashboardSettings(objSetting);
 
-            throw;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
     [WebMethod]
@@ -385,7 +435,6 @@ public class DashboardWebService : System.Web.Services.WebService
 
             throw ex;
         }
-
     }
 
     //---------PageModuleStatistics--------------------
@@ -394,15 +443,14 @@ public class DashboardWebService : System.Web.Services.WebService
     {
         try
         {
-            return (PageController.GetPages(PortalID, IsAdmin));
+            PageController objPageController = new PageController();
+            return (objPageController.GetPages(PortalID, IsAdmin));
         }
         catch (Exception ex)
         {
 
             throw ex;
         }
-
-
     }
     [WebMethod]
     public List<LayoutMgrInfo> Getmodules(int PortalID)
@@ -416,8 +464,6 @@ public class DashboardWebService : System.Web.Services.WebService
 
             throw ex;
         }
-
-
     }
 
 
@@ -433,8 +479,6 @@ public class DashboardWebService : System.Web.Services.WebService
 
             throw ex;
         }
-
-
     }
 
 
@@ -451,10 +495,5 @@ public class DashboardWebService : System.Web.Services.WebService
 
             throw ex;
         }
-
-
     }
-
-
 }
-

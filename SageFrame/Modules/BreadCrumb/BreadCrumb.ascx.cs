@@ -1,4 +1,11 @@
-﻿using System;
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
+*/
+#endregion
+
+#region "References"
+using System;
 using System.Collections;
 using System.Configuration;
 using System.Data;
@@ -16,39 +23,44 @@ using SageFrame.Web;
 using System.IO;
 using SageFrame.Common.Shared;
 using System.Text;
+#endregion 
 
 public partial class Modules_BreadCrumb_BreadCrumb : BaseAdministrationUserControl
 {
     public int PortalID = 0;
     public string PageName = "", AppPath = string.Empty, pagePath = string.Empty;
-    public string DefaultPortalHomePage = "";
+    public string DefaultPortalHomePage = "",CultureCode=string.Empty;
     public int MenuID;
+    public string Extension;
     protected void Page_Load(object sender, EventArgs e)
     {
+        IncludeLanguageJS();
+        CultureCode = GetCurrentCulture();
+        Extension = SageFrameSettingKeys.PageExtension;
         Initialize();
-         SageFrameConfig sfConfig = new SageFrameConfig();
-        string pagePath = Request.ApplicationPath != "/" ? Request.ApplicationPath : "";
+        SageFrameConfig sfConfig = new SageFrameConfig();
+        string pagePath = ResolveUrl(GetParentURL) + GetReduceApplicationName;
         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "BreadCrumGlobal1", " var BreadCrumPagePath='" + pagePath + "';", true);
-        pagePath = GetPortalID == 1 ? pagePath : pagePath + "/portal/" + GetPortalSEOName;
+        pagePath = IsParent ? pagePath : pagePath + "portal/" + GetPortalSEOName;
         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "BreadCrumAdminGlobal" + GetPortalID, " var BreadCrumPageLink='" + ResolveUrl(pagePath) + "';", true);
         PortalID = GetPortalID;
-        if(PortalID >1)
+        if (!IsParent)
         {
-            DefaultPortalHomePage =ResolveUrl("~/portal/" + GetPortalSEOName + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx");
+            DefaultPortalHomePage = GetParentURL + "/portal/" + GetPortalSEOName + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + SageFrameSettingKeys.PageExtension;
         }
         else
         {
-            DefaultPortalHomePage =ResolveUrl("~/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx");
+            DefaultPortalHomePage = GetParentURL + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + SageFrameSettingKeys.PageExtension;
         }
     }
-	
+
     public void Initialize()
     {
         PortalID = GetPortalID;
         PageName = Path.GetFileNameWithoutExtension(PagePath);
         AppPath = Request.ApplicationPath != "/" ? Request.ApplicationPath : "";
         RegisterClientScriptToPage(ScriptMap.BreadCrumbScript.Key, ResolveUrl(AppPath + ScriptMap.BreadCrumbScript.Value), true);
-        MenuID = Convert.ToInt32(Session["MenuID"]);
-		IncludeCss("BreadCrumb", "/Modules/BreadCrumb/css/module.css");
-	}
+        MenuID = 0;
+        IncludeCss("BreadCrumb", "/Modules/BreadCrumb/css/module.css");
+    }
 }

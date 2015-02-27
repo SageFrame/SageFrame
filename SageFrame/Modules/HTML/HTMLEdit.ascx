@@ -10,8 +10,6 @@
         <asp:HiddenField ID="hdfIsActive" runat="server" />
         <div id="divViewWrapper" runat="server" class="cssClassViewWrraper">
             <div class="cssClassTopSetting" id="divEditContent" runat="server">
-                <%--<asp:ImageButton ID="imbEdit" runat="server" OnClick="imbEdit_Click" />--%>
-                <%--<asp:Label ID="lblEdit" runat="server" Text="Edit" AssociatedControlID="imbEdit" CssClass="cssClassHtmlViewCursor"></asp:Label>--%>
             </div>
             <asp:Literal ID="ltrContent" EnableViewState="false" runat="server"></asp:Literal>
         </div>
@@ -22,6 +20,17 @@
                         <td>
                             <div class="cssClassHtmlViewBorder">
                                 <table cellspacing="0" cellpadding="0" border="0" id="tblTextEditor" width="100%" runat="server" class="cssClassHtmlViewTable">
+                                  
+                                      <tr>
+                                        <td class="editorheading">
+                                          <asp:Label ID="Label1" runat="server" CssClass="sfFormlabel" Text="Country:" /> &nbsp;<asp:DropDownList 
+                                                ID="ddlLanuage" runat="server" DataTextField="LanguageName"  AutoPostBack="true"
+                                                DataValueField="LanguageCode" 
+                                                onselectedindexchanged="ddlLanuage_SelectedIndexChanged" 
+                                                >
+                                            </asp:DropDownList>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td class="editorheading">
                                             <asp:Label ID="lblView" runat="server" CssClass="sfFormlabel" Text="Editor:" />
@@ -29,8 +38,6 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                          <%--  <FCKeditorV2:FCKeditor ID="txtBody" runat="server" Height="350" ToolbarSet="SageFrameLimited">
-                                            </FCKeditorV2:FCKeditor>--%>
                                            <CKEditor:CKEditorControl  ID="txtBody" runat="server"></CKEditor:CKEditorControl>
                                             <asp:Label ID="lblError" runat="server" CssClass="sfError" Visible="false"
                                                 EnableViewState="false"></asp:Label>
@@ -56,10 +63,10 @@
                     </tr>
                 </table>
                 <div class="sfButtonwrapper">
-                    <asp:ImageButton ID="imbSave" runat="server" OnClick="imbSave_Click" ValidationGroup="body" />
-                    <asp:Label ID="lblSave" runat="server" Text="Save" AssociatedControlID="imbSave" CssClass="cssClassHtmlViewCursor"></asp:Label>
-                    <%--<asp:ImageButton ID="imbCancel" runat="server" OnClick="imbCancel_Click" />
-                    <asp:Label ID="lblCancel" runat="server" Text="Cancel" AssociatedControlID="imbCancel" CssClass="cssClassHtmlViewCursor"></asp:Label>--%>
+                <label class="sfLocale icon-save sfBtn">Save
+                    <asp:Button ID="imbSave" runat="server" OnClick="imbSave_Click" 
+                        ValidationGroup="body" Height="16px" /></label>
+                    <%--<asp:Label ID="lblSave" runat="server" Text="Save" AssociatedControlID="imbSave" CssClass="cssClassHtmlViewCursor">--%></asp:Label>
                 </div>
             </div>
         </div>

@@ -3,8 +3,8 @@
 <asp:UpdatePanel ID="udpProDef" runat="server">
     <ContentTemplate>
         <h1>
-            <asp:Label ID="lblProfileDefinition" runat="server" 
-                Text="User Profile Definition" meta:resourcekey="lblProfileDefinitionResource1"></asp:Label>
+            <asp:Label ID="lblProfileDefinition" runat="server" Text="User Profile Definition"
+                meta:resourcekey="lblProfileDefinitionResource1"></asp:Label>
         </h1>
         <div id="divGridViewWrapper" runat="server">
             <div class="sfGridwrapper">
@@ -14,27 +14,23 @@
                     OnRowDataBound="gdvList_RowDataBound" OnRowDeleting="gdvList_RowDeleting" OnRowEditing="gdvList_RowEditing"
                     OnRowUpdating="gdvList_RowUpdating" meta:resourcekey="gdvListResource1">
                     <Columns>
-                        <asp:TemplateField HeaderText="Caption" 
-                            meta:resourcekey="TemplateFieldResource1">
+                        <asp:TemplateField HeaderText="Caption" meta:resourcekey="TemplateFieldResource1">
                             <ItemTemplate>
                                 <asp:LinkButton ID="lnkUsername" runat="server" CommandArgument='<%# Eval("ProfileID") %>'
-                                    CommandName="Edit" Text='<%# Eval("Name") %>' 
-                                    meta:resourcekey="lnkUsernameResource1"></asp:LinkButton>
+                                    CommandName="Edit" Text='<%# Eval("Name") %>' meta:resourcekey="lnkUsernameResource1"></asp:LinkButton>
                             </ItemTemplate>
                             <ItemStyle HorizontalAlign="Left" VerticalAlign="Top" />
                             <HeaderStyle HorizontalAlign="Left" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Type" meta:resourcekey="TemplateFieldResource2">
                             <ItemTemplate>
-                                <asp:Label ID="lblPropertyTypeName" runat="server" 
-                                    Text='<%# Eval("PropertyTypeName") %>' 
+                                <asp:Label ID="lblPropertyTypeName" runat="server" Text='<%# Eval("PropertyTypeName") %>'
                                     meta:resourcekey="lblPropertyTypeNameResource1"></asp:Label>
                             </ItemTemplate>
                             <ItemStyle HorizontalAlign="Left" VerticalAlign="Top" />
                             <HeaderStyle HorizontalAlign="Left" />
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="IsActive" 
-                            meta:resourcekey="TemplateFieldResource3">
+                        <asp:TemplateField HeaderText="IsActive" meta:resourcekey="TemplateFieldResource3">
                             <ItemTemplate>
                                 <asp:CheckBox ID="chkIsActive" runat="server" Checked='<%# (Eval("IsActive")) %>'
                                     class="sfCheckbox" meta:resourcekey="chkIsActiveResource1" />
@@ -42,20 +38,20 @@
                             <ItemStyle HorizontalAlign="Left" VerticalAlign="Top" />
                             <HeaderStyle HorizontalAlign="Left" CssClass="sfIsactive" />
                         </asp:TemplateField>
-                        <asp:BoundField DataField="AddedOn" DataFormatString="{0:yyyy/MM/dd}" 
-                            HeaderText="Added On" meta:resourcekey="BoundFieldResource1" >
+                        <asp:BoundField DataField="AddedOn" DataFormatString="{0:yyyy/MM/dd}" HeaderText="Added On"
+                            meta:resourcekey="BoundFieldResource1">
                             <HeaderStyle CssClass="sfAddedon" />
                         </asp:BoundField>
-                        <asp:BoundField DataField="UpdatedOn" DataFormatString="{0:yyyy/MM/dd}" 
-                            HeaderText="Updated On" meta:resourcekey="BoundFieldResource2" >
+                        <asp:BoundField DataField="UpdatedOn" DataFormatString="{0:yyyy/MM/dd}" HeaderText="Updated On"
+                            meta:resourcekey="BoundFieldResource2">
                             <HeaderStyle CssClass="sfUpdate" />
                         </asp:BoundField>
                         <asp:TemplateField ShowHeader="False" meta:resourcekey="TemplateFieldResource4">
                             <ItemTemplate>
                                 <div>
                                     <asp:ImageButton ID="imgUp" runat="server" CausesValidation="False" CommandArgument='<%# Eval("DisplayOrder") %>'
-                                        CommandName="Up" ImageUrl='<%# GetTemplateImageUrl("imgup.png", true) %>' 
-                                        ToolTip="Up" meta:resourcekey="imgUpResource1" />
+                                        CommandName="Up" ImageUrl='<%# GetTemplateImageUrl("imgup.png", true) %>' ToolTip="Up"
+                                        meta:resourcekey="imgUpResource1" />
                                 </div>
                                 <div>
                                     <asp:ImageButton ID="imgDown" runat="server" CausesValidation="False" CommandArgument='<%# Eval("DisplayOrder") %>'
@@ -87,17 +83,16 @@
                 </asp:GridView>
             </div>
             <div class="sfButtonwrapper">
-                <asp:ImageButton ID="imbAddNew" ToolTip="Add New" runat="server" 
-                    OnClick="imbAddNew_Click" meta:resourcekey="imbAddNewResource1" />
+                <asp:ImageButton ID="imbAddNew" ToolTip="Add New" runat="server" OnClick="imbAddNew_Click"
+                    meta:resourcekey="imbAddNewResource1" />
                 <asp:Label ID="lblAddNew" runat="server" Style="cursor: pointer" AssociatedControlID="imbAddNew"
                     Text="Add New" meta:resourcekey="lblAddNewResource1"></asp:Label>
-                <asp:ImageButton ID="imbSaveChanges" ToolTip="Save Changes" runat="server" 
-                    OnClick="imbSaveChanges_Click" meta:resourcekey="imbSaveChangesResource1" />
+                <asp:ImageButton ID="imbSaveChanges" ToolTip="Save Changes" runat="server" OnClick="imbSaveChanges_Click"
+                    meta:resourcekey="imbSaveChangesResource1" />
                 <asp:Label ID="lblSaveChanges" AssociatedControlID="imbSaveChanges" Style="cursor: pointer"
-                    runat="server" Text="Save Changes" 
-                    meta:resourcekey="lblSaveChangesResource1"></asp:Label>
-                <asp:ImageButton ID="imbRefresh" ToolTip="Refresh" runat="server" 
-                    OnClick="imbRefresh_Click" meta:resourcekey="imbRefreshResource1" />
+                    runat="server" Text="Save Changes" meta:resourcekey="lblSaveChangesResource1"></asp:Label>
+                <asp:ImageButton ID="imbRefresh" ToolTip="Refresh" runat="server" OnClick="imbRefresh_Click"
+                    meta:resourcekey="imbRefreshResource1" />
                 <asp:Label ID="lblRefresh" runat="server" Style="cursor: pointer" AssociatedControlID="imbRefresh"
                     Text="Refresh" meta:resourcekey="lblRefreshResource1"></asp:Label>
             </div>
@@ -107,18 +102,18 @@
                 <table width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td width="20%">
-                            <asp:Label ID="lblCaption" runat="server" Text="Caption :" 
-                                CssClass="sfFormlabel" meta:resourcekey="lblCaptionResource1"></asp:Label>
+                            <asp:Label ID="lblCaption" runat="server" Text="Caption :" CssClass="sfFormlabel"
+                                meta:resourcekey="lblCaptionResource1"></asp:Label>
                         </td>
                         <td>
-                            <asp:TextBox ID="txtCaption" runat="server" MaxLength="50" 
-                                CssClass="sfInputbox" meta:resourcekey="txtCaptionResource1"></asp:TextBox>
+                            <asp:TextBox ID="txtCaption" runat="server" MaxLength="50" CssClass="sfInputbox"
+                                meta:resourcekey="txtCaptionResource1"></asp:TextBox>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <asp:Label ID="lblPropertyType" runat="server" Text="Property Type :" 
-                                CssClass="sfFormlabel" meta:resourcekey="lblPropertyTypeResource1"></asp:Label>
+                            <asp:Label ID="lblPropertyType" runat="server" Text="Property Type :" CssClass="sfFormlabel"
+                                meta:resourcekey="lblPropertyTypeResource1"></asp:Label>
                         </td>
                         <td>
                             <asp:DropDownList ID="ddlPropertyType" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlPropertyType_SelectedIndexChanged"
@@ -128,23 +123,21 @@
                     </tr>
                     <tr>
                         <td>
-                            <asp:Label ID="lblDataType" runat="server" Text="Data Type :" 
-                                CssClass="sfFormlabel" meta:resourcekey="lblDataTypeResource1"></asp:Label>
+                            <asp:Label ID="lblDataType" runat="server" Text="Data Type :" CssClass="sfFormlabel"
+                                meta:resourcekey="lblDataTypeResource1"></asp:Label>
                         </td>
                         <td>
-                            <asp:DropDownList ID="ddlDataType" runat="server" CssClass="sfListmenu" 
-                                meta:resourcekey="ddlDataTypeResource1">
+                            <asp:DropDownList ID="ddlDataType" runat="server" CssClass="sfListmenu" meta:resourcekey="ddlDataTypeResource1">
                             </asp:DropDownList>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <asp:Label ID="lblIsRequired" runat="server" Text="Is Required :" 
-                                CssClass="sfFormlabel" meta:resourcekey="lblIsRequiredResource1"></asp:Label>
+                            <asp:Label ID="lblIsRequired" runat="server" Text="Is Required :" CssClass="sfFormlabel"
+                                meta:resourcekey="lblIsRequiredResource1"></asp:Label>
                         </td>
                         <td>
-                            <asp:CheckBox ID="chkIsRequred" runat="server" CssClass="sfCheckbox" 
-                                meta:resourcekey="chkIsRequredResource1" />
+                            <asp:CheckBox ID="chkIsRequred" runat="server" CssClass="sfCheckbox" meta:resourcekey="chkIsRequredResource1" />
                         </td>
                     </tr>
                     <tr id="trListPropertyValue" runat="server">
@@ -182,12 +175,12 @@
                 </table>
             </div>
             <div class="sfButtonwrapper">
-                <asp:ImageButton ID="imbSave" runat="server" ToolTip="Save" 
-                    OnClick="imbSave_Click" meta:resourcekey="imbSaveResource1" />
+                <asp:ImageButton ID="imbSave" runat="server" ToolTip="Save" OnClick="imbSave_Click"
+                    meta:resourcekey="imbSaveResource1" />
                 <asp:Label ID="lblSave" runat="server" Style="cursor: pointer" AssociatedControlID="imbSave"
                     Text="Save" meta:resourcekey="lblSaveResource1"></asp:Label>
-                <asp:ImageButton ToolTip="Cancel" ID="imbCancel" runat="server" 
-                    OnClick="imbCancel_Click" meta:resourcekey="imbCancelResource1" />
+                <asp:ImageButton ToolTip="Cancel" ID="imbCancel" runat="server" OnClick="imbCancel_Click"
+                    meta:resourcekey="imbCancelResource1" />
                 <asp:Label ID="lblCancel" runat="server" Style="cursor: pointer" AssociatedControlID="imbCancel"
                     Text="Cancel" meta:resourcekey="lblCancelResource1"></asp:Label>
             </div>

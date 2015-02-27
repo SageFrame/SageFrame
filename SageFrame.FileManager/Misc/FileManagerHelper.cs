@@ -1,22 +1,33 @@
-﻿using System;
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
+*/
+#endregion
+
+#region "References"
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 using SageFrame.Web;
+#endregion
 
 namespace SageFrame.FileManager
 {
+
+    #region "Declaration"
     public enum StorageLocation
     {
         STANDARD = 0,
         SECURED_FILE_SYSTEM = 1,
         SECURED_DATABASE_SYSTEM = 2
     }
+    #endregion
+
     public class FileManagerHelper
     {
-
         public static string ReturnExtension(string fileExtension)
         {
             switch (fileExtension)
@@ -359,457 +370,55 @@ namespace SageFrame.FileManager
         /// <param name="fullFilePath"></param>
         /// <param name="fullFromPath"></param>
         /// <param name="fullToPath"></param>
-        public static void TransferFile(string filePath, int fileId, int toFolderId, string toPath, int action, int mode, string fullFilePath, string fullFromPath, string fullToPath)
+        /// 
+        public static void TransferFile(string filePath, string toPath, int action, int mode, string fullFilePath, string fullFromPath, string fullToPath)
         {
-            switch (mode)
+
+            switch (action)
             {
                 case 1:
-                    switch (action)
+
+                    FileInfo fileCopy = new FileInfo(fullFilePath);
+                    string fileNameCopy = fileCopy.Name;
+                    if (!File.Exists(Path.Combine(fullToPath, fileNameCopy)))
                     {
-                        case 1:
-                            FileInfo fileCopy = new FileInfo(fullFilePath);
-                            string fileNameCopy = fileCopy.Name;
-                            if (!File.Exists(Path.Combine(fullToPath, fileNameCopy)))
-                            {
-                                try
-                                {
-                                    fileCopy.CopyTo(Path.Combine(fullToPath, fileNameCopy));
-                                    FileManagerController.CopyFile(fileId, toFolderId, toPath, Guid.NewGuid(), Guid.NewGuid());
-                                }
-                                catch (Exception)
-                                {
+                        try
+                        {
+                            fileCopy.CopyTo(Path.Combine(fullToPath, fileNameCopy));
+                           
+                        }
+                        catch (Exception)
+                        {
 
-                                    throw;
-                                }
+                            throw;
+                        }
 
-                            }
-                            break;
-                        case 2:
-                            FileInfo fileMove = new FileInfo(fullFilePath);
-                            string fileNameMove = fileMove.Name;
-                            if (fileMove.Exists)
-                            {
-                                try
-                                {
-                                    fileMove.MoveTo(fullToPath + fileNameMove);
-                                    FileManagerController.MoveFile(fileId, toFolderId, toPath, Guid.NewGuid(), Guid.NewGuid());
-                                }
-                                catch (Exception)
-                                {
-
-                                    throw;
-                                }
-
-                            }
-                            break;
                     }
                     break;
                 case 2:
-                    switch (action)
+                    FileInfo fileMove = new FileInfo(fullFilePath);
+                    string fileNameMove = fileMove.Name;
+                    if (fileMove.Exists)
                     {
-                        case 1:
-                            FileInfo fileCopy = new FileInfo(fullFilePath);
-                            string fileNameCopy = fileCopy.Name;
-                            /// Checking if file exists
-                            if (!File.Exists(fullToPath + fileNameCopy + ".resources"))
-                            {
-                                try
-                                {
-                                    fileCopy.CopyTo(fullToPath + fileNameCopy + ".resources");
-                                    FileManagerController.CopyFile(fileId, toFolderId, toPath, Guid.NewGuid(), Guid.NewGuid());
-                                }
-                                catch (Exception)
-                                {
+                        try
+                        {
+                            fileMove.MoveTo(fullToPath + fileNameMove);
 
-                                    throw;
-                                }
+                        }
+                        catch (Exception)
+                        {
 
-                            }
-                            break;
-                        case 2:
-                            FileInfo fileMove = new FileInfo(fullFilePath);
-                            string fileName = fileMove.Name;
-                            if (fileMove.Exists)
-                            {
-                                try
-                                {
-                                    fileMove.MoveTo(fullToPath + fileName + ".resources");
-                                    FileManagerController.MoveFile(fileId, toFolderId, toPath, Guid.NewGuid(), Guid.NewGuid());
-                                }
-                                catch (Exception)
-                                {
+                            throw;
+                        }
 
-                                    throw;
-                                }
-
-                            }
-                            break;
-                    }
-                    break;
-                case 3:
-                    switch (action)
-                    {
-                        case 1:
-                            FileInfo fileCopy = new FileInfo(fullFilePath);
-                            ATTFile objCopy = new ATTFile();
-                            objCopy.FileName = fileCopy.Name;
-                            objCopy.Folder = toPath;
-                            objCopy.FolderId = toFolderId;
-                            objCopy.AddedBy = "superuser";
-                            objCopy.Extension = fileCopy.Extension;
-                            objCopy.PortalId = 1;
-                            objCopy.UniqueId = Guid.NewGuid();
-                            objCopy.VersionGuid = Guid.NewGuid();
-                            objCopy.Size = int.Parse(fileCopy.Length.ToString());
-                            objCopy.ContentType = FileManagerHelper.ReturnExtension(fileCopy.Extension);
-                            objCopy.IsActive = 1;
-                            objCopy.StorageLocation = 2;
-                            if (fileCopy.Exists)
-                            {
-                                byte[] _fileContent = FileManagerHelper.FileToByteArray(fullFilePath);
-                                objCopy.Content = _fileContent;
-                                try
-                                {
-                                    FileManagerController.AddFile(objCopy);
-                                }
-                                catch (Exception)
-                                {
-
-                                    throw;
-                                }
-                            }
-                            break;
-                        case 2:
-                            FileInfo fileMove = new FileInfo(fullFilePath);
-                            ATTFile objMove = new ATTFile();
-                            objMove.FileName = fileMove.Name;
-                            objMove.Folder = toPath;
-                            objMove.FolderId = toFolderId;
-                            objMove.AddedBy = "superuser";
-                            objMove.Extension = fileMove.Extension;
-                            objMove.PortalId = 1;
-                            objMove.UniqueId = Guid.NewGuid();
-                            objMove.VersionGuid = Guid.NewGuid();
-                            objMove.Size = int.Parse(fileMove.Length.ToString());
-                            objMove.ContentType = FileManagerHelper.ReturnExtension(fileMove.Extension);
-                            objMove.IsActive = 1;
-                            objMove.StorageLocation = 2;
-                            if (fileMove.Exists)
-                            {
-                                byte[] _fileContent = FileManagerHelper.FileToByteArray(fullFilePath);
-                                objMove.Content = _fileContent;
-                                try
-                                {
-                                    FileManagerController.AddFile(objMove);
-                                    fileMove.Delete();
-                                    FileManagerController.DeleteFileFolder(0, fileId);
-                                }
-                                catch (Exception)
-                                {
-
-                                    throw;
-                                }
-                            }
-                            break;
-                    }
-                    break;
-                case 4:
-                    switch (action)
-                    {
-                        case 1:
-                            FileInfo fileCopy = new FileInfo(fullFilePath + ".resources");
-                            /// Checking if file exists
-                            string fileNameCopy = "";
-                            fileNameCopy = fileCopy.Name;
-                            if (!File.Exists(Path.Combine(fullToPath, fileNameCopy.Replace(".resources", ""))))
-                            {
-                                try
-                                {
-                                    fileCopy.CopyTo(Path.Combine(fullToPath, fileNameCopy.Replace(".resources", "")));
-                                    FileManagerController.CopyFile(fileId, toFolderId, toPath, Guid.NewGuid(), Guid.NewGuid());
-                                }
-                                catch (Exception)
-                                {
-
-                                    throw;
-                                }
-
-                            }
-                            break;
-                        case 2:
-                            FileInfo fileMove = new FileInfo(fullFilePath + ".resources");
-                            string fileNameMove = fileMove.Name;
-                            if (fileMove.Exists)
-                            {
-                                try
-                                {
-                                    fileMove.MoveTo(Path.Combine(fullToPath, fileNameMove.Replace(".resources", "")));
-                                    FileManagerController.MoveFile(fileId, toFolderId, toPath, Guid.NewGuid(), Guid.NewGuid());
-                                }
-                                catch (Exception)
-                                {
-
-                                    throw;
-                                }
-
-                            }
-                            break;
-                    }
-                    break;
-                case 5:
-                    switch (action)
-                    {
-                        case 1:
-                            FileInfo file11 = new FileInfo(fullFilePath + ".resources");
-                            /// Checking if file exists
-                            string fileName11 = "";
-                            fileName11 = filePath.Substring(filePath.LastIndexOf('/') + 1, filePath.Length - 1 - filePath.LastIndexOf('/'));
-                            if (!File.Exists(fullToPath + fileName11 + ".resources"))
-                            {
-                                try
-                                {
-                                    file11.CopyTo(fullToPath + fileName11 + ".resources");
-                                    FileManagerController.CopyFile(fileId, toFolderId, toPath, Guid.NewGuid(), Guid.NewGuid());
-                                }
-                                catch (Exception)
-                                {
-
-                                    throw;
-                                }
-
-                            }
-                            break;
-                        case 2:
-                            FileInfo fileMove = new FileInfo(fullFilePath + ".resources");
-                            /// Checking if file exists
-                            string fileNameMove = fileMove.Name;
-                            if (fileMove.Exists)
-                            {
-                                try
-                                {
-                                    fileMove.MoveTo(Path.Combine(fullFilePath, fileNameMove + ".resources"));
-                                    FileManagerController.MoveFile(fileId, toFolderId, toPath, Guid.NewGuid(), Guid.NewGuid());
-                                }
-                                catch (Exception)
-                                {
-
-                                    throw;
-                                }
-
-                            }
-                            break;
-                    }
-                    break;
-                case 6:
-                    switch (action)
-                    {
-                        case 1:
-                            FileInfo file12 = new FileInfo(fullFilePath + ".resources");
-                            ATTFile obj12 = new ATTFile();
-                            obj12.FileName = RemoveResourceExtension(file12.Name);
-                            obj12.Folder = toPath;
-                            obj12.FolderId = toFolderId;
-                            obj12.AddedBy = "superuser";
-                            obj12.Extension = file12.Extension;
-                            obj12.PortalId = 1;
-                            obj12.UniqueId = Guid.NewGuid();
-                            obj12.VersionGuid = Guid.NewGuid();
-                            obj12.Size = int.Parse(file12.Length.ToString());
-                            obj12.ContentType = FileManagerHelper.ReturnExtension(file12.Extension);
-                            obj12.IsActive = 1;
-                            obj12.StorageLocation = 2;
-                            if (new FileInfo(fullFilePath + ".resources").Exists)
-                            {
-                                File.Move(fullFilePath + ".resources", fullFilePath);
-                                byte[] _fileContent = FileManagerHelper.FileToByteArray(fullFilePath);
-                                obj12.Content = _fileContent;
-                                try
-                                {
-                                    FileManagerController.AddFile(obj12);
-                                    File.Move(fullFilePath, fullFilePath + ".resources");
-                                }
-                                catch (Exception)
-                                {
-                                    if (File.Exists(fullFilePath))
-                                    {
-                                        File.Move(fullFilePath, fullFilePath + ".resources");
-                                    }
-
-                                    throw;
-                                }
-                            }
-                            break;
-                        case 2:
-                            FileInfo fileMove = new FileInfo(fullFilePath + ".resources");
-                            ATTFile objMove = new ATTFile();
-                            objMove.FileName = RemoveResourceExtension(fileMove.Name);
-                            objMove.Folder = toPath;
-                            objMove.FolderId = toFolderId;
-                            objMove.AddedBy = "superuser";
-                            objMove.Extension = fileMove.Extension;
-                            objMove.PortalId = 1;
-                            objMove.UniqueId = Guid.NewGuid();
-                            objMove.VersionGuid = Guid.NewGuid();
-                            objMove.Size = int.Parse(new FileInfo(fullFilePath + ".resources").Length.ToString());
-                            objMove.ContentType = FileManagerHelper.ReturnExtension(fileMove.Extension);
-                            objMove.IsActive = 1;
-                            objMove.StorageLocation = 2;
-                            if (new FileInfo(fullFilePath + ".resources").Exists)
-                            {
-                                byte[] _fileContent = FileManagerHelper.FileToByteArray(fullFilePath + ".resources");
-                                objMove.Content = _fileContent;
-                                try
-                                {
-                                    FileManagerController.AddFile(objMove);
-                                    File.Delete(fullFilePath + ".resources");
-                                    FileManagerController.DeleteFileFolder(0, fileId);
-                                }
-                                catch (Exception)
-                                {
-
-                                    throw;
-                                }
-                            }
-                            break;
-                    }
-                    break;
-                case 7:
-                    switch (action)
-                    {
-                        case 1:
-                            ATTFile obj20 = new ATTFile();
-                            obj20 = FileManagerController.GetFileDetails(fileId);
-                            try
-                            {
-                                string newFilePath = Path.Combine(fullToPath, obj20.FileName);
-                                if (!File.Exists(newFilePath))
-                                {
-                                    FileManagerHelper.WriteBinaryFile(newFilePath, obj20.Content);
-                                    FileInfo file20 = new FileInfo(newFilePath);
-                                    ATTFile obj20New = new ATTFile(file20.Name, toPath, toFolderId, "superuser",
-                                                                   file20.Extension, 1, Guid.NewGuid(), Guid.NewGuid(),
-                                                                   int.Parse(file20.Length.ToString()),
-                                                                   FileManagerHelper.ReturnExtension(file20.Extension), 1, 0);
-                                    FileManagerController.AddFile(obj20New);
-                                }
-                            }
-                            catch (Exception)
-                            {
-
-                                throw;
-                            }
-                            break;
-                        case 2:
-                            ATTFile objMove = new ATTFile();
-                            objMove = FileManagerController.GetFileDetails(fileId);
-                            try
-                            {
-                                string newFilePath = Path.Combine(fullToPath, objMove.FileName);
-                                FileManagerHelper.WriteBinaryFile(newFilePath, objMove.Content);
-                                FileInfo file20 = new FileInfo(newFilePath);
-                                ATTFile obj20New = new ATTFile(file20.Name, toPath, toFolderId, "superuser", file20.Extension, 1, Guid.NewGuid(), Guid.NewGuid(), int.Parse(file20.Length.ToString()), FileManagerHelper.ReturnExtension(file20.Extension), 1, 0);
-                                FileManagerController.AddFile(obj20New);
-                                FileManagerController.DeleteFileFolder(0, fileId);
-                            }
-                            catch (Exception)
-                            {
-
-                                throw;
-                            }
-                            break;
-                    }
-                    break;
-                case 8:
-                    switch (action)
-                    {
-                        case 1:
-                            ATTFile obj21 = new ATTFile();
-                            obj21 = FileManagerController.GetFileDetails(fileId);
-                            try
-                            {
-                                string newFilePath = Path.Combine(fullToPath, obj21.FileName);
-                                if (!File.Exists(newFilePath + ".resources"))
-                                {
-                                    FileManagerHelper.WriteBinaryFile(newFilePath + ".resources", obj21.Content);
-                                    FileInfo file21 = new FileInfo(newFilePath + ".resources");
-                                    ATTFile obj21New = new ATTFile(file21.Name, toPath, toFolderId, "superuser",
-                                                                   file21.Extension, 1, Guid.NewGuid(), Guid.NewGuid(),
-                                                                   int.Parse(file21.Length.ToString()),
-                                                                   FileManagerHelper.ReturnExtension(file21.Extension), 1, 1);
-                                    FileManagerController.AddFile(obj21New);
-                                }
-                            }
-                            catch (Exception)
-                            {
-
-                                throw;
-                            }
-                            break;
-                        case 2:
-                            ATTFile objMove = new ATTFile();
-                            objMove = FileManagerController.GetFileDetails(fileId);
-                            try
-                            {
-                                string newFilePath = Path.Combine(fullToPath, objMove.FileName);
-                                FileManagerHelper.WriteBinaryFile(newFilePath + ".resources", objMove.Content);
-                                FileInfo file21 = new FileInfo(newFilePath + ".resources");
-                                ATTFile obj21New = new ATTFile(file21.Name.Replace(".resources", ""), toPath, toFolderId, "superuser", file21.Extension, 1, Guid.NewGuid(), Guid.NewGuid(), int.Parse(file21.Length.ToString()), FileManagerHelper.ReturnExtension(file21.Extension), 1, 1);
-                                FileManagerController.AddFile(obj21New);
-                                FileManagerController.DeleteFileFolder(0, fileId);
-                            }
-                            catch (Exception)
-                            {
-
-                                throw;
-                            }
-                            break;
-                    }
-                    break;
-                case 9:
-                    switch (action)
-                    {
-                        case 1:
-                            ATTFile obj22 = new ATTFile();
-                            obj22 = FileManagerController.GetFileDetails(fileId);
-                            try
-                            {
-                                string newFilePath = Path.Combine(fullToPath, obj22.FileName);
-                                FileInfo file22 = new FileInfo(newFilePath);
-                                obj22.Folder = toPath;
-                                obj22.FolderId = toFolderId;
-                                obj22.AddedBy = "superuser";
-                                FileManagerController.AddFile(obj22);
-                            }
-                            catch (Exception)
-                            {
-
-                                throw;
-                            }
-                            break;
-                        case 2:
-                            ATTFile objMove = new ATTFile();
-                            objMove = FileManagerController.GetFileDetails(fileId);
-                            try
-                            {
-                                string newFilePath = Path.Combine(fullToPath, objMove.FileName);
-                                FileInfo fileMove = new FileInfo(newFilePath);
-                                objMove.Folder = toPath;
-                                objMove.FolderId = toFolderId;
-                                objMove.AddedBy = "superuser";
-                                FileManagerController.AddFile(objMove);
-                                FileManagerController.DeleteFileFolder(0, fileId);
-                            }
-                            catch (Exception)
-                            {
-
-                                throw;
-                            }
-                            break;
                     }
                     break;
 
             }
+
         }
+
+      
         /// <summary>
         /// Creates a html string to be rendered based upon the dynamic conditions
         /// </summary>
@@ -849,24 +458,24 @@ namespace SageFrame.FileManager
                     {
                         if (IsImg)
                         {
+                            string imgpath = urlPath + file.Folder;
+                            imgpath = Path.Combine(imgpath, file.FileName);
                             sb.Append(AddExtension(ext, index));
                             sb.Append(AddCheckBox(checkId));
-                            sb.Append(AddDownloadLink(downloadPath, folderId, file, permission, ext));
+                            //sb.Append(AddDownloadLink(downloadPath, folderId, file, permission, ext));
+                            sb.Append(AddPopupLink(downloadPath, folderId, file, permission, ext));
                             sb.Append(AddInfoSpan(file, attStr, StorageLocation));
                             sb.Append(AddPreviewButton(urlPath, dictImages["Preview"].ToString()));
                             sb.Append(AddEditButton(Path.Combine(file.Folder, file.FileName), dictImages["Edit"].ToString(), permission));
                             sb.Append(AddDeleteButton(Path.Combine(file.Folder, file.FileName), dictImages["Delete"].ToString(), permission));
-
-
-
-
                             sb.Append("</tr>");
                         }
                         else
                         {
                             sb.Append(AddExtension(ext, index));
                             sb.Append(AddCheckBox(checkId));
-                            sb.Append(AddDownloadLink(downloadPath, folderId, file, permission, ext));
+                            //sb.Append(AddDownloadLink(downloadPath, folderId, file, permission, ext));
+                            sb.Append(AddPopupLink(downloadPath, folderId, file, permission, ext));
                             sb.Append(AddInfoSpan(file, attStr, StorageLocation));
                             sb.Append(AddBlankSpan());
                             sb.Append(AddEditButton(Path.Combine(file.Folder, file.FileName), dictImages["Edit"].ToString(), permission));
@@ -922,11 +531,30 @@ namespace SageFrame.FileManager
                 name = file.FileName.Substring(0, 40) + "...";
             }
             if (permission == "edit" || permission == "view")
-                return ("<td class='" + extension + "' width='30%'><a class=\"download_link\" href=\"" + filePath + "FileID=" + file.FileId + "&FolderID=" + folderId + "\" rel=" + file.FileId + ">" + name + "</a></td>");
+                return ("<td class='" + extension + "' width='30%'><a class=\"download_link\" href=\"" + filePath + "FileName=" + file.FileName + "&FolderName=" + file.Folder + "\" rel=" + file.FileName + ">" + name + "</a></td>");
             else
-                return ("<td class='" + extension + "' width='30%'><a class=\"download_link\" href=\"#\" rel=" + file.FileId + ">" + file.FileName + "</a></td>");
+                return ("<td class='" + extension + "' width='30%'><a class=\"download_link\" href=\"#\" rel=" + file.FileName + ">" + file.FileName + "</a></td>");
 
         }
+        public static string AddPopupLink(string filePath, int folderId, ATTFile file, string permission, string extension)
+        {
+            extension = string.Format("icon-{0}", extension);
+            string name = file.FileName;
+            if (file.FileName.Length > 40)
+            {
+                name = file.FileName.Substring(0, 40) + "...";
+            }
+            //if (permission == "edit" || permission == "view")
+            //    return ("<td class='" + extension + "' width='30%'><a class=\"download_link\" href=\"" + filePath + "FileName=" + file.FileName + "&FolderName=" + file.Folder + "\" rel=" + file.FileName + ">" + name + "</a></td>");
+            //else
+            //    return ("<td class='" + extension + "' width='30%'><a class=\"download_link\" href=\"#\" rel=" + file.FileName + ">" + file.FileName + "</a></td>");
+            // return ("<td class='" + extension + "' width='30%'><a class=\"download_link\" href=\"" + filePath + "FileName=" + file.FileName + "&FolderName=" + file.Folder + "\" rel=" + file.FileName + ">" + name + "</a></td>");
+
+            return ("<td class='" + extension + "' width='30%'><a href=# class=\"download_link\"><span   value=\"" + filePath + "FileName=" + file.FileName + "&FolderName=" + file.Folder + "\"  id=\"spnEditImage\">" + name + "</a></span></td>");
+
+
+        }
+
         public static string AddInfoSpan(ATTFile file, string attributeString, int mode)
         {
             string html = "";
@@ -945,7 +573,7 @@ namespace SageFrame.FileManager
         public static string AddDeleteButton(string filePath, string image, string permission)
         {
             if (permission == "edit")
-                return ("<td><a class=\"delete\" href=\"#\" rel=\"" + filePath + "\"><img src=\"" + image + "\"></a></td>");
+                return ("<td><a class=\"delete icon-delete\" href=\"#\" rel=\"" + filePath + "\"></a></td>");
             else
                 return ("");
 
@@ -953,20 +581,20 @@ namespace SageFrame.FileManager
         public static string AddEditButton(string filePath, string image, string permission)
         {
             if (permission == "edit")
-                return ("<td><span class=\"edit\"><a class=\"edit\" href=\"#\" rel=\"" + filePath + "\"><img src=\"" + image + "\"></a></span></td>");
+                return ("<td><span class=\"edit\"><a class=\"edit icon-edit\" href=\"#\" rel=\"" + filePath + "\"></a></span></td>");
             else
                 return ("");
         }
         public static string AddPreviewButton(string filePath, string image)
         {
 
-            return ("<td><span class=\"preview\"><a class=\"preview\" href=\"" + filePath + "\" title=\"Preview\" rel=\"" + filePath + "\"><img src=\"" + image + "\"></a></span></td>");
+            return ("<td><span class=\"preview\"><a class=\"preview icon-preview\" href=\"" + filePath + "\" title=\"Preview\" rel=\"" + filePath + "\"></a></span></td>");
 
         }
         public static string AddExtractButton(string filePath, string image, string permission)
         {
             if (permission == "edit")
-                return ("<td><span class=\"decompress\"><a class=\"decompress\" title=\"Extract\" href=\"#\" rel=\"" + filePath + "\"><img src=\"" + image + "\"></a></span></td>");
+                return ("<td><span class=\"decompress\"><a class=\"decompress icon-extract\" title=\"Extract\" href=\"#\" rel=\"" + filePath + "\"></a></span></td>");
             else
                 return ("<td><span class=\"decompress\"></span></td>");
         }
@@ -975,9 +603,6 @@ namespace SageFrame.FileManager
             return ("<td><span class=\"decompress\"></span></td>");
         }
         #endregion
-
-
-
 
     }
 

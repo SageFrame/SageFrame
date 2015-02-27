@@ -5,7 +5,7 @@ div.cssClassCustomErrorDiv
 	width:800px;
 	margin:50px auto; padding-left:50px; border-left:1px solid #ccc; box-shadow:1px 0 0 #fff inset;
 }
-.cssClassLogo {	float:left; width:304px; height:55px; background:url(../images/sageframe.png) no-repeat;}
+.cssClassLogo {	float:left; width:328px; height:67px; background:url(../images/sageframe.png) no-repeat;}
 .cssClassLogo a { height:55px; display:block; text-indent:-6000px; display:block; }
 .cssClassPageNotFound {
     margin: 0 auto;

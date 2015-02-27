@@ -5,6 +5,7 @@ AjaxControlToolkit.HTMLEditor.CustomToolbarButton.InsertIcon.initializeBase(this
 }
 
 AjaxControlToolkit.HTMLEditor.CustomToolbarButton.InsertIcon.prototype = {
+
     callMethod: function() {
         if (!AjaxControlToolkit.HTMLEditor.CustomToolbarButton.InsertIcon.callBaseMethod(this, "callMethod")) return false;
         this.openPopup(Function.createDelegate(this, this._onopened));

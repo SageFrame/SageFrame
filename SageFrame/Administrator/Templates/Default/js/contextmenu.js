@@ -52,7 +52,7 @@
     if (!menu) {                                      // Create singleton menu
       menu = $('<div id="jqContextMenu" class="sfContextmenu sfCurve Shadow"></div>')
                .fadeOut()
-               .css({position:'absolute', zIndex:'500'})
+               .css({ position: 'absolute', zIndex: '500', 'display': 'none' })               
                .appendTo('body')
                .bind('click', function(e) {
                  e.stopPropagation();

@@ -2,169 +2,154 @@
 /* CSS Document */
 
 /* common styles */
-body {
-	background:#e7e7e7 url(../images/body-color-bg.jpg) repeat-x;
+body {background: #f2f2f2;
+font:13px/20px Tahoma, Geneva, sans-serif;
 	margin:0;
 	padding:0;
 	color:#555;
 }
 h1, h2, h3, h4, h5, h6 {
-	font-family:Arial, Helvetica, sans-serif !important;
+	font-family:Tahoma, Geneva, sans-serif !important;
 }
 /*---Normal link---*/
 a {
 	color: #034D68;
 	text-decoration: none;
-	font:12px Arial, Helvetica, sans-serif;
+	font:13px Tahoma, Geneva, sans-serif;
 }
 a:hover, a:active, a:focus {
 	color: #034D68;
 	text-decoration: underline;
+}
+input:focus {
+    outline: none;
 }
 img {
 	margin:0 auto;
 	display:block;
 }
 p {
-	font:bold 12px/18px Arial, Helvetica, sans-serif;
+	font:13px/18px Tahoma, Geneva, sans-serif;
 	color:#545454;
-	text-shadow:0 1px 0px #fff;
 }
 .sfInputbox {
 	-moz-transition: all 0.3s ease-out 0s;
 	background:#fff;
-	border: 1px solid #6FB2D0;
+	border: 1px solid #aaa;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	color: #999;
-	font: 12px Arial, Helvetica, sans-serif;
+	font-size: 12px;
 	padding:7px 5px;
 	margin:3px 0 0 0;
 	width: 200px;
 }
 .sfInputbox:focus {
-	-moz-box-shadow:0 0 2px 1px #84B3CB;
-	-webkit-box-shadow:0 0 2px 1px #84B3CB;
-	box-shadow:0 0 2px 1px #84B3CB;
-}
+ background:#fff;
+	-webkit-box-shadow:0 0 8px rgba(0, 0, 0, 0.2); box-shadow:0 0 8px rgba(0, 0, 0, 0.2); -o-box-shadow:0 0 8px rgba(0, 0, 0, 0.2); -ms-box-shadow:0 0 8px rgba(0, 0, 0, 0.2); border: 1px solid #96b3fc;
+	outline:none;
+	outline:none;}
 .sfButtonwrapper .sfBtn {
-	background: #00e1ff;
-	background: -moz-linear-gradient(top, #00e1ff 4%, #00b0ff 2%, #0085ff 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(4%, #00e1ff), color-stop(2%, #00b0ff), color-stop(100%, #0085ff));
-	background: -webkit-linear-gradient(top, #00e1ff 4%, #00b0ff 2%, #0085ff 100%);
-	background: -o-linear-gradient(top, #00e1ff 4%, #00b0ff 2%, #0085ff 100%);
-	background: -ms-linear-gradient(top, #00e1ff 4%, #00b0ff 2%, #0085ff 100%);
-	background: linear-gradient(top, #00e1ff 4%, #00b0ff 2%, #0085ff 100%);
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00e1ff', endColorstr='#0085ff', GradientType=0 );
-	-webkit-border-radius:3px;
+	margin-right:12px;
+	font-size:16px;
+	color:#fff;
+	border:none;
+	padding:10px 20px;
+	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
-	border: 1px solid #none;
-	color: #FFFFFF;
 	cursor:pointer;
-	text-shadow:0 1px 0 rgba(0, 0, 0, 0.3);
-	border:1px solid #0a63a7;
-	padding:6px 10px;
-	font:bold 12px Arial, Helvetica, sans-serif;
-	margin:16px 10px 16px 0;
+	display:inline-block;
+	background: #4a4a4a; 
 }
 .sfButtonwrapper .sfBtn:hover {
-	background: #00e1ff;
-	background: -moz-linear-gradient(top, #00e1ff 1%, #00b0ff 2%, #0a63a7 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(1%, #00e1ff), color-stop(2%, #00b0ff), color-stop(100%, #0a63a7));
-	background: -webkit-linear-gradient(top, #00e1ff 1%, #00b0ff 2%, #0a63a7 100%);
-	background: -o-linear-gradient(top, #00e1ff 1%, #00b0ff 2%, #0a63a7 100%);
-	background: -ms-linear-gradient(top, #00e1ff 1%, #00b0ff 2%, #0a63a7 100%);
-	background: linear-gradient(top, #00e1ff 1%, #00b0ff 2%, #0a63a7 100%);
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00e1ff', endColorstr='#0a63a7', GradientType=0 );
+	background: #375d9e; 
+	color:#fff;
+	text-decoration:none;
 }
 .sfinstalbtn {
-	background:rgba(255, 255, 255, 0.7);
-	padding:3px;
-	-webkit-border-radius: 5px;
 	float:right;
-	margin:30px 0;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
+	margin:69px -53px 50px;
 }
 .sfinstalbtn .sfBtn {
-	background:url(../images/installbtn.png) repeat-x;
-	box-shadow:inset 0 0 2px #ffffbe;
-	min-height:60px;
-	text-transform:uppercase;
-	text-shadow:0 1px 0 rgba(0, 0, 0, 0.3);
+	margin-right:12px;
+	font-size:28px;
 	color:#fff;
-	font:21px/50px Arial, Helvetica, sans-serif;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	margin:0;
 	border:none;
+	padding:12px 24px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
 	cursor:pointer;
-	padding: 0 15px;
-	border-radius: 5px;
+	display:inline-block;
+	background: #2d4c80; 
+	-webkit-box-shadow: 0 0 5px rgba(0,0,0,.5); -moz-box-shadow: 0 0 5px rgba(0,0,0,.5); box-shadow: 0 0 5px rgba(0,0,0,.5); -o-box-shadow: 0 0 5px rgba(0,0,0,.5); -ms-box-shadow: 0 0 5px rgba(0,0,0,.5);	-moz-transition:background 0.2s linear;
+
 }
 .sfinstalbtn .sfBtn:hover {
-	background-position:0 -60px;
+	background: #375d9e; 
+	color:#fff;
+	text-decoration:none;
 }
 .sfinstalbtn .sfBtn:active {
 	background-position:0 -120px;
 }
 .sfFormlabel {
-	font:bold 12px/18px Arial, Helvetica, sans-serif;
-	text-shadow:0 1px 1px #fff;
+	font-weight:bold;
+	font-size:13px;
 	color:#434343;
 	display:block;
 	white-space:nowrap;
 }
 h2 {
-	font:18px Arial, Helvetica, sans-serif;
-	color:#3c728d;
-	padding:0 0 8px 0;
-	background:url(../images/lines.png) repeat-x left bottom;
-	margin:0;
+	font-size:28px;
+	color:#0B4B83;
+	margin:0px 0 30px; text-align:center;
 }
 h3 {
-	font:12px Arial, Helvetica, sans-serif;
-	text-transform:uppercase;
+	font-size:18px;
 	color:#222;
-	display:inline-block
+	padding-bottom:5px;
+	border-bottom:1px solid #ccc;
 }
 #sfInstallWrapper {
 	margin:0 auto;
-	width:636px;
-	overflow:hidden
+	width:750px; position:relative;
 }
 .sfLogo h1 {
 	background:url(../images/sageframe.png) no-repeat;
-	width:417px;
-	margin:0 auto;
-	min-height:181px;
+	width:322px;
+	margin:40px auto;
+	min-height:66px;
+	
 }
 #sfInstallWrapper .sfOuter {
 	background:#fff;
-	border:1px solid #b6b6b6;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
+	position:relative;
+	padding:40px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+-webkit-box-shadow: 0 0 5px rgba(0,0,0,.25); -moz-box-shadow: 0 0 5px rgba(0,0,0,.25); box-shadow: 0 0 5px rgba(0,0,0,.25); -o-box-shadow: 0 0 5px rgba(0,0,0,.25); -ms-box-shadow: 0 0 5px rgba(0,0,0,.25);	-moz-transition:background 0.2s linear;
 }
 .sfInstallpart {
-	padding:30px 50px 0;
+	/*padding:30px 50px 0;*/
 }
 /*---Form Wrapper---*/
 .sfHelptext {
-	font:11px/18px Arial, Helvetica, sans-serif;
+	font-size:11px; line-height:18px;
 	padding-top:5px;
 	display:block !important;
 	color:#777;
 	overflow:hidden;
 }
-.sfHelptext.sfInline { padding-top:0}
+.sfHelptext.sfInline { padding-top:0; color:#1a1a1a; font-size:12px;}
 table tr td {
 	padding:5px 0;
 }
 table tr td table td {
-	padding:0;
+	padding:0; vertical-align:top;
 }
 .sfTemplate {
 	margin:20px 0 0 0;
@@ -177,17 +162,13 @@ table tr td table td {
 .sfTemplate ul li {
 	float:left;
 	list-style:none;
-	margin:0 20px 0 0;
-	width:153px;
+	margin:0 15px 15px;
+	width:185px;
 }
 .sfTemplate ul li img {
-	width: 150px;
+	width: 185px; height:185px;
 	background:#fff;
-	border:1px solid #CCC !important;
-	text-align:center;
-	-moz-box-shadow:1px 2px 2px rgba(0, 0, 0, 0.4);
-	-webkit-box-shadow:1px 2px 2px rgba(0, 0, 0, 0.4);
-	box-shadow:1px 2px 2px rgba(0, 0, 0, 0.4);
+	text-align:center; 
 }
 .sfTemplate ul li p {
 	color:#4a626e;
@@ -200,25 +181,21 @@ table tr td table td {
 }
 .sfError {
 	color:#943c30;
+	display:block;
+	font-size:12px;
 }
 .sfInner > .sfError, .sfInner > .sfSuccess {
 	display:block;
-	font:bold 12px/18px Arial, Helvetica, sans-serif;
+	font:bold 13px/18px Tahoma, Geneva, sans-serif;
 	padding:16px 50px;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
-	-moz-border-radius-topleft: 5px;
-	-moz-border-radius-topright: 5px;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
+	border-radius:3px; -webkit-border-radius:3px; -ms-border-radius:3px; -o-border-radius:3px;
+	margin-bottom:2px;
 }
 .sfInner > .sfError {
-	background:#fcffe5 url(../images/error.png) no-repeat 25px 17px;
-	border-bottom:1px solid #e3e3cb;
+	background:#fadebc url(../images/error.png) no-repeat 16px 14px;
 }
 .sfInner > .sfSuccess {
-	background:#dcf2da url(../images/success.png) no-repeat 10px 10px;
-	border-bottom:1px solid #c5dac5;
+	background:#89dd94 url(../images/success.png) no-repeat 16px 14px;
 }
 .sfCheckBox {
 	float:left;
@@ -232,22 +209,156 @@ table tr td table td {
 .sfgap2 {
 	padding-left:52px;
 }
-.sfButtonwrapper {
-	background:#f3f3f3;
-	border-top:1px solid #e2e2e2;
-	-webkit-border-bottom-right-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	padding: 0 50px;
-	-moz-border-radius-bottomright: 5px;
-	-moz-border-radius-bottomleft: 5px;
-	border-bottom-right-radius: 5px;
-	border-bottom-left-radius: 5px;
-}
+.sfButtonwrapper { margin:40px 0px; overflow:hidden; border-bottom:1px dashed #ccc; padding:15px 0;}
+.sfButtonwrapper p { float:left; width:450px; margin:0px; font-weight:normal; font-size:11px; color:#777;}
+.sfButtonwrapper input.sfBtn { float:right; width:auto;}
 
 
 /* processing page */
 .sfloadingDiv { padding:20px 0px;}
 .sfloadingDiv span, .sfloadingDiv img { margin:10px auto; }
-.sfloadingDiv span { text-align:left; padding-left:50px; font:bold 12px/18px Arial, Helvetica, sans-serif; display:block;}
-.sfmaincontent textarea { border:none; font:bold 12px/30px Arial, Helvetica, sans-serif; text-transform:capitalize; padding:20px 50px; color:#555;}
+.sfloadingDiv span { text-align:left; padding-left:50px; font:bold 12px/18px Tahoma, Geneva, sans-serif; display:block;}
+.sfmaincontent textarea { border:none; font:bold 12px/30px Tahoma, Geneva, sans-serif; text-transform:capitalize; padding:20px 50px; color:#555;}
 .sfProcessWrapper .sfButtonwrapper { display:none; }
+
+textarea {
+  resize: none;}
+  
+.sfHelp { top:111px; right:7px; position:absolute; display:inline-block; z-index:999;}
+.sfHelp a {padding:10px; color:#0B4B83; padding-left:20px; font-size:20px; display:inline-block;}
+.sfHelp a:hover { text-decoration:none;}
+
+
+table.sfInstalllationTable tr {}
+table.sfInstalllationTable tr td { vertical-align:top; padding:4px;}
+
+
+/*************************font-icon*******************************************/
+@font-face {
+  font-family: "sageframe";
+  src:url("../../Administrator/Templates/Default/css/fonts/sageframe.eot");
+  src:url("../../Administrator/Templates/Default/css/fonts/sageframe.eot?#iefix") format("embedded-opentype"),
+    url("../../Administrator/Templates/Default/css/fonts/sageframe.woff") format("woff"),
+    url("../../Administrator/Templates/Default/css/fonts/sageframe.ttf") format("truetype"),
+    url("../../Administrator/Templates/Default/css/fonts/sageframe.svg#sageframe") format("svg");
+  font-weight: normal;
+  font-style: normal;
+  
+
+}
+[class^="icon-"]:before, [class*=" icon-"]:before {
+  font-family: "sageframe" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-info:before {
+	content: "\e654";
+}
+.icon-help:before {
+	content: "\e6105";
+}
+.icon-close:before {
+	content: "\e614";
+}
+
+table.sfInstalllationTable tr td .icon-info:before { margin-right:5px; color:#7a7a7a;}
+
+
+p.sfWelcomeText { font-size:18px; font-weight:normal; line-height:28px; text-align:center; margin:0 0 15px;}
+
+table.sfSubTable { background:#f3f3f3; padding:20px;}
+table.sfSubTable tr td { vertical-align:middle;}
+
+
+/*Tooltip*/
+
+i.icon-info {
+  color: #900;
+  text-decoration: none;
+  cursor:help;
+}
+
+i:hover.icon-info {
+  color: red;
+  position: relative;
+}
+
+i.icon-info[data-title]:hover:after {
+  content: attr(data-title);
+  padding: 4px 10px;
+  color: #fff;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  white-space: nowrap;
+  z-index: 999;
+  background:#2a2a2a;
+  font-style:normal;
+  font-size:12px;
+  border-radius:3px; -webkit-border-radius:3px; -ms-border-radius:3px; -o-border-radius:3px;
+}
+a.icon-help[data-title]:hover:after {
+  content: attr(data-title);
+  padding: 4px 10px;
+  color: #fff;
+  position: absolute;
+  left: 0;
+  top: -20px;
+  white-space: nowrap;
+  z-index: 999;
+  background:#0B4B83;
+  font-style:normal;
+  font-size:12px;
+  text-decoration:none;
+  border-radius:3px; -webkit-border-radius:3px; -ms-border-radius:3px; -o-border-radius:3px;
+}
+
+
+/*accordian*/
+.accordion-header {
+	background-color: #e6e6e6; border:1px solid #ccc; border-bottom:none; margin-bottom:-1px;
+	padding:10px; font-size:16px; color:#3c3c3c; font-weight:normal;
+}
+
+.active-header {
+	background:#bababa;
+   color:#fff;
+}
+
+.active-header:hover {
+}
+
+.inactive-header {
+}
+
+.inactive-header:hover {background:#f2f2f2;
+	cursor:pointer;
+}
+
+.accordion-content {
+	display: none;
+	padding: 20px;
+	background: #ffffff;
+	border: 1px solid #cccccc;
+	border-top: 0;
+}
+
+a.back.icon-close { position:absolute; top:-18px; right:-18px; display:block; background:#3a3a3a; padding:10px; font-size:18px; color:#fff; cursor:pointer;
+border-radius:50%; -webkit-border-radius:50%; -ms-border-radius:50%; -o-border-radius:50%;}
+a.back.icon-close:hover { text-decoration:none; background:#5a5a5a;}
+
+.sfInstallationGuide h2 { text-align:left;}
+.sfInstallationGuide p { line-height:22px; margin:0px 0px 15px;}
+#accordion-container h2 { margin-bottom:0px;}
+.sfInstallationGuide .sfOuter { margin-bottom:50px;}
+
+
+
+.sfHide { display:none;}

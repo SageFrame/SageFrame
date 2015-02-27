@@ -33,8 +33,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
 {
     public partial class PackageDetails : BaseAdministrationUserControl
     {
-        private string packageName = string.Empty;
-        //private string packageSettingsHelp = string.Empty;
+        private string packageName = string.Empty;        
         private string description = string.Empty;
         private string license=string.Empty;
         private string releaseNotes=string.Empty;
@@ -45,14 +44,12 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
         private string firstVersion = "01";
         private string secondVersion = "00";
         private string lastVersion = "00";
-
         protected void Page_Load(object sender, EventArgs e)
         {
             try
             {
                 if (!IsPostBack)
-                {
-                    //lblPackageSettingsHelp.Text = packageSettingsHelp;
+                {                    
                     txtPackageName.Text = packageName;
                     txtDescription.Text = description;
                     txtLicense.Text = license;
@@ -78,8 +75,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             try
             {
                 ddlFirst.DataSource = SageFrameLists.VersionType();
-                ddlFirst.DataBind();
-                //ddlFirst.Items.FindByValue("01").Selected = true;
+                ddlFirst.DataBind();               
 
                 ddlSecond.DataSource = SageFrameLists.VersionType();
                 ddlSecond.DataBind();

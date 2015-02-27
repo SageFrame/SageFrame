@@ -1,34 +1,13 @@
 ﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using SageFrame.Web.Utilities;
 using System.Data;
 using System.Data.SqlClient;
 using SageFrame.Web;
-using SageFrame.Core;
 using System.Data.Common;
 
 namespace SageFrame.Dashboard
@@ -84,7 +63,7 @@ namespace SageFrame.Dashboard
             string sp = "[dbo].[usp_DashboardQuickLinkGet]";
             SQLHandler sagesql = new SQLHandler();
             List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-            ParamCollInput.Add(new KeyValuePair<string, object>("@Username", UserName));
+            ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
             ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
             List<QuickLink> lstLinks = new List<QuickLink>();
            
@@ -104,7 +83,7 @@ namespace SageFrame.Dashboard
             string sp = "[dbo].[usp_DashboardQuickLinkGetAll]";
             SQLHandler sagesql = new SQLHandler();
             List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-            ParamCollInput.Add(new KeyValuePair<string, object>("@Username", UserName));
+            ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
             ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
             List<QuickLink> lstLinks = new List<QuickLink>();
 
@@ -221,7 +200,7 @@ namespace SageFrame.Dashboard
             string sp = "[dbo].[usp_DashboardSidebarGet]";
             SQLHandler sagesql = new SQLHandler();
             List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-            ParamCollInput.Add(new KeyValuePair<string, object>("@Username", UserName));
+            ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
             ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
 
             List<Sidebar> lstLinks = new List<Sidebar>();
@@ -242,7 +221,7 @@ namespace SageFrame.Dashboard
             string sp = "[dbo].[usp_DashboardSidebarGetAll]";
             SQLHandler sagesql = new SQLHandler();
             List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-            ParamCollInput.Add(new KeyValuePair<string, object>("@Username", UserName));
+            ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
             ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
 
             List<Sidebar> lstLinks = new List<Sidebar>();
@@ -557,10 +536,11 @@ namespace SageFrame.Dashboard
         {
             string sp = "[dbo].[usp_GetBlogRssContent]";
             SQLHandler sagesql = new SQLHandler();
-            string content = "";
+            string content = string.Empty;
+            SqlDataReader reader = null;
             try
             {
-                SqlDataReader reader = sagesql.ExecuteAsDataReader(sp);
+                reader = sagesql.ExecuteAsDataReader(sp);
 
                 while (reader.Read())
                 {
@@ -570,6 +550,13 @@ namespace SageFrame.Dashboard
             catch (Exception)
             {
                 throw;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
             }
             return content;
         }
@@ -596,9 +583,10 @@ namespace SageFrame.Dashboard
             string sp = "[dbo].[usp_TutorialRssContentGet]";
             SQLHandler sagesql = new SQLHandler();
             string content = "";
+            SqlDataReader reader = null;
             try
             {
-                SqlDataReader reader = sagesql.ExecuteAsDataReader(sp);
+                reader = sagesql.ExecuteAsDataReader(sp);
 
                 while (reader.Read())
                 {
@@ -608,6 +596,13 @@ namespace SageFrame.Dashboard
             catch (Exception)
             {
                 throw;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
             }
             return content;
         }
@@ -634,9 +629,10 @@ namespace SageFrame.Dashboard
             string sp = "[dbo].[usp_NewsRssContentGet]";
             SQLHandler sagesql = new SQLHandler();
             string content = "";
+            SqlDataReader reader = null;
             try
             {
-                SqlDataReader reader = sagesql.ExecuteAsDataReader(sp);
+                reader = sagesql.ExecuteAsDataReader(sp);
 
                 while (reader.Read())
                 {
@@ -646,6 +642,13 @@ namespace SageFrame.Dashboard
             catch (Exception)
             {
                 throw;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
             }
             return content;
         }
@@ -666,7 +669,23 @@ namespace SageFrame.Dashboard
             }
         }
 
+        public List<DashboardInfo> DashBoardView(string PageSEOName, string UserName, int PortalID)
+        {
+            try
+            {
+                SQLHandler SQLH = new SQLHandler();
+                List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
+                ParamCollInput.Add(new KeyValuePair<string, object>("@PageSEOName", PageSEOName));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
+                return SQLH.ExecuteAsList<DashboardInfo>("[dbo].[sp_DashBoardView]", ParamCollInput);
+            }
+            catch (Exception ex)
+            {
 
+                throw ex;
+            }
 
+        }
     }
 }

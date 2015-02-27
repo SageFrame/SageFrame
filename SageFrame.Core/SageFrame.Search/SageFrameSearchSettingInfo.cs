@@ -1,29 +1,20 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+#endregion
+
 
 namespace SageFrame.Search
 {
@@ -42,11 +33,12 @@ namespace SageFrame.Search
         private int _SearchResultPerPage = 10;
         private string _SearchResultPageName = "SageSearchResult";
         private int _MaxSearchChracterAllowedWithSpace = 200;
+        private int _MaxResultCharacterAllowedWithSpace = 200;
         public SageFrameSearchSettingInfo()
         {
 
         }
-        public SageFrameSearchSettingInfo(int searchButtonType, string searchButtonText, string searchButtonImage, int searchResultPerPage, string searchResultPageName, int maxSearchChracterAllowedWithSpace)
+        public SageFrameSearchSettingInfo(int searchButtonType, string searchButtonText, string searchButtonImage, int searchResultPerPage, string searchResultPageName, int maxSearchChracterAllowedWithSpace, int maxResultCharacterAllowedWithSpace)
         {
             this.SearchButtonType = searchButtonType;
             this.SearchButtonText = searchButtonText;
@@ -54,6 +46,7 @@ namespace SageFrame.Search
             this.SearchResultPerPage = searchResultPerPage;
             this.SearchResultPageName = searchResultPageName;
             this.MaxSearchChracterAllowedWithSpace = maxSearchChracterAllowedWithSpace;
+            this.MaxResultChracterAllowedWithSpace = maxResultCharacterAllowedWithSpace;
         }
 
         public int SearchButtonType
@@ -86,6 +79,11 @@ namespace SageFrame.Search
         {
             get { return _MaxSearchChracterAllowedWithSpace; }
             set { _MaxSearchChracterAllowedWithSpace = value; }
+        }
+        public int MaxResultChracterAllowedWithSpace
+        {
+            get { return _MaxResultCharacterAllowedWithSpace; }
+            set { _MaxResultCharacterAllowedWithSpace = value; }
         }
     }
 }

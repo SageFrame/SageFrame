@@ -32,9 +32,8 @@
                 QuickLinkID: 0,
                 Theme: '<%=Theme%>',
                 UserName: '<%=UserName%>',
-                PortalID: '<%=PortalID%>'
-
-
+                PortalID: '<%=PortalID%>',
+                PageExtension: '<%=PageExtension%>'
             },
             init: function() {
                 this.InitTabs();
@@ -44,13 +43,11 @@
                 this.IconUploader();
                 $('#btnCancelSidebar').hide();
                 this.BindSelectedTheme();
-
-
             },
             BindSelectedTheme: function() {
                 $('div.sfAppearanceOptions input:radio').each(function() {
                     if ($(this).val() == DashboardMgr.config.Theme) {
-                        $(this).attr("checked", true);
+                        $(this).prop("checked", true);
                     }
                 });
             },
@@ -58,12 +55,10 @@
                 $('#tabDashboard').tabs({ fx: [null, { height: 'show', opacity: 'show'}] });
             },
             BindEvents: function() {
-
                 var v = $("#form1").validate({
                     rules: {
                         txtLnkName: { required: true },
                         txtSidebarName: { required: true }
-
                     },
                     messages: {
                         txtLnkName: "<br/>Please enter a Name",
@@ -71,25 +66,23 @@
                     }
                 });
 
-
                 $('#btnAddQuickLink').bind("click", function() {
                     if (v.form()) {
                         var order = $('div.sfQuicklinklist ul li:last').index();
                         order = order + 1;
-                        var url = $('#ddlPages option:selected').val() + ".aspx";
+                        var url = $('#ddlPages option:selected').val() + DashboardMgr.config.PageExtension;
                         var imagepath = $('div.sfUploadedFiles img.sfIcon').attr("title");
-
                         var param = { linkObj: {
                             DisplayName: $('#txtLnkName').val(),
                             URL: url,
                             ImagePath: imagepath,
                             DisplayOrder: order,
                             PageID: $('#ddlPages').val(),
-                            IsActive: $('#chkIsActiveQuicklink').attr("checked"),
-                            QuickLinkID: parseInt(DashboardMgr.config.QuickLinkID)
+                            IsActive: $('#chkIsActiveQuicklink').prop("checked"),
+                            QuickLinkID: parseInt(DashboardMgr.config.QuickLinkID),
+                            secureToken: SageFrameSecureToken
                         }
                         };
-
                         $.ajax({
                             type: DashboardMgr.config.type,
                             contentType: DashboardMgr.config.contentType,
@@ -101,36 +94,30 @@
                                 SageFrame.messaging.show(DashboardMgr.GetLocalizedMessage("en-US", "DashboardManager", "LinkAddedSuccessfully"), "Success");
                                 DashboardMgr.GetQuickLinks();
                                 $('#txtLnkName').val('');
-
+                                $('#ddlPages').val('');
+                                $('div.sfUploadedFiles').html('');
+                                $('span.filename').text('No file selected');
                             }
-
                         });
                     }
                     else {
                         return;
                     }
-
                 });
-
-
-                $('div.sfSidebarItems ul li.parent img.expand').live("click", function() {
+                $('div.sfSidebarItems ul li.parent').on('click', 'img.expand', function() {
                     $(this).parent().next("ul").slideDown();
                     $(this).attr("src", SageFrame.utils.GetAdminImage("arrow1.png")).removeClass("expand").addClass("collapse");
                 });
-
-                $('div.sfSidebarItems ul li.parent img.collapse').live("click", function() {
+                $('div.sfSidebarItems ul li.parent').on('click', 'img.expand', function() {
                     $(this).parent().next("ul").slideUp();
                     $(this).attr("src", SageFrame.utils.GetAdminImage("arrow2.png")).removeClass("collapse").addClass("expand");
                 });
-
                 $('#tabDashboard li.tab-sidebar a').bind("click", function() {
                     DashboardMgr.BindPages('#ddlPagesSidebar');
                     DashboardMgr.IconUploaderSidebar();
                     DashboardMgr.LoadSidebar();
                     DashboardMgr.LoadParentLinks();
-
                 });
-
                 $('#btnAddSidebar').bind("click", function() {
                     if (DashboardMgr.config.SaveMode == "Add") {
                         var count = $('div.sfSidebarItems ul>li.parent').length + $('div.sfSidebarItems ul>li.single').length;
@@ -141,17 +128,16 @@
                     if (v.form()) {
                         var order = $('div.sfSidebarItems ul li:last').index();
                         order = order + 2;
-                        var url = $('#ddlPagesSidebar option:selected').val() + ".aspx";
+                        var url = $('#ddlPagesSidebar option:selected').val() + DashboardMgr.config.PageExtension;
                         var imagepath = $('div.sfUploadedFilesSidebar img.sfIcon').attr("title");
                         var depth = $('#ddlParentLinks').val() > 0 ? $('#ddlParentLinks').val() : 0;
-
                         var param = { sidebarObj: {
                             DisplayName: $('#txtSidebarName').val(),
                             Depth: depth,
                             ImagePath: imagepath,
                             URL: url,
                             ParentID: $('#ddlParentLinks').val(),
-                            IsActive: $('#chkIsActiveSidebar').attr("checked"),
+                            IsActive: $('#chkIsActiveSidebar').prop("checked"),
                             DisplayOrder: order,
                             SidebarItemID: parseInt(DashboardMgr.config.SidebarItemID),
                             PageID: $('#ddlPagesSidebar').val()
@@ -166,28 +152,27 @@
                             data: JSON2.stringify(param),
                             dataType: DashboardMgr.config.dataType,
                             success: function(msg) {
-
                                 DashboardMgr.LoadSidebar();
                                 DashboardMgr.LoadParentLinks();
                                 //DashboardMgr.LoadRealSidebar();
                                 $('#btnAddSidebar').text("Add Sidebar Item").addClass("sfAdd").removeClass("sfSave");
                                 $('#btnCancelSidebar').hide();
                                 $('#txtSidebarName').val('');
+                                $('#ddlParentLinks').val(0);
+                                $('#ddlPagesSidebar').val('');
+                                $('span.filename').text('No file selected');
+                                $('div.sfUploadedFilesSidebar').html('');
                             }
-
                         });
                     }
                     else {
                         return;
                     }
                 });
+                $('div.sfSidebarItems').on('click', 'img.delete', function() {
 
-
-
-                $('div.sfSidebarItems img.delete').live("click", function() {
                     var self = $(this);
                     $('#sf_lblConfirmation').text("Are you sure you want to delete this item?");
-
                     $("#dialog").dialog({
                         modal: true,
                         buttons: {
@@ -200,10 +185,8 @@
                             }
                         }
                     });
-
                 });
-
-                $('div.sfQuicklinklist img.edit').live("click", function() {
+                $('div.sfQuicklinklist').on('click', 'img.edit', function() {
                     var id = $(this).attr("id").replace("edit_", "");
                     DashboardMgr.LoadQuickLinkItem(id);
                     $('#btnAddQuickLink').text("Save").addClass("sfSave").removeClass("sfAdd");
@@ -211,8 +194,7 @@
                     DashboardMgr.config.QuickLinkID = id;
                     DashboardMgr.config.SaveMode = "Edit";
                 });
-
-                $('div.sfSidebarItems img.edit').live("click", function() {
+                $('div.sfSidebarItems').on('click', 'img.edit', function() {
                     var id = $(this).attr("id").replace("edit_", "");
                     DashboardMgr.LoadSidebarItem(id);
                     $('#btnAddSidebar').text("Save").addClass("sfSave").removeClass("sfAdd");
@@ -220,15 +202,12 @@
                     DashboardMgr.config.SidebarItemID = id;
                     DashboardMgr.config.SaveMode = "Edit";
                 });
-
                 $('#btnSaveSidebarOrder').bind("click", function() {
                     var li = $('div.sfSidebarItems ul li');
                     var param = { OrderList: [] };
-
                     $.each(li, function() {
                         param.OrderList.push({ "Key": $(this).attr("id").replace("li_", ""), "Value": parseInt($(this).index()) + 1 });
                     });
-
                     $.ajax({
                         type: DashboardMgr.config.type,
                         contentType: DashboardMgr.config.contentType,
@@ -243,21 +222,15 @@
                             $('#ddlParentLinks').val(0);
                             $('#ddlPagesSidebar').val('');
                             $('div.sfUploadedFilesSidebar').html('');
-
-                            //DashboardMgr.LoadRealSidebar();
                         }
                     });
-
                 });
-
-                $('#btnSaveQuickLinkOrder').bind("click", function() {
+                $$('#btnSaveQuickLinkOrder').bind("click", function() {
                     var li = $('div.sfQuicklinklist ul li');
                     var param = { OrderList: [] };
-
                     $.each(li, function() {
                         param.OrderList.push({ "Key": $(this).attr("id").replace("ql_", ""), "Value": parseInt($(this).index()) + 1 });
                     });
-
                     $.ajax({
                         type: DashboardMgr.config.type,
                         contentType: DashboardMgr.config.contentType,
@@ -270,13 +243,10 @@
                             $('#txtLnkName').val('');
                             $('#ddlPages').val('');
                             $('div.sfUploadedFiles').html('');
-                            //DashboardMgr.GetRealQuickLinks();
+                            SageFrame.messaging.show(SageFrame.messaging.GetLocalizedMessage("en-US", "DashboardManager", "ItemOrderSaved"), "Success");
                         }
-
                     });
-
                 });
-
                 $('#btnCancelSidebar').bind("click", function() {
                     $('#txtSidebarName').val('');
                     $('#ddlParentLinks').val(0);
@@ -296,11 +266,9 @@
                     DashboardMgr.config.QuickLinkItemID = 0;
                     DashboardMgr.config.SaveMode = "Add";
                 });
-
                 $('#btnSaveAppearance').bind("click", function() {
                     var option = $('div.sfAppearanceOptions input:radio:checked').val();
                     var param = JSON2.stringify({ theme: option, PortalID: 1, UserName: 'superuser' });
-
                     $.ajax({
                         type: DashboardMgr.config.type,
                         contentType: DashboardMgr.config.contentType,
@@ -313,18 +281,16 @@
                         }
                     });
                 });
-
                 $('#btnRefresh').bind("click", function() {
                     location.reload();
                 });
-
-                $('.deleteIcon .delete').live("click", function() {
+                $('.deleteIcon').on('click', '.delete', function() {
+                    alert(71); //not working
                     var IconPath = $('.sfIcon').attr('title');
                     $('.sfIcon').parent('div').remove();
                     DashboardMgr.DeleteIcon(IconPath);
                 });
-
-                $('div.sfQuicklinklist img.delete').live("click", function() {
+                $('.sfTabLeftDiv').on('click', 'img.delete', function() {
                     var self = $(this);
                     $('#sf_lblConfirmation').text("Are you sure you want to delete this item?");
 
@@ -340,9 +306,7 @@
                             }
                         }
                     });
-
                 });
-
             },
             ajaxFailure: function() {
             },
@@ -387,11 +351,9 @@
                     data: JSON2.stringify({ IconPath: IconPath }),
                     dataType: DashboardMgr.config.dataType,
                     success: function(msg) {
-
                     }
                 });
             },
-
             BindPages: function(id) {
                 var param = JSON2.stringify({ PortalID: parseInt(DashboardMgr.config.PortalID) });
                 $.ajax({
@@ -405,14 +367,13 @@
                         var pages = msg.d;
                         var html = '';
                         $.each(pages, function(index, item) {
-                            html += '<option value=' + item.PageID + '>' + item.PageName + ".aspx" + '</option>';
+                            //html += '<option value=' + item.PageID + '>' + item.PageName + DashboardMgr.config.PageExtension + '</option>';
+                            html += '<option value=' + item.PageID + '>' + item.PageName + '</option>';
                         });
                         $(id).html(html);
                         $('#ajaxBusy').hide();
                     }
-
                 });
-
             },
             LoadSidebar: function() {
                 $.ajax({
@@ -425,30 +386,49 @@
                     success: function(msg) {
                         var links = msg.d;
                         var html = '<ul>';
-
                         $.each(links, function(index, item) {
                             var editid = "edit_" + item.SidebarItemID;
                             var liid = 'li_' + item.SidebarItemID;
                             if (item.ChildCount == 0 && item.ParentID == 0) {
-                                html += '<li id=' + liid + ' class="single"><span class="title">' + item.DisplayName + '</span>';
+                                html += '<li id=' + liid + ' class="single index"><span class="title">' + item.DisplayName + '</span>';
                                 html += '<img class="delete" id=' + item.SidebarItemID + ' src="<%=appPath%>/Administrator/Templates/Default/images/imgdelete.png"/>';
                                 html += '<img class="edit" id=' + editid + ' src=' + SageFrame.utils.GetAdminImage("imgedit.png") + '>';
                                 html += '</li>';
                             }
-                            else if (item.ChildCount > 0) {
-                                html += '<li id=' + liid + ' class="parent"><div class="sfHolder"><span class="title">' + item.DisplayName + '</span>';
+                            else if (item.ChildCount > 0 && item.ParentID == 0) {
+                                html += '<li id=' + liid + ' class="parent index"><div class="sfHolder"><span class="title">' + item.DisplayName + '</span>';
                                 html += "<img class='expand' src=" + SageFrame.utils.GetAdminImage("arrow1.png") + ">";
                                 html += '<img class="delete" id=' + item.SidebarItemID + ' src="<%=appPath%>/Administrator/Templates/Default/images/imgdelete.png"/>';
                                 html += '<img class="edit" id=' + editid + ' src=' + SageFrame.utils.GetAdminImage("imgedit.png") + '>';
                                 html += '</div><ul>';
-                                $.each(links, function(i, it) {
-                                    if (it.ParentID == item.SidebarItemID) {
-                                        var edit = 'edit_' + it.SidebarItemID;
-                                        var liid = 'li_' + it.SidebarItemID;
-                                        html += '<li id=' + liid + '><span>' + it.DisplayName + '</span>';
-                                        html += '<img class="delete" id=' + it.SidebarItemID + ' src="<%=appPath%>/Administrator/Templates/Default/images/imgdelete.png"/>';
+                                $.each(links, function(i, child) {
+                                    if (child.ParentID == item.SidebarItemID && child.ChildCount == 0) {
+                                        var edit = 'edit_' + child.SidebarItemID;
+                                        var liid = 'li_' + child.SidebarItemID;
+                                        html += '<li id=' + liid + '><span>' + child.DisplayName + '</span>';
+                                        html += '<img class="delete" id=' + child.SidebarItemID + ' src="<%=appPath%>/Administrator/Templates/Default/images/imgdelete.png"/>';
                                         html += '<img class="edit" id=' + edit + ' src=' + SageFrame.utils.GetAdminImage("imgedit.png") + '>';
                                         html += '</li>';
+                                    }
+                                    else if (child.ParentID == item.SidebarItemID && child.ChildCount > 0) {
+                                   
+                                        var edit = 'edit_' + child.SidebarItemID;
+                                        var liid = 'li_' + child.SidebarItemID;
+                                        html += '<li id=' + liid + '><span>' + child.DisplayName + '</span>';
+                                        html += "<img class='expand' src=" + SageFrame.utils.GetAdminImage("arrow1.png") + ">";
+                                        html += '<img class="delete" id=' + child.SidebarItemID + ' src="<%=appPath%>/Administrator/Templates/Default/images/imgdelete.png"/>';
+                                        html += '<img class="edit" id=' + edit + ' src=' + SageFrame.utils.GetAdminImage("imgedit.png") + '><ul>';
+                                        $.each(links, function(i, grandChild) {
+                                            if (grandChild.ParentID == child.SidebarItemID && grandChild.ChildCount == 0) {
+                                                var edit = 'edit_' + grandChild.SidebarItemID;
+                                                var liid = 'li_' + grandChild.SidebarItemID;
+                                                html += '<li id=' + liid + '><span>' + grandChild.DisplayName + '</span>';
+                                                html += '<img class="delete" id=' + grandChild.SidebarItemID + ' src="<%=appPath%>/Administrator/Templates/Default/images/imgdelete.png"/>';
+                                                html += '<img class="edit" id=' + edit + ' src=' + SageFrame.utils.GetAdminImage("imgedit.png") + '>';
+                                                html += '</li>';
+                                            }
+                                        });
+                                        html += '</ul></li>';
                                     }
                                 });
                                 html += '</ul>';
@@ -456,13 +436,10 @@
                             }
                         });
                         html += '</ul>';
-
                         $('div.sfSidebarItems').html(html);
-
                         DashboardMgr.initsort();
                         $('#ajaxBusy').hide();
                     }
-
                 });
             },
             LoadRealSidebar: function() {
@@ -502,32 +479,6 @@
                     }
                 });
             },
-            LoadSidebarItem: function(sidebaritemid) {
-                $.ajax({
-                    type: DashboardMgr.config.type,
-                    contentType: DashboardMgr.config.contentType,
-                    cache: DashboardMgr.config.cache,
-                    url: DashboardMgr.config.baseURL + "GetSidebarItem",
-                    data: JSON2.stringify({ SidebarItemID: parseInt(sidebaritemid) }),
-                    dataType: DashboardMgr.config.dataType,
-                    success: function(msg) {
-                        var sidebar = msg.d;
-                        var html = '';
-                        $('#txtSidebarName').val(sidebar.DisplayName);
-                        $('#chkIsActiveSidebar').attr("checked", sidebar.IsActive);
-                        if (sidebar.ImagePath != "") {
-                            var image = DashboardMgr.config.Path + "Icons/" + sidebar.ImagePath;
-                            var html = '<div><img class="sfIcon" title=' + sidebar.ImagePath + ' src="' + image + '" /><span class="deleteIcon"><img class="delete" src="<%=appPath%>/Administrator/Templates/Default/images/imgdelete.png"/></span></div>';
-                            $('div.sfUploadedFilesSidebar').html(html);
-                        }
-
-                        $('#ddlPagesSidebar').val(sidebar.URL.replace(".aspx", ""));
-                        $('#ddlParentLinks').val(sidebar.ParentID);
-                        $('#ajaxBusy').hide();
-                    }
-
-                });
-            },
             LoadParentLinks: function() {
                 $.ajax({
                     type: DashboardMgr.config.type,
@@ -540,7 +491,6 @@
                         var links = msg.d;
                         var html = '';
                         $.each(links, function(index, item) {
-
                             html += '<option value=' + item.SidebarItemID + '>' + item.DisplayName + '</option>';
                         });
                         $('#ddlParentLinks').html(html);
@@ -549,7 +499,6 @@
                 });
             },
             DeleteLink: function(quicklinkid) {
-
                 var param = JSON2.stringify({ QuickLinkID: parseInt(quicklinkid) });
                 $.ajax({
                     type: DashboardMgr.config.type,
@@ -563,9 +512,7 @@
                         DashboardMgr.GetQuickLinks();
                         $('#ajaxBusy').hide();
                     }
-
                 });
-
             },
             DeleteSidebarItem: function(sidebaritemid) {
                 var param = JSON2.stringify({ SidebarItemID: parseInt(sidebaritemid) });
@@ -581,9 +528,7 @@
                         DashboardMgr.LoadParentLinks();
                         $('#ajaxBusy').hide();
                     }
-
                 });
-
             },
             GetLocalizedMessage: function(culturecode, modulename, messagetype) {
                 var message = "";
@@ -599,13 +544,10 @@
                     success: function(msg) {
                         message = msg.d;
                     }
-
                 });
                 return message;
-
             },
             GetQuickLinks: function() {
-
                 $.ajax({
                     type: DashboardMgr.config.type,
                     contentType: DashboardMgr.config.contentType,
@@ -627,13 +569,10 @@
                         });
                         html += '</ul>';
                         $('div.sfQuicklinklist').html(html);
-
                         DashboardMgr.initsort();
                         $('#ajaxBusy').hide();
                     }
-
                 });
-
             },
             GetRealQuickLinks: function() {
                 $.ajax({
@@ -676,16 +615,14 @@
                             var html = '<div><img class="sfIcon" title=' + quicklink.ImagePath + ' src="' + image + '" /><span class="deleteIcon"><img class="delete" src=' + SageFrame.utils.GetAdminImage("imgdelete.png") + ' alt="delete"/></span></div>';
                             $('div.sfUploadedFiles').html(html);
                         }
-                        $('#ddlPages').val(quicklink.URL.replace(".aspx", ""));
-
+                        $('#ddlPages').val(quicklink.URL.replace(DashboardMgr.config.PageExtension, ""));
                     }
-
                 });
             },
             IconUploader: function() {
                 var uploadFlag = false;
                 var upload = new AjaxUpload($('#fupIcon'), {
-                    action: DashboardMgr.config.Path + 'UploadHandler.ashx',
+                    action: DashboardMgr.config.Path + 'UploadHandler.ashx' + p.UserModuleID + '&portalID=' + SageFramePortalID + '&userName=' + SageFrameUserName + '&secureToken=' + SageFrameSecureToken,,
                     name: 'myfile[]',
                     multiple: false,
                     data: {},
@@ -704,9 +641,10 @@
                         }
                     },
                     onComplete: function(file, response) {
-                        var filePath = DashboardMgr.config.Path + "Icons/" + file;
-                        $('div.sfAddQuickLink span.filename').text(file);
-                        var html = '<div><img class="sfIcon" title="' + file + '" src="' + filePath + '" /><span class="deleteIcon"><img class="delete" src=' + SageFrame.utils.GetAdminImage("imgdelete.png") + ' alt="delete"/></span></div>';
+                        var linkicon = file.split(" ").join("_");
+                        var filePath = DashboardMgr.config.Path + "Icons/" + linkicon;
+                        $('div.sfAddQuickLink span.filename').text(linkicon);
+                        var html = '<div><img class="sfIcon" title="' + linkicon + '" src="' + filePath + '" /><span class="deleteIcon"><img class="delete" src=' + SageFrame.utils.GetAdminImage("imgdelete.png") + ' alt="delete"/></span></div>';
                         $('div.sfUploadedFiles').html(html);
                     }
                 });
@@ -740,15 +678,10 @@
                     }
                 });
             }
-
         };
         DashboardMgr.init();
     };
-
     $.fn.InitDashboard = function(p) {
         $.createDashboardLinks(p);
     };
-})(jQuery);
-
-   
-   
+})(jQuery);   

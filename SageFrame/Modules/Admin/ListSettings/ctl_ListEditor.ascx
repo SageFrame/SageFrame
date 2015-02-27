@@ -3,14 +3,14 @@
 <h1>
     <asp:Label ID="lblListManagement" runat="server" Text="List Management" meta:resourcekey="lblListManagementResource1"></asp:Label>
 </h1>
-<div class="sfFormwrapper sfPadding">
+<div>
     <div class="sfListmanager clearfix">
         <div class="sfTreeviewholder">
             <div class="sfButtonwrapper sfMargintopnone">
-                <asp:ImageButton ID="imgAddNewList" runat="server" OnClick="imgAddNewList_Click"
-                    ToolTip="Add New List" meta:resourcekey="imgAddNewListResource1" />
-                <asp:Label ID="lblAddNewList" runat="server" Text="Add New List" AssociatedControlID="imgAddNewList"
-                    Style="cursor: pointer;" meta:resourcekey="lblAddNewListResource1"></asp:Label>
+            <label class="sfLocale icon-addnew sfBtn">Add New List
+                <asp:Button ID="imgAddNewList" runat="server" OnClick="imgAddNewList_Click"
+                    ToolTip="Add New List" meta:resourcekey="imgAddNewListResource1" /></label>
+                
             </div>
             <div class="sfTreeview sfCurve">
                 <asp:TreeView ID="tvList" runat="server" OnSelectedNodeChanged="tvList_SelectedNodeChanged"
@@ -20,37 +20,48 @@
         </div>
         <div class="sfListright">
             <asp:Panel ID="pnlListAll" Visible="False" runat="server" meta:resourcekey="pnlListAllResource1">
-                <div class="sfGridwrapper sfListing curve">
-                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                        <tr class="sfOdd">
-                            <td width="18%">
-                                <asp:Label ID="lblParentText" runat="server" CssClass="sfFormlabel" Text="Parent: "
+            <div class="sfButtonwrapper sfMargintopnone">
+            <label class="sfLocale icon-addnew sfBtn"> Add List Item
+                        <asp:Button ID="imgAddList1" runat="server" OnClick="imgAddSubList_Click" ToolTip="Add List"
+                            meta:resourcekey="imgAddList1Resource1" /></label>
+                            <label class="sfLocale icon-delete sfBtn">                           
+                           <asp:Label runat="server" ID="lblDeleteList"></asp:Label>
+                        <asp:Button ID="imgDeleteList" runat="server" OnClick="imgDeleteList_Click"
+                            OnClientClick="if(confirm('Are you sure you want to delete?')!=true)return false;" ToolTip="Delete List"
+                            meta:resourcekey="imgDeleteListResource1"  />
+                       </label>
+                            
+                          <%--  <label class="sfLocale icon-close sfBtn"> Cancel--%>
+                       <%-- <asp:Button ID="imgCancelAll" runat="server" OnClick="imgCancelAll_Click" ToolTip="Cancel"
+                            Visible="False" meta:resourcekey="imgCancelAllResource1" />--%>
+                      <%-- </label>--%>
+                    </div>
+                <div class="sfGridwrapper sfListing curve sfTableOption">
+                    <table cellpadding="0" cellspacing="0" border="0" >
+                        <tr class="sfOdd" >
+                            <td colspan="3">
+                                <asp:Label ID="lblParentText" runat="server" CssClass="sfFormlabel" Text="Parent : "
                                     Visible="False" meta:resourcekey="lblParentTextResource1"></asp:Label>
+                                    <asp:Label ID="lblParent" runat="server" Visible="False" meta:resourcekey="lblParentResource1"></asp:Label>
                             </td>
-                            <td colspan="5">
-                                <asp:Label ID="lblParent" runat="server" Visible="False" meta:resourcekey="lblParentResource1"></asp:Label>
-                            </td>
+                           
                         </tr>
                         <tr class="sfEven">
                             <td>
-                                <asp:Label ID="lblListNameLabel" runat="server" CssClass="sfFormlabel" Text="List Name:"
+                                <asp:Label ID="lblListNameLabel" runat="server" CssClass="sfFormlabel" Text="List Name :"
                                     meta:resourcekey="lblListNameLabelResource1"></asp:Label>
+                                    <asp:Label ID="lblListName" runat="server" meta:resourcekey="lblListNameResource1"></asp:Label>
                             </td>
+                            
                             <td>
-                                <asp:Label ID="lblListName" runat="server" meta:resourcekey="lblListNameResource1"></asp:Label>
-                            </td>
-                            <td>
-                                <asp:Label ID="lblTotal" runat="server" CssClass="sfFormlabel" Text="Total:" meta:resourcekey="lblTotalResource1"></asp:Label>
-                            </td>
-                            <td>
+                                <asp:Label ID="lblTotal" runat="server" CssClass="sfFormlabel" Text="Total :" meta:resourcekey="lblTotalResource1"></asp:Label>
                                 <asp:Label ID="lblEntry" runat="server" meta:resourcekey="lblEntryResource1"></asp:Label>
                             </td>
-                            <td width="20%">
+                           
+                            <td class="sfTxtAlignRgt">
                                 <asp:Label ID="lblRecord" CssClass="sfFormlabel" runat="server" Text="Show rows :"
                                     meta:resourcekey="lblRecordResource1"></asp:Label>
-                            </td>
-                            <td>
-                                <asp:DropDownList ID="ddlGridPageSize" CssClass="sfListmenusmall" AutoPostBack="True"
+                                     <asp:DropDownList ID="ddlGridPageSize" CssClass="sfListmenusmall" AutoPostBack="True"
                                     runat="server" OnSelectedIndexChanged="ddlGridPageSize_SelectedIndexChanged"
                                     meta:resourcekey="ddlGridPageSizeResource1">
                                     <asp:ListItem Value="0" meta:resourcekey="ListItemResource1">All</asp:ListItem>
@@ -61,25 +72,12 @@
                                     <asp:ListItem Value="100" meta:resourcekey="ListItemResource6">100</asp:ListItem>
                                 </asp:DropDownList>
                             </td>
+                            
                         </tr>
                     </table>
                 </div>
                 <asp:Panel ID="pnlViewList" Visible="False" runat="server" meta:resourcekey="pnlViewListResource1">
-                    <div class="sfButtonwrapper">
-                        <asp:ImageButton ID="imgAddList1" runat="server" OnClick="imgAddSubList_Click" ToolTip="Add List"
-                            meta:resourcekey="imgAddList1Resource1" />
-                        <asp:Label ID="lblAddList1" runat="server" Text="Add List Item" AssociatedControlID="imgAddList1"
-                            Style="cursor: pointer;" meta:resourcekey="lblAddList1Resource1"></asp:Label>
-                        <asp:ImageButton ID="imgDeleteList" runat="server" OnClick="imgDeleteList_Click"
-                            OnClientClick="if(confirm('Are you sure to delete?')!=true)return false;" ToolTip="Delete List"
-                            meta:resourcekey="imgDeleteListResource1" />
-                        <asp:Label ID="lblDeleteList" runat="server" Text="Delete List" AssociatedControlID="imgDeleteList"
-                            Style="cursor: pointer;" meta:resourcekey="lblDeleteListResource1"></asp:Label>
-                        <asp:ImageButton ID="imgCancelAll" runat="server" OnClick="imgCancelAll_Click" ToolTip="Cancel"
-                            Visible="False" meta:resourcekey="imgCancelAllResource1" />
-                        <asp:Label ID="lblCancelAll" runat="server" Text="Cancel" AssociatedControlID="imgCancelAll"
-                            Visible="False" Style="cursor: pointer;" meta:resourcekey="lblCancelAllResource1"></asp:Label>
-                    </div>
+                    
                     <div class="sfGridwrapper">
                         <asp:GridView ID="gdvSubList" runat="server" AutoGenerateColumns="False" OnRowCommand="gdvSubList_RowCommand"
                             GridLines="None" OnRowEditing="gdvSubList_RowEditing" OnRowDeleting="gdvSubList_RowDeleting"
@@ -96,14 +94,13 @@
                                 </asp:BoundField>
                                 <asp:TemplateField meta:resourcekey="TemplateFieldResource1">
                                     <ItemTemplate>
-                                        <div>
-                                            <asp:ImageButton ID="imgListUp" runat="server" CausesValidation="False" CommandArgument='<%# Eval("EntryID") %>'
-                                                CommandName="SortUp" ImageUrl='<%# GetTemplateImageUrl("imgup.png", true) %>'
-                                                ToolTip="Move Up" meta:resourcekey="imgListUpResource1" />
-                                        </div>
-                                        <div>
-                                            <asp:ImageButton ID="imgListDown" runat="server" CausesValidation="False" CommandArgument='<%# Eval("EntryID") %>'
-                                                CommandName="SortDown" ImageUrl='<%# GetTemplateImageUrl("imgdown.png", true) %>'
+                                        <div class="sfMoveNS">
+                                            <asp:LinkButton ID="imgListUp" runat="server" CausesValidation="False" CommandArgument='<%# Eval("EntryID") %>'
+                                                CommandName="SortUp"  CssClass="icon-arrow-n"
+                                                ToolTip="Move Up" meta:resourcekey="imgListUpResource1" /> 
+                                                                                 
+                                            <asp:LinkButton ID="imgListDown" runat="server" CausesValidation="False" CommandArgument='<%# Eval("EntryID") %>'
+                                                CommandName="SortDown" CssClass="icon-arrow-s"
                                                 ToolTip="Move Down" meta:resourcekey="imgListDownResource1" />
                                         </div>
                                     </ItemTemplate>
@@ -111,16 +108,16 @@
                                 </asp:TemplateField>
                                 <asp:TemplateField meta:resourcekey="TemplateFieldResource2">
                                     <ItemTemplate>
-                                        <asp:ImageButton ID="imgEdit" runat="server" CausesValidation="False" CommandArgument='<%# Eval("EntryID") %>'
-                                            CommandName="Edit" ImageUrl='<%# GetTemplateImageUrl("imgedit.png", true) %>'
+                                        <asp:LinkButton ID="imgEdit" runat="server" CausesValidation="False" CommandArgument='<%# Eval("EntryID") %>'
+                                            CommandName="Edit" CssClass="icon-edit"
                                             ToolTip="Edit" meta:resourcekey="imgEditResource1" />
                                     </ItemTemplate>
                                     <HeaderStyle CssClass="sfEdit" />
                                 </asp:TemplateField>
                                 <asp:TemplateField meta:resourcekey="TemplateFieldResource3">
                                     <ItemTemplate>
-                                        <asp:ImageButton ID="imgDelete" runat="server" CausesValidation="False" CommandArgument='<%# Eval("EntryID") %>'
-                                            CommandName="Delete" ImageUrl='<%# GetTemplateImageUrl("imgdelete.png", true) %>'
+                                        <asp:LinkButton ID="imgDelete" runat="server" CausesValidation="False" CommandArgument='<%# Eval("EntryID") %>'
+                                            CommandName="Delete" CssClass="icon-delete"
                                             ToolTip="Delete" meta:resourcekey="imgDeleteResource1" />
                                     </ItemTemplate>
                                     <HeaderStyle CssClass="sfDelete" />
@@ -133,7 +130,7 @@
                     </div>
                 </asp:Panel>
             </asp:Panel>
-            <asp:Panel ID="pnlAddList" Visible="False" runat="server" meta:resourcekey="pnlAddListResource1">
+            <asp:Panel ID="pnlAddList" Visible="False" CssClass="sfFormwrapper" runat="server" meta:resourcekey="pnlAddListResource1">
                 <h2>
                     <asp:Label ID="lblAddListHeading" runat="server" Text="Add List Item" meta:resourcekey="lblAddListHeadingResource1"></asp:Label>
                 </h2>
@@ -195,7 +192,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <asp:Label ID="lblEntryValue" CssClass="sfFormlabel" Text="Entry Value:" runat="server"
+                            <asp:Label ID="lblEntryValue" CssClass="sfFormlabel" Text="Entry Value" runat="server"
                                 meta:resourcekey="lblEntryValueResource1" />
                         </td>
                         <td width="30">
@@ -259,14 +256,12 @@
                     </tr>
                 </table>
                 <div class="sfButtonwrapper">
-                    <asp:ImageButton ID="imgSave" OnClick="imgSave_Click" ToolTip="Save" runat="server"
-                        ValidationGroup="List" meta:resourcekey="imgSaveResource1" />
-                    <asp:Label ID="lblSave" runat="server" Text="Save" AssociatedControlID="imgSave"
-                        Style="cursor: pointer;" meta:resourcekey="lblSaveResource1"></asp:Label>
-                    <asp:ImageButton ID="imgCancel" OnClick="imgCancel_Click" ToolTip="Cancel" runat="server"
-                        meta:resourcekey="imgCancelResource1" />
-                    <asp:Label ID="lblCancel" runat="server" Text="Cancel" AssociatedControlID="imgCancel"
-                        Style="cursor: pointer;" meta:resourcekey="lblCancelResource1"></asp:Label>
+                <label class="sfLocale icon-save sfBtn">Save
+                    <asp:Button ID="imgSave" OnClick="imgSave_Click" ToolTip="Save" runat="server"
+                        ValidationGroup="List" meta:resourcekey="imgSaveResource1" /></label>
+                        <label class="sfLocale icon-close sfBtn"> Cancel
+                    <asp:Button ID="imgCancel" OnClick="imgCancel_Click" ToolTip="Cancel" runat="server"
+                        meta:resourcekey="imgCancelResource1" /></label>
                 </div>
             </asp:Panel>
         </div>

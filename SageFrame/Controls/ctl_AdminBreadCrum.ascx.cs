@@ -1,4 +1,5 @@
-﻿/*
+﻿#region
+/*
 SageFrame® - http://www.sageframe.com
 Copyright (c) 2009-2010 by SageFrame
 Permission is hereby granted, free of charge, to any person obtaining
@@ -20,6 +21,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+#endregion
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +31,8 @@ using System.Web.UI.WebControls;
 using SageFrame.Web;
 using System.IO;
 using SageFrame.Common.Shared;
-using SageFrame.BreadCrum;
 using System.Text;
+using SageFrame.BreadCrum;
 
 namespace SageFrame.Controls
 {
@@ -38,90 +40,98 @@ namespace SageFrame.Controls
     {
         public int PortalID = 0;
         public int MenuID = 0;
-        public string PageName = "", AppPath = string.Empty, pagePath = string.Empty;
+        public string PageName = string.Empty, AppPath = string.Empty, pagePath = string.Empty;
+        string Extension;
         protected void Page_Init(object sender, EventArgs e)
         {
             Initialize();
         }
         protected void Page_Load(object sender, EventArgs e)
         {
-
-            pagePath = Request.ApplicationPath != "/" ? Request.ApplicationPath : "";
-            pagePath = GetPortalID == 1 ? pagePath : pagePath + "/portal/" + GetPortalSEOName;
+            Extension = SageFrameSettingKeys.PageExtension;
+            //pagePath = ResolveUrl(GetParentURL) + GetReduceApplicationName;
+            pagePath = GetHostURL() + "/";
+            pagePath = IsParent ? pagePath : pagePath + "portal/" + GetPortalSEOName;
             BuildBreadCrumb();
-
         }
+
         public void Initialize()
         {
             PortalID = GetPortalID;
-
         }
 
         public void BuildBreadCrumb()
         {
             string breadcrumb = string.Empty;
             PageName = Path.GetFileNameWithoutExtension(PagePath);
-            BreadCrumInfo obj = BreadCrumDataProvider.GetBreadCrumb(PageName, PortalID, MenuID);
-            if (obj != null)
+            List<BreadCrumInfo> BreadCurmList = new List<BreadCrumInfo>();
+            BreadCrumDataProvider dp = new BreadCrumDataProvider();
+            BreadCurmList = dp.GetBreadCrumb(PageName, PortalID, MenuID, GetCurrentCulture());
+            if (BreadCurmList != null)
             {
-                breadcrumb = obj.TabPath != "" ? obj.TabPath : "";
-
-                string[] arrPages = breadcrumb.Split('/');
+                //breadcrumb = obj.TabPath != "" ? obj.TabPath : "";
+                // string[] arrPages = breadcrumb.Split('/');
                 StringBuilder html = new StringBuilder();
                 html.Append("<ul>");
-                int length = arrPages.Length;
+                int length = breadcrumb.Length;
                 string childPages = "";
                 int index = 0;
-                foreach (string item in arrPages)
+                foreach (BreadCrumInfo item in BreadCurmList)
                 {
-                    if (item != "")
+                    if (index != 0)
                     {
-                        childPages += item + "/";
-                        childPages = childPages.Substring(0, childPages.Length - 1);
-                        var pageLink = pagePath + "/" + childPages + ".aspx";
-
-                        if (item.IndexOf("Admin") > -1)
+                        if (item.TabPath != string.Empty)
                         {
-                            pageLink = pagePath + "/Admin/Admin.aspx";
-                        }
-                        if (item.IndexOf("Super-User") > -1)
-                        {
-                            pageLink = pagePath + "/Admin/Admin.aspx";
-                        }
-
-                        childPages += "/";
-                        if (index == length - 1)
-                        {
-                            if (item == "Admin" || item == "Super-User")
+                            childPages += item.TabPath + "/";
+                            childPages = childPages.Substring(0, childPages.Length - 1);
+                            var pageLink = pagePath + childPages + SageFrameSettingKeys.PageExtension;
+                            if (item.TabPath == "Admin")
                             {
-                                html.Append("");
+                                pageLink = pagePath + "Admin/Admin" + Extension;
+                            }
+                            if (item.TabPath.IndexOf("Super-User") > -1)
+                            {
+                                pageLink = pagePath + "Admin/Admin" + Extension;
+                            }
+                            childPages += "/";
+                            if (index == length - 1)
+                            {
+                                if (item.TabPath == "Admin" || item.TabPath == "Super-User")
+                                {
+                                    html.Append("");
+                                }
+                                else
+                                {
+                                    html.Append("<li><span>" + item.TabPath.Replace("-", " ") + "</span></li>");
+                                }
                             }
                             else
                             {
-                                html.Append("<li><span>" + item.Replace("-", " ") + "</span></li>");
-                            }
-
-                        }
-                        else
-                        {
-                            if (item == "Admin" || item == "Super-User")
-                            {
-                                var homeimage = Request.ApplicationPath != "/" ? Request.ApplicationPath : "" + "/Administrator/Templates/default/images/home-icon.png";
-                                html.Append("<li class='sfFirst'><a href=" + pageLink + "><img src=" + homeimage + "  alt='Home' /></a></li>");
-                            }
-                            else
-                            {
-                                html.Append("<li><a href=" + pageLink + ">" + item.Replace("-", " ") + "</a></li>");
+                                if (item.TabPath == "Admin" || item.TabPath == "Super-User")
+                                {
+                                    //var homeimage = (Request.ApplicationPath != "/" ? Request.ApplicationPath : "") + "/Administrator/Templates/default/images/home-icon.png";
+                                    //html.Append("<li class='sfFirst'><a href=" + pageLink + "><img src=" + homeimage + "  alt='Home' /></a></li>");
+                                    html.Append("<li class='sfFirst'><a href=" + pageLink + "><i class='icon-home' ></i></a></li>");
+                                }
+                                else
+                                {
+                                    if (item.LocalPage != "")
+                                    {
+                                        html.Append("<li><a href=" + pageLink + ">" + item.LocalPage.Replace("-", " ") + "</a></li>");
+                                    }
+                                    else
+                                    {
+                                        html.Append("<li><a href=" + pageLink + ">" + item.TabPath.Replace("-", " ") + "</a></li>");
+                                    }
+                                }
                             }
                         }
                     }
                     index++;
                 }
                 html.Append("</ul>");
-
                 ltrBreadCrumb.Text = html.ToString();
             }
         }
-
     }
 }

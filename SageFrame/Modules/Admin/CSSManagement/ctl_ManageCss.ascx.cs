@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +15,7 @@ using System.IO;
 using SageFrame.Web;
 using SageFrame.Framework;
 using System.Collections;
+#endregion 
 
 namespace SageFrame.Modules.Admin.CSSManagement
 {
@@ -44,7 +30,7 @@ namespace SageFrame.Modules.Admin.CSSManagement
                 if (!IsPostBack)
                 {
                     AddImageUrls();
-                    path = Server.MapPath("~/Templates/" + pb.GetSettingsByKey(SageFrameSettingKeys.PortalCssTemplate) + "/css");
+                    path = Server.MapPath("~/Templates/" + pb.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalCssTemplate) + "/css");
                     BindCSSFile();
                 }
             }
@@ -55,10 +41,8 @@ namespace SageFrame.Modules.Admin.CSSManagement
         }
         private void BindCSSFile()
         {
-           
            try
            {
-
                string[] files = Directory.GetFiles(path);
                ArrayList arrColl = new ArrayList();
                if (files.Length > 0)
@@ -75,7 +59,6 @@ namespace SageFrame.Modules.Admin.CSSManagement
                        }
                    }
                }
-
                ddlCssFileList.DataSource = arrColl;
                ddlCssFileList.DataBind();
                ddlCssFileList.Items.Insert(0, new ListItem("--Select--", "-1"));

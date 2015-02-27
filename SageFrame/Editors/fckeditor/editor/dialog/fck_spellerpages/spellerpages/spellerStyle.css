@@ -8,7 +8,7 @@
 	font-size:8pt;
 }
 .normalText {
-	font-family:arial, helvetica, sans-serif;
+	font-family:Tahoma, Geneva, sans-serif;
 	font-size:10pt;
 	color:000000;
 	background-color:FFFFFF;
@@ -20,7 +20,7 @@
 	background-color:FFFFFF;
 }
 .controlWindowBody {
-	font-family:arial, helvetica, sans-serif;
+	font-family:Tahoma, Geneva, sans-serif;
 	font-size:8pt;
 	padding: 7px ;		/* by FredCK */
 	margin: 0px ;		/* by FredCK */

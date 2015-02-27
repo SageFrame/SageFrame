@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,12 +19,13 @@ using System.Xml;
 using RegisterModule;
 using System.IO;
 using System.Web.Hosting;
+#endregion
 
 namespace SageFrame.DesktopModules.Admin.Extensions
 {
     public partial class Modules_Admin_Extensions_ctl_AvailableModules : BaseAdministrationUserControl
     {
-        List<ModuleInfo> lstAvailableModules ;
+        List<ModuleInfo> lstAvailableModules;
         Installers installhelp = new Installers();
         ModuleInfo module = new ModuleInfo();
 
@@ -54,7 +40,7 @@ namespace SageFrame.DesktopModules.Admin.Extensions
                     lstAvailableModules = new List<ModuleInfo>();
                     Bindgrid();
                 }
-               
+
             }
             catch (Exception ex)
             {
@@ -77,7 +63,6 @@ namespace SageFrame.DesktopModules.Admin.Extensions
             wizInstall.ActiveStepIndex = 0;
             lstAvailableModules = installhelp.GetAvailableModulesList(GetPortalID);
             ViewState["AvailableModuleList"] = lstAvailableModules;
-
             if (lstAvailableModules != null && lstAvailableModules.Count > 0)
             {
                 gdvModule.DataSource = lstAvailableModules;
@@ -86,31 +71,22 @@ namespace SageFrame.DesktopModules.Admin.Extensions
                 lblWarningMessage.Visible = false;
             }
             else
-            {   
+            {
                 lblWarningMessage.Visible = true;
                 gdvModule.Visible = false;
-                lblWarningMessage.Text = "There are no any modules available now"; 
-               //wizInstall.StartNextButtonStyle.CssClass="hidden";
-
+                lblWarningMessage.Text = "There are no any modules available now";
                 Button btnNext = (Button)wizInstall.FindControl("StartNavigationTemplateContainerID").FindControl("StartNextButton");
                 btnNext.Visible = false;
-                
-                
-            }       
+            }
         }
-
 
         protected void wizInstall_NextButtonClick(object sender, WizardNavigationEventArgs e)
         {
             try
             {
-                //System.Threading.Thread.Sleep(9000);
                 int activeIndex = 0;
-                 
-                
                 switch (e.CurrentStepIndex)
                 {
-                                    
                     case 0:
                         Panel pnl = (Panel)this.Step2.FindControl("pnlPackage");
                         GridView grd = (GridView)pnl.FindControl("gdvModule");
@@ -121,48 +97,37 @@ namespace SageFrame.DesktopModules.Admin.Extensions
                             if (cbInstall.Checked == true)
                             {
                                 Label lbl = (Label)row.FindControl("lblname");
-
                                 lstAvailableModules = (List<ModuleInfo>)ViewState["AvailableModuleList"];
-                                
-                                    //this.lblLicense.Text = compositeModule.License.ToString();
-                                    //this.lblReleaseNotesD.Text = compositeModule.ReleaseNotes.ToString();
-                                    foreach (ModuleInfo Module in lstAvailableModules)
+                                foreach (ModuleInfo Module in lstAvailableModules)
+                                {
+                                    if (Module.Name.Equals(lbl.Text))
                                     {
-                                        if (Module.Name.Equals(lbl.Text))
-                                        {
-
-                                                FinalModules.Add(Module);
-                                            
-                                            break;
-                                        }
+                                        FinalModules.Add(Module);
+                                        break;
                                     }
-                                    ViewState["FinalModuleList"] = FinalModules;
+                                }
+                                ViewState["FinalModuleList"] = FinalModules;
                             }
-                           
+
                         }
                         if (FinalModules.Count > 1)
                         {
                             activeIndex = 2;
                             this.lblLicense.Visible = false;
                         }
-                        else if(FinalModules.Count==1) 
+                        else if (FinalModules.Count == 1)
                         {
                             ModuleInfo Module = (ModuleInfo)FinalModules[0];
                             string SourcePath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resources");
                             string filename = Path.Combine(SourcePath, Module.FolderName);
-
                             string path = HttpContext.Current.Server.MapPath("~/");
-                            string temPath = SageFrame.Core.RegisterModule.Common.TemporaryFolder;
+                            string temPath = SageFrame.Common.RegisterModule.Common.TemporaryFolder;
                             string destPath = Path.Combine(path, temPath);
-
                             Module.TempFolderPath = destPath;
                             installhelp.CopyModuleZipFiles(filename, destPath);
-
                             ArrayList list = installhelp.Step0CheckLogic(Module.FolderName, Module.TempFolderPath);
                             Module = (ModuleInfo)list[1];
-
                             installhelp.fillModuleInfo(Module);
-
                             this.lblReleaseNotesD.Text = Module.ReleaseNotes;
                             this.lblLicenseD.Text = Module.License;
                             FinalModules = new List<ModuleInfo>();
@@ -175,67 +140,50 @@ namespace SageFrame.DesktopModules.Admin.Extensions
                     case 1:
                         activeIndex = 2;
                         break;
-                    case 2 ://Accept Terms
+                    case 2://Accept Terms
                         if (chkAcceptLicense.Checked)
-                        {                            
-                                ModuleInfo moduleInfo = null;
-                                lstAvailableModules = (List<ModuleInfo>)ViewState["FinalModuleList"];
-                              
-                                bool confirmationFlag = true;
-                           
-                                foreach (ModuleInfo Module in lstAvailableModules)
+                        {
+                            ModuleInfo moduleInfo = null;
+                            lstAvailableModules = (List<ModuleInfo>)ViewState["FinalModuleList"];
+                            bool confirmationFlag = true;
+                            foreach (ModuleInfo Module in lstAvailableModules)
+                            {
+                                if (lstAvailableModules.Count > 1)
                                 {
-                                    if (lstAvailableModules.Count > 1)
-                                    {
-                                        string SourcePath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resources");
-                                        string filename = Path.Combine(SourcePath, Module.FolderName);
-
-                                        string path = HttpContext.Current.Server.MapPath("~/");
-                                        string temPath = SageFrame.Core.RegisterModule.Common.TemporaryFolder;
-                                        string destPath = Path.Combine(path, temPath);
-
-
-
-                                        Module.TempFolderPath = destPath;
-                                        installhelp.CopyModuleZipFiles(filename, destPath);
-
-                                        ArrayList list = installhelp.Step0CheckLogic(Module.FolderName, Module.TempFolderPath);
-                                        moduleInfo = (ModuleInfo)list[1];
-
-                                        installhelp.fillModuleInfo(moduleInfo);
-                                    }
-                                    else if (lstAvailableModules.Count == 1)
-                                    {
-                                        moduleInfo = (ModuleInfo)Module;
-                                    }
-
-                                        installhelp.InstallPackage(moduleInfo);
-
-                                        if (moduleInfo.ModuleID < 0)
-                                        {
-                                            confirmationFlag = false;
-                                            InstallConfirmation(moduleInfo, ref activeIndex);
-                                            break;
-                                        } 
-                                
-
-
+                                    string SourcePath = Path.Combine(HostingEnvironment.ApplicationPhysicalPath, "Resources");
+                                    string filename = Path.Combine(SourcePath, Module.FolderName);
+                                    string path = HttpContext.Current.Server.MapPath("~/");
+                                    string temPath = SageFrame.Common.RegisterModule.Common.TemporaryFolder;
+                                    string destPath = Path.Combine(path, temPath);
+                                    Module.TempFolderPath = destPath;
+                                    installhelp.CopyModuleZipFiles(filename, destPath);
+                                    ArrayList list = installhelp.Step0CheckLogic(Module.FolderName, Module.TempFolderPath);
+                                    moduleInfo = (ModuleInfo)list[1];
+                                    installhelp.fillModuleInfo(moduleInfo);
+                                }
+                                else if (lstAvailableModules.Count == 1)
+                                {
+                                    moduleInfo = (ModuleInfo)Module;
+                                }
+                                installhelp.InstallPackage(moduleInfo);
+                                if (moduleInfo.ModuleID < 0)
+                                {
+                                    confirmationFlag = false;
+                                    InstallConfirmation(moduleInfo, ref activeIndex);
+                                    break;
+                                }
                                 if (confirmationFlag && moduleInfo != null)
                                 {
                                     InstallConfirmation(moduleInfo, ref activeIndex);
                                 }
                             }
-                            
-
                         }
-                            
-
                         else
                         {
-                            lblAcceptMessage.Text = GetSageMessage("Extensions_Editors", "AcceptThePackageLicenseAgreementFirst");
+                            lblAcceptMessage.Text = GetSageMessage("Extensions", "AcceptThePackageLicenseAgreementFirst");
                             e.Cancel = true;
                             activeIndex = 2;
-                           
+
                         }
                         break;
                     case 3:
@@ -244,7 +192,7 @@ namespace SageFrame.DesktopModules.Admin.Extensions
                         ViewState["FinalModuleList"] = null;
                         ViewState["AvailableModuleList"] = null;
                         break;
-                        
+
                 }
                 wizInstall.ActiveStepIndex = activeIndex;
 
@@ -261,17 +209,15 @@ namespace SageFrame.DesktopModules.Admin.Extensions
 
             if (module.ModuleID <= 0)
             {
-                // lblLoadMessage.Text = GetSageMessage("Extensions_Editors", "ThereIsErrorWhileInstalling");
-                ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ErrorWhileInstalling"), "", SageMessageType.Error);
-                //lblLoadMessage.Visible = true;
+                ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ErrorWhileInstalling"), "", SageMessageType.Error);
                 chkAcceptLicense.Checked = false;
                 ViewState["ModuleInfo"] = null;
                 activeIndex = 0;
             }
             else
             {
-                lblInstallMessage.Text = GetSageMessage("Extensions_Editors", "ModuleInstalledSuccessfully");
-                ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("Extensions_Editors", "TheModuleIsInstalledSuccessfully"), "", SageMessageType.Success);
+                lblInstallMessage.Text = GetSageMessage("Extensions", "ModuleInstalledSuccessfully");
+                ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("Extensions", "TheModuleIsInstalledSuccessfully"), "", SageMessageType.Success);
                 wizInstall.DisplayCancelButton = false;
                 activeIndex = 3;
             }
@@ -283,10 +229,8 @@ namespace SageFrame.DesktopModules.Admin.Extensions
             switch (wizInstall.ActiveStepIndex)
             {
                 case 1:
-                    lblWarningMessage.Text = GetSageMessage("Extensions_Editors", "WarningMessageWillDeleteAllFiles");
-                    //chkRepairInstall.Checked = true;
+                    lblWarningMessage.Text = GetSageMessage("Extensions", "WarningMessageWillDeleteAllFiles");
                     break;
-                
             }
         }
 
@@ -333,7 +277,7 @@ namespace SageFrame.DesktopModules.Admin.Extensions
                                 }
                                 else
                                 {
-                                    ShowMessage(SageMessageTitle.Exception.ToString(), GetSageMessage("Extensions_Editors", "ThisModuleSeemsToBeCorrupted"), "", SageMessageType.Error);
+                                    ShowMessage(SageMessageTitle.Exception.ToString(), GetSageMessage("Extensions", "ThisModuleSeemsToBeCorrupted"), "", SageMessageType.Error);
                                 }
                             }
                             try
@@ -358,27 +302,27 @@ namespace SageFrame.DesktopModules.Admin.Extensions
 
                             if (Exceptions != string.Empty)
                             {
-                                ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ModuleExtensionIsUninstallError"), "", SageMessageType.Alert);
+                                ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ModuleExtensionIsUninstallError"), "", SageMessageType.Alert);
                             }
                             else
                             {
-                                string ExtensionMessage = GetSageMessage("Extensions_Editors", "ModuleExtensionIsUninstalledSuccessfully");
+                                string ExtensionMessage = GetSageMessage("Extensions", "ModuleExtensionIsUninstalledSuccessfully");
                                 //UninstallProcessCancelRequestBase(Request.RawUrl, true, ExtensionMessage);
                             }
                         }
                         else
                         {
-                            ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ThisPackageIsNotValid"), "", SageMessageType.Alert);
+                            ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ThisPackageIsNotValid"), "", SageMessageType.Alert);
                         }
                     }
                     else
                     {
-                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ThisPackageDoesNotAppearToBeValid"), "", SageMessageType.Alert);
+                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ThisPackageDoesNotAppearToBeValid"), "", SageMessageType.Alert);
                     }
                 }
                 else
                 {
-                    ShowMessage(SageMessageTitle.Exception.ToString(), GetSageMessage("Extensions_Editors", "ModuleFolderDoesnotExist"), "", SageMessageType.Error);
+                    ShowMessage(SageMessageTitle.Exception.ToString(), GetSageMessage("Extensions", "ModuleFolderDoesnotExist"), "", SageMessageType.Error);
                 }
             }
         }
@@ -438,7 +382,7 @@ namespace SageFrame.DesktopModules.Admin.Extensions
 
                 foreach (string dll in dllFiles)
                 {
-                    string targetdllPath = path + SageFrame.Core.RegisterModule.Common.DLLTargetPath + '\\' + dll;
+                    string targetdllPath = path + SageFrame.Common.RegisterModule.Common.DLLTargetPath + '\\' + dll;
                     FileInfo imgInfo = new FileInfo(targetdllPath);
                     if (imgInfo != null)
                     {
@@ -454,20 +398,6 @@ namespace SageFrame.DesktopModules.Admin.Extensions
 
         #endregion
 
-        //private void BindPackage()
-        //{
-
-            
-        //    else if (ViewState["ModuleInfo"] != null)
-        //    {
-        //        ModuleInfo moduleInfo = installhelp.fillModuleInfo(module);
-        //        ViewState["ModuleInfo"] = moduleInfo;
-        //        gdvModule.DataSource = moduleInfo;
-        //        gdvModule.DataBind();
-        //    }
-
-        //}
-
 
         protected void wizInstall_CancelButtonClick(object sender, EventArgs e)
         {
@@ -480,7 +410,7 @@ namespace SageFrame.DesktopModules.Admin.Extensions
                     {
                         if (module != null)
                         {
-                            installhelp.DeleteTempDirectory(module.TempFolderPath+"\\"+module.FolderName);
+                            installhelp.DeleteTempDirectory(module.TempFolderPath + "\\" + module.FolderName);
 
                         }
                     }
@@ -513,7 +443,6 @@ namespace SageFrame.DesktopModules.Admin.Extensions
                         }
                     }
                 }
-                             
                 ViewState["FinalModuleList"] = null;
                 ViewState["AvailableModuleList"] = null;
                 ReturnBack();

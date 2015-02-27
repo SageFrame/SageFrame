@@ -1,10 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <pagepreset>
   <layout>
-    <preset layout="Contact">Contact-Us</preset>
-    <preset layout="default">Home</preset>
-    <preset layout="twoColumnLayout">All</preset>
+    <preset layout="oneColumnLayout">All</preset>
+    <preset layout="twoColumnLayout">Components</preset>
+    <preset layout="UnderConstruction">Under-Construction</preset>
+    <preset layout="Unsubsribe">UnSubscribe</preset>
+    <preset layout="Contact">Contact,Home</preset>
   </layout>
   <theme>default</theme>
-  <width>wide</width>
+  <width>narrow</width>
 </pagepreset>

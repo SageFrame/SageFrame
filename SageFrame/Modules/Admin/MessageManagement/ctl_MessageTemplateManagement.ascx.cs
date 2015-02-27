@@ -1,6 +1,6 @@
 ﻿/*
 SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
+Copyright (c) 2009-2010 by SageFrame
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -31,9 +31,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SageFrame.Framework;
 using SageFrame.Web;
-using SageFrameClass.MessageManagement;
 using SageFrame.Message;
 using System.Text;
+using SageFrame.Web.Utilities;
+
 
 namespace SageFrame.Modules.Admin.MessageManagement
 {
@@ -45,21 +46,61 @@ namespace SageFrame.Modules.Admin.MessageManagement
             {
                 if (!IsPostBack)
                 {
-                    AddImageUrls();
                     BindMessageTemplateType();
                     ClearForm();
                     BindData();
                     pnlMessageTemplateList.Style.Add("display", "block");
-                    //BindMessageToken();
-                    lnkAddSubjectMessageToken.Attributes.Add("onclick", "showMessageToken('" + txtSubject.ClientID + "','" + mpeAddMessageTokenModalPopup.ClientID + "',false)");
-                    btnAddMessageTokenOk.Attributes.Add("onclick", "AddMessageToken('" + lstMessageToken.ClientID + "','" + mpeAddMessageTokenModalPopup.ClientID + "' )");
-                    btnAddMessageTokenCancel.Attributes.Add("onclick", "hideModalPopup('" + mpeAddMessageTokenModalPopup.ClientID + "' )");
-                    lnkAddBodyMessageToken.Attributes.Add("onclick", "showMessageToken('" + txtBody.ClientID + "','" + mpeAddMessageTokenModalPopup.ClientID + "',true)");
+                    BindMessageToken();
+                    lnkAddSubjectMessageToken.Attributes.Add("onclick",
+                                                             "showMessageToken('" + txtSubject.ClientID + "','" +
+                                                             mpeAddMessageTokenModalPopup.ClientID + "',false);");
+                    lnkAddBodyMessageToken.Attributes.Add("onclick",
+                                                          "showMessageToken('" + txtBody.ClientID + "','" +
+                                                          mpeAddMessageTokenModalPopup.ClientID + "',true);");
+                    lblAddSubjectMessageToken.Attributes.Add("onclick",
+                                                             "showMessageToken('" + txtSubject.ClientID + "','" +
+                                                             mpeAddMessageTokenModalPopup.ClientID + "',false);");
+                    lblAddBodyMessageToken.Attributes.Add("onclick",
+                                                          "showMessageToken('" + txtBody.ClientID + "','" +
+                                                          mpeAddMessageTokenModalPopup.ClientID + "',true);");
+                    btnAddMessageTokenOk.Attributes.Add("onclick",
+                                                        "AddMessageToken('" + lstMessageToken.ClientID + "','" +
+                                                        mpeAddMessageTokenModalPopup.ClientID + "' )");
+                    btnAddMessageTokenCancel.Attributes.Add("onclick",
+                                                            "hideModalPopup('" + mpeAddMessageTokenModalPopup.ClientID +
+                                                            "');");
+                    btnCancelMessageTemplateType.Attributes.Add("onclick",
+                                                                "ClearTemplateText('" + txtMessageTemplateType.ClientID +
+                                                                "', '" + lblErrorMessageTemplateType.ClientID +
+                                                                "'); hideModalPopup('" + mpeMessageTemplateType.ClientID + "');");
+                    btnCancelMessageTemplateToken.Attributes.Add("onclick",
+                                                                 "ClearTemplateText('" +
+                                                                 txtMessageTemplateToken.ClientID + "', '" +
+                                                                 lblErrorMessageTemplateToken.ClientID +
+                                                                 "'); hideModalPopup('" + mpeMessageTemplateToken.ClientID + "');");
                     lstMessageToken.Attributes.Add("onchange", "setMessageToken(this.value);");
-                    hypAddMessageTemplateType.Attributes.Add("onclick", "showModalPopup('" + mpeMessageTemplateType.ClientID + "');");
-                    lblAddSubjectMessageToken.Attributes.Add("onclick", "showMessageToken('" + txtSubject.ClientID + "','" + mpeAddMessageTokenModalPopup.ClientID + "',false)");
-                    lblAddBodyMessageToken.Attributes.Add("onclick", "showMessageToken('" + txtBody.ClientID + "','" + mpeAddMessageTokenModalPopup.ClientID + "',true)");
+                    hypAddMessageTemplateType.Attributes.Add("onclick",
+                                                             "ClearTemplateText('" + txtMessageTemplateType.ClientID +
+                                                             "', '" + lblErrorMessageTemplateType.ClientID +
+                                                             "'); showModalPopup('" + mpeMessageTemplateType.ClientID +
+                                                             "');");
+                    hypAddMessageTemplateToken.Attributes.Add("onclick",
+                                                              "ClearTemplateText('" + txtMessageTemplateToken.ClientID +
+                                                              "', '" + lblErrorMessageTemplateToken.ClientID +
+                                                              "'); showModalPopup('" + mpeMessageTemplateToken.ClientID +
+                                                              "');");
+                    lblAddMessageTemplateType.Attributes.Add("onclick",
+                                                             "ClearTemplateText('" + txtMessageTemplateType.ClientID +
+                                                             "', '" + lblErrorMessageTemplateType.ClientID +
+                                                             "'); showModalPopup('" + mpeMessageTemplateType.ClientID +
+                                                             "');");
+                    lblAddMessageTemplateToken.Attributes.Add("onclick",
+                                                              "ClearTemplateText('" + txtMessageTemplateToken.ClientID +
+                                                              "', '" + lblErrorMessageTemplateToken.ClientID +
+                                                              "'); showModalPopup('" + mpeMessageTemplateToken.ClientID +
+                                                              "');");
                 }
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "ckEditorUserModuleID", " var ckEditorUserModuleID='" + SageUserModuleID + "';", true);
             }
             catch (Exception ex)
             {
@@ -67,15 +108,6 @@ namespace SageFrame.Modules.Admin.MessageManagement
             }
         }
 
-        private void AddImageUrls()
-        {
-            hypAddMessageTemplateType.ImageUrl = GetTemplateImageUrl("imgadd.png", true);
-            lnkAddSubjectMessageToken.ImageUrl = GetTemplateImageUrl("imgadd.png", true);
-            lnkAddBodyMessageToken.ImageUrl = GetTemplateImageUrl("imgadd.png", true);
-            imbSave.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
-            imbCancel.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-            imbAddNew.ImageUrl = GetTemplateImageUrl("imgadd.png", true);
-        }
 
         private void BindMessageToken()
         {
@@ -86,10 +118,8 @@ namespace SageFrame.Modules.Admin.MessageManagement
                 {
                     if (Int32.Parse(ddlMessageTemplateType.SelectedValue) > 0)
                     {
-
-                        //var messageTokens = messageTokenDB.sp_MessageTemplateTypeTokenListByMessageTemplateType(Int32.Parse(ddlMessageTemplateType.SelectedValue), GetPortalID);
-                        List<MessageManagementInfo> messageTokens = MessageManagementController.GetMessageTemplateTypeTokenListByMessageTemplateType(Int32.Parse(ddlMessageTemplateType.SelectedValue), GetPortalID);
-
+                        MessageManagementController objMsgController = new MessageManagementController();
+                        List<MessageManagementInfo> messageTokens = objMsgController.GetMessageTemplateTypeTokenListByMessageTemplateType(Int32.Parse(ddlMessageTemplateType.SelectedValue), GetPortalID);
                         foreach (MessageManagementInfo messageToken in messageTokens)
                         {
                             ListItem li = new ListItem(messageToken.MessageTokenKey, messageToken.MessageTokenKey);
@@ -113,12 +143,11 @@ namespace SageFrame.Modules.Admin.MessageManagement
         {
             try
             {
-                //CommonFunction comm = new CommonFunction();
-                //var LINQ = messageTemplateTypeDB.sp_GetMessageTemplateTypeList(true, false, GetPortalID,GetUsername,GetCurrentCultureName);
-                //DataTable dtTemplateType = comm.LINQToDataTable(LINQ);
-                //ddlMessageTemplateType.DataSource = dtTemplateType;
-
-                ddlMessageTemplateType.DataSource = MessageManagementController.GetMessageTemplateTypeList(true, false, GetPortalID, GetUsername, GetCurrentCultureName);
+                CommonFunction comm = new CommonFunction();
+                MessageManagementController objMsgController = new MessageManagementController();
+                var LINQ = objMsgController.GetMessageTemplateTypeList(true, false, GetPortalID, GetUsername, GetCurrentCultureName);
+                DataTable dtTemplateType = comm.LINQToDataTable(LINQ);
+                ddlMessageTemplateType.DataSource = dtTemplateType;
                 ddlMessageTemplateType.DataTextField = "CultureName";
                 ddlMessageTemplateType.DataValueField = "MessageTemplateTypeID";
                 ddlMessageTemplateType.DataBind();
@@ -137,6 +166,8 @@ namespace SageFrame.Modules.Admin.MessageManagement
                 hdnMessageTemplateID.Value = "0";
                 pnlMessageTemplate.Style.Add("display", "block");
                 pnlMessageTemplateList.Style.Add("display", "none");
+                //hypAddMessageTemplateType.Style.Add("display", "inline");
+                //hypAddMessageTemplateToken.Style.Add("display", "inline");
             }
             catch (Exception ex)
             {
@@ -157,41 +188,29 @@ namespace SageFrame.Modules.Admin.MessageManagement
                 StringBuilder strMessage = new StringBuilder();
                 if (Validate(strMessage))
                 {
+                    MessageManagementController objMsgController = new MessageManagementController();
                     if (Int32.Parse(hdnMessageTemplateID.Value) > 0)
                     {
                         try
                         {
                             Int32 MessageTemplateID = Int32.Parse(Session["MessageTemplateID"].ToString());
-                            //messageTemplateDB.sp_MessageTemplateUpdate(MessageTemplateID, Int32.Parse(ddlMessageTemplateType.SelectedValue), txtSubject.Text,
-                            //    txtBody.Value, txtMailFrom.Text, chkIsActive.Checked, DateTime.Now, GetPortalID, GetUsername,GetCurrentCultureName);
-
-                            MessageManagementController.UpdateMessageTemplate(MessageTemplateID, Int32.Parse(ddlMessageTemplateType.SelectedValue), txtSubject.Text,
+                            objMsgController.UpdateMessageTemplate(MessageTemplateID, Int32.Parse(ddlMessageTemplateType.SelectedValue), txtSubject.Text,
                                 txtBody.Value, txtMailFrom.Text, chkIsActive.Checked, DateTime.Now, GetPortalID, GetUsername, GetCurrentCultureName);
-
-
                             ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("MessageManagement", "MessageTemplateIsUpdatedSuccessfully"), "", SageMessageType.Success);
                             BindData();
                             ClearForm();
                         }
                         catch
                         {
-
-
                             ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("MessageManagement", "MessageTemplateCouldnotBeUpdated"), "", SageMessageType.Error);
                         }
                     }
                     else
                     {
-                        int newMessageTemplateID = 0;
-
-                        //messageTemplateDB.sp_MessageTemplateAdd(ref newMessageTemplateID, Int32.Parse(ddlMessageTemplateType.SelectedValue), txtSubject.Text, txtBody.Value, txtMailFrom.Text, chkIsActive.Checked, DateTime.Now, GetPortalID, GetUsername,GetCurrentCultureName);
-                        newMessageTemplateID = MessageManagementController.AddMessageTemplate(int.Parse(ddlMessageTemplateType.SelectedValue), txtSubject.Text, txtBody.Value, txtMailFrom.Text, chkIsActive.Checked, DateTime.Now, GetPortalID, GetUsername, GetCurrentCultureName);
-
+                        int newMessageTemplateID = objMsgController.AddMessageTemplate(int.Parse(ddlMessageTemplateType.SelectedValue), txtSubject.Text, txtBody.Value, txtMailFrom.Text, chkIsActive.Checked, DateTime.Now, GetPortalID, GetUsername, GetCurrentCultureName);
                         if (newMessageTemplateID > 0)
                         {
                             BindData();
-
-
                             ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("MessageManagement", "MessageTemplateIsAddedSuccessfully"), "", SageMessageType.Success);
                             ClearForm();
                         }
@@ -288,9 +307,9 @@ namespace SageFrame.Modules.Admin.MessageManagement
         {
             try
             {
-                //var LINQ = messageTemplateDB.sp_GetMessageTemplateList(true, false, GetPortalID,GetUsername,GetCurrentCultureName);
-                //grdList.DataSource = LINQ;
-                grdList.DataSource = MessageManagementController.GetMessageTemplateList(true, false, GetPortalID, GetUsername, GetCurrentCultureName);
+                MessageManagementController objMsgController = new MessageManagementController();
+                var LINQ = objMsgController.GetMessageTemplateList(true, false, GetPortalID, GetUsername, GetCurrentCultureName);
+                grdList.DataSource = LINQ;
                 grdList.DataBind();
             }
             catch (Exception ex)
@@ -325,6 +344,7 @@ namespace SageFrame.Modules.Admin.MessageManagement
                         break;
                     case "Delete":
                         DeleteMessageTemplate(MessageTemplateID);
+
                         break;
                 }
             }
@@ -338,21 +358,26 @@ namespace SageFrame.Modules.Admin.MessageManagement
         {
             try
             {
-                //var LINQ = messageTemplateDB.sp_GetMessageTemplate(MessageTemplateID, GetPortalID).SingleOrDefault();
-                MessageManagementInfo objInfo = MessageManagementController.GetMessageTemplate(MessageTemplateID, GetPortalID);
-
-
-                if (objInfo != null)
+                MessageManagementController objMsgController = new MessageManagementController();
+                var LINQ = objMsgController.GetMessageTemplate(MessageTemplateID, GetPortalID);
+                if (LINQ.MessageTemplateTypeID > 0)
                 {
                     hdnMessageTemplateID.Value = MessageTemplateID.ToString();
-                    txtSubject.Text = objInfo.Subject;
-                    txtBody.Value = objInfo.Body;
-                    txtMailFrom.Text = objInfo.MailFrom;
-                    chkIsActive.Checked = (objInfo.IsActive == true ? true : false);
-                    ddlMessageTemplateType.SelectedValue = objInfo.MessageTemplateTypeID.ToString();
+                    txtSubject.Text = LINQ.Subject;
+                    txtBody.Value = LINQ.Body;
+                    txtMailFrom.Text = LINQ.MailFrom;
+                    chkIsActive.Checked = (LINQ.IsActive == true ? true : false);
+                    ddlMessageTemplateType.SelectedValue = LINQ.MessageTemplateTypeID == 0 ? MessageTemplateID.ToString() : LINQ.MessageTemplateTypeID.ToString();
                     Session["MessageTemplateID"] = MessageTemplateID;
                     HideAll();
                     pnlMessageTemplate.Style.Add("display", "block");
+                    //hypAddMessageTemplateType.Style.Add("display", "none");
+                    //hypAddMessageTemplateToken.Style.Add("display", "none");
+
+                }
+                else
+                {
+                    ClearNewForm();
                 }
             }
             catch (Exception ex)
@@ -365,9 +390,8 @@ namespace SageFrame.Modules.Admin.MessageManagement
         {
             try
             {
-                //messageTemplateDB.sp_MessageTemplateDelete(MessageTemplateID, GetPortalID, DateTime.Now, GetUsername);
-                MessageManagementController.DeleteMessageTemplate(MessageTemplateID, GetPortalID, DateTime.Now, GetUsername);
-
+                MessageManagementController objMsgController = new MessageManagementController();
+                objMsgController.DeleteMessageTemplate(MessageTemplateID, GetPortalID, DateTime.Now, GetUsername);
                 ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("MessageManagement", "MessageTemplateIsDeletedSuccessfully"), "", SageMessageType.Success);
                 BindData();
             }
@@ -401,28 +425,40 @@ namespace SageFrame.Modules.Admin.MessageManagement
         {
             try
             {
-                if (txtMessageTemplateType.Text != "")
+                MessageManagementController objMsgController = new MessageManagementController();
+                if (objMsgController.CheckMessgeTemplateUnique(txtMessageTemplateType.Text.TrimStart(','), GetPortalID))
                 {
-                    int MessageTemplateTypeID = 0;
-                    //messageTemplateTypeDB.sp_MessageTemplateTypeAdd(ref MessageTemplateTypeID, txtMessageTemplateType.Text, true, DateTime.Now, GetPortalID, GetUsername);
-                    MessageTemplateTypeID = MessageManagementController.AddMessageTemplateType(txtMessageTemplateType.Text, true, DateTime.Now, GetPortalID, GetUsername);
-                    if (MessageTemplateTypeID > 0)
-                    {
 
-                        ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("MessageManagement", "MessageTemplateIsAddedSuccessfully"), "", SageMessageType.Success);
-                        BindMessageTemplateType();
-                        txtMessageTemplateType.Text = "";
+                    if (txtMessageTemplateType.Text.Trim() != "")
+                    {
+                        string messageTemplateTypeName = txtMessageTemplateType.Text.TrimStart(',');
+                        int MessageTemplateTypeID = 0;
+                        MessageTemplateTypeID = objMsgController.AddMessageTemplateType(messageTemplateTypeName, true, DateTime.Now, GetPortalID, GetUsername);
+                        if (MessageTemplateTypeID > 0)
+                        {
+                            ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("MessageManagement", "MessageTemplateIsAddedSuccessfully"), "", SageMessageType.Success);
+                            BindMessageTemplateType();
+                            txtMessageTemplateType.Text = "";
+                            ClearNewForm();
+                        }
+                        else
+                        {
+                            ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("MessageManagement", "PleaseSaveMessageTemplateTypeAgain"), "", SageMessageType.Error);
+                        }
                     }
                     else
                     {
 
-                        ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("MessageManagement", "PleaseSaveMessageTemplateTypeAgain"), "", SageMessageType.Error);
+                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("MessageManagement", "MessageTemplateTypeIsRequiredField"), "", SageMessageType.Alert);
                     }
                 }
                 else
                 {
-
-                    ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("MessageManagement", "MessageTemplateTypeIsRequiredField"), "", SageMessageType.Alert);
+                    mpeMessageTemplateType.Show();
+                    lblErrorMessageTemplateType.Text = GetSageMessage("MessageManagement",
+                                                                       "UniqueMessageTemplateTypeIsRequired");
+                    lblErrorMessageTemplateType.Visible = true;
+                    // ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("MessageManagement", "UniqueMessageTemplateTypeIsRequired"), "", SageMessageType.Alert);
                 }
             }
             catch (Exception ex)
@@ -433,23 +469,88 @@ namespace SageFrame.Modules.Admin.MessageManagement
 
         protected void ddlMessageTemplateType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            EditMessageTemplate(Int32.Parse(ddlMessageTemplateType.SelectedValue));
             BindMessageToken();
         }
 
         protected void btnCustomizeEditor_Click(object sender, EventArgs e)
         {
-            //txtBody.ToolbarSet = "Default";
+            txtBody.ToolbarSet = "Default";
             btnCustomizeEditor.Visible = false;
+            lblCustomizeEditor.Visible = false;
             btnDefault.Visible = true;
+            lblDefault.Visible = true;
             txtBody.Visible = true;
         }
 
         protected void btnDefault_Click(object sender, EventArgs e)
         {
-            // txtBody.ToolbarSet = "SageFrameLimited";
+            txtBody.ToolbarSet = "SageFrameLimited";
             btnCustomizeEditor.Visible = true;
+            lblCustomizeEditor.Visible = true;
             btnDefault.Visible = false;
+            lblDefault.Visible = false;
             txtBody.Visible = true;
+        }
+        protected void btnOkMessageTemplateToken_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                MessageManagementController objMsgController = new MessageManagementController();
+                if (objMsgController.CheckMessgeTokenUnique(txtMessageTemplateToken.Text.TrimStart(','), Int32.Parse(ddlMessageTemplateType.SelectedValue), GetPortalID))
+                {
+                    if (ddlMessageTemplateType.SelectedIndex != -1)
+                    {
+                        if (Int32.Parse(ddlMessageTemplateType.SelectedValue) > 0)
+                        {
+                            if (txtMessageTemplateToken.Text.Trim() != "")
+                            {
+                                string messageTemplateTokenName = txtMessageTemplateToken.Text.TrimStart(',');
+                                int MessageTokenID = 0;
+                                MessageTokenID = objMsgController.MessageTemplateTokenAdd(MessageTokenID, Int32.Parse(ddlMessageTemplateType.SelectedValue), messageTemplateTokenName, true, DateTime.Now, GetPortalID, GetUsername);
+                                if (MessageTokenID > 0)
+                                {
+
+                                    ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("MessageManagement", "MessageTemplateTokenIsAddedSuccessfully"), "", SageMessageType.Success);
+                                    BindMessageToken();
+                                    //BindMessageTemplateType();
+                                    txtMessageTemplateToken.Text = "";
+                                }
+                                else
+                                {
+
+                                    ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("MessageManagement", "PleaseSaveMessageTemplateTokenAgain"), "", SageMessageType.Error);
+                                }
+                            }
+                            else
+                            {
+
+                                ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("MessageManagement", "MessageTemplateTokenIsRequiredField"), "", SageMessageType.Alert);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    mpeMessageTemplateToken.Show();
+                    lblErrorMessageTemplateToken.Text = GetSageMessage("MessageManagement",
+                                                                       "UniqueMessageTemplateTokenIsRequired");
+                    lblErrorMessageTemplateToken.Visible = true;
+                    //ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("MessageManagement", "UniqueMessageTemplateTokenIsRequired"), "", SageMessageType.Alert);
+                }
+            }
+            catch (Exception ex)
+            {
+                ProcessException(ex);
+            }
+        }
+
+        private void ClearNewForm()
+        {
+            chkIsActive.Checked = false;
+            txtSubject.Text = "";
+            txtBody.Value = "";
+            txtMailFrom.Text = "";
         }
     }
 }

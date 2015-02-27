@@ -166,7 +166,7 @@
     <value />
   </data>
   <data name="DataLabelResource1.Text" xml:space="preserve">
-    <value>Enter Data Shown Left:</value>
+    <value>Enter Captcha Text</value>
   </data>
   <data name="DataLabelResource1.ToolTip" xml:space="preserve">
     <value />

@@ -33,14 +33,11 @@
                 var bound = body.getBoundingClientRect();
                 zoom = (bound.right - bound.left) / body.clientWidth;
             }
-
             if (zoom > 1) {
                 clientTop = 0;
                 clientLeft = 0;
             }
-
             var top = box.top / zoom + (window.pageYOffset || docElem && docElem.scrollTop / zoom || body.scrollTop / zoom) - clientTop, left = box.left / zoom + (window.pageXOffset || docElem && docElem.scrollLeft / zoom || body.scrollLeft / zoom) - clientLeft;
-
             return {
                 top: top,
                 left: left
@@ -66,10 +63,8 @@
         var offset = getOffset(el);
         left = offset.left;
         top = offset.top;
-
         right = left + el.offsetWidth;
         bottom = top + el.offsetHeight;
-
         return {
             left: left,
             right: right,
@@ -86,7 +81,6 @@
     }
     function copyLayout(from, to) {
         var box = getBox(from);
-
         addStyles(to, {
             position: 'absolute',
             left: box.left + 'px',
@@ -115,7 +109,6 @@
     function getExt(file) {
         return (-1 !== file.indexOf('.')) ? file.replace(/.*[.]/, '') : '';
     }
-
     function hasClass(el, name) {
         var re = new RegExp('\\b' + name + '\\b');
         return re.test(el.className);
@@ -129,7 +122,6 @@
         var re = new RegExp('\\b' + name + '\\b');
         el.className = el.className.replace(re, '');
     }
-
     function removeNode(el) {
         el.parentNode.removeChild(el);
     }
@@ -159,17 +151,14 @@
         if (button.jquery) {
             button = button[0];
         } else if (typeof button == "string") {
-            if (/^#.*/.test(button)) {		
+            if (/^#.*/.test(button)) {
                 button = button.slice(1);
             }
-
             button = document.getElementById(button);
         }
-
         if (!button || button.nodeType !== 1) {
             //throw new Error("Please make sure that you're passing a valid element");
         }
-
         if (button.nodeName.toUpperCase() == 'A') {
             addEvent(button, 'click', function(e) {
                 if (e && e.preventDefault) {
@@ -183,7 +172,6 @@
         this._input = null;
         this._disabled = false;
         this.enable();
-
         this._rerouteClicks();
     };
     AjaxUpload.prototype = {
@@ -193,7 +181,6 @@
         disable: function() {
             addClass(this._button, this._settings.disabledClass);
             this._disabled = true;
-
             var nodeName = this._button.nodeName.toUpperCase();
             if (nodeName == 'INPUT' || nodeName == 'BUTTON') {
                 this._button.setAttribute('disabled', 'disabled');
@@ -208,16 +195,13 @@
             removeClass(this._button, this._settings.disabledClass);
             this._button.removeAttribute('disabled');
             this._disabled = false;
-
         },
         _createInput: function() {
             var self = this;
-
             var input = document.createElement("input");
             input.setAttribute('type', 'file');
             input.setAttribute('name', this._settings.name);
             if (this._settings.multiple) input.setAttribute('multiple', 'multiple');
-
             addStyles(input, {
                 'position': 'absolute',
                 //'right': 0,
@@ -227,7 +211,6 @@
                 //'fontFamily': 'sans-serif',
                 'cursor': 'pointer'
             });
-
             var div = document.createElement("div");
             addStyles(div, {
                 'display': 'block',
@@ -239,21 +222,17 @@
                 'direction': 'ltr',
                 'zIndex': 2147483583
             });
-
             if (div.style.opacity !== "0") {
                 if (typeof (div.filters) == 'undefined') {
                     throw new Error('Opacity not supported by the browser');
                 }
                 div.style.filter = "alpha(opacity=0)";
             }
-
             addEvent(input, 'change', function() {
-
                 if (!input || input.value === '') {
                     return;
-                }   
+                }
                 var file = fileFromPath(input.value);
-
                 if (false === self._settings.onChange.call(self, file, getExt(file))) {
                     self._clearInput();
                     return;
@@ -262,11 +241,9 @@
                     self.submit();
                 }
             });
-
             addEvent(input, 'mouseover', function() {
                 addClass(self._button, self._settings.hoverClass);
             });
-
             addEvent(input, 'mouseout', function() {
                 removeClass(self._button, self._settings.hoverClass);
                 removeClass(self._button, self._settings.focusClass);
@@ -275,28 +252,23 @@
                     input.parentNode.style.visibility = 'hidden';
                 }
             });
-
             addEvent(input, 'focus', function() {
                 addClass(self._button, self._settings.focusClass);
             });
-
             addEvent(input, 'blur', function() {
                 removeClass(self._button, self._settings.focusClass);
             });
-
             div.appendChild(input);
             document.body.appendChild(div);
-
             this._input = input;
         },
         _clearInput: function() {
             if (!this._input) {
                 return;
-            }                    
+            }
             removeNode(this._input.parentNode);
             this._input = null;
             this._createInput();
-
             removeClass(this._button, this._settings.hoverClass);
             removeClass(this._button, this._settings.focusClass);
         },
@@ -306,31 +278,25 @@
                 if (self._disabled) {
                     return;
                 }
-
                 if (!self._input) {
                     self._createInput();
                 }
-
                 var div = self._input.parentNode;
                 copyLayout(self._button, div);
                 div.style.visibility = 'visible';
-
             });
         },
         _createIframe: function() {
             var id = getUID();
             var iframe = toElement('<iframe src="javascript:false;" name="' + id + '" />');
             iframe.setAttribute('id', id);
-
             iframe.style.display = 'none';
             document.body.appendChild(iframe);
-
             return iframe;
         },
         _createForm: function(iframe) {
-            var settings = this._settings;                  
+            var settings = this._settings;
             var form = toElement('<form method="post" enctype="multipart/form-data"></form>');
-
             form.setAttribute('action', settings.action);
             form.setAttribute('target', iframe.name);
             form.style.display = 'none';
@@ -348,9 +314,7 @@
         },
         _getResponse: function(iframe, file) {
             var toDeleteFlag = false, self = this, settings = this._settings;
-
             addEvent(iframe, 'load', function() {
-
                 if (iframe.src == "javascript:'%3Chtml%3E%3C/html%3E';" ||
                     iframe.src == "javascript:'<html></html>';") {
                     if (toDeleteFlag) {
@@ -358,29 +322,21 @@
                             removeNode(iframe);
                         }, 0);
                     }
-
                     return;
                 }
-
                 var doc = iframe.contentDocument ? iframe.contentDocument : window.frames[iframe.id].document;
-
                 if (doc.readyState && doc.readyState != 'complete') {
                     return;
                 }
-
                 if (doc.body && doc.body.innerHTML == "false") {
                     return;
                 }
-
                 var response;
-
                 if (doc.XMLDocument) {
                     response = doc.XMLDocument;
                 } else if (doc.body) {
                     var body = $(doc.body);
-
                     response = $(body).find('pre').html();
-
                 } else {
                     response = doc.body.innerHTML;
                 }
@@ -391,11 +347,9 @@
         },
         submit: function() {
             var self = this, settings = this._settings;
-
             if (!this._input || this._input.value === '') {
                 return;
             }
-
             var file = fileFromPath(this._input.value);
             if (false === settings.onSubmit.call(this, file, getExt(file))) {
                 this._clearInput();
@@ -407,10 +361,10 @@
             removeClass(self._button, self._settings.hoverClass);
             removeClass(self._button, self._settings.focusClass);
             form.appendChild(this._input);
-            form.submit();             
+            form.submit();
             removeNode(form); form = null;
             removeNode(this._input); this._input = null;
-            this._getResponse(iframe, file);    
+            this._getResponse(iframe, file);
             this._createInput();
         }
     };

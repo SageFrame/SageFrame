@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections;
 using System.Configuration;
@@ -42,7 +27,8 @@ using SageFrame.Shared;
 using SageFrame.MenuManager;
 using System.Net;
 using SageFrame.Pages;
-
+using SageFrame.Common;
+#endregion
 
 public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministrationUserControl
 {
@@ -62,7 +48,6 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
             if (!IsPostBack)
             {
                 BindData();
-                AddImageUrls();
                 ChekAllCheckBox();
             }
         }
@@ -70,7 +55,6 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
         {
             ProcessException(ex);
         }
-
     }
     private void ChekAllCheckBox()
     {
@@ -82,12 +66,11 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
         {
             li.Selected = true;
         }
-       
     }
     private void AddImageUrls()
     {
-        imbSave.ImageUrl = GetTemplateImageUrl("btnudate.png", true);
-        imbRefresh.ImageUrl = GetTemplateImageUrl("imgrefresh.png", true);
+        //imbSave.ImageUrl = GetTemplateImageUrl("btnudate.png", true);
+        //imbRefresh.ImageUrl = GetTemplateImageUrl("imgrefresh.png", true);
     }
 
     private void SaveSettings()
@@ -98,7 +81,7 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
             {
                 SettingProvider sp = new SettingProvider();
                 sp.GoogleAnalyticsAddUpdate(txtvalue.Text, chkIsActive.Checked, GetPortalID, GetUsername);
-                HttpContext.Current.Cache.Remove("SageGoogleAnalytics");
+                HttpRuntime.Cache.Remove(CacheKeys.SageGoogleAnalytics);
                 AlertUpdate();
                 BindData();
             }
@@ -140,20 +123,32 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
 
     }
 
-    protected void imbSave_Click(object sender, ImageClickEventArgs e)
+    protected void imbSave_Click(object sender, EventArgs e)
     {
         SaveSettings();
     }
 
-    protected void imbRefresh_Click(object sender, ImageClickEventArgs e)
+    protected void imbRefresh_Click(object sender, EventArgs e)
     {
         BindData();
     }
     private void GenerateSitemap()
     {
-
-
-        string sSiteMapFilePath = HttpRuntime.AppDomainAppPath + "sitemap.xml";
+        if (!File.Exists(HttpRuntime.AppDomainAppPath + "sitemap_" + GetPortalID + ".xml"))
+        {
+            GenerateSitemapIndex();
+        }
+        else
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(HttpRuntime.AppDomainAppPath + "sitemap_index.xml");
+            XmlNodeList nodeList = doc.GetElementsByTagName("lastmod");
+            foreach (XmlNode xmlNode in nodeList)
+            {
+                xmlNode.InnerText = DateTime.Now.ToString();
+            }
+        }
+        string sSiteMapFilePath = HttpRuntime.AppDomainAppPath + "sitemap_" + GetPortalID + ".xml";
         List<SitemapInfo> items = MenuManagerDataController.GetSiteMapPages(GetUsername, GetCurrentCultureName);
         FileInfo fi = new FileInfo(sSiteMapFilePath);
 
@@ -182,9 +177,8 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
             //Valid option for changefreq:(always,hourly,daily,weekly,monthly,yearly,never)
             //Valid priority values have range interval [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0].
             string urlpath = info.PortalID > 1 ? string.Format("/portal/{0}{1}", info.PortalName, info.TabPath) : info.TabPath;
-            rootNode.AppendChild(GenerateUrlNode("http://www.SageFrame" + urlpath + ".aspx", Updated, ChangeFreuency, PriorityValues));
+            rootNode.AppendChild(GenerateUrlNode(Page.Request.Url.Scheme + "://" + Request.Url.Authority + GetApplicationName + urlpath + SageFrameSettingKeys.PageExtension, Updated, ChangeFreuency, PriorityValues));
         }
-
         xd.AppendChild(rootNode);
         xd.InsertBefore(xd.CreateXmlDeclaration("1.0", "UTF-8", null), rootNode);
         xd.Save(sSiteMapFilePath);
@@ -192,11 +186,64 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
 
     }
 
+    private void GenerateSitemapIndex()
+    {
+        string sSiteMapFilePath = HttpRuntime.AppDomainAppPath + "sitemap_index.xml";
+        if (!File.Exists(HttpRuntime.AppDomainAppPath + "sitemap_index.xml"))
+        {
+
+            List<SitemapInfo> items = MenuManagerDataController.GetSiteMapPages(GetUsername, GetCurrentCultureName);
+            FileInfo fi = new FileInfo(sSiteMapFilePath);
+
+            xd = new XmlDocument();
+            XmlNode rootNode = xd.CreateElement("urlset");
+
+            XmlAttribute attrXmlNS = xd.CreateAttribute("xmlns");
+            attrXmlNS.InnerText = "http://www.sitemaps.org/schemas/sitemap/0.9";
+            rootNode.Attributes.Append(attrXmlNS);
+
+            XmlTextWriter writer = new XmlTextWriter(Response.OutputStream, Encoding.UTF8);
+            rootNode.AppendChild(GenerateIndexNode(Page.Request.Url.Scheme + "://" + Request.Url.Authority + GetApplicationName + "/sitemap_" + GetPortalID + ".xml"));
+
+            xd.AppendChild(rootNode);
+            xd.InsertBefore(xd.CreateXmlDeclaration("1.0", "UTF-8", null), rootNode);
+            xd.Save(sSiteMapFilePath);
+        }
+        else
+        {
+
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(HttpRuntime.AppDomainAppPath + "sitemap_index.xml");
+            XmlNode node = GenerateIndexNode(Page.Request.Url.Scheme + "://" + Request.Url.Authority + GetApplicationName + "/sitemap_" + GetPortalID + ".xml");
+            XmlNode childNode = xmlDoc.DocumentElement;
+            childNode.InsertAfter(node, childNode.LastChild);
+            xmlDoc.Save(sSiteMapFilePath);
+
+
+        }
+
+
+
+    }
+
+    public XmlNode GenerateIndexNode(string Loc)
+    {
+        XmlNode nodeSite = xd.CreateElement("sitemap");
+        XmlNode nodeLoc = xd.CreateElement("loc");
+        nodeLoc.InnerText = Loc;
+        XmlNode nodeMode = xd.CreateElement("lastmod");
+        nodeMode.InnerText = DateTime.Now.ToString("yyyy-MM-ddThh:mm:ss+00:00");
+        nodeSite.AppendChild(nodeLoc);
+        nodeSite.AppendChild(nodeMode);
+        return nodeSite;
+
+    }
 
     private void SubmitSitemap(string PortalName)
     {
- 
-        if(!File.Exists(HttpRuntime.AppDomainAppPath + "sitemap.xml"))
+        string RootPath = Page.Request.Url.Scheme + "://" + Request.Url.Authority + GetApplicationName;
+
+        if (!File.Exists(HttpRuntime.AppDomainAppPath + "sitemap_index.xml"))
         {
             GenerateSitemap();
         }
@@ -208,8 +255,8 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
                 bolSelectionMade = true;
             }
         }
-            
-            //PING SEARCH ENGINES TO LET THEM KNOW WE CRATE/UPDATED OUR SITEMAP
+
+        //PING SEARCH ENGINES TO LET THEM KNOW WE CRATE/UPDATED OUR SITEMAP
 
         //resubmit to google
         if (bolSelectionMade == true)
@@ -220,12 +267,11 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
             StringBuilder er = new StringBuilder();
             foreach (ListItem li in chkSubmitSitemap.Items)
             {
-
                 if (li.Selected == true && li.Value == "Google")
                 {
                     try
                     {
-                        System.Net.WebRequest reqGoogle = System.Net.WebRequest.Create("http://www.google.com/webmasters/tools/ping?sitemap=" + HttpUtility.UrlEncode("http://www.SageFrame/SiteMap/'" + PortalName + "'/sitemap.xml"));
+                        System.Net.WebRequest reqGoogle = System.Net.WebRequest.Create("http://www.google.com/webmasters/tools/ping?sitemap=" + HttpUtility.UrlEncode(RootPath + "/sitemap_index.xml"));
                         reqGoogle.GetResponse();
 
                         HttpWebResponse resp = (HttpWebResponse)reqGoogle.GetResponse();
@@ -235,7 +281,6 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
                     {
                         er.Append("Google");
                         flag = 1;
-
                     }
                 }
 
@@ -244,9 +289,8 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
                     //resubmit to ask
                     try
                     {
-                        System.Net.WebRequest reqAsk = System.Net.WebRequest.Create("http://submissions.ask.com/ping?sitemap=" + HttpUtility.UrlEncode("http://www.SageFrame/SiteMap/'" + PortalName + "'/sitemap.xml"));
+                        System.Net.WebRequest reqAsk = System.Net.WebRequest.Create("http://submissions.ask.com/ping?sitemap=" + HttpUtility.UrlEncode(RootPath + "/sitemap_index.xml"));
                         reqAsk.GetResponse();
-
                         HttpWebResponse resp = (HttpWebResponse)reqAsk.GetResponse();
                         sb.Append(resp.StatusCode == HttpStatusCode.OK ? "Sitemap received by Ask. " : "Couldn't submiting sitemap to Ask<br>").ToString();
                     }
@@ -262,50 +306,39 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
                     //resubmit to yahoo
                     try
                     {
-                        System.Net.WebRequest reqYahoo = System.Net.WebRequest.Create("http://search.yahooapis.com/SiteExplorerService/V1/updateNotification?appid=YahooDemo&url=" + HttpUtility.UrlEncode("http://www.SageFrame/SiteMap/'" + PortalName + "'/sitemap.xml"));
+                        System.Net.WebRequest reqYahoo = System.Net.WebRequest.Create("http://search.yahooapis.com/SiteExplorerService/V1/updateNotification?appid=YahooDemo&url=" + HttpUtility.UrlEncode(RootPath + "/sitemap_index.xml"));
                         reqYahoo.GetResponse();
-
                         HttpWebResponse resp = (HttpWebResponse)reqYahoo.GetResponse();
                         sb.Append(resp.StatusCode == HttpStatusCode.OK ? "Sitemap received by Yahoo. " : "Couldn't submiting sitemap to Yahoo<br>").ToString();
-
                     }
                     catch (Exception)
                     {
                         er.Append("Yahoo");
                         flag = 1;
-
                     }
-
                 }
                 if (li.Selected == true && li.Value == "Bing")
                 {
                     //resubmit to bing
                     try
                     {
-                        System.Net.WebRequest reqBing = System.Net.WebRequest.Create("http://www.bing.com/webmaster/ping.aspx?siteMap=" + HttpUtility.UrlEncode("http://www.SageFrame/SiteMap/'" + PortalName + "'/sitemap.xml"));
+                        System.Net.WebRequest reqBing = System.Net.WebRequest.Create("http://www.bing.com/webmaster/ping.aspx?siteMap=" + HttpUtility.UrlEncode(RootPath + "/sitemap_index.xml"));
                         reqBing.GetResponse();
-
                         HttpWebResponse resp = (HttpWebResponse)reqBing.GetResponse();
                         sb.Append(resp.StatusCode == HttpStatusCode.OK ? "Sitemap received by Bing.<br/>" : "Couldn't submiting sitemap to Bing<br/>").ToString();
-
                     }
                     catch (Exception)
                     {
-
                         er.Append("Bing");
                         flag = 1;
                     }
                 }
-
             }
-
-
             if (flag == 1)
             {
                 res = "Unable to submit sitemap to " + er.ToString() + ".Check Your Connection. ";
                 string message = sb.ToString() + res;
                 ShowMessage("", "", message, SageMessageType.Alert);
-
             }
             else
             {
@@ -313,37 +346,30 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
                 ShowMessage("", "", message, SageMessageType.Success);
             }
         }
-        else {
-
+        else
+        {
             string message = "Please select atleast one search engine.";
             ShowMessage("", "", message, SageMessageType.Alert);
         }
-
-        
     }
+
     public XmlNode GenerateUrlNode(string Loc, DateTime LastMod, string ChangeFreq, string Priority)
     {
         try
         {
-
             XmlNode nodeUrl = xd.CreateElement("url");
-
             XmlNode nodeLoc = xd.CreateElement("loc");
             nodeLoc.InnerText = Loc;
             nodeUrl.AppendChild(nodeLoc);
-
             XmlNode nodeLastMod = xd.CreateElement("lastmod");
             nodeLastMod.InnerText = LastMod.ToString("yyyy-MM-ddThh:mm:ss+00:00");
             nodeUrl.AppendChild(nodeLastMod);
-
             XmlNode nodeChangeFreq = xd.CreateElement("changefreq");
             nodeChangeFreq.InnerText = ChangeFreq;
             nodeUrl.AppendChild(nodeChangeFreq);
-
             XmlNode nodePriority = xd.CreateElement("priority");
             nodePriority.InnerText = Priority;
             nodeUrl.AppendChild(nodePriority);
-
             return nodeUrl;
         }
         catch (Exception ex)
@@ -367,8 +393,6 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
     protected void btnGenerateRobots_Click(object sender, EventArgs e)
     {
         generateRobots();
-        string message = "Robots Generated Successfully";
-        ShowMessage("", message, "", SageMessageType.Success);
 
     }
 
@@ -376,7 +400,6 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
     {
         gdvRobots.DataSource = RobotsController.GetRobots(GetPortalID);
         gdvRobots.DataBind();
-
     }
 
     private void generateRobots()
@@ -384,43 +407,39 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
         RobotsController.DeleteExistingRobots(GetPortalID);
         List<RobotsInfo> items = RobotsController.GetRobots(GetPortalID);
         int flag = 0;
-        string TabPath=string.Empty;
+        string TabPath = string.Empty;
         foreach (ListItem chkitem in chkChoice.Items)
-        {            
+        {
             if (chkitem.Selected == false)
             {
-               
                 flag++;
             }
-            
-            if (chkitem.Selected == true && chkitem.Text == "Google")
+            else if (chkitem.Selected == true && chkitem.Text == "Google")
             {
-
-                
                 foreach (GridViewRow gvRow in gdvRobots.Rows)
                 {
                     CheckBox chk = (CheckBox)gvRow.FindControl("chkPath");
                     if (chk.Checked)
                     {
-                       
+
 
                         Label lblTabPath = (Label)gvRow.FindControl("lblTabPath");
                         TabPath = lblTabPath.Text;
-                        if (GetPortalID > 1)
+                        if (!IsParent)
                         {
                             TabPath = "/portal/" + GetPortalSEOName + TabPath;
                         }
-                        RobotsController.SaveRobotsPage(GetPortalID, "Googlebot",TabPath);
-                        
-                       
+                        RobotsController.SaveRobotsPage(GetPortalID, "Googlebot", TabPath);
+
+
                     }
                 }
-               
+
 
             }
-            if (chkitem.Selected == true && chkitem.Text == "Yahoo")
+            else if (chkitem.Selected == true && chkitem.Text == "Yahoo")
             {
-                
+
                 foreach (GridViewRow gvRow in gdvRobots.Rows)
                 {
                     CheckBox chk = (CheckBox)gvRow.FindControl("chkPath");
@@ -428,19 +447,19 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
                     {
                         Label lblTabPath = (Label)gvRow.FindControl("lblTabPath");
                         TabPath = lblTabPath.Text;
-                        if (GetPortalID > 1)
+                        if (!IsParent)
                         {
                             TabPath = "/portal/" + GetPortalSEOName + TabPath;
                         }
                         RobotsController.SaveRobotsPage(GetPortalID, "Slurp", TabPath);
-                        
+
                     }
                 }
-              
+
             }
-            if (chkitem.Selected == true && chkitem.Text == "Msn")
+            else if (chkitem.Selected == true && chkitem.Text == "Msn")
             {
-               
+
                 foreach (GridViewRow gvRow in gdvRobots.Rows)
                 {
                     CheckBox chk = (CheckBox)gvRow.FindControl("chkPath");
@@ -448,20 +467,20 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
                     {
                         Label lblTabPath = (Label)gvRow.FindControl("lblTabPath");
                         TabPath = lblTabPath.Text;
-                        if (GetPortalID > 1)
+                        if (!IsParent)
                         {
                             TabPath = "/portal/" + GetPortalSEOName + TabPath;
                         }
 
                         RobotsController.SaveRobotsPage(GetPortalID, "msnbot", TabPath);
-                        
+
                     }
                 }
-               
+
             }
-            if (chkitem.Selected == true && chkitem.Text == "Bing")
+            else if (chkitem.Selected == true && chkitem.Text == "Bing")
             {
-              
+
                 foreach (GridViewRow gvRow in gdvRobots.Rows)
                 {
                     CheckBox chk = (CheckBox)gvRow.FindControl("chkPath");
@@ -469,63 +488,101 @@ public partial class Modules_Admin_SEOExtension_SEOExtension : BaseAdministratio
                     {
                         Label lblTabPath = (Label)gvRow.FindControl("lblTabPath");
                         TabPath = lblTabPath.Text;
-                        if (GetPortalID > 1)
+                        if (!IsParent)
                         {
                             TabPath = "/portal/" + GetPortalSEOName + TabPath;
                         }
                         RobotsController.SaveRobotsPage(GetPortalID, "bingbot", TabPath);
-                     }
+                    }
                 }
-               
+
             }
             if (flag == chkChoice.Items.Count)
             {
-                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "globalVariables", " alert('Select Searchengine'); ", true);
+
+                string message = "Select Searchengine";
+                ShowMessage("", message, "", SageMessageType.Alert);
 
             }
             else
             {
                 WriteRobots();
+                string message = "Robots Generated Successfully";
+                ShowMessage("", message, "", SageMessageType.Success);
             }
-           
+
         }
-        
+
     }
     public void WriteRobots()
     {
         try
         {
-            System.IO.StreamWriter objStreamWriter =
-                  new System.IO.StreamWriter(HttpRuntime.AppDomainAppPath + "\\robots.txt");
-            objStreamWriter.WriteLine("User-agent: Googlebot\n");
-            List<RobotsInfo> lstGooglebot = RobotsController.GenerateRobots("Googlebot");
-            foreach (RobotsInfo objinfo in lstGooglebot)
+            if (GetPortalID == 1)
             {
-                objStreamWriter.WriteLine("Disallow: " + objinfo.PagePath + "/" + "\n");
+                System.IO.StreamWriter objStreamWriter =
+                 new System.IO.StreamWriter(HttpRuntime.AppDomainAppPath + "\\robots.txt");
+                objStreamWriter.WriteLine("User-agent: Googlebot\n");
+                List<RobotsInfo> lstGooglebot = RobotsController.GenerateRobots("Googlebot");
+                foreach (RobotsInfo objinfo in lstGooglebot)
+                {
+                    objStreamWriter.WriteLine("Disallow: " + objinfo.PagePath + "/" + "\n");
+                }
+                objStreamWriter.WriteLine("User-agent: Slurp\n");
+                List<RobotsInfo> lstSlurp = RobotsController.GenerateRobots("Slurp");
+                foreach (RobotsInfo objinfo in lstSlurp)
+                {
+                    objStreamWriter.WriteLine("Disallow: " + objinfo.PagePath + "/" + "\n");
+                }
+                objStreamWriter.WriteLine("User-agent: msnbot\n");
+                List<RobotsInfo> lstmsnbot = RobotsController.GenerateRobots("msnbot");
+                foreach (RobotsInfo objinfo in lstmsnbot)
+                {
+                    objStreamWriter.WriteLine("Disallow: " + objinfo.PagePath + "/" + "\n");
+                }
+                objStreamWriter.WriteLine("User-agent: bingbot\n");
+                List<RobotsInfo> lstbingbot = RobotsController.GenerateRobots("bingbot");
+                foreach (RobotsInfo objinfo in lstbingbot)
+                {
+                    objStreamWriter.WriteLine("Disallow: " + objinfo.PagePath + "/" + "\n");
+                }
+                objStreamWriter.Close();
             }
-            objStreamWriter.WriteLine("User-agent: Slurp\n");
-            List<RobotsInfo> lstSlurp = RobotsController.GenerateRobots("Slurp");
-            foreach (RobotsInfo objinfo in lstSlurp)
+            else
             {
-                objStreamWriter.WriteLine("Disallow: " + objinfo.PagePath + "/" + "\n");
+
+                System.IO.StreamWriter objStreamWriter =
+                      new System.IO.StreamWriter(HttpRuntime.AppDomainAppPath + "\\robots." + GetPortalID + ".txt");
+                objStreamWriter.WriteLine("User-agent: Googlebot\n");
+                List<RobotsInfo> lstGooglebot = RobotsController.GenerateRobots("Googlebot");
+                foreach (RobotsInfo objinfo in lstGooglebot)
+                {
+                    objStreamWriter.WriteLine("Disallow: " + objinfo.PagePath + "/" + "\n");
+                }
+                objStreamWriter.WriteLine("User-agent: Slurp\n");
+                List<RobotsInfo> lstSlurp = RobotsController.GenerateRobots("Slurp");
+                foreach (RobotsInfo objinfo in lstSlurp)
+                {
+                    objStreamWriter.WriteLine("Disallow: " + objinfo.PagePath + "/" + "\n");
+                }
+                objStreamWriter.WriteLine("User-agent: msnbot\n");
+                List<RobotsInfo> lstmsnbot = RobotsController.GenerateRobots("msnbot");
+                foreach (RobotsInfo objinfo in lstmsnbot)
+                {
+                    objStreamWriter.WriteLine("Disallow: " + objinfo.PagePath + "/" + "\n");
+                }
+                objStreamWriter.WriteLine("User-agent: bingbot\n");
+                List<RobotsInfo> lstbingbot = RobotsController.GenerateRobots("bingbot");
+                foreach (RobotsInfo objinfo in lstbingbot)
+                {
+                    objStreamWriter.WriteLine("Disallow: " + objinfo.PagePath + "/" + "\n");
+                }
+                objStreamWriter.Close();
             }
-            objStreamWriter.WriteLine("User-agent: msnbot\n");
-            List<RobotsInfo> lstmsnbot = RobotsController.GenerateRobots("msnbot");
-            foreach (RobotsInfo objinfo in lstmsnbot)
-            {
-                objStreamWriter.WriteLine("Disallow: " + objinfo.PagePath + "/" + "\n");
-            }
-            objStreamWriter.WriteLine("User-agent: bingbot\n");
-            List<RobotsInfo> lstbingbot = RobotsController.GenerateRobots("bingbot");
-            foreach (RobotsInfo objinfo in lstbingbot)
-            {
-                objStreamWriter.WriteLine("Disallow: " + objinfo.PagePath + "/" + "\n");
-            }
-            objStreamWriter.Close();
         }
         catch (Exception)
         {
-            
+
             throw;
         }
 

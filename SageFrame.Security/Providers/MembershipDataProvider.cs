@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "references"
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -37,6 +22,7 @@ using SageFrame.Security.Entities;
 using SageFrame.Security.Helpers;
 using SageFrame.Web.Utilities;
 using SageFrame.Security.Enums;
+#endregion
 
 namespace SageFrame.Security.Providers
 {
@@ -67,16 +53,18 @@ namespace SageFrame.Security.Providers
                 ParamCollInput.Add(new KeyValuePair<string, object>("@AddedOn", obj.AddedOn));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@AddedBy", obj.AddedBy));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@RoleNames", obj.RoleNames));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@StoreID", obj.StoreID)); 
 
                 List<KeyValuePair<string, object>> ParamCollOutput = new List<KeyValuePair<string, object>>();
                 ParamCollOutput.Add(new KeyValuePair<string, object>("@UserId", obj.UserID));
                 ParamCollOutput.Add(new KeyValuePair<string, object>("@ErrorCode", 0));
+                ParamCollOutput.Add(new KeyValuePair<string, object>("@CustomerID", obj.CustomerID));             
 
                 SageFrameSQLHelper sagesql = new SageFrameSQLHelper();
 
                 List<KeyValuePair<int, string>> OutputValColl = new List<KeyValuePair<int, string>>();
                 OutputValColl = sagesql.ExecuteNonQueryWithMultipleOutput(sp, ParamCollInput, ParamCollOutput);
-
+                int CustomerID = int.Parse(OutputValColl[2].Value);
                 int ErrorCode = int.Parse(OutputValColl[1].Value);
                 Guid UserID = new Guid(OutputValColl[0].Value.ToString());
 
@@ -101,6 +89,66 @@ namespace SageFrame.Security.Providers
 
 
         }
+
+        public static bool RegisterPortalUser(UserInfo info, out UserCreationStatus status, out int customerId, UserCreationMode register)
+        {
+            string sp = "[dbo].[usp_sf_CreateUser]";
+            try
+            {
+                List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
+                ParamCollInput.Add(new KeyValuePair<string, object>("@ApplicationName", info.ApplicationName));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", info.UserName));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@FirstName", info.FirstName));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@LastName", info.LastName));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@Password", info.Password));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@PasswordSalt", info.PasswordSalt));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@Email", info.Email));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@PasswordQuestion", info.SecurityQuestion));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@PasswordAnswer", info.SecurityAnswer));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@IsApproved", info.IsApproved));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@CurrentTimeUtc", info.CurrentTimeUtc));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@CreateDate", info.CreatedDate));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UniqueEmail", info.UniqueEmail));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@PasswordFormat", info.PasswordFormat));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", info.PortalID));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@AddedOn", info.AddedOn));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@AddedBy", info.AddedBy));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@RoleNames", info.RoleNames));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@StoreID", info.StoreID));
+
+                List<KeyValuePair<string, object>> ParamCollOutput = new List<KeyValuePair<string, object>>();
+                ParamCollOutput.Add(new KeyValuePair<string, object>("@UserId", info.UserID));
+                ParamCollOutput.Add(new KeyValuePair<string, object>("@ErrorCode", 0));
+                ParamCollOutput.Add(new KeyValuePair<string, object>("@CustomerID", info.CustomerID));
+
+                SageFrameSQLHelper sagesql = new SageFrameSQLHelper();
+
+                List<KeyValuePair<int, string>> OutputValColl = new List<KeyValuePair<int, string>>();
+                OutputValColl = sagesql.ExecuteNonQueryWithMultipleOutput(sp, ParamCollInput, ParamCollOutput);
+                customerId = int.Parse(OutputValColl[2].Value);
+                int ErrorCode = int.Parse(OutputValColl[1].Value);
+                Guid UserID = new Guid(OutputValColl[0].Value.ToString());
+
+                switch (ErrorCode)
+                {
+                    case 3:
+                        status = UserCreationStatus.DUPLICATE_EMAIL;
+                        break;
+                    case 6:
+                        status = UserCreationStatus.DUPLICATE_USER;
+                        break;
+                    default:
+                        status = UserCreationStatus.SUCCESS;
+                        break;
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public static bool UpdateUser(UserInfo obj, out UserUpdateStatus status)
         {
             string sp = "[dbo].[usp_sf_UsersUpdate]";
@@ -116,6 +164,7 @@ namespace SageFrame.Security.Providers
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", obj.PortalID));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@IsApproved", obj.IsApproved));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@UpdatedBy", obj.UpdatedBy));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@StoreID", obj.StoreID));
 
                 List<KeyValuePair<string, object>> ParamCollOutput = new List<KeyValuePair<string, object>>();
                 ParamCollOutput.Add(new KeyValuePair<string, object>("@ErrorCode", 0));
@@ -142,8 +191,6 @@ namespace SageFrame.Security.Providers
             {
                 throw;
             }
-
-
         }
         public static List<UserInfo> GetPortalUsers(int PortalID)
         {
@@ -154,9 +201,10 @@ namespace SageFrame.Security.Providers
             ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
 
             List<UserInfo> lstUsers = new List<UserInfo>();
+            SqlDataReader reader=null;
             try
             {
-                SqlDataReader reader;
+
                 reader = sagesql.ExecuteAsDataReader(sp, ParamCollInput);
                 while (reader.Read())
                 {
@@ -175,6 +223,13 @@ namespace SageFrame.Security.Providers
 
                 throw (ex);
             }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
 
         }
         public static SageFrameUserCollection GetAllUsers()
@@ -184,9 +239,10 @@ namespace SageFrame.Security.Providers
 
             SageFrameUserCollection userColl = new SageFrameUserCollection();
             List<UserInfo> lstUsers = new List<UserInfo>();
+            SqlDataReader reader = null;
             try
             {
-                SqlDataReader reader;
+
                 reader = sagesql.ExecuteAsDataReader(sp);
                 while (reader.Read())
                 {
@@ -208,6 +264,13 @@ namespace SageFrame.Security.Providers
 
                 throw (ex);
             }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
 
         }
         public static SageFrameUserCollection SearchUsers(string RoleID, string SearchText, int PortalID, string UserName)
@@ -222,10 +285,11 @@ namespace SageFrame.Security.Providers
             ParamCollInput.Add(new KeyValuePair<string, object>("@RoleID", RoleID));
             ParamCollInput.Add(new KeyValuePair<string, object>("@SearchText", SearchText));
             ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-            ParamCollInput.Add(new KeyValuePair<string, object>("@Username", UserName));
+            ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
+            SqlDataReader reader = null;
             try
             {
-                SqlDataReader reader;
+
                 reader = sagesql.ExecuteAsDataReader(sp, ParamCollInput);
                 while (reader.Read())
                 {
@@ -249,6 +313,13 @@ namespace SageFrame.Security.Providers
 
                 throw (ex);
             }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
 
         }
         public static bool DeleteUser(UserInfo user)
@@ -259,10 +330,10 @@ namespace SageFrame.Security.Providers
             {
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
                 ParamCollInput.Add(new KeyValuePair<string, object>("@ApplicationName", user.ApplicationName));
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", user.UserName));
-                ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", user.PortalID));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", user.UserName));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", user.PortalID));                
+                ParamCollInput.Add(new KeyValuePair<string, object>("@StoreID", user.StoreID));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@DeletedBy", user.AddedBy));
-
                 sagesql.ExecuteNonQuery(sp, ParamCollInput);
 
                 return true;
@@ -283,13 +354,15 @@ namespace SageFrame.Security.Providers
             ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
 
             List<UserInfo> lstUser = new List<UserInfo>();
+            SqlDataReader reader = null;
             try
             {
-                SqlDataReader reader;
+
                 reader = sagesql.ExecuteAsDataReader(sp, ParamCollInput);
                 while (reader.Read())
                 {
                     UserInfo obj = new UserInfo();
+                    obj.UserID = new Guid(reader["userid"].ToString());
                     obj.UserName = reader["Username"].ToString();
                     obj.Password = reader["Password"].ToString();
                     obj.PasswordSalt = reader["PasswordSalt"].ToString();
@@ -302,7 +375,6 @@ namespace SageFrame.Security.Providers
                     obj.LastActivityDate = DateTime.Parse(reader["LastActivityDate"].ToString());
                     obj.LastLoginDate = DateTime.Parse(reader["LastLoginDate"].ToString());
                     obj.IsApproved = bool.Parse(reader["IsApproved"].ToString());
-                    obj.UserID = new Guid(reader["UserId"].ToString());
                     obj.UserExists = true;
                     lstUser.Add(obj);
                 }
@@ -316,8 +388,68 @@ namespace SageFrame.Security.Providers
 
                 throw (ex);
             }
-
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
         }
+
+        #region "For Mobile"
+        public static UserInfoMob GetUserDetailsMob(string UserName, int PortalID)
+        {
+            string sp = "[dbo].[usp_GetUserDetails]";
+            SQLHandler sagesql = new SQLHandler();
+
+            List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
+            ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
+            ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
+
+            List<UserInfoMob> lstUser = new List<UserInfoMob>();
+            SqlDataReader reader = null;
+            try
+            {
+
+                reader = sagesql.ExecuteAsDataReader(sp, ParamCollInput);
+                while (reader.Read())
+                {
+                    UserInfoMob obj = new UserInfoMob();
+                    // obj.UserID = new Guid(reader["userid"].ToString());
+                    obj.UserName = reader["Username"].ToString();
+                    //obj.Password = reader["Password"].ToString();
+                    //obj.PasswordSalt = reader["PasswordSalt"].ToString();
+                    //obj.PasswordFormat = int.Parse(reader["PasswordFormat"].ToString());
+                    obj.FirstName = reader["FirstName"].ToString();
+                    obj.LastName = reader["LastName"].ToString();
+                    obj.Email = reader["Email"].ToString();
+                    // obj.LastPasswordChangeDate = DateTime.Parse(reader["LastPasswordChangedDate"].ToString());
+                    //obj.LastActivityDate = DateTime.Parse(reader["LastActivityDate"].ToString());
+                    //obj.LastLoginDate = DateTime.Parse(reader["LastLoginDate"].ToString());
+                    //obj.IsApproved = bool.Parse(reader["IsApproved"].ToString());
+                    obj.UserExists = true;
+                    lstUser.Add(obj);
+                }
+                reader.Close();
+                UserInfoMob userObj = lstUser.Count > 0 ? lstUser[0] : new UserInfoMob(false);
+                return userObj;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw (ex);
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
+        }
+        #endregion 
 
         public static string ActivateUser(string ActivationCode, int PortalID)
         {
@@ -439,12 +571,13 @@ namespace SageFrame.Security.Providers
             List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
             ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
             ParamCollInput.Add(new KeyValuePair<string, object>("@IsAll", IsAll));
-            ParamCollInput.Add(new KeyValuePair<string, object>("@Username", UserName));
+            ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
 
             List<RoleInfo> lstPortalRoles = new List<RoleInfo>();
+            SqlDataReader reader = null;
             try
             {
-                SqlDataReader reader;
+
                 reader = sagesql.ExecuteAsDataReader(sp, ParamCollInput);
                 while (reader.Read())
                 {
@@ -461,6 +594,13 @@ namespace SageFrame.Security.Providers
             {
 
                 throw (ex);
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
             }
 
         }
@@ -491,9 +631,10 @@ namespace SageFrame.Security.Providers
             List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
             ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
             ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
+            SqlDataReader reader = null;
             try
             {
-                SqlDataReader reader;
+                
                 reader = sagesql.ExecuteAsDataReader(sp, ParamCollInput); ;
                 List<string> lstRoles = new List<string>();
                 while (reader.Read())
@@ -502,12 +643,19 @@ namespace SageFrame.Security.Providers
 
                 }
                 reader.Close();
-                return (String.Join(",",lstRoles.ToArray()));
+                return (String.Join(",", lstRoles.ToArray()));
             }
             catch (Exception ex)
             {
 
                 throw (ex);
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
             }
         }
         #endregion
@@ -518,9 +666,10 @@ namespace SageFrame.Security.Providers
             string sp = "usp_GetMembershipSettings";
             SQLHandler sagesql = new SQLHandler();
             List<SettingInfo> lstSetting = new List<SettingInfo>();
+            SqlDataReader reader = null;
             try
             {
-                SqlDataReader reader = sagesql.ExecuteAsDataReader(sp);
+                reader = sagesql.ExecuteAsDataReader(sp);
                 while (reader.Read())
                 {
                     SettingInfo obj = new SettingInfo();
@@ -536,6 +685,14 @@ namespace SageFrame.Security.Providers
             {
 
                 throw (ex);
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+
             }
 
         }
@@ -666,25 +823,32 @@ namespace SageFrame.Security.Providers
         }
 #endregion
 
+        #region OpenID
+        public static UserInfo GerUserByEmail(string email, int portalID)
+        {
+            string sp = "[dbo].[usp_GetUserByEmail]";
+            SQLHandler sagesql = new SQLHandler();
+            try
+            {
+                List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
+                ParamCollInput.Add(new KeyValuePair<string, object>("@email", email));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@portalID", portalID));
+
+                UserInfo objUser = sagesql.ExecuteAsObject<UserInfo>(sp, ParamCollInput);
+                return objUser;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
 
 
+        #endregion
 
 
-
-
-
-
-
-
-
-
-
-
-   
-
-       
-
-        
     }
 }
 

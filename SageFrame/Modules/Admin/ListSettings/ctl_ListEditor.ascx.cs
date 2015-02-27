@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,23 +16,20 @@ using System.Web.UI.WebControls;
 using SageFrame.Web;
 using SageFrame.Web.Utilities;
 using SageFrame.Core.ListManagement;
+#endregion
 
 namespace SageFrame.Modules.Admin.ControlPanel
 {
     public partial class ctl_ListEditor : BaseAdministrationUserControl
-    {       
-
-
+    {
         string _listName = string.Empty;
-
         protected void Page_Load(object sender, EventArgs e)
         {
             try
             {
-
                 if (!Page.IsPostBack)
                 {
-                    AddImageUrls();
+                    
                     GetParentList();
                     PopulateTreeRootLevel();
                     BindGridOnPageLoad();
@@ -57,7 +39,7 @@ namespace SageFrame.Modules.Admin.ControlPanel
             {
                 ProcessException(ex);
             }
-
+            trEnableSort.Visible = false;
         }
 
         private void BindGridOnPageLoad()
@@ -65,17 +47,13 @@ namespace SageFrame.Modules.Admin.ControlPanel
             try
             {
                 bool Issystem = true;
-
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", -1));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", GetCurrentCultureName));
-
-                SQLHandler sqlH = new SQLHandler();
-                List<ListInfo> defaultList = sqlH.ExecuteAsList<ListInfo>("dbo.sp_GetDefaultList", ParaMeterCollection);                
+                string CurrentCultureName = GetCurrentCultureName;
+                ListManagementController objController = new ListManagementController();
+                List<ListInfo> defaultList = objController.GetDefaultList(CurrentCultureName, -1);
                 foreach (ListInfo topList in defaultList)
                 {
                     BindGrid(topList.ListName, topList.ParentKey);
-                    List<ListInfo> listSystemCheck = sqlH.ExecuteAsList<ListInfo>("dbo.sp_GetListsByPortalID", ParaMeterCollection);
+                    List<ListInfo> listSystemCheck = objController.GetListByPortalID(CurrentCultureName, -1);
                     foreach (ListInfo system in listSystemCheck)
                     {
                         if (system.ListName == topList.ListName)
@@ -102,7 +80,7 @@ namespace SageFrame.Modules.Admin.ControlPanel
                     lblEntry.Text = ViewState["LIST"].ToString() + " " + GetSageMessage("ListSettings", "Entries");
                 }
                 ViewMode();
-                pnlListAll.Visible = true;                
+                pnlListAll.Visible = true;
             }
             catch (Exception ex)
             {
@@ -110,27 +88,12 @@ namespace SageFrame.Modules.Admin.ControlPanel
             }
         }
 
-        private void AddImageUrls()
-        {
-            imgAddNewList.ImageUrl = GetTemplateImageUrl("imgadd.png", true);
-            imgAddList1.ImageUrl = GetTemplateImageUrl("imgadd.png", true);
-            imgDeleteList.ImageUrl = GetTemplateImageUrl("imgdelete.png", true);
-            imgCancelAll.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-            imgSave.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
-            imgCancel.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-        }
-
         private void PopulateTreeRootLevel()
         {
             try
-            {               
-
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", -1));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", GetCurrentCultureName));
-
-                SQLHandler sqlH = new SQLHandler();
-                List<ListInfo> nodeList = sqlH.ExecuteAsList<ListInfo>("dbo.sp_GetListsByPortalID", ParaMeterCollection);
+            {
+                ListManagementController objController = new ListManagementController();
+                List<ListInfo> nodeList = objController.GetListByPortalID(GetCurrentCultureName, -1);
 
                 int count = 1;
                 foreach (ListInfo node in nodeList)
@@ -160,12 +123,8 @@ namespace SageFrame.Modules.Admin.ControlPanel
         {
             try
             {
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", -1));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", GetCurrentCultureName));
-
-                SQLHandler sqlH = new SQLHandler();
-                List<ListInfo> nodeList = sqlH.ExecuteAsList<ListInfo>("dbo.sp_GetListsByPortalID", ParaMeterCollection);
+                ListManagementController objController = new ListManagementController();
+                List<ListInfo> nodeList = objController.GetListByPortalID(GetCurrentCultureName, -1);
 
                 int count = 1;
                 foreach (ListInfo resultNode in nodeList)
@@ -234,14 +193,9 @@ namespace SageFrame.Modules.Admin.ControlPanel
                 {
                     lblParent.Visible = false;
                     lblParentText.Visible = false;
-                }                
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", -1));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", GetCurrentCultureName));
-
-                SQLHandler sqlH = new SQLHandler();
-                List<ListInfo> listSystemCheck = sqlH.ExecuteAsList<ListInfo>("dbo.sp_GetListsByPortalID", ParaMeterCollection);
-
+                }
+                ListManagementController objController = new ListManagementController();
+                List<ListInfo> listSystemCheck = objController.GetListByPortalID(GetCurrentCultureName, -1);
 
                 bool Issystem = true;
                 foreach (ListInfo system in listSystemCheck)
@@ -298,14 +252,8 @@ namespace SageFrame.Modules.Admin.ControlPanel
             try
             {
                 ddlParentList.Items.Clear();
-                //var LINQ = dbList.sp_GetListsByPortalID(-1,GetCurrentCultureName); //GetPortalID;
-
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", -1));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", GetCurrentCultureName));
-
-                SQLHandler sqlH = new SQLHandler();
-                List<ListInfo> objList = sqlH.ExecuteAsList<ListInfo>("dbo.sp_GetListsByPortalID", ParaMeterCollection);
+                ListManagementController objController = new ListManagementController();
+                List<ListInfo> objList = objController.GetListByPortalID(GetCurrentCultureName, -1);
 
                 if (objList != null)
                 {
@@ -353,16 +301,8 @@ namespace SageFrame.Modules.Admin.ControlPanel
                     string[] parentId = SplitString(ddlParentList.SelectedValue.ToString());
 
                     ddlParentEntry.Items.Clear();
-                    //var listParentEntry = dbList.sp_GetListEntriesByNameParentKeyAndPortalID(listName, parentId[0], -1,GetCurrentCultureName); //GetPortalID;
-
-                    List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                    ParaMeterCollection.Add(new KeyValuePair<string, object>("@ListName", listName));
-                    ParaMeterCollection.Add(new KeyValuePair<string, object>("@ParentKey", parentId[0]));
-                    ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", -1));
-                    ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", GetCurrentCultureName));
-
-                    SQLHandler sqlH = new SQLHandler();
-                    List<ListInfo> listParentEntry = sqlH.ExecuteAsList<ListInfo>("dbo.sp_GetListEntriesByNameParentKeyAndPortalID", ParaMeterCollection);
+                    ListManagementController objController = new ListManagementController();
+                    List<ListInfo> listParentEntry = objController.GetListInfo(listName, parentId[0], -1, GetCurrentCultureName);
 
                     if (listParentEntry != null)
                     {
@@ -388,6 +328,7 @@ namespace SageFrame.Modules.Admin.ControlPanel
                 txtCurrencyCode.Visible = false;
                 trDisplayLocale.Visible = false;
                 trCurrencyCode.Visible = false;
+                trEnableSort.Visible = false;
             }
             catch (Exception ex)
             {
@@ -401,78 +342,113 @@ namespace SageFrame.Modules.Admin.ControlPanel
         {
             try
             {
+                // string listName = txtListName.Text;
                 string value = txtEntryValue.Text;
                 string text = txtEntryText.Text;
                 string currencyCode = txtCurrencyCode.Text.Trim();
                 string displayLocale = txtDisplayLocale.Text.Trim();
                 string createdBy = GetUsername;
                 bool isActive = false;
-                if (chkActive.Checked == true)
-                {
-                    isActive = true;
-                }
 
-                if (ViewState["NEWLIST"] != null)
+                if (!CheckUniqueness(txtListName.Text))
                 {
-                    ViewState["NEWLIST"] = null;
-                    AddNewList();
-                }
-                else if (ViewState["LISTNAME"] != null && ViewState["ADDSUBLIST"] != null)
-                {
-                    ViewState["ADDSUBLIST"] = null;
-                    string listName = ViewState["LISTNAME"].ToString();
-                    int parentId = 0;
-                    int level = 0;
-                    int definitionId = -1;
-                    int portalId = -1;
-                    bool displayOrder = true;
-                    if (ViewState["PARENTKEY"] != null)
+
+                    if (chkActive.Checked == true)
                     {
-                        List<ListManagementInfo> objlist = ListManagementController.GetEntriesByNameParentKeyAndPortalID(listName, ViewState["PARENTKEY"].ToString(), -1, GetCurrentCultureName);
-                        foreach (ListManagementInfo listDetail in objlist)
-                        {
-                            parentId = listDetail.ParentID;
-                            level = listDetail.Level;
-                            definitionId = listDetail.DefinitionID;
-                            portalId = listDetail.PortalID;
+                        isActive = true;
+                    }
 
+                    if (ViewState["NEWLIST"] != null)
+                    {
+                        ViewState["NEWLIST"] = null;
+                        AddNewList();
+                    }
+                    else if (ViewState["LISTNAME"] != null && ViewState["ADDSUBLIST"] != null)
+                    {
+                        ViewState["ADDSUBLIST"] = null;
+                        string listName = ViewState["LISTNAME"].ToString();
+                        int parentId = 0;
+                        int level = 0;
+                        int definitionId = -1;
+                        int portalId = -1;
+                        bool displayOrder = true;
+                        if (ViewState["PARENTKEY"] != null)
+                        {
+                            ListManagementController objController = new ListManagementController();
+                            List<ListManagementInfo> objlist = objController.GetEntriesByNameParentKeyAndPortalID(listName, ViewState["PARENTKEY"].ToString(), -1, GetCurrentCultureName);
+                            foreach (ListManagementInfo listDetail in objlist)
+                            {
+                                parentId = listDetail.ParentID;
+                                level = listDetail.Level;
+                                definitionId = listDetail.DefinitionID;
+                                portalId = listDetail.PortalID;
+
+                            }
+                        }
+                        try
+                        {
+                            ListManagementController objController = new ListManagementController();
+                            objController.AddNewList(new ListInfo(listName, value, text, parentId, level, currencyCode, displayLocale, displayOrder, definitionId, "", portalId, isActive, createdBy, GetCurrentCultureName));
+                            ViewMode();
+                            BindGrid(ViewState["LISTNAME"].ToString(), ViewState["PARENTKEY"].ToString());
+                        }
+                        catch (Exception ex)
+                        {
+                            ProcessException(ex);
                         }
                     }
-                    try
+                    else if (ViewState["LISTNAME"] != null && ViewState["ENTRYID"] != null)
                     {
 
-                        ListManagementController.AddNewList(new ListInfo(listName, value, text, parentId, level, currencyCode, displayLocale, displayOrder, definitionId, "", portalId, isActive, createdBy, GetCurrentCultureName));
-                        ViewMode();
-                        BindGrid(ViewState["LISTNAME"].ToString(), ViewState["PARENTKEY"].ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        ProcessException(ex);
+                        int entryId = int.Parse(ViewState["ENTRYID"].ToString());
+                        ViewState["ENTRYID"] = null;
+                        try
+                        {
+                            ListManagementController objController = new ListManagementController();
+                            objController.UpdateListEntry(entryId, value, text, currencyCode, displayLocale, "", isActive, createdBy, GetCurrentCultureName);
+                            ViewMode();
+                            BindGrid(ViewState["LISTNAME"].ToString(), ViewState["PARENTKEY"].ToString());
+                        }
+                        catch (Exception ex)
+                        {
+                            ProcessException(ex);
+                        }
+
                     }
                 }
-                else if (ViewState["LISTNAME"] != null && ViewState["ENTRYID"] != null)
+                else
                 {
-
-                    int entryId = int.Parse(ViewState["ENTRYID"].ToString());
-                    ViewState["ENTRYID"] = null;
-                    try
-                    {
-
-                        ListManagementController.UpdateListEntry(entryId, value, text, currencyCode, displayLocale, "", isActive, createdBy, GetCurrentCultureName);
-                        ViewMode();
-                        BindGrid(ViewState["LISTNAME"].ToString(), ViewState["PARENTKEY"].ToString());
-                    }
-                    catch (Exception ex)
-                    {
-                        ProcessException(ex);
-                    }
-
+                    ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("ListSettings", "ListAlreadyExists"), "", SageMessageType.Alert);
                 }
             }
             catch (Exception ex)
             {
                 ProcessException(ex);
             }
+        }
+        protected bool CheckUniqueness(string listName)
+        {
+            bool isExist = false;
+            int parentId;
+            if (ddlParentList.SelectedIndex != 0)
+            {
+                parentId = int.Parse(ddlParentEntry.SelectedValue.ToString());
+            }
+            else
+            {
+                parentId = 0;
+            }
+            ListManagementController lmCont = new ListManagementController();
+            List<ListInfo> lstInfo = lmCont.GetListInfo(listName, GetCurrentCulture(),parentId);
+            if (lstInfo.Count > 0)
+            {
+                isExist = true;
+            }
+            else
+            {
+                isExist = false;
+            }
+            return isExist;
         }
 
         private void AddNewList()
@@ -508,7 +484,8 @@ namespace SageFrame.Modules.Admin.ControlPanel
                     string[] selectedListNames = SplitString(ddlParentEntry.SelectedItem.Text);
                     selectedListName = selectedListNames[0];
 
-                    List<ListManagementInfo> objList = ListManagementController.GetListEntriesByNameValueAndEntryID(selectedListName, "", int.Parse(ddlParentEntry.SelectedValue.ToString()), GetCurrentCultureName);
+                    ListManagementController objController = new ListManagementController();
+                    List<ListManagementInfo> objList = objController.GetListEntriesByNameValueAndEntryID(selectedListName, "", int.Parse(ddlParentEntry.SelectedValue.ToString()), GetCurrentCultureName);
                     foreach (ListManagementInfo parentLevel in objList)
                     {
                         level = int.Parse(parentLevel.Level.ToString()) + 1;
@@ -521,12 +498,12 @@ namespace SageFrame.Modules.Admin.ControlPanel
             }
             try
             {
-                int ListID = ListManagementController.AddNewList(new ListInfo(listName, value, text, parentId, level, currencyCode, displayLocale, displayOrder, definitionId, "", portalId, isActive, createdBy, GetCurrentCultureName));
+                ListManagementController objController = new ListManagementController();
+                int ListID = objController.AddNewList(new ListInfo(listName, value, text, parentId, level, currencyCode, displayLocale, displayOrder, definitionId, "", portalId, isActive, createdBy, GetCurrentCultureName));
 
                 if (ListID == 0)
                 {
                     ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("ListSettings", "ListAlreadyExists"), "", SageMessageType.Alert);
-
                 }
                 else
                 {
@@ -535,7 +512,6 @@ namespace SageFrame.Modules.Admin.ControlPanel
                     ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("ListSettings", "ListIsAddedSuccessfully"), "", SageMessageType.Success);
                     BindGridOnPageLoad();
                 }
-
 
             }
             catch (Exception ex)
@@ -567,9 +543,8 @@ namespace SageFrame.Modules.Admin.ControlPanel
             {
                 if (ViewState["LISTNAME"] != null)
                 {
-                    //ListManagementDataContext dbList = new ListManagementDataContext(SystemSetting.SageFrameConnectionString);
-                    //var listByName = dbList.sp_GetListEntriesByNameParentKeyAndPortalID(ViewState["LISTNAME"].ToString(), ViewState["PARENTKEY"].ToString(), -1, GetCurrentCultureName);//GetPortalID;
-                    List<ListManagementInfo> objList = ListManagementController.GetListEntriesByNameParentKeyAndPortalID(ViewState["LISTNAME"].ToString(), ViewState["PARENTKEY"].ToString(), -1, GetCurrentCultureName);//GetPortalID;
+                    ListManagementController objController = new ListManagementController();
+                    List<ListManagementInfo> objList = objController.GetListCopyEntriesByNameParentKeyAndPortalID(ViewState["LISTNAME"].ToString(), ViewState["PARENTKEY"].ToString(), -1, GetCurrentCultureName);//GetPortalID;
                     foreach (ListManagementInfo listEntry in objList)
                     {
                         GetListByEntryId(listEntry.EntryID);
@@ -578,11 +553,8 @@ namespace SageFrame.Modules.Admin.ControlPanel
                         pnlListAll.Visible = false;
                         BindGridOnPageLoad();
                         ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("ListSettings", "ListIsDeletedSuccessfully"), "", SageMessageType.Success);
-
-
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -592,6 +564,7 @@ namespace SageFrame.Modules.Admin.ControlPanel
 
         private void UpdateDeleteLabel()
         {
+          
             string listName = tvList.SelectedNode.Text;
             string deleteText = lblDeleteList.Text;
             string[] texts = deleteText.Split(' ');
@@ -602,16 +575,8 @@ namespace SageFrame.Modules.Admin.ControlPanel
         {
             try
             {
-
-                //var listByEntryId = dbList.sp_GetListEntrybyParentId(entryId,GetCurrentCultureName);
-
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@EntryID", entryId));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", GetCurrentCultureName));
-
-                SQLHandler sqlH = new SQLHandler();
-                List<ListManagementInfo> listByEntryId = sqlH.ExecuteAsList<ListManagementInfo>("dbo.sp_GetListEntrybyParentId", ParaMeterCollection);
-
+                ListManagementController objController = new ListManagementController();
+                List<ListManagementInfo> listByEntryId = objController.GetListEntryByParentID(entryId, GetCurrentCultureName);
                 foreach (ListManagementInfo listbyParent in listByEntryId)
                 {
                     GetListByEntryId(listbyParent.EntryID);
@@ -627,8 +592,8 @@ namespace SageFrame.Modules.Admin.ControlPanel
         {
             try
             {
-                // ListManagementDataContext dbList = new ListManagementDataContext(SystemSetting.SageFrameConnectionString);
-                ListManagementController.DeleteListEntry(entryId, true, GetCurrentCultureName);
+                ListManagementController objController = new ListManagementController();
+                bool isExist = objController.DeleteListEntry(entryId, true, GetCurrentCultureName);
             }
             catch (Exception ex)
             {
@@ -648,7 +613,24 @@ namespace SageFrame.Modules.Admin.ControlPanel
                 {
                     try
                     {
-                        ListManagementController.DeleteListEntry(entryId, true, GetCurrentCultureName);
+                        ListManagementController objController = new ListManagementController();
+                        bool isExist = objController.DeleteListEntry(entryId, true, GetCurrentCultureName);
+                        BindTreeView();
+                        if (isExist)
+                        {
+                            if (ViewState["LISTNAME"] != null)
+                            {
+                                string listName = ViewState["LISTNAME"].ToString();
+                                string parentKey = ViewState["PARENTKEY"].ToString();
+                                BindGrid(listName, parentKey);
+
+                            }
+                        }
+                        else
+                        {
+                            BindGridOnPageLoad();
+                        }
+
                         ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("ListSettings", "ListIsDeletedSuccessfully"), "", SageMessageType.Success);
                     }
                     catch (Exception ex)
@@ -658,12 +640,10 @@ namespace SageFrame.Modules.Admin.ControlPanel
                 }
                 else if (e.CommandName == "SortUp")
                 {
-
-
-
                     try
                     {
-                        ListManagementController.SortList(entryId, true, GetCurrentCultureName);
+                        ListManagementController objController = new ListManagementController();
+                        objController.SortList(entryId, true, GetCurrentCultureName);
                         ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("ListSettings", "TheListIsShiftedUpSuccessfully"), "", SageMessageType.Success);
                     }
                     catch (Exception ex)
@@ -676,7 +656,8 @@ namespace SageFrame.Modules.Admin.ControlPanel
                 {
                     try
                     {
-                        ListManagementController.SortList(entryId, false, GetCurrentCultureName);
+                        ListManagementController objController = new ListManagementController();
+                        objController.SortList(entryId, false, GetCurrentCultureName);
                         ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("ListSettings", "TheListIsShiftedDownSuccessfully"), "", SageMessageType.Success);
                     }
                     catch (Exception ex)
@@ -690,7 +671,8 @@ namespace SageFrame.Modules.Admin.ControlPanel
                     {
                         HideControls();
                         ViewState["ENTRYID"] = entryId;
-                        ListManagementInfo editObj = ListManagementController.GetListEntryDetails(" ", " ", entryId, GetCurrentCultureName);
+                        ListManagementController objController = new ListManagementController();
+                        ListManagementInfo editObj = objController.GetListEntryDetails(" ", " ", entryId, GetCurrentCultureName);
                         txtEntryText.Text = editObj.Text;
                         txtEntryValue.Text = editObj.Value;
                         txtCurrencyCode.Text = editObj.CurrencyCode;
@@ -718,11 +700,13 @@ namespace SageFrame.Modules.Admin.ControlPanel
         {
             pnlAddList.Visible = true;
             pnlListAll.Visible = false;
+            trEnableSort.Visible = false;
         }
         private void AddEditMode()
         {
             pnlAddList.Visible = true;
             pnlViewList.Visible = false;
+            trEnableSort.Visible = false;
 
         }
 
@@ -730,6 +714,7 @@ namespace SageFrame.Modules.Admin.ControlPanel
         {
             pnlAddList.Visible = false;
             pnlViewList.Visible = true;
+            trEnableSort.Visible = false;
 
         }
         private void HideControls()
@@ -769,7 +754,7 @@ namespace SageFrame.Modules.Admin.ControlPanel
                     lblDisplayLocale.Visible = true;
                     txtDisplayLocale.Visible = true;
                     txtCurrencyCode.Visible = true;
-                  
+
 
                     tdDisplayLocale.Visible = true;
                     tdCurrencyCode.Visible = true;
@@ -782,6 +767,7 @@ namespace SageFrame.Modules.Admin.ControlPanel
 
                 }
             }
+            trEnableSort.Visible = false;
         }
         private void ShowControls()
         {
@@ -811,6 +797,7 @@ namespace SageFrame.Modules.Admin.ControlPanel
             trListName.Visible = true;
             trParentEntry.Visible = true;
             trParentList.Visible = true;
+            trEnableSort.Visible = false;
         }
 
         protected void gdvSubList_RowDeleting(object sender, GridViewDeleteEventArgs e)
@@ -825,7 +812,7 @@ namespace SageFrame.Modules.Admin.ControlPanel
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                ImageButton btnDelete = (ImageButton)e.Row.FindControl("imgDelete");
+                LinkButton btnDelete = (LinkButton)e.Row.FindControl("imgDelete");
                 btnDelete.Attributes.Add("onclick", "javascript:return confirm('" + GetSageMessage("ListSettings", "WantToDelete") + "')");
 
             }
@@ -835,18 +822,12 @@ namespace SageFrame.Modules.Admin.ControlPanel
         private void BindGrid(string listName, string parentKey)
         {
             try
-            {                
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@ListName", listName));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@ParentKey", parentKey));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", -1));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", GetCurrentCultureName));
-
-                SQLHandler sqlH = new SQLHandler();
-                DataSet ds = sqlH.ExecuteAsDataSet("dbo.sp_GetListEntriesByNameParentKeyAndPortalID", ParaMeterCollection);
+            {
+                ListManagementController objController = new ListManagementController();
+                DataSet ds = objController.GetListInfoInDataSet(listName, parentKey, -1, GetCurrentCultureName);
                 if (ds != null && ds.Tables != null && ds.Tables.Count > 0)
                 {
-                    DataTable dtList = ds.Tables[0];                    
+                    DataTable dtList = ds.Tables[0];
                     gdvSubList.DataSource = dtList;
                     gdvSubList.DataBind();
                     ViewState["LISTTABLE"] = dtList;
@@ -866,13 +847,11 @@ namespace SageFrame.Modules.Admin.ControlPanel
 
                     }
                 }
-
             }
             catch (Exception ex)
             {
                 ProcessException(ex);
             }
-
         }
 
         private void BindTreeView()
@@ -920,16 +899,15 @@ namespace SageFrame.Modules.Admin.ControlPanel
             txtListName.Text = "";
             chkActive.Checked = false;
             chkShort.Checked = false;
+            trEnableSort.Visible = false;
         }
 
         protected void imgCancelAll_Click(object sender, EventArgs e)
         {
             pnlListAll.Visible = false;
             BindTreeView();
+            trEnableSort.Visible = false;
         }
-
-
-
 
         #region "Pager Region"
 
@@ -965,7 +943,6 @@ namespace SageFrame.Modules.Admin.ControlPanel
                 BindGrid(ViewState["LISTNAME"].ToString(), ViewState["PARENTKEY"].ToString());
             }
         }
-
 
         #endregion
     }

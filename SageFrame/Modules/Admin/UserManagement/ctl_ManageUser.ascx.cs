@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Data;
 using System.Collections.Generic;
@@ -42,24 +27,26 @@ using System.Text.RegularExpressions;
 using SageFrame.Security.Enums;
 using SageFrame.UserProfile;
 using System.IO;
+using SageFrame.Common;
+#endregion
 
 namespace SageFrame.Modules.Admin.UserManagement
 {
-
-
     public partial class ctl_ManageUser : BaseAdministrationUserControl
     {
-
         MembershipController m = new MembershipController();
         RoleController role = new RoleController();
         public int Flag = 0;
+        string falseDate = "10/10/1900";
+        string defaultDate = "1/1/0001";
         protected void Page_Load(object sender, EventArgs e)
         {
-            IncludeJs("UserManagement",false, "/js/jquery.pstrength-min.1.2.js");
-            IncludeJs("UserManagementValidation", "/js/jquery.validate.js");
+            IncludeJs("UserManagement", false, "/js/jquery.pstrength-min.1.2.js");
+            IncludeJsTop("UserManagementValidation", "/js/jquery.validate.js");
             imgProfileEdit.Visible = false;
             try
             {
+                
                 if (!IsPostBack)
                 {
                     aceSearchText.CompletionSetCount = GetPortalID;
@@ -69,11 +56,9 @@ namespace SageFrame.Modules.Admin.UserManagement
                     pnlSettings.Visible = false;
                     BindRolesInDropDown(ddlSearchRole);
                     AddImageUrls();
-
-
                 }
-                
-
+                int index = rbFilterMode.SelectedIndex;
+                rbFilterMode.Items[index].Attributes.Add("class", "active");
             }
             catch (Exception ex)
             {
@@ -83,21 +68,19 @@ namespace SageFrame.Modules.Admin.UserManagement
 
         private void AddImageUrls()
         {
-            imgBack.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-            imgUserInfoSave.ImageUrl = GetTemplateImageUrl("imgupdate.png", true);
-            imgManageRoleSave.ImageUrl = GetTemplateImageUrl("imgupdate.png", true);
-            imgSearch.ImageUrl = GetTemplateImageUrl("imgpreview.png", true);
-            imgAddUser.ImageUrl = GetTemplateImageUrl("imgadduser.png", true);
-            imbBackinfo.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-            imgBtnDeleteSelected.ImageUrl = GetTemplateImageUrl("imgdelete.png", true);
-            imgBtnSaveChanges.ImageUrl = GetTemplateImageUrl("imgupdate.png", true);
-            imbCreateUser.ImageUrl = GetTemplateImageUrl("btnadduser1.png", true);
-            imgBtnSettings.ImageUrl = GetTemplateImageUrl("settings.png", true);
-            btnSaveSetting.ImageUrl = GetAdminImageUrl("btnsave.png", true);
-            btnCancel.ImageUrl = GetAdminImageUrl("imgcancel.png", true);
-            btnDeleteProfilePic.ImageUrl = GetAdminImageUrl("imgdelete.png", true);
-
-
+            //imgBack.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
+            //imgUserInfoSave.ImageUrl = GetTemplateImageUrl("imgupdate.png", true);
+            //imgManageRoleSave.ImageUrl = GetTemplateImageUrl("imgupdate.png", true);
+            //imgSearch.ImageUrl = GetTemplateImageUrl("imgpreview.png", true);
+            //imgAddUser.ImageUrl = GetTemplateImageUrl("imgadduser.png", true);
+            //imbBackinfo.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
+            //imgBtnDeleteSelected.ImageUrl = GetTemplateImageUrl("imgdelete.png", true);
+            //imgBtnSaveChanges.ImageUrl = GetTemplateImageUrl("imgupdate.png", true);
+            //imbCreateUser.ImageUrl = GetTemplateImageUrl("btnadduser1.png", true);
+            //imgBtnSettings.ImageUrl = GetTemplateImageUrl("settings.png", true);
+            //btnSaveSetting.ImageUrl = GetAdminImageUrl("btnsave.png", true);
+            //btnCancel.ImageUrl = GetAdminImageUrl("imgcancel.png", true);
+           // btnDeleteProfilePic.ImageUrl = GetAdminImageUrl("imgdelete.png", true);
         }
 
         private void PanelVisibility(bool VisibleUserPanel, bool VisibleUserListPanel, bool VisibleManageUserPanel)
@@ -113,7 +96,8 @@ namespace SageFrame.Modules.Admin.UserManagement
             dtRole.Columns.Add("RoleID");
             dtRole.Columns.Add("RoleName");
             dtRole.AcceptChanges();
-            List<RolesManagementInfo> objRoles = RolesManagementController.PortalRoleList(GetPortalID, false, GetUsername);
+            RolesManagementController objController = new RolesManagementController();
+            List<RolesManagementInfo> objRoles = objController.PortalRoleList(GetPortalID, false, GetUsername);
             foreach (RolesManagementInfo role in objRoles)
             {
                 string roleName = role.RoleName;
@@ -144,7 +128,7 @@ namespace SageFrame.Modules.Admin.UserManagement
             lst.DataTextField = "RoleName";
             lst.DataValueField = "RoleName";
             lst.DataBind();
-            lst.Items.RemoveAt(0);
+            //lst.Items.RemoveAt(0);
         }
 
         private void BindRolesInDropDown(DropDownList ddl)
@@ -170,13 +154,17 @@ namespace SageFrame.Modules.Admin.UserManagement
             }
             if (Flag == 1)
             {
-
                 List<UserInfo> lstUsers = m.SearchUsers(RoleID, searchText.Trim(), GetPortalID, GetUsername).UserList;
                 if (txtTo.Text != "" && txtFrom.Text == "")
                 {
+                    DateTime toDate = DateTime.Parse(txtTo.Text);
+                    if (toDate == DateTime.Now.Date)
+                    {
+                        toDate = DateTime.Now;
+                    }
                     List<UserInfo> filteredUsers = lstUsers.FindAll(delegate(UserInfo objUserInfo)
                     {
-                        return objUserInfo.AddedOn <= DateTime.Parse(txtTo.Text);
+                        return objUserInfo.AddedOn <= toDate;
                     });
                     gdvUser.DataSource = (filteredUsers);
                     gdvUser.DataBind();
@@ -196,12 +184,18 @@ namespace SageFrame.Modules.Admin.UserManagement
                 }
                 if (txtFrom.Text != "" && txtTo.Text != "")
                 {
-                    if (DateTime.Parse(txtFrom.Text) < DateTime.Parse(txtTo.Text))
+                    DateTime toDate = DateTime.Parse(txtTo.Text);
+                    DateTime fromDate = DateTime.Parse(txtFrom.Text);
+                    if (fromDate <= toDate)
                     {
+                        if (DateTime.Today.Date == toDate.Date)
+                        {
+                            toDate = DateTime.Now;
+                        }
 
                         List<UserInfo> filteredUsers = lstUsers.FindAll(delegate(UserInfo objUserInfo)
                         {
-                            return objUserInfo.AddedOn >= DateTime.Parse(txtFrom.Text) && objUserInfo.AddedOn <= DateTime.Parse(txtTo.Text);
+                            return objUserInfo.AddedOn >= fromDate && objUserInfo.AddedOn <= toDate;
                         });
                         gdvUser.DataSource = (filteredUsers);
                         gdvUser.DataBind();
@@ -212,7 +206,6 @@ namespace SageFrame.Modules.Admin.UserManagement
                         ShowMessage("", GetSageMessage("UserManagement", "FromIsLowerThanTo"), "", SageMessageType.Error);
                     }
                 }
-
             }
         }
 
@@ -227,7 +220,6 @@ namespace SageFrame.Modules.Admin.UserManagement
                 }
                 else
                 {
-
                     lstNewUsers.Add(user);
                 }
             }
@@ -252,16 +244,12 @@ namespace SageFrame.Modules.Admin.UserManagement
                 PanelVisibility(true, false, false);
                 ClearForm();
                 lstAvailableRoles.SelectedIndex = lstAvailableRoles.Items.IndexOf(lstAvailableRoles.Items.FindByValue("Registered User"));
-
-
             }
             catch (Exception ex)
             {
                 ProcessException(ex);
             }
         }
-
-
 
         private string GetListBoxText(ListBox lstBox)
         {
@@ -275,7 +263,6 @@ namespace SageFrame.Modules.Admin.UserManagement
                 }
                 else
                 {
-
                     selectedRoles += roleName + ",";
                 }
             }
@@ -324,15 +311,12 @@ namespace SageFrame.Modules.Admin.UserManagement
             txtSecurityAnswer.Text = "";
         }
 
-
-
         protected void imbFinish_Click(object sender, EventArgs e)
         {
             try
             {
                 BindUsers(string.Empty);
                 PanelVisibility(false, true, false);
-
             }
             catch (Exception ex)
             {
@@ -353,7 +337,6 @@ namespace SageFrame.Modules.Admin.UserManagement
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -369,14 +352,12 @@ namespace SageFrame.Modules.Admin.UserManagement
                     {
                         rowIndex = int.Parse(e.CommandArgument.ToString()) - (gdvUser.PageSize * gdvUser.PageIndex);
                     }
-
                     hdnEditUsername.Value = gdvUser.DataKeys[rowIndex]["Username"].ToString();
                     hdnEditUserID.Value = gdvUser.DataKeys[rowIndex]["UserId"].ToString();
                     if (e.CommandName == "EditUser")
                     {
                         string username = gdvUser.DataKeys[rowIndex]["Username"].ToString();
                         string[] userRoles = Roles.GetRolesForUser(username);
-
                         UserInfo sageUser = m.GetUserDetails(GetPortalID, hdnEditUsername.Value);
                         hdnCurrentEmail.Value = sageUser.Email;
                         txtManageEmail.Text = sageUser.Email;
@@ -384,10 +365,8 @@ namespace SageFrame.Modules.Admin.UserManagement
                         txtManageLastName.Text = sageUser.LastName;
                         txtManageUsername.Text = sageUser.UserName;
                         chkIsActive.Checked = sageUser.IsApproved == true ? true : false;
-
                         if (SystemSetting.SYSTEM_USERS.Contains(hdnEditUsername.Value) || hdnEditUsername.Value == GetUsername)
                         {
-
                             chkIsActive.Enabled = false;
                             chkIsActive.Attributes.Add("class", "disabledClass");
                             tabUserRoles.Visible = false;
@@ -400,7 +379,6 @@ namespace SageFrame.Modules.Admin.UserManagement
                         txtLastActivity.Text = sageUser.LastActivityDate.ToShortDateString();
                         txtLastLoginDate.Text = sageUser.LastLoginDate.ToShortDateString();
                         txtLastPasswordChanged.Text = sageUser.LastPasswordChangeDate.ToShortDateString();
-
                         if (!sageUser.IsApproved)
                         {
                             txtLastActivity.Text = "N/A";
@@ -409,44 +387,42 @@ namespace SageFrame.Modules.Admin.UserManagement
                         }
                         lstSelectedRoles.Items.Clear();
                         lstUnselectedRoles.Items.Clear();
-
-
-
-                        List<RolesManagementInfo> objRoles = RolesManagementController.PortalRoleList(GetPortalID, false, GetUsername);
+                        RolesManagementController objController = new RolesManagementController();
+                        List<RolesManagementInfo> objRoles = objController.PortalRoleList(GetPortalID, false, GetUsername);
                         foreach (RolesManagementInfo role in objRoles)
                         {
                             string roleName = role.RoleName;
-                            if (roleName != "Super User")
-                           {
-                                if (SystemSetting.SYSTEM_ROLES.Contains(roleName, StringComparer.OrdinalIgnoreCase))
+                            //if (roleName != "Super User")
+                            //{
+                            if (SystemSetting.SYSTEM_ROLES.Contains(roleName, StringComparer.OrdinalIgnoreCase))
+                            {
+                                if (userRoles.Contains(roleName, StringComparer.OrdinalIgnoreCase))
                                 {
-                                    if (userRoles.Contains(roleName, StringComparer.OrdinalIgnoreCase))
-                                    {
-                                        lstSelectedRoles.Items.Add(new ListItem(roleName, roleName));
-                                    }
-                                    else
-                                    {
-                                        lstUnselectedRoles.Items.Add(new ListItem(roleName, roleName));
-                                    }
+                                    lstSelectedRoles.Items.Add(new ListItem(roleName, roleName));
                                 }
                                 else
                                 {
-                                    if (userRoles.Contains(roleName, StringComparer.OrdinalIgnoreCase))
-                                    {
-                                        string rolePrefix = GetPortalSEOName + "_";
-                                        roleName = roleName.Replace(rolePrefix, "");
-                                        lstSelectedRoles.Items.Add(new ListItem(roleName, roleName));
-                                    }
-                                    else
-                                    {
-                                        string rolePrefix = GetPortalSEOName + "_";
-                                        roleName = roleName.Replace(rolePrefix, "");
-                                        lstUnselectedRoles.Items.Add(new ListItem(roleName, roleName));
-                                    }
+                                    lstUnselectedRoles.Items.Add(new ListItem(roleName, roleName));
                                 }
                             }
+                            else
+                            {
+                                if (userRoles.Contains(roleName, StringComparer.OrdinalIgnoreCase))
+                                {
+                                    string rolePrefix = GetPortalSEOName + "_";
+                                    roleName = roleName.Replace(rolePrefix, "");
+                                    lstSelectedRoles.Items.Add(new ListItem(roleName, roleName));
+                                }
+                                else
+                                {
+                                    string rolePrefix = GetPortalSEOName + "_";
+                                    roleName = roleName.Replace(rolePrefix, "");
+                                    lstUnselectedRoles.Items.Add(new ListItem(roleName, roleName));
+                                }
+                            }
+                            //}
                         }
-                        if (userRoles.Contains("Super User"))
+                        if (userRoles.Contains("Super User") && username.ToLower() == "superuser")
                         {
                             btnAddAllRole.Enabled = false;
                             btnAddRole.Enabled = false;
@@ -457,16 +433,11 @@ namespace SageFrame.Modules.Admin.UserManagement
                         }
                         PanelVisibility(false, false, true);
                         LoadUserProfileData();
-                        //userProfile1.EditUserName = hdnEditUsername.Value;
-
-
-
                     }
                     else if (e.CommandName == "DeleteUser")
                     {
                         if (hdnEditUsername.Value != "")
                         {
-
                             UserInfo user = new UserInfo(hdnEditUsername.Value, GetPortalID, Membership.ApplicationName, GetUsername);
                             m.DeleteUser(user);
                             ShowMessage("", GetSageMessage("UserManagement", "UserDeletedSuccessfully"), "", SageMessageType.Success);
@@ -502,35 +473,26 @@ namespace SageFrame.Modules.Admin.UserManagement
                     {
                         MembershipUser member = Membership.GetUser(hdnEditUsername.Value);
                         member.Email = txtManageEmail.Text;
-
                         if (!EmailAddressExists(txtManageEmail.Text, m.RequireUniqueEmail))
                         {
                             UserInfo user = new UserInfo(Membership.ApplicationName, hdnEditUsername.Value, new Guid(hdnEditUserID.Value), txtManageFirstName.Text, txtManageLastName.Text, txtManageEmail.Text, GetPortalID, chkIsActive.Checked, GetUsername);
-
                             UserUpdateStatus status = new UserUpdateStatus();
                             m.UpdateUser(user, out status);
                             if (status == UserUpdateStatus.DUPLICATE_EMAIL_NOT_ALLOWED)
                             {
                                 ShowMessage("", GetSageMessage("UserManagement", "EmailAddressAlreadyIsInUse"), "", SageMessageType.Alert);
-
                             }
                             else if (status == UserUpdateStatus.USER_UPDATE_SUCCESSFUL)
                             {
                                 BindUsers(string.Empty);
-                                ShowMessage("",
-                                            GetSageMessage("UserManagement", "UserInformationSaveSuccessfully"), "",
-                                            SageMessageType.Success);
+                                FilterUserGrid(int.Parse(rbFilterMode.SelectedValue.ToString()));
+                                ShowMessage("", GetSageMessage("UserManagement", "UserInformationSaveSuccessfully"), "", SageMessageType.Success);
                                 LoadUserDetails();
-
-
                             }
-
                         }
                         else
                         {
-
                             ShowMessage("", GetSageMessage("UserManagement", "EmailAddressAlreadyIsInUse"), "", SageMessageType.Alert);
-
                         }
                     }
                     else
@@ -577,9 +539,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                     {
                         role.ChangeUserInRoles(Membership.ApplicationName, new Guid(hdnEditUserID.Value), userRoles, selectedRoles, GetPortalID);
                         ShowMessage("", GetSageMessage("UserManagement", "UserRolesUpdatedSuccessfully"), "", SageMessageType.Success);
-
                     }
-
                 }
             }
             catch (Exception ex)
@@ -661,15 +621,12 @@ namespace SageFrame.Modules.Admin.UserManagement
                     {
                         if (lstSelectedRoles.Items.Count > 1)
                         {
-
                             lstUnselectedRoles.Items.Add(lstSelectedRoles.Items[selectedIndexs[i]]);
                             lstSelectedRoles.Items.Remove(lstSelectedRoles.Items[selectedIndexs[i]]);
-
                         }
                     }
                     lstSelectedRoles.SelectedIndex = -1;
                 }
-
             }
             catch (Exception ex)
             {
@@ -689,7 +646,6 @@ namespace SageFrame.Modules.Admin.UserManagement
                     {
                         lstUnselectedRoles.Items.Add(lstSelectedRoles.Items[i]);
                         remRoles.Add(lstSelectedRoles.Items[i].Text);
-
                     }
                 }
                 foreach (string remRole in remRoles)
@@ -710,6 +666,7 @@ namespace SageFrame.Modules.Admin.UserManagement
             {
                 PanelVisibility(false, true, false);
                 BindUsers(string.Empty);
+                FilterUserGrid(int.Parse(rbFilterMode.SelectedValue.ToString()));
             }
             catch (Exception ex)
             {
@@ -757,20 +714,21 @@ namespace SageFrame.Modules.Admin.UserManagement
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                HiddenField hdnIsActive = (HiddenField) e.Row.FindControl("hdnIsActive");
-                ImageButton imgDelete = (ImageButton) e.Row.FindControl("imgDelete");
-                LinkButton lnkUsername = (LinkButton) e.Row.FindControl("lnkUsername");
-                ImageButton imgEdit = (ImageButton) e.Row.FindControl("imgEdit");
 
-                HtmlInputCheckBox chkItem = (HtmlInputCheckBox) e.Row.FindControl("chkBoxItem");
+                HiddenField hdnIsActive = (HiddenField)e.Row.FindControl("hdnIsActive");
+                LinkButton imgDelete = (LinkButton)e.Row.FindControl("imgDelete");
+                LinkButton lnkUsername = (LinkButton)e.Row.FindControl("lnkUsername");
+                LinkButton imgEdit = (LinkButton)e.Row.FindControl("imgEdit");
+                HtmlInputCheckBox chkItem = (HtmlInputCheckBox)e.Row.FindControl("chkBoxItem");
                 chkItem.Attributes.Add("onclick",
                                        "javascript:Check(this,'cssCheckBoxHeader','" + gdvUser.ClientID +
                                        "','cssCheckBoxItem');");
-                HtmlInputCheckBox chkIsActiveItem = (HtmlInputCheckBox) e.Row.FindControl("chkBoxIsActiveItem");
+                HtmlInputCheckBox chkIsActiveItem = (HtmlInputCheckBox)e.Row.FindControl("chkBoxIsActiveItem");
                 chkIsActiveItem.Attributes.Add("onclick",
                                                "javascript:Check(this,'cssCheckBoxIsActiveHeader','" + gdvUser.ClientID +
                                                "','cssCheckBoxIsActiveItem');");
                 chkIsActiveItem.Checked = bool.Parse(hdnIsActive.Value);
+
 
                 if (lnkUsername.Text.ToLower() == GetUsername.ToLower())
                 {
@@ -780,22 +738,24 @@ namespace SageFrame.Modules.Admin.UserManagement
                     chkItem.Attributes.Add("class", "disabledClass");
                     chkIsActiveItem.Attributes.Add("class", "disabledClass");
                 }
-                else if (GetUsername.ToLower() == "superuser" && lnkUsername.Text.ToLower() == "superuser")
+                else if (lnkUsername.Text.ToLower() == "superuser" && Roles.IsUserInRole(GetUsername, "Super User"))
                 {
-                    lnkUsername.Enabled = true;
-                    imgEdit.Visible = true;
+                    lnkUsername.Enabled = false;
+                    imgEdit.Visible = false;
                     imgDelete.Visible = false;
                     chkIsActiveItem.Disabled = true;
                     chkItem.Disabled = true;
                     chkItem.Attributes.Add("class", "disabledClass");
                     chkIsActiveItem.Attributes.Add("class", "disabledClass");
+
                 }
-                else
+                else if (Roles.IsUserInRole(GetUsername, "Site Admin"))
                 {
                     string[] userRoles = Roles.GetRolesForUser(lnkUsername.Text);
                     foreach (var userRole in userRoles)
                     {
-                        if (userRole.ToLower() == SystemSetting.SUPER_ROLE[0].ToLower())
+
+                        if (userRole.ToLower() == SystemSetting.SUPER_ROLE[0].ToLower() || userRole.ToLower() == SystemSetting.SITEADMIN.ToString().ToLower())
                         {
                             lnkUsername.Enabled = false;
                             imgEdit.Visible = false;
@@ -807,6 +767,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                         }
                     }
                 }
+
             }
             else if (e.Row.RowType == DataControlRowType.Header)
             {
@@ -821,7 +782,7 @@ namespace SageFrame.Modules.Admin.UserManagement
             }
         }
 
-        protected void imgBtnDeleteSelected_Click(object sender, ImageClickEventArgs e)
+        protected void imgBtnDeleteSelected_Click(object sender, EventArgs e)
         {
             try
             {
@@ -854,7 +815,7 @@ namespace SageFrame.Modules.Admin.UserManagement
             }
         }
 
-        protected void imgBtnSaveChanges_Click(object sender, ImageClickEventArgs e)
+        protected void imgBtnSaveChanges_Click(object sender, EventArgs e)
         {
             try
             {
@@ -927,10 +888,8 @@ namespace SageFrame.Modules.Admin.UserManagement
                 gdvUser.DataSource = ViewState["UserList"];
             }
             gdvUser.DataBind();
-            //ViewState.Clear();
-           // BindUsers(txtSearchText.Text);
         }
-        protected void imbCreateUser_Click(object sender, ImageClickEventArgs e)
+        protected void imbCreateUser_Click(object sender, EventArgs e)
         {
             try
             {
@@ -963,6 +922,8 @@ namespace SageFrame.Modules.Admin.UserManagement
                             objUser.AddedBy = GetUsername;
                             objUser.UserID = Guid.NewGuid();
                             objUser.RoleNames = GetSelectedRoleNameString();
+                            objUser.StoreID = GetStoreID;
+                            objUser.CustomerID = GetCustomerID;
 
                             UserCreationStatus status = new UserCreationStatus();
                             try
@@ -1031,7 +992,7 @@ namespace SageFrame.Modules.Admin.UserManagement
             return (String.Join(",", roleList.ToArray()));
         }
 
-        protected void imgBtnSettings_Click(object sender, ImageClickEventArgs e)
+        protected void imgBtnSettings_Click(object sender, EventArgs e)
         {
             PanelVisibility(false, false, false);
             pnlSettings.Visible = true;
@@ -1135,6 +1096,8 @@ namespace SageFrame.Modules.Admin.UserManagement
 
         protected void rbFilterMode_SelectedIndexChanged(object sender, EventArgs e)
         {
+            int index = rbFilterMode.SelectedIndex;
+            rbFilterMode.Items[index].Attributes.Add("class", "active");
             FilterUserGrid(int.Parse(rbFilterMode.SelectedValue.ToString()));
         }
 
@@ -1145,7 +1108,7 @@ namespace SageFrame.Modules.Admin.UserManagement
             switch (FilterMode)
             {
                 case 0:
-   
+
                     gdvUser.DataSource = ReorderUserList(lstUsers);
                     gdvUser.DataBind();
                     ViewState["FilteredUser"] = lstUsers;
@@ -1184,12 +1147,12 @@ namespace SageFrame.Modules.Admin.UserManagement
             try
             {
                 UserProfileInfo objinfo = new UserProfileInfo();
-                string filename = "";                
-                string thumbTarget = Server.MapPath("~/Modules/Admin/UserManagement/UserPic"); 
+                string filename = "";
+                string thumbTarget = Server.MapPath("~/Modules/Admin/UserManagement/UserPic");
                 if (!Directory.Exists(thumbTarget))
                 {
                     Directory.CreateDirectory(thumbTarget);
-                }               
+                }
                 System.Drawing.Image.GetThumbnailImageAbort thumbnailImageAbortDelegate = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
                 if (fuImage.HasFile)
                 {
@@ -1215,9 +1178,9 @@ namespace SageFrame.Modules.Admin.UserManagement
                 }
                 if (filename == "")
                 {
-                    if (Session["UserImage"] != null)
+                    if (Session[SessionKeys.UserImage] != null)
                     {
-                        filename = Session["UserImage"].ToString();
+                        filename = Session[SessionKeys.UserImage].ToString();
                     }
                     btnDeleteProfilePic.Visible = false;
                 }
@@ -1232,7 +1195,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                 objinfo.FullName = txtFullName.Text;
                 objinfo.Location = txtLocation.Text;
                 objinfo.AboutYou = txtAboutYou.Text;
-                objinfo.Email = txtEmail1.Text + ',' + txtEmail2.Text + ',' + txtEmail3.Text;
+                objinfo.Email = txtEmail1.Text + (txtEmail2.Text != "" ? "," + txtEmail2.Text : "") + (txtEmail3.Text != "" ? ',' + txtEmail3.Text : "");
                 objinfo.ResPhone = txtResPhone.Text;
                 objinfo.MobilePhone = txtMobile.Text;
                 objinfo.Others = txtOthers.Text;
@@ -1241,6 +1204,8 @@ namespace SageFrame.Modules.Admin.UserManagement
                 objinfo.UpdatedOn = DateTime.Now;
                 objinfo.PortalID = GetPortalID;
                 objinfo.UpdatedBy = GetUsername;
+                objinfo.BirthDate = txtBirthDate.Text == string.Empty ? DateTime.Parse(falseDate) : DateTime.Parse(txtBirthDate.Text);
+                objinfo.Gender = rdbGender.SelectedIndex;
                 UserProfileController.AddUpdateProfile(objinfo);
                 LoadUserDetails();
                 GetSageUserInfo(hdnEditUsername.Value);
@@ -1252,7 +1217,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                 btnDeleteProfilePic.Visible = false;
                 //ShowHideProfile();
                 //btnDeleteProfilePic.Visible = true;
-                Session["UserImage"] = null;
+                Session[SessionKeys.UserImage] = null;
                 ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("UserManagement", "UserProfileSavedSuccessfully"), "", SageMessageType.Success);
             }
             catch (Exception)
@@ -1284,7 +1249,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                         imgUser.ImageUrl = "~/Modules/Admin/UserManagement/UserPic/" + objinfo.Image;
                         imgUser.Visible = true;
                         btnDeleteProfilePic.Visible = true;
-                        Session["UserImage"] = objinfo.Image;
+                        Session[SessionKeys.UserImage] = objinfo.Image;
                         imgProfileEdit.Visible = true;
                     }
                     else
@@ -1300,22 +1265,21 @@ namespace SageFrame.Modules.Admin.UserManagement
                     txtLocation.Text = objinfo.Location;
                     txtAboutYou.Text = objinfo.AboutYou;
                     txtEmail1.Text = Emails[0];
+                    txtBirthDate.Text = (objinfo.BirthDate.ToShortDateString() == falseDate || objinfo.BirthDate.ToShortDateString() == defaultDate) ? "" : objinfo.BirthDate.ToShortDateString();
+                    rdbGender.SelectedIndex = objinfo.Gender;
                     if (Emails.Length == 2)
                     {
                         txtEmail2.Text = Emails[1];
                     }
                     if (Emails.Length == 3)
                     {
-                        txtEmail2.Text =  Emails[1] ;
+                        txtEmail2.Text = Emails[1];
                         txtEmail3.Text = Emails[2];
-                    }                    
+                    }
                     txtResPhone.Text = objinfo.ResPhone;
                     txtMobile.Text = objinfo.Mobile;
                     txtOthers.Text = objinfo.Others;
                 }
-
-
-
             }
 
             catch (Exception)
@@ -1350,7 +1314,7 @@ namespace SageFrame.Modules.Admin.UserManagement
             }
             catch (Exception)
             {
-                
+
                 throw;
             }
         }
@@ -1420,10 +1384,35 @@ namespace SageFrame.Modules.Admin.UserManagement
                         trViewOthers.Visible = true;
                     }
                     else { trViewOthers.Visible = false; }
+                    if (objinfo.Gender != null)
+                    {
+                        int gender = objinfo.Gender;
+                        trviewGender.Visible = false;
+                        if (gender == 0)
+                        {
+                            trviewGender.Visible = true;
+                            lblviewGender.Text = "Male";
+                        }
+                        else if (gender == 1)
+                        {
+                            trviewGender.Visible = true;
+                            lblviewGender.Text = "Female";
+                        }
+                    }
+                    else
+                    {
+                        trviewGender.Visible = false;
+                    }
+                    if (objinfo.BirthDate.ToShortDateString() != falseDate && objinfo.BirthDate.ToShortDateString() != defaultDate)
+                    {
+                        trviewBirthDate.Visible = true;
+                        lblviewBirthDate.Text = objinfo.BirthDate.ToShortDateString();
+                    }
+                    else
+                    {
+                        trviewBirthDate.Visible = false;
+                    }
                 }
-
-
-
             }
 
             catch (Exception)
@@ -1432,17 +1421,17 @@ namespace SageFrame.Modules.Admin.UserManagement
                 throw;
             }
         }
-        protected void btnCancelProfile_Click(object sender, EventArgs e)
-        {
-            tblEditProfile.Visible = false;
-            LoadUserDetails();
-            tblViewProfile.Visible = true;
-            imgProfileEdit.Visible = false;
-            imgProfileView.Visible = true;
-            btnDeleteProfilePic.Visible = false;
+        //protected void btnCancelProfile_Click(object sender, EventArgs e)
+        //{
+        //    tblEditProfile.Visible = false;
+        //    LoadUserDetails();
+        //    tblViewProfile.Visible = true;
+        //    imgProfileEdit.Visible = false;
+        //    imgProfileView.Visible = true;
+        //    btnDeleteProfilePic.Visible = false;
 
 
-        }
+        //}
         protected void btnDeleteProfilePic_Click(object sender, EventArgs e)
         {
             try
@@ -1461,7 +1450,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                 UserProfileController.DeleteProfilePic(hdnEditUsername.Value, GetPortalID);
                 GetUserDetails();
                 LoadUserDetails();
-                Session["UserImage"] = null;
+                Session[SessionKeys.UserImage] = null;
 
             }
             catch (Exception)

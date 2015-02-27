@@ -1,31 +1,22 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SqlClient;
 using SageFrame.Web.Utilities;
+
+#endregion
+
 
 namespace SageFrame.Core.TemplateManagement
 {
@@ -38,12 +29,13 @@ namespace SageFrame.Core.TemplateManagement
 
             List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
             ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-            ParamCollInput.Add(new KeyValuePair<string, object>("@Username", UserName));
+            ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
 
             List<TemplateInfo> lstTemplate = new List<TemplateInfo>();
+            SqlDataReader reader = null;
             try
             {
-                SqlDataReader reader;
+
                 reader = sagesql.ExecuteAsDataReader(sp, ParamCollInput);
                 while (reader.Read())
                 {
@@ -65,6 +57,13 @@ namespace SageFrame.Core.TemplateManagement
 
                 throw (ex);
             }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
         }
 
         public static bool AddTemplate(TemplateInfo obj)
@@ -78,7 +77,7 @@ namespace SageFrame.Core.TemplateManagement
             ParamCollInput.Add(new KeyValuePair<string, object>("@Description", obj.Description));
             ParamCollInput.Add(new KeyValuePair<string, object>("@AuthorURL", obj.AuthorURL));
             ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", obj.PortalID));
-            ParamCollInput.Add(new KeyValuePair<string, object>("@Username", obj.AddedBy));           
+            ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", obj.AddedBy));           
             try
             {              
                 sagesql.ExecuteNonQuery(sp, ParamCollInput);

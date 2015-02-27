@@ -10,11 +10,11 @@
             }
             , B);
             return this.each(function() {
-            var C = A(this).attr("id");
-            A(this).parent().append("<div class='sfPwdstrength clearfix'><div class=\"pstrength-bar\" id=\"" + C + "_bar\" style=\"border: 1px solid white; font-size: 1px; height: 5px; width: 0px;\"></div>");
-            A(this).parent().append("<div class=\"pstrength-info\" id=\"" + C + "_text\"></div>");
-            A(this).parent().append("<div class=\"pstrength-minchar\" id=\"" + C + "_minchar\">Minimum number of characters is " + B.minchar + "</div></div>");                
-                
+                var C = A(this).attr("id");
+                A(this).parent().append("<div class='sfPwdstrength clearfix'><div class=\"pstrength-bar\" id=\"" + C + "_bar\" style=\"border: 1px solid white; font-size: 1px; height: 5px; width: 0px;\"></div>");
+                A(this).parent().append("<div class=\"pstrength-info\" id=\"" + C + "_text\"></div>");
+                A(this).parent().append("<div class=\"pstrength-minchar\" id=\"" + C + "_minchar\">" + GetSystemLocale("Minimum number of characters is " + B.minchar + "") + "</div></div>");
+
                 A(this).keyup(function() {
                     A.fn.runPassword(A(this).val(), C, B)
                 })

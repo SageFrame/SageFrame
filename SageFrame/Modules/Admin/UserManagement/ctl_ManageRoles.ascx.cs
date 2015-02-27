@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -33,12 +18,12 @@ using SageFrame.RolesManagement;
 using SageFrame.Security;
 using SageFrame.Security.Entities;
 using SageFrame.Security.Helpers;
+#endregion 
 
 namespace SageFrame.Modules.Admin.UserManagement
 {
     public partial class ctl_ManageRoles : BaseAdministrationUserControl
     {
-        //RolesManagementDataContext dbRoles = new RolesManagementDataContext(SystemSetting.SageFrameConnectionString);
         protected void Page_Load(object sender, EventArgs e)
         {
             try
@@ -48,7 +33,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                     pnlRole.Visible = false;
                     pnlRoles.Visible = true;
                     BindRoles();
-                    AddImageUrls();
+                    
                 }
             }
             catch (Exception ex)
@@ -63,15 +48,14 @@ namespace SageFrame.Modules.Admin.UserManagement
             {
                 if(SystemSetting.SYSTEM_ROLES.Contains(e.Row.Cells[0].Text, StringComparer.OrdinalIgnoreCase))
                 {
-                    ImageButton btnDelete = (ImageButton)e.Row.FindControl("imbDelete");
+                    LinkButton btnDelete = (LinkButton)e.Row.FindControl("imbDelete");
                     btnDelete.Visible = false;
                 }
                 else
                 {
-                    ImageButton btnDelete = (ImageButton)e.Row.FindControl("imbDelete");
+                    LinkButton btnDelete = (LinkButton)e.Row.FindControl("imbDelete");
                     btnDelete.Attributes.Add("onclick", "javascript:return confirm('" + GetSageMessage("UserManagement", "AreYouSureToDelete") + "')");
                 }
-
             }
         }
 
@@ -86,13 +70,6 @@ namespace SageFrame.Modules.Admin.UserManagement
             gdvRoles.DataBind();
         }
 
-        private void AddImageUrls()
-        {
-            imgAdd.ImageUrl = GetTemplateImageUrl("imgSave.png", true);
-            imgCancel.ImageUrl = GetTemplateImageUrl("imgCancel.png", true);
-            imbAddNewRole.ImageUrl = GetTemplateImageUrl("imgadd.png", true);
-        }
-
         protected void imgAdd_Click(object sender, EventArgs e)
         {
             try
@@ -105,11 +82,9 @@ namespace SageFrame.Modules.Admin.UserManagement
                     objRole.IsActive = 1;
                     objRole.AddedOn = DateTime.Now;
                     objRole.AddedBy = GetUsername;
-
                     if (txtRole.Text.ToLower().Equals("superuser"))
                     {
                         ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("UserManagement", "ThisRoleAlreadyExists"), "", SageMessageType.Error);
-
                     }
                     else
                     {
@@ -119,7 +94,6 @@ namespace SageFrame.Modules.Admin.UserManagement
                         if (status == RoleCreationStatus.DUPLICATE_ROLE)
                         {
                             ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("UserManagement", "ThisRoleAlreadyExists"), "", SageMessageType.Error);
-
                         }
                         else if (status == RoleCreationStatus.SUCCESS)
                         {
@@ -128,11 +102,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                             pnlRoles.Visible = true;
                             ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("UserManagement", "RoleSavedSuccessfully"), "", SageMessageType.Success);
                         }
-
-                    }
-
-                   
-               
+                    }               
             }
             catch (Exception ex)
             {
@@ -155,6 +125,7 @@ namespace SageFrame.Modules.Admin.UserManagement
 
         protected void gdvRoles_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
+
         }
 
         private void DeleteRole(string role,string roleid)
@@ -169,8 +140,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                 {
                     Guid RoleID = new Guid(roleid);                  
                     RoleController roleObj = new RoleController();
-                    roleObj.DeleteRole(RoleID, GetPortalID);
-                    
+                    roleObj.DeleteRole(RoleID, GetPortalID);                    
                     BindRoles();
                     ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("UserManagement", "RoleIsDeletedSuccessfully"), "", SageMessageType.Success);
                 }
@@ -190,10 +160,8 @@ namespace SageFrame.Modules.Admin.UserManagement
                 dtRoles.Columns.Add("Role");
                 dtRoles.Columns.Add("RoleID");
                 dtRoles.AcceptChanges();
-
-                //var roles = dbRoles.sp_PortalRoleList(GetPortalID,true,GetUsername);
-                List<RolesManagementInfo> objRoles = RolesManagementController.PortalRoleList(GetPortalID, true, GetUsername);
-
+                RolesManagementController objController = new RolesManagementController();
+                List<RolesManagementInfo> objRoles = objController.PortalRoleList(GetPortalID, true, GetUsername);
                 foreach (RolesManagementInfo role in objRoles)
                 {
                     string roleName = role.RoleName;

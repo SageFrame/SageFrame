@@ -4,7 +4,7 @@
     <asp:Label ID="lblTimeZoneEditor" runat="server" Text="Time Zone Editor" meta:resourcekey="lblTimeZoneEditorResource1"></asp:Label>
 </h1>
 <div>
-    <div class="sfFormwrapper sfPadding">
+    <div class="sfFormwrapper sfTableOption">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td width="15%">
@@ -23,7 +23,7 @@
             </tr>
         </table>
     </div>
-    <div class="sfFormwrapper sfGridwrapper sfMargintop">
+    <div class="sfFormwrapper sfGridwrapper">
         <asp:GridView ID="gdvTimeZoneEditor" runat="server" AutoGenerateColumns="False" Width="100%"
             meta:resourcekey="gdvTimeZoneEditorResource1">
             <Columns>
@@ -34,12 +34,11 @@
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:BoundField DataField="key" HeaderText="Key" meta:resourcekey="BoundFieldResource1"
-                    HeaderStyle-CssClass="sfKey" ItemStyle-CssClass="sfKey" >
-<HeaderStyle CssClass="sfKey"></HeaderStyle>
-
-<ItemStyle CssClass="sfKey"></ItemStyle>
+                    HeaderStyle-CssClass="sfKey" ItemStyle-CssClass="sfKey">
+                    <HeaderStyle CssClass="sfKey"></HeaderStyle>
+                    <ItemStyle CssClass="sfKey"></ItemStyle>
                 </asp:BoundField>
-                <asp:BoundField DataField="name" HeaderText="DefaultValue" meta:resourcekey="BoundFieldResource2" />
+                <asp:BoundField DataField="default" HeaderText="DefaultValue" meta:resourcekey="BoundFieldResource2" />
             </Columns>
             <PagerStyle CssClass="sfPagination" />
             <AlternatingRowStyle CssClass="sfEven" />
@@ -48,12 +47,12 @@
     </div>
 </div>
 <div class="sfButtonwrapper">
-    <asp:ImageButton ID="imbUpdate" runat="server" ImageUrl="~/Administrator/Templates/Default/images/btnsave.png"
-        Style="width: 16px" OnClick="imbUpdate_Click" meta:resourcekey="imbUpdateResource1" />
-    <asp:Label ID="lblAddLanguage" runat="server" Text="Update" CssClass="sfFormlabel"
-        AssociatedControlID="imbUpdate" Style="cursor: pointer;" meta:resourcekey="lblAddLanguageResource1"></asp:Label>
-    <asp:ImageButton ID="imbCancel" runat="server" ImageUrl="~/Administrator/Templates/Default/images/btncancel.png"
-        OnClick="imbCancel_Click" meta:resourcekey="imbCancelResource1" />
-    <asp:Label ID="lblInstallLang" runat="server" CssClass="sfFormlabel" Text="Cancel"
-        AssociatedControlID="imbCancel" Style="cursor: pointer;" meta:resourcekey="lblInstallLangResource1"></asp:Label>
+    <label class="sfLocale icon-save sfBtn">
+        Save
+        <asp:Button ID="imbUpdate" runat="server" Style="width: 16px" OnClick="imbUpdate_Click"
+            meta:resourcekey="imbUpdateResource1" />
+    </label>
+    <label class="sfLocale icon-close sfBtn">
+        Cancel
+        <asp:Button ID="imbCancel" runat="server" OnClick="imbCancel_Click" meta:resourcekey="imbCancelResource1" /></label>
 </div>

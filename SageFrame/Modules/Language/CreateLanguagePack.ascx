@@ -2,38 +2,35 @@
     Inherits="Localization_CreateLanguagePack" %>
 
 <script type="text/javascript">
-        $(document).ready(function() {           
-            if ($('.cssClassLanguagePackCreaterModule ul li input').length < 2) {
-                $('#chkSelectAll').css("display", "none");
-                $('#<%=lblSelectAll.ClientID%>').css("display", "none");
+    //<![CDATA[   
+    $(document).ready(function() {
+   $("#fuck").hide();
+        if ($('.cssClassLanguagePackCreaterModule ul li input').length < 2) {
+            $('#chkSelectAll').css("display", "none");
+            $('#<%=lblSelectAll.ClientID%>').css("display", "none");
+        }
+        $('#chkSelectAll').bind("click", function() {
+            if ($(this).prop("checked") == true) {
+                CheckAll();
             }
-            $('#chkSelectAll').bind("click", function() {
-
-                if ($(this).attr("checked") == true) {
-                    CheckAll();
-                }
-                else {
-                    UnCheckAll();
-                }
-
-
-            });
+            else {
+                UnCheckAll();
+            }
         });
-
-        function CheckAll() {
-            var checks = $('.cssClassLanguagePackCreaterModule ul li input');
-            $.each(checks, function(index, item) {
-
-                $(this).attr("checked", true);
-            });
-        }
-        function UnCheckAll() {
-            var checks = $('.cssClassLanguagePackCreaterModule ul li input');
-            $.each(checks, function(index, item) {
-
-                $(this).attr("checked", false);
-            });
-        }
+    });
+    function CheckAll() {
+        var checks = $('.cssClassLanguagePackCreaterModule ul li input');
+        $.each(checks, function(index, item) {
+            $(this).prop("checked", true);
+        });
+    }
+    function UnCheckAll() {
+        var checks = $('.cssClassLanguagePackCreaterModule ul li input');
+        $.each(checks, function(index, item) {
+            $(this).prop("checked", false);
+        });
+    }
+    //]]>	
         
 </script>
 
@@ -41,15 +38,12 @@
     <asp:Label ID="lblLanguagePackCreator" runat="server" Text="Language Pack Creator"
         meta:resourcekey="lblTimeZoneEditorResource1"></asp:Label>
 </h1>
-<div class="sfFormwrapper sfPadding">
+<div class="sfFormwrapper">
     <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td width="130">
                 <asp:Label runat="server" ID="lblResoucreLocale" CssClass="sfFormlabel" meta:resourcekey="lblResoucreLocaleResource1"
-                    Text="Resource Locale:"></asp:Label>
-            </td>
-            <td width="30">
-                :
+                    Text="Resource Locale"></asp:Label>
             </td>
             <td>
                 <asp:DropDownList ID="ddlResourceLocale" CssClass="sfListmenu" runat="server" AutoPostBack="True"
@@ -60,10 +54,7 @@
         <tr>
             <td>
                 <asp:Label runat="server" ID="lblResoucrePackType" CssClass="sfFormlabel" meta:resourcekey="lblResoucrePackTypeResource1"
-                    Text="Resource Pack Type:"></asp:Label>
-            </td>
-            <td width="30">
-                :
+                    Text="Resource Pack Type"></asp:Label>
             </td>
             <td class="sfRadiobutton">
                 <asp:RadioButtonList ID="rbResourcePackType" RepeatDirection="Horizontal" runat="server"
@@ -75,10 +66,7 @@
                 </asp:RadioButtonList>
             </td>
         </tr>
-        <tr>
-            <td>
-                &nbsp;
-            </td>
+        <tr id="togglingTr" runat="server">          
             <td>
                 &nbsp;
             </td>
@@ -106,9 +94,6 @@
                 <asp:Label runat="server" ID="lblResourcePackName" CssClass="sfFormlabel" meta:resourcekey="lblResourcePackNameResource1"
                     Text="Resource Pack Name"></asp:Label>
             </td>
-            <td width="30">
-                :
-            </td>
             <td>
                 ResourcePack
                 <asp:TextBox ID="txtResourcePackName" runat="server" Width="120px" meta:resourcekey="txtResourcePackNameResource1"
@@ -128,12 +113,12 @@
     </table>
 </div>
 <div class="sfButtonwrapper">
-    <asp:ImageButton ID="imbCreatePackage" runat="server" ImageUrl="~/Administrator/Templates/Default/images/btncreatepackage.png"
-        OnClick="imbCreatePackage_Click" meta:resourcekey="imbCreatePackageResource1" />
-    <asp:Label ID="lblAddLanguage" runat="server" Text="Create" CssClass="sfFormlabel"
-        AssociatedControlID="imbCreatePackage" Style="cursor: pointer;" meta:resourcekey="lblAddLanguageResource1"></asp:Label>
-    <asp:ImageButton ID="imbCancel" runat="server" OnClick="imbCancel_Click" ImageUrl="~/Administrator/Templates/Default/images/btncancel.png"
+<label class="sfLocale icon-download-package sfBtn">Create
+    <asp:Button ID="imbCreatePackage" runat="server" ImageUrl="~/Administrator/Templates/Default/images/btncreatepackage.png"
+        OnClick="imbCreatePackage_Click" meta:resourcekey="imbCreatePackageResource1" /></label>
+   <label class="sfLocale icon-close sfBtn">Cancel
+    <asp:Button ID="imbCancel" runat="server" OnClick="imbCancel_Click" ImageUrl="~/Administrator/Templates/Default/images/btncancel.png"
         meta:resourcekey="imbCancelResource1" />
-    <asp:Label ID="lblInstallLang" runat="server" CssClass="sfFormlabel" Text="Cancel"
-        AssociatedControlID="imbCancel" Style="cursor: pointer;" meta:resourcekey="lblInstallLangResource1"></asp:Label>
+        </label>
+    
 </div>

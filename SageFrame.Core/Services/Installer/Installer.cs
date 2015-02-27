@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +28,11 @@ using SageFrame.Web.Utilities;
 using RegisterModule;
 using SageFrame.Core;
 using System.Web.Hosting;
+using System.Reflection;
+using SageFrame.Core.Services;
+
+#endregion
+
 
 
 namespace SageFrame.SageFrameClass.Services
@@ -70,8 +63,6 @@ namespace SageFrame.SageFrameClass.Services
 
         public Installers()
         {
-
-
         }
 
         public static ModuleInfo GetModuleByModuleName(string ModuleName, int PortalID)
@@ -142,7 +133,7 @@ namespace SageFrame.SageFrameClass.Services
                     if (IsVAlidZipContentType(fileModule.FileName))//Check if valid Zip file submitted
                     {
                         string path = HttpContext.Current.Server.MapPath("~/");
-                        string temPath = SageFrame.Core.RegisterModule.Common.TemporaryFolder + "\\" + fileModule.FileName.Substring(0, fileModule.FileName.IndexOf("."));
+                        string temPath = SageFrame.Common.RegisterModule.Common.TemporaryFolder + "\\" + fileModule.FileName.Substring(0, fileModule.FileName.IndexOf("."));
                         string destPath = Path.Combine(path, temPath);
                         if (!Directory.Exists(destPath))
                             Directory.CreateDirectory(destPath);
@@ -150,7 +141,7 @@ namespace SageFrame.SageFrameClass.Services
                         string filePath = destPath + "\\" + fileModule.FileName;
                         fileModule.SaveAs(filePath);
                         string ExtractedPath = string.Empty;
-                        ZipUtil.UnZipFiles(filePath, destPath, ref ExtractedPath, SageFrame.Core.RegisterModule.Common.Password, SageFrame.Core.RegisterModule.Common.RemoveZipFile);
+                        ZipUtil.UnZipFiles(filePath, destPath, ref ExtractedPath, SageFrame.Common.RegisterModule.Common.Password, SageFrame.Common.RegisterModule.Common.RemoveZipFile);
 
 
 
@@ -261,7 +252,7 @@ namespace SageFrame.SageFrameClass.Services
                     if (IsVAlidZipContentType(fileName))//Check if valid Zip file submitted
                     {
                         string path = HttpContext.Current.Server.MapPath("~/");
-                        string temPath = SageFrame.Core.RegisterModule.Common.TemporaryFolder + fileName.Substring(0, fileName.IndexOf("."));
+                        string temPath = SageFrame.Common.RegisterModule.Common.TemporaryFolder + fileName.Substring(0, fileName.IndexOf("."));
                         string destPath = Path.Combine(path, temPath);
                         destPath = parentPath;
 
@@ -271,7 +262,7 @@ namespace SageFrame.SageFrameClass.Services
                         string filePath = destPath + "\\" + fileName;
 
                         string ExtractedPath = string.Empty;
-                        ZipUtil.UnZipFiles(filePath, destPath, ref ExtractedPath, SageFrame.Core.RegisterModule.Common.Password, SageFrame.Core.RegisterModule.Common.RemoveZipFile);
+                        ZipUtil.UnZipFiles(filePath, destPath, ref ExtractedPath, SageFrame.Common.RegisterModule.Common.Password, SageFrame.Common.RegisterModule.Common.RemoveZipFile);
 
 
                         if (!string.IsNullOrEmpty(ExtractedPath) && Directory.Exists(ExtractedPath))
@@ -390,8 +381,8 @@ namespace SageFrame.SageFrameClass.Services
 
         public bool IsModuleExist(string moduleName, ModuleInfo module)
         {
-
-            List<ModuleInfo> lstExistingModules = ModuleController.GetAllExistingModule();
+            ModuleController objProvider = new ModuleController();
+            List<ModuleInfo> lstExistingModules = objProvider.GetAllExistingModule();
             bool exists = lstExistingModules.Exists(
                 delegate(ModuleInfo obj)
                     {
@@ -409,8 +400,8 @@ namespace SageFrame.SageFrameClass.Services
 
         public bool IsModuleExist(string moduleName)
         {
-
-            List<ModuleInfo> lstExistingModules = ModuleController.GetAllExistingModule();
+            ModuleController objProvider = new ModuleController();
+            List<ModuleInfo> lstExistingModules = objProvider.GetAllExistingModule();
             bool exists = lstExistingModules.Exists(
                 delegate(ModuleInfo obj)
                     {
@@ -440,7 +431,7 @@ namespace SageFrame.SageFrameClass.Services
                     /**********add code****************/
 
                     string path = HttpContext.Current.Server.MapPath("~/");
-                    string targetPath = path + SageFrame.Core.RegisterModule.Common.ModuleFolder + '\\' + module.FolderName;
+                    string targetPath = path + SageFrame.Common.RegisterModule.Common.ModuleFolder + '\\' + module.FolderName;
                     module.InstalledFolderPath = targetPath;
                     return 1;//Already exist
                 }
@@ -472,7 +463,7 @@ namespace SageFrame.SageFrameClass.Services
                     /**********add code****************/
 
                     string path = HttpContext.Current.Server.MapPath("~/");
-                    string targetPath = path + SageFrame.Core.RegisterModule.Common.ModuleFolder + '\\' + FolderName;
+                    string targetPath = path + SageFrame.Common.RegisterModule.Common.ModuleFolder + '\\' + FolderName;
                     //module.InstalledFolderPath = targetPath;
                     return 1;//Already exist
                 }
@@ -728,7 +719,8 @@ namespace SageFrame.SageFrameClass.Services
 
             // add into module table
             int[] outputValue;
-            outputValue = ModuleController.AddModules(module, false, 0, true, DateTime.Now, GetPortalID, GetUsername);
+            ModuleController objProvider = new ModuleController();
+            outputValue = objProvider.AddModules(module, false, 0, true, DateTime.Now, GetPortalID, GetUsername);
             module.ModuleID = outputValue[0];
             module.ModuleDefID = outputValue[1];
             _newModuleID = module.ModuleID;
@@ -736,22 +728,22 @@ namespace SageFrame.SageFrameClass.Services
 
 
             //insert into ProtalModule table
-            _newPortalmoduleID = ModuleController.AddPortalModules(GetPortalID, _newModuleID, true, DateTime.Now, GetUsername);
+            _newPortalmoduleID = objProvider.AddPortalModules(GetPortalID, _newModuleID, true, DateTime.Now, GetUsername);
 
             //install permission for the installed module in ModuleDefPermission table with ModuleDefID and PermissionID
             try
             {
                 // get the default module VIEW permissions
-                int _permissionIDView = ModuleController.GetPermissionByCodeAndKey("SYSTEM_VIEW", "VIEW");
+                int _permissionIDView = objProvider.GetPermissionByCodeAndKey("SYSTEM_VIEW", "VIEW");
 
                 //insert into module permissions i.e., ModuleDefPermission and PortalModulePermission
-                ModuleController.AddModulePermission(_newModuleDefID, _permissionIDView, GetPortalID, _newPortalmoduleID, true, GetUsername, true, DateTime.Now, GetUsername);
+                objProvider.AddModulePermission(_newModuleDefID, _permissionIDView, GetPortalID, _newPortalmoduleID, true, GetUsername, true, DateTime.Now, GetUsername);
 
                 // get the default module EDIT permissions
-                int _permissionIDEdit = ModuleController.GetPermissionByCodeAndKey("SYSTEM_EDIT", "EDIT");
+                int _permissionIDEdit = objProvider.GetPermissionByCodeAndKey("SYSTEM_EDIT", "EDIT");
 
                 //insert into module permissions i.e., ModuleDefPermission and PortalModulePermission
-                ModuleController.AddModulePermission(_newModuleDefID, _permissionIDEdit, GetPortalID, _newPortalmoduleID, true, GetUsername, true, DateTime.Now, GetUsername);
+                objProvider.AddModulePermission(_newModuleDefID, _permissionIDEdit, GetPortalID, _newPortalmoduleID, true, GetUsername, true, DateTime.Now, GetUsername);
             }
             catch (Exception ex)
             {
@@ -786,7 +778,7 @@ namespace SageFrame.SageFrameClass.Services
                 string IconFile = "";
 
                 //add into module control table
-                ModuleController.AddModuleCoontrols(_newModuleDefID, _moduleControlKey, _moduleControlTitle, _moduleControlSrc,
+                objProvider.AddModuleCoontrols(_newModuleDefID, _moduleControlKey, _moduleControlTitle, _moduleControlSrc,
                                            IconFile, controlType, 0, _moduleControlHelpUrl, _moduleSupportsPartialRendering, true, DateTime.Now,
                                            GetPortalID, GetUsername);
             }
@@ -795,41 +787,161 @@ namespace SageFrame.SageFrameClass.Services
             {
                 #region CheckValidDataSqlProvider
                 string moduleFile = GetSqlDataProviderFile(module.TempFolderPath);
-                if (moduleFile.Trim().Length < 2) moduleFile = module.Version;
+                if (moduleFile.Trim().Length < 2)
+                    moduleFile = module.Version;
 
-                if (!String.IsNullOrEmpty(moduleFile))
-                {
-                    Exceptions = ReadSQLFile(module.TempFolderPath, moduleFile + ".SqlDataProvider");
-                }
+               
                 #endregion
 
-                foreach (XmlNode xn3 in xnList3)
+                bool orderSpecified = (from XmlNode xn3 in xnList3 select xn3.Attributes["order"]).Select(order => order != null).FirstOrDefault();
+
+                if (orderSpecified)
                 {
-                    string _fileName = xn3["name"].InnerXml;
-                    try
+
+                    var sortedItems = xnList3.OfType<XmlElement>()
+                        .OrderBy(item => int.Parse(item.GetAttribute("order")));
+
+                    foreach (var item in sortedItems)
                     {
+                        string _fileName = item["name"].InnerXml;
 
+                        try
+                        {
+                            #region ReadSqlProviderfile
 
-                        #region CheckAlldllFiles
-                        if (!String.IsNullOrEmpty(_fileName) && _fileName.Contains(".dll"))
-                        {
-                            dllFiles.Add(_fileName);
+                            if (!String.IsNullOrEmpty(moduleFile) && !_fileName.Contains("Uninstall.SqlDataProvider") && _fileName.Contains(".SqlDataProvider"))
+                            {
+                                Exceptions = ReadSQLFile(module.TempFolderPath, _fileName);
+                            }
+
+                            #endregion
+
+                            #region CheckAlldllFiles
+
+                            if (!String.IsNullOrEmpty(_fileName) && _fileName.Contains(".dll"))
+                            {
+                                dllFiles.Add(_fileName);
+                            }
+
+                            #endregion
+
+                            #region ReadUninstall SQL FileName
+
+                            if (!String.IsNullOrEmpty(_fileName) && _fileName.Contains("Uninstall.SqlDataProvider"))
+                            {
+                                _unistallScriptFile = _fileName;
+                            }
+
+                            #endregion
                         }
-                        #endregion
-                        #region ReadUninstall SQL FileName
-                        if (!String.IsNullOrEmpty(_fileName) && _fileName.Contains("Uninstall.SqlDataProvider"))
+                        catch (Exception ex)
                         {
-                            _unistallScriptFile = _fileName;
+                            Exceptions += ex.Message;
+                            break;
                         }
-                        #endregion
                     }
-                    catch (Exception ex)
+
+                }
+                else
+                {
+
+
+                    foreach (XmlNode xn3 in xnList3)
                     {
-                        Exceptions += ex.Message;
-                        break;
+
+
+                        string _fileName = xn3["name"].InnerXml;
+
+
+
+                        try
+                        {
+                            #region ReadSqlProviderfile
+
+                            if (!String.IsNullOrEmpty(moduleFile) && !_fileName.Contains("Uninstall.SqlDataProvider") && _fileName.Contains(".SqlDataProvider"))
+                            {
+                                Exceptions = ReadSQLFile(module.TempFolderPath, moduleFile + ".SqlDataProvider");
+                            }
+
+                            #endregion
+
+                            #region CheckAlldllFiles
+
+                            if (!String.IsNullOrEmpty(_fileName) && _fileName.Contains(".dll"))
+                            {
+                                dllFiles.Add(_fileName);
+                            }
+
+                            #endregion
+
+                            #region ReadUninstall SQL FileName
+
+                            if (!String.IsNullOrEmpty(_fileName) && _fileName.Contains("Uninstall.SqlDataProvider"))
+                            {
+                                _unistallScriptFile = _fileName;
+                            }
+
+                            #endregion
+                        }
+                        catch (Exception ex)
+                        {
+                            Exceptions += ex.Message;
+                            break;
+                        }
                     }
                 }
             }
+            XmlNodeList xnList4 = doc.SelectNodes("sageframe/folders/folder/templates/template");
+             if (xnList4 != null && xnList4.Count != 0)
+             {
+                  foreach (XmlNode xn4 in xnList4)
+                  {
+                       string _templateName = xn4["name"].InnerXml;
+                      #region Read Template file
+                       if (!String.IsNullOrEmpty(_templateName))
+                      {
+                          string templateName = _templateName;
+                          AddTemplateZip(templateName, module.TempFolderPath);
+                      }
+                      #endregion
+                  }
+
+             }
+             XmlNodeList directrylist = doc.SelectNodes("sageframe/folders/folder/move/directories/directory");
+
+             if (directrylist != null && directrylist.Count != 0)
+             {
+                 foreach (XmlNode directory in directrylist)
+                 {
+                   
+                     if (directory["from"] != null && directory["to"]!=null)
+                     {
+                         string fromdirectory = module.TempFolderPath + "\\" + directory["from"].InnerXml;
+                         string todirectory = HttpContext.Current.Server.MapPath(@"~/" + directory["to"].InnerXml);
+                         MoveDirectory(fromdirectory, todirectory);
+
+                     }
+                    
+                 }
+             }
+
+             XmlNodeList fileList = doc.SelectNodes("sageframe/folders/folder/move/files/file");
+
+             if (fileList != null && fileList.Count != 0)
+             {
+                 foreach (XmlNode file in fileList)
+                 {
+
+                     if (file["to"] != null && file["name"]!=null)
+                     {
+                         string fileName = file["name"] != null ? file["name"].InnerXml : "";
+                         string fromLocation = module.TempFolderPath + "\\" + file["from"].InnerXml;
+                         string toLocation = HttpContext.Current.Server.MapPath(@"~/" + file["to"].InnerXml);
+                         MoveFile(fileName, fromLocation, toLocation);
+                     }
+
+                 }
+             }
 
             if (Exceptions != string.Empty)
             {
@@ -847,7 +959,17 @@ namespace SageFrame.SageFrameClass.Services
             }
             #endregion
 
+        }
 
+        public void AddTemplateZip(string templateName, string tempPath)
+        {
+            string templateFolder = Path.Combine(tempPath, templateName);
+            string path = HttpContext.Current.Server.MapPath("~/");
+
+            string templateFolderPath = path + "Templates\\" + templateName;
+            CopyDirectory(templateFolder, templateFolderPath);
+            //Directory.Delete(templateFolder);
+            DeleteTempDirectory(templateFolder);
         }
 
 
@@ -932,21 +1054,60 @@ namespace SageFrame.SageFrameClass.Services
             if (module.ModuleID.ToString() != null && module.ModuleID > 0 && Exceptions == string.Empty)
             {
                 string path = HttpContext.Current.Server.MapPath("~/");
-                string targetPath = path + SageFrame.Core.RegisterModule.Common.ModuleFolder + '\\' + module.FolderName;
+                string targetPath = path + SageFrame.Common.RegisterModule.Common.ModuleFolder + '\\' + module.FolderName;
                 CopyDirectory(module.TempFolderPath, targetPath);
                 for (int i = 0; i < dllFiles.Count; i++)
                 {
                     string sourcedllFile = module.TempFolderPath + '\\' + dllFiles[i].ToString();
-                    string targetdllPath = path + SageFrame.Core.RegisterModule.Common.DLLTargetPath + '\\' + dllFiles[i].ToString();
+                    string targetdllPath = path + SageFrame.Common.RegisterModule.Common.DLLTargetPath + '\\' + dllFiles[i].ToString();
                     File.Copy(sourcedllFile, targetdllPath, true);
                     //File.Move();
                 }
             }
+            // check IModuleExtraCodeExecute interface is implemented or not for insallation of module
+            if (IsIModuleExtraCodeInterfaceImplemented(doc))
+            {
+                ExtraCodeOnInstallation(doc, module.TempFolderPath);
+            }
+
             //-----------------------------------//
             RemoveFromAvailableResources(module.ModuleName + ".zip");
             //------------------------------------------//
             DeleteTempDirectory(module.TempFolderPath);
 
+        }
+
+        private void MoveDirectory(string sourceDirectory, string destination)
+        {
+            if (Directory.Exists(sourceDirectory))
+            {
+                if (Directory.Exists(destination))
+                {
+                    CopyDirectory(sourceDirectory, destination);
+                }
+                else
+                {
+                    Directory.CreateDirectory(destination);
+                    CopyDirectory(sourceDirectory, destination);
+                }
+            }
+        }
+
+        private void MoveFile(string filename, string sourceDirectory, string destination)
+        {
+            if (Directory.Exists(sourceDirectory))
+            {
+                string filePath = Path.Combine(sourceDirectory, filename.Trim());
+                string destfilePath = Path.Combine(destination, filename.Trim());
+                if (File.Exists(filePath))
+                {
+                    //if (File.Exists(destfilePath))
+                    //{   //OverWrite file
+                    File.Copy(filePath, destfilePath, true);
+                    File.Delete(filePath);
+                    //}
+                }
+            }
         }
 
         public void CopyDirectory(string SourceDirectory, string DestinationDirectory)
@@ -1170,6 +1331,91 @@ namespace SageFrame.SageFrameClass.Services
 
         //-----------------------------------------------------------//
 
+        #region Extra Code Execution on Insallation & UnInstallation of Module
+        /// <summary>
+        /// function GetAssemblyNameWithIClass(doc); return list with two value
+        /// index 0 consist the AssemblyName
+        /// index 1 consist the Interface implemented Class Name for Install and Unstall of module
+        /// </summary>
+        /// <param name="doc"></param>
+        public void ExtraCodeOnInstallation(XmlDocument doc, string tempFolderPath)
+        {
+            try
+            {
+                List<string> assemblyClassIName = GetAssemblyNameWithIClass(doc);
+                AppDomain.CurrentDomain.Load(assemblyClassIName[0]);
+                foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    string assName = ass.GetName().Name.ToString();
+                    if (assName == assemblyClassIName[0])
+                    {
+                        Type type = ass.GetType(assemblyClassIName[0] + "." + assemblyClassIName[1], false);
+                        IModuleExtraCodeExecute imece = (IModuleExtraCodeExecute)Activator.CreateInstance(type);
 
+                        imece.ExecuteOnInstallation(doc, tempFolderPath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ProcessException(ex);
+            }
+        }
+
+        public void ExtraCodeOnUnInstallation(XmlDocument doc)
+        {
+            try
+            {
+                List<string> assemblyClassIName = GetAssemblyNameWithIClass(doc);
+                foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    string assName = ass.GetName().Name.ToString();
+                    if (assName == assemblyClassIName[0])
+                    {
+                        Type type = ass.GetType(assemblyClassIName[0] + "." + assemblyClassIName[1], false);
+                        IModuleExtraCodeExecute imece = (IModuleExtraCodeExecute)Activator.CreateInstance(type);
+                        imece.ExecuteOnUnInstallation(doc);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ProcessException(ex);
+            }
+        }
+
+        /// <summary>
+        ///Function GetAssemblyNameWithIClass(XmlDocument doc) checks for "interfaceimplementedclass" node in sfe
+        /// "interfaceimplementedclass" node consists assembly name and IModuleExtraCodeExecute interface implemented class name with comma seperated like
+        ///  <interfaceimplementedclass>AssemblyName,IModuleExtraCodeExecuteImplemented</interfaceimplementedclass>
+        ///  function returns list with two values, AssemblyName at index 0 and IModuleExtraCodeExecute interface implemented class name at in index 1
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <returns></returns>
+        public List<string> GetAssemblyNameWithIClass(XmlDocument doc)
+        {
+            XmlNodeList xnInterfaceImplement = doc.SelectNodes("sageframe/folders/folder/interfaceimplementedclass");
+            string[] assemblyValue = new string[] { };
+            if (xnInterfaceImplement != null && xnInterfaceImplement.Count != 0)
+            {
+                char[] commaSeparator = new char[] { ',' };
+                foreach (XmlNode interFaceCode in xnInterfaceImplement)
+                {
+                    assemblyValue = interFaceCode.InnerText.Split(commaSeparator, StringSplitOptions.RemoveEmptyEntries);
+                }
+            }
+            return new List<string> { assemblyValue[0], assemblyValue[1] };
+        }
+
+        public bool IsIModuleExtraCodeInterfaceImplemented(XmlDocument doc)
+        {
+            XmlNodeList xnListModule = doc.SelectNodes("sageframe/folders/folder/interfaceimplementedclass");
+            if (xnListModule != null && xnListModule.Count != 0)
+            {
+                return true;
+            }
+            return false;
+        }
+        #endregion
     }
 }

@@ -124,7 +124,7 @@
     <value />
   </data>
   <data name="BoundFieldResource1.HeaderText" xml:space="preserve">
-    <value>Is Active</value>
+    <value>Active</value>
   </data>
   <data name="btnCustomizeEditorResource1.Text" xml:space="preserve">
     <value>Customize Editor</value>
@@ -238,7 +238,7 @@
     <value />
   </data>
   <data name="lblIsActiveResource1.Text" xml:space="preserve">
-    <value>Is Active</value>
+    <value>Active</value>
   </data>
   <data name="lblIsActiveResource1.ToolTip" xml:space="preserve">
     <value />

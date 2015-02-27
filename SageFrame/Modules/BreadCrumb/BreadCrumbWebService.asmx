@@ -1,6 +1,7 @@
 ﻿<%@ WebService Language="C#" Class="BreadCrumbWebService" %>
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
@@ -26,12 +27,14 @@ public class BreadCrumbWebService : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public string GetBreadCrumb(int PortalID, string PageName,int MenuId)
+    public List<BreadCrumInfo> GetBreadCrumb(int PortalID, string PageName, int MenuId, string CultureCode)
     {
         string breadcrumb = string.Empty;
-        BreadCrumInfo obj = BreadCrumDataProvider.GetBreadCrumb(PageName, PortalID,MenuId);
-        return (obj.TabPath != "" ? obj.TabPath : "");
-
+        List<BreadCrumInfo> obj = new List<BreadCrumInfo>();
+        BreadCrumDataProvider dp = new BreadCrumDataProvider();
+       obj = dp.GetBreadCrumb(PageName, PortalID, MenuId, CultureCode);
+        //return (obj.TabPath != string.Empty ? obj.TabPath : string.Empty);
+        return obj;
     }
 
 }

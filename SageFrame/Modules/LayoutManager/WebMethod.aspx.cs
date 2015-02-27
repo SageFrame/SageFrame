@@ -1,4 +1,11 @@
-﻿using System;
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
+*/
+#endregion
+
+#region "References"
+using System;
 using System.Collections;
 using System.Configuration;
 using System.Data;
@@ -20,6 +27,10 @@ using SageFrame.Templating.xmlparser;
 using SageFrame.FileManager;
 using SageFrame.Common;
 using SageFrame.Pages;
+using System.Text.RegularExpressions;
+using SageFrame.Core;
+using SageFrame.Framework;
+#endregion
 
 
 [ScriptService]
@@ -38,7 +49,6 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
             string templatePath = Decide.IsTemplateDefault(TemplateName.Trim()) ? Utils.GetTemplatePath_Default(TemplateName) : Utils.GetTemplatePath(TemplateName);
             string fileName = Path.GetFileName(filePath);
             filePath = filePath.ToLower().Equals("core") ? string.Format("{0}/Layouts/standard/All.xml", Utils.GetTemplatePath_Default("Default")) : string.Format("{0}/layouts/{1}.xml", templatePath, filePath);
-
             DataSet ds = new DataSet();
             ds.ReadXml(filePath);
             string s = ds.GetXml();
@@ -46,12 +56,9 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         }
         catch (Exception)
         {
-
             return "Couldn't Read the XML file. Make sure it is a valid xml";
         }
-
     }
-
     [WebMethod]
     public static List<KeyValue> GetThemes(string TemplateName)
     {
@@ -67,7 +74,6 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         }
         return lstThemes;
     }
-
     [WebMethod]
     public static List<KeyValue> LoadPresets(string TemplateName)
     {
@@ -85,7 +91,6 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
             }
         }
         return lstPresets;
-
     }
     [WebMethod]
     public static List<PresetInfo> LoadActivePresets(string TemplateName)
@@ -95,83 +100,75 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         string pagepreset = presetPath + "/" + TemplateConstants.PagePresetFile;
         if (File.Exists(pagepreset))
         {
-
             lstActivePresets = PresetHelper.ParsePreset(pagepreset, "pagepresets/page");
         }
         else
         {
             lstActivePresets.Add(PresetInfo.GetPresetPages("default", "*"));
-
         }
         return lstActivePresets;
     }
-
     [WebMethod]
-    public static PresetInfo GetPresetDetails(string TemplateName,int PortalID)
+    public static PresetInfo GetPresetDetails(string TemplateName, int PortalID)
     {
         string presetPath = Decide.IsTemplateDefault(TemplateName.Trim()) ? Utils.GetPresetPath_DefaultTemplate(TemplateName) : Utils.GetPresetPath(TemplateName);
         presetPath += "/" + "pagepreset.xml";
         PresetInfo objPreset = new PresetInfo();
         try
         {
-             objPreset=PresetHelper.LoadPresetDetails(presetPath);
-
-             List<PageEntity> lstMenu = PageController.GetMenuFront(PortalID, false);
-             foreach (PageEntity obj in lstMenu)
-             {
-                 obj.ChildCount = lstMenu.Count(
-                     delegate(PageEntity objMenu)
-                     {
-                         return (objMenu.ParentID == obj.PageID);
-                     }
-                     );
-             }
-             List<string> lstPages = new List<string>();
-             List<KeyValue> lstLayout = new List<KeyValue>();
-             foreach (KeyValue kvp in objPreset.lstLayouts)
-             {
-                 string[] arrPage = kvp.Value.Split(',');
-                 List<string> lstNewPage=new List<string>();
-                 foreach (string page in arrPage)
-                 {
-                     bool exists = lstMenu.Exists(
-                            delegate(PageEntity obj)
-                            {
-                                return obj.PageName == page;
-                            }
-                         );
-                     if (exists || page.ToLower() == "all")
-                     {
-                         lstNewPage.Add(page);                         
-                     }
-                 }
-                 if (lstNewPage.Count > 0)
-                 {
-                     lstLayout.Add(new KeyValue(kvp.Key, string.Join(",", lstNewPage.ToArray())));
-                 }
-             }
-             objPreset.lstLayouts = lstLayout;
-             PresetHelper.WritePreset(presetPath, objPreset);
-
-             return objPreset;
+            objPreset = PresetHelper.LoadPresetDetails(presetPath);
+            PageController objPageController = new PageController();
+            List<PageEntity> lstMenu = objPageController.GetMenuFront(PortalID, false);
+            foreach (PageEntity obj in lstMenu)
+            {
+                obj.ChildCount = lstMenu.Count(
+                    delegate(PageEntity objMenu)
+                    {
+                        return (objMenu.ParentID == obj.PageID);
+                    }
+                    );
+            }
+            List<string> lstPages = new List<string>();
+            List<KeyValue> lstLayout = new List<KeyValue>();
+            foreach (KeyValue kvp in objPreset.lstLayouts)
+            {
+                string[] arrPage = kvp.Value.Split(',');
+                List<string> lstNewPage = new List<string>();
+                foreach (string page in arrPage)
+                {
+                    bool exists = lstMenu.Exists(
+                           delegate(PageEntity obj)
+                           {
+                               return obj.PageName.TrimStart('-') == page;
+                           }
+                        );
+                    if (exists || page.ToLower() == "all")
+                    {
+                        lstNewPage.Add(page);
+                    }
+                }
+                if (lstNewPage.Count > 0)
+                {
+                    lstLayout.Add(new KeyValue(kvp.Key, string.Join(",", lstNewPage.ToArray())));
+                }
+            }
+            objPreset.lstLayouts = lstLayout;
+            //PresetHelper.WritePreset(presetPath, objPreset);
+            return objPreset;
         }
         catch (Exception)
         {
-
             throw;
         }
-
     }
 
     [WebMethod]
-    public static int SavePreset(string TemplateName, string ActiveTheme,string ActiveWidth,List<PresetKeyValue> lstLayouts)
+    public static int SavePreset(string TemplateName, string ActiveTheme, string ActiveWidth, List<PresetKeyValue> lstLayouts, int portalID)
     {
         List<KeyValue> lstLyts = new List<KeyValue>();
-      
         foreach (PresetKeyValue kvp in lstLayouts)
         {
-            lstLyts.Add(new KeyValue(kvp.Key, kvp.Value));           
-
+            lstLyts.Add(new KeyValue(kvp.Key, kvp.Value));
         }
         PresetInfo PresetObj = new PresetInfo();
         PresetObj.ActiveTheme = ActiveTheme;
@@ -184,19 +181,23 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         try
         {
             PresetHelper.WritePreset(presetPath, PresetObj);
-
             return presetstatus;
         }
         catch (Exception)
         {
-
             throw;
         }
+        finally
+        {
+            AppErazer.ClearSysHash(ApplicationKeys.ActivePagePreset + "_" + portalID);
+            SageFrame.Common.CacheHelper.Clear("PresetList");
+        }
+
     }
 
     public static void CreateLayoutControls(string TemplateName, string filePath)
     {
-
+        BlockParser.CheckFilePath();
         string templatePath = Decide.IsTemplateDefault(TemplateName) ? Utils.GetTemplatePath_Default(TemplateName) : Utils.GetTemplatePath(TemplateName);
         string presetPath = Decide.IsTemplateDefault(TemplateName) ? Utils.GetPresetPath_DefaultTemplate(TemplateName) : Utils.GetPresetPath(TemplateName);
         ModulePaneGenerator mg = new ModulePaneGenerator();
@@ -205,7 +206,6 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         {
             List<XmlTag> lstXmlTag = parser.GetXmlTags(filePath, "layout/section");
             List<XmlTag> lstWrappers = parser.GetXmlTags(filePath, "layout/wrappers");
-
             string html = mg.GenerateHTML(lstXmlTag, lstWrappers, 2);
             //html = Utils.FormatHtmlOutput(html);
             string controlclass = Path.GetFileNameWithoutExtension(filePath);
@@ -215,9 +215,7 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
                 FileStream fs = null;
                 using (fs = File.Create(templatePath + "/" + controlname))
                 {
-
                 }
-
             }
             else
             {
@@ -225,22 +223,17 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
                 FileStream fs = null;
                 using (fs = File.Create(templatePath + "/" + controlname))
                 {
-
                 }
             }
-
             using (StreamWriter sw = new StreamWriter(templatePath + "/" + controlname))
             {
                 sw.Write("<%@ Control Language=\"C#\" ClassName=" + controlclass + " %>");
                 sw.Write(Environment.NewLine);
                 sw.Write(html);
             }
-
-
         }
         catch (Exception)
         {
-
             throw;
         }
     }
@@ -258,29 +251,27 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         return lstLayouts;
     }
 
-    [WebMethod]
-    public static List<SectionInfo> LoadBlockTypes()
-    {
-        DirectoryInfo dir = new DirectoryInfo("E://DotNetProjects//sftemplating//SageFrame//Modules//LayoutManager//Sections");
-        List<SectionInfo> lstSections = new List<SectionInfo>();
-        foreach (FileInfo file in dir.GetFiles())
-        {
-            SectionInfo obj = new SectionInfo();
-            obj.SectionName = file.Name;
-            lstSections.Add(obj);
-        }
-        return lstSections;
-    }
+    //[WebMethod]
+    //public static List<SectionInfo> LoadBlockTypes()
+    //{
+    //    DirectoryInfo dir = new DirectoryInfo("E://DotNetProjects//sftemplating//SageFrame//Modules//LayoutManager//Sections");
+    //    List<SectionInfo> lstSections = new List<SectionInfo>();
+    //    foreach (FileInfo file in dir.GetFiles())
+    //    {
+    //        SectionInfo obj = new SectionInfo();
+    //        obj.SectionName = file.Name;
+    //        lstSections.Add(obj);
+    //    }
+    //    return lstSections;
+    //}
 
     [WebMethod]
     public static string ReadBlockHTML(string fileName)
     {
         HTMLBuilder hb = new HTMLBuilder();
-        fileName = "E://DotNetProjects//sftemplating" + fileName;
+        fileName = HttpContext.Current.Server.MapPath("~/") + fileName;
         string html = hb.ReadHTML(fileName);
         return html;
-
-
     }
 
     [WebMethod]
@@ -303,41 +294,33 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         bool IsDefaultActive = activeTemplate.ToLower().Equals("default") ? true : false;
         lstTemplates.Insert(0, new TemplateInfo("Default", "/Core/Template/", GetThumbPath(HttpContext.Current.Server.MapPath("~/Core/Template/"), "Template", "Core/"), IsDefaultActive, true));
         List<TemplateInfo> lstFinalTemplates = new List<TemplateInfo>();
-        List<TemplateInfo> lstAppliedTemplates=new List<TemplateInfo>();
+        List<TemplateInfo> lstAppliedTemplates = new List<TemplateInfo>();
         try
         {
-            lstAppliedTemplates= TemplateController.GetPortalTemplates();
-
+            lstAppliedTemplates = TemplateController.GetPortalTemplates();
         }
         catch (Exception)
         {
-            
             throw;
         }
         foreach (TemplateInfo template in lstTemplates)
         {
-
             bool status = false;
             foreach (TemplateInfo templt in lstAppliedTemplates)
             {
-                if (template.TemplateName.ToLower() == templt.TemplateName.ToLower() && templt.PortalID!=PortalID)
+                if (template.TemplateName.ToLower() == templt.TemplateName.ToLower() && templt.PortalID != PortalID)
                 {
                     status = true;
                     break;
                 }
-
             }
             if (!status)
                 template.IsApplied = false;
             else
                 template.IsApplied = true;
-
         }
-
-
         return lstTemplates;
     }
-
 
     public static string GetThumbPath(string TemplatePath, string TemplateName, string RootFolder)
     {
@@ -357,12 +340,10 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         return thumbpath;
     }
 
-
     [WebMethod]
     public static void ActivateTemplate(string TemplateName, int PortalID)
     {
-        HttpContext.Current.Cache.Remove("SageFrameCss");
-        HttpContext.Current.Cache.Remove("SageFrameJs");
+        ClearOptimizationCache(PortalID);
         string optimized_path = HttpContext.Current.Server.MapPath(SageFrameConstants.OptimizedResourcePath);
         IOHelper.DeleteDirectoryFiles(optimized_path, ".js,.css");
         if (File.Exists(HttpContext.Current.Server.MapPath(SageFrameConstants.OptimizedCssMap)))
@@ -373,41 +354,56 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         {
             DeleteNodes(HttpContext.Current.Server.MapPath(SageFrameConstants.OptimizedJsMap), "resourcemap/resourcemap");
         }
-
         TemplateController.ActivateTemplate(TemplateName, PortalID);
     }
+
+    private static void ClearOptimizationCache(int PortalID)
+    {
+        AppErazer.ClearSysHash(ApplicationKeys.ActivePagePreset + "_" + PortalID);
+        AppErazer.ClearSysHash(ApplicationKeys.ActiveTemplate + "_" + PortalID);
+        AppErazer.ClearSysHash(ApplicationKeys.ActivePagePreset + "_" + PortalID);
+        AppErazer.ClearSysCache();
+        string optimized_path = HttpContext.Current.Server.MapPath(SageFrameConstants.OptimizedResourcePath);
+        IOHelper.DeleteDirectoryFiles(optimized_path, ".js,.css");
+        if (File.Exists(HttpContext.Current.Server.MapPath(SageFrameConstants.OptimizedCssMap)))
+        {
+            SageFrame.Web.XmlHelper.DeleteNodes(HttpContext.Current.Server.MapPath(SageFrameConstants.OptimizedCssMap), "resourcemap/resourcemap");
+        }
+        if (File.Exists(HttpContext.Current.Server.MapPath(SageFrameConstants.OptimizedJsMap)))
+        {
+            SageFrame.Web.XmlHelper.DeleteNodes(HttpContext.Current.Server.MapPath(SageFrameConstants.OptimizedJsMap), "resourcemap/resourcemap");
+        }
+    }
+
     public static void DeleteNodes(string target_path, string nodeName)
     {
         XmlDocument doc = new XmlDocument();
         doc.Load(target_path);
         XmlNode node = doc.SelectSingleNode("resourcemaps");
         node.RemoveAll();
-        //XmlNodeList nodeList = node.ChildNodes;
-        //var mapCount = nodeList.Count;
-        //for (int i = 0; i < mapCount; i++)
-        //{
-        //    nodeList[i].ParentNode.RemoveChild(nodeList[i]);
-        //}            
         doc.Save(target_path);
     }
 
     [WebMethod]
     public static TemplateInfo GetBasicSettings(string TemplateName)
     {
-        XmlParser _parser = new XmlParser();
-        string filePath = Decide.IsTemplateDefault(TemplateName.Trim()) ? Utils.GetTemplateInfoFilePath_Default(TemplateName) : Utils.GetTemplateInfoFilePath(TemplateName);
         TemplateInfo objTemp = new TemplateInfo();
+        string filePath = Decide.IsTemplateDefault(TemplateName.Trim()) ? Utils.GetTemplateInfoFilePath_Default(TemplateName) : Utils.GetTemplateInfoFilePath(TemplateName);
         if (File.Exists(filePath))
         {
-            List<XmlTag> lstTags = _parser.GetXmlTags(filePath, "template");
-            objTemp = TemplateHelper.CreateTemplateObject(lstTags);
+            XmlDocument doc = new XmlDocument();
+            doc.Load(filePath);
+            XmlNode root = doc.DocumentElement;
+            objTemp.TemplateName = root.SelectSingleNode("name").ChildNodes[0].Value;
+            objTemp.Author = root.SelectSingleNode("author").ChildNodes[0].Value;
+            objTemp.Description = root.SelectSingleNode("description").ChildNodes[0].Value;
+            objTemp.Website = root.SelectSingleNode("website").ChildNodes[0].Value;
+            return objTemp;
         }
         else
         {
-            objTemp = TemplateHelper.CreateEmptyTemplateObject();
+            return objTemp = TemplateHelper.CreateEmptyTemplateObject();
         }
-        return objTemp;
-
     }
 
     [WebMethod]
@@ -415,6 +411,8 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
     {
         try
         {
+            //Check For Default Layout
+            BlockParser.CheckFilePath(FilePath.ToLower());
             List<XmlTag> lstXmlTags = new List<XmlTag>();
             XmlParser parser = new XmlParser();
             string templatePath = Decide.IsTemplateDefault(TemplateName.Trim()) ? Utils.GetTemplatePath_Default(TemplateName) : Utils.GetTemplatePath(TemplateName);
@@ -427,10 +425,141 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         }
         catch (Exception)
         {
+            if (FilePath.ToLower().Equals("core"))
+                return ("<div class='sfMessage sfErrormsg'>Invalid XML document<input type='button' class='sfResetCore' id='btnReset' value='Reset Core'/></div>");
+            else
+                return ("<div class='sfMessage sfErrormsg'>Invalid XML document</div>");
 
-            return ("<div class='sfMessage sfErrormsg'>Invalid XML document</div>");
         }
+    }
 
+    public static int last;
+    public static string ParselinkedInXMl(string xml, string nodeStart, int sectionIndex)
+    {
+        string nodeLast = "</section>";
+        int start = xml.ToLower().IndexOf(nodeStart.ToLower());
+        if (start != -1)
+        {
+            last = xml.IndexOf(nodeLast, last + nodeLast.Length);
+            int length2 = last - start - nodeStart.Length;
+            xml = xml.Substring(start + nodeStart.Length, length2);
+            return xml;
+        }
+        else
+            return string.Empty;
+    }
+
+    [WebMethod]
+    public static void RecreateLayout(string FilePath, string TemplateName, string sfHeader, string sfContain, string sfFooter)
+    {
+
+        string templatePath = Decide.IsTemplateDefault(TemplateName.Trim()) ? Utils.GetTemplatePath_Default(TemplateName) : Utils.GetTemplatePath(TemplateName);
+        //string filePath = string.Format("{0}/layouts/{1}.xml",templatePath,FilePath);
+        string filePath = FilePath.ToLower().Equals("core") ? string.Format("{0}/Layouts/standard/All.xml", Utils.GetTemplatePath_Default("Default")) : string.Format("{0}/layouts/{1}.xml", templatePath, FilePath);
+        //string filePath = HttpContext.Current.Server.MapPath("~/") + FilePath;
+        StreamReader srMatchCase = new StreamReader(filePath);
+        StreamReader srReadToEnd = new StreamReader(filePath);
+        string xml = srReadToEnd.ReadToEnd();
+        string sectionHeader = "<section name=\"sfHeader\"";
+        string sectionContain = "<section name=\"sfContent\"";
+        string sectionFooter = "<section name=\"sfFooter\"";
+        string line = string.Empty;
+        try
+        {
+            while ((line = srMatchCase.ReadLine()) != null)
+            {
+                if (line.Contains(sectionHeader))
+                {
+                    sectionHeader = line;
+                }
+                if (line.Contains(sectionContain))
+                {
+                    sectionContain = line;
+                }
+                if (line.Contains(sectionFooter))
+                {
+                    sectionFooter = line;
+                }
+                if (line.Contains("leftA"))
+                {
+                    sfContain.Replace(line, "");
+                    sfContain += line;
+                }
+                if (line.Contains("leftB"))
+                {
+                    sfContain.Replace(line, "");
+                    sfContain += line;
+                }
+                if (line.Contains("lefttop"))
+                {
+                    sfContain.Replace(line, "");
+                    sfContain += line;
+                }
+                if (line.Contains("leftbottom"))
+                {
+                    sfContain.Replace(line, "");
+                    sfContain += line;
+                }
+                if (line.Contains("righttop"))
+                {
+                    sfContain.Replace(line, "");
+                    sfContain += line;
+                }
+                if (line.Contains("RightA"))
+                {
+                    sfContain.Replace(line, "");
+                    sfContain += line;
+                }
+                if (Regex.IsMatch(line, @"\s*<\s*placeholder.*name\s*=\s*[" + "\"" + @"']+\s*rightB\s*[" + "\"" + @"']+[^>]*>.*</placeholder\s*\>"))
+                {
+                    sfContain.Replace(line, "");
+                    sfContain += line;
+                }
+                if (Regex.IsMatch(line, @"\s*<\s*placeholder.*name\s*=\s*[" + "\"" + @"']+\s*rightbottom\s*[" + "\"" + @"']+[^>]*>.*</placeholder\s*\>"))
+                {
+                    sfContain.Replace(line, "");
+                    sfContain += line;
+                }
+
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+        srMatchCase.Close();
+        srReadToEnd.Close();
+        string oldSectionHeader = ParselinkedInXMl(xml, sectionHeader, 1);
+        string oldsectionContain = ParselinkedInXMl(xml, sectionContain, 2);
+        string oldsectionFooter = ParselinkedInXMl(xml, sectionFooter, 3);
+        last = 0;
+        try
+        {
+            if (oldSectionHeader != string.Empty)
+            {
+                xml = xml.Replace(oldSectionHeader, sfHeader);
+            }
+            if (oldsectionContain != string.Empty)
+            {
+                xml = xml.Replace(oldsectionContain, sfContain);
+            }
+            if (oldsectionFooter != string.Empty)
+            {
+                xml = xml.Replace(oldsectionFooter, sfFooter);
+            }
+            xml = xml.Replace(@"width=""100""", "");
+            //xml = xml.Replace(oldSectionHeader, sfHeader).Replace(oldsectionContain,sfContain).Replace(oldsectionFooter,sfFooter);
+            StreamWriter srWriteXml = new StreamWriter(filePath);
+            srWriteXml.Write(xml);
+            srWriteXml.Close();
+            UpdateLayout(FilePath, xml, TemplateName);
+
+
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     [WebMethod]
@@ -450,9 +579,7 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
 
             using (StreamWriter sw = new StreamWriter(filePath))
             {
-
                 sw.Write(Xml);
-
             }
             CreateLayoutControls(TemplateName, filePath);
         }
@@ -461,7 +588,6 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
             status = 1;
         }
         return status;
-
     }
     [WebMethod]
     public static int CreateLayout(string FilePath, string Xml, string TemplateName)
@@ -495,10 +621,7 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
 
             throw;
         }
-
-
     }
-
 
     [WebMethod]
     public static List<FileEntity> GetFiles(string TemplateName, string FolderPath)
@@ -521,17 +644,13 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         return lstFiles;
     }
 
-
     public static long Size(DirectoryInfo dirInfo)
     {
         long total = 0;
-
         foreach (System.IO.FileInfo file in dirInfo.GetFiles())
             total += file.Length;
-
         foreach (System.IO.DirectoryInfo dir in dirInfo.GetDirectories())
             total += Size(dir);
-
         return total;
     }
     [WebMethod]
@@ -554,11 +673,8 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            
             throw ex;
         }
-        
-
     }
     [WebMethod]
     public static void DeleteTheme(string TemplateName, string ThemeName)
@@ -566,7 +682,6 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         string target_dir = Decide.IsTemplateDefault(TemplateName) ? Utils.GetTemplatePath_Default(TemplateName) : Utils.GetTemplatePath(TemplateName);
         string theme_dir = target_dir + "/Themes/" + ThemeName;
         Utils.DeleteDirectory(theme_dir);
-
     }
     [WebMethod]
     public static List<KeyValue> GetPreviewImages(string TemplateName)
@@ -577,9 +692,9 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         DirectoryInfo dirInfo = new DirectoryInfo(imagePath);
         foreach (FileInfo file in dirInfo.GetFiles())
         {
-            string ext=Path.GetExtension(file.Name);
-            if(ext==".jpg" || ext==".png" || ext==".gif")
-            lstImages.Add(new KeyValue(file.Name, file.FullName));
+            string ext = Path.GetExtension(file.Name);
+            if (ext == ".jpg" || ext == ".png" || ext == ".gif")
+                lstImages.Add(new KeyValue(file.Name, file.FullName));
         }
         return lstImages;
     }
@@ -615,15 +730,12 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
             if (filepath == "") filepath = "~/";
             string completePath = HttpContext.Current.Server.MapPath(filepath + "/Templates/" + FolderName);
             string path = HttpContext.Current.Server.MapPath(filepath);
-
             DirectoryInfo SrcDir = new DirectoryInfo(path + "/Core/Blank/");
             DirectoryInfo DisDir = new DirectoryInfo(path + "/Templates/" + FolderName);
             CopyDirectory(SrcDir, DisDir);
-
         }
         catch (Exception e)
         {
-
             throw e;
         }
     }
@@ -635,7 +747,6 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         {
             destination.Create();
         }
-
         FileInfo[] files = source.GetFiles();
         foreach (FileInfo file in files)
         {
@@ -647,37 +758,61 @@ public partial class Modules_LayoutManager_WebMethod : System.Web.UI.Page
         {
             // Get destination directory.
             string destinationDir = Path.Combine(destination.FullName, dir.Name);
-
             // Call CopyDirectory() recursively.
             CopyDirectory(dir, new DirectoryInfo(destinationDir));
         }
     }
 
-   
     [WebMethod]
-    public static Foldername CheckExistingTemplate(string filepath,string FolderName)
+    public static Foldername CheckExistingTemplate(string filepath, string FolderName)
     {
         string fname = string.Empty;
         string TempFolder = HttpContext.Current.Server.MapPath(filepath + "/Templates/");
-        DirectoryInfo dInfo = new DirectoryInfo(TempFolder);       
+        DirectoryInfo dInfo = new DirectoryInfo(TempFolder);
         Foldername info = new Foldername();
         foreach (DirectoryInfo obj in dInfo.GetDirectories())
-        {         
+        {
             if (obj.Name.ToLower() == FolderName.ToLower())
             {
-                info.Existfolder = obj.Name.ToLower();                
-            }           
+                info.Existfolder = obj.Name.ToLower();
+            }
         }
-        return (info) ;   
+        return (info);
     }
 
-   
-    public class Foldername
+    [WebMethod]
+    public static void ResetCore(string FilePath, string TemplateName)
+    {
+        try
+        {
+            string xml = Utils.FallbackLayout();
+            string DefaultfilePath = string.Format("{0}/Layouts/standard/All.xml", Utils.GetTemplatePath_Default("Default"));
+            if (!File.Exists(DefaultfilePath))
+            {
 
+                FileStream fs = File.Create(DefaultfilePath);
+                fs.Flush();
+                fs.Close();
+                fs.Dispose();
+
+            }
+            StreamWriter srWriteXml = new StreamWriter(DefaultfilePath);
+            srWriteXml.WriteLine(xml);
+            srWriteXml.Close();
+        }
+        catch (Exception ex)
+        {
+
+            throw ex;
+        }
+    }
+
+    #region "Entity"
+    public class Foldername
     {
         public string Existfolder { get; set; }
-
         public Foldername() { }
     }
+    #endregion
 
 }

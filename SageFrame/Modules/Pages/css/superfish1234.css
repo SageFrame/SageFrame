@@ -53,7 +53,7 @@ ul.sf-menu li li li:hover ul, ul.sf-menu li li li.sfHover ul {
 /*border-left:	1px solid #fff;	
 	padding: 		.65em 1em;
 	text-decoration:none;
-	font:bold 14px Arial, Helvetica, sans-serif; color:#666;*/
+	font:bold 14px Tahoma, Geneva, sans-serif; color:#666;*/
 }
 .sf-menu a, .sf-menu a:visited { /* visited pseudo selector so IE6 applies text colour*/
 /*	color:			#000;*/
@@ -113,7 +113,7 @@ a:focus > .sf-sub-indicator, a:hover > .sf-sub-indicator, a:active > .sf-sub-ind
 }
 /* nwe css */
 .sf-menu li { position:relative; background: url(../images/navigation-seperator.jpg) no-repeat 0 0;}
-.sf-menu li a { color: #fff; display: inline-block; font:bold 12px/46px Arial, Helvetica, sans-serif; height: 46px; padding: 0 20px; text-decoration: none; }
+.sf-menu li a { color: #fff; display: inline-block; font:bold 12px/46px Tahoma, Geneva, sans-serif; height: 46px; padding: 0 20px; text-decoration: none; }
 .sf-menu li a:hover, .sf-menu li.cssClassActive a {background-color:#f9f2f2; color:#ae5e00; text-shadow:1px 1px 0 #fff;}
 .sf-menu li.cssClassParent { background-color:#f9f2f2; color:#ae5e00;}
 .sf-menu li.cssClassParent:hover {}
@@ -124,7 +124,7 @@ a:focus > .sf-sub-indicator, a:hover > .sf-sub-indicator, a:active > .sf-sub-ind
 .sf-menu li ul li{ margin:0;}
 .sf-menu li:hover ul { display:block;}
 .sf-menu li ul li:first-child{ background:none;}
-.sf-menu li ul li a{color:#ae5e00; background: url(../images/black-doted-line.gif) repeat-x bottom; display: block; font: bold 12px/26px Arial, Helvetica, sans-serif; height: 26px; padding: 0 10px 0 20px;}
+.sf-menu li ul li a{color:#ae5e00; background: url(../images/black-doted-line.gif) repeat-x bottom; display: block; font: bold 12px/26px Tahoma, Geneva, sans-serif; height: 26px; padding: 0 10px 0 20px;}
 .sf-menu li ul li a:hover{ background-color:#fff; text-shadow:1px 1px 0 #fff;}
 
 
@@ -136,7 +136,7 @@ a:focus > .sf-sub-indicator, a:hover > .sf-sub-indicator, a:active > .sf-sub-ind
 }
 .sf-menu li ul li:hover ul{ display:block;}
 .sf-menu li ul li ul li{ margin:0; }
-.sf-menu li ul li ul li a{{background: url(../images/black-doted-line.gif) repeat-x bottom; display: block; font: bold 12px/26px Arial, Helvetica, sans-serif; height: 26px; padding: 0 10px;}
+.sf-menu li ul li ul li a{{background: url(../images/black-doted-line.gif) repeat-x bottom; display: block; font: bold 12px/26px Tahoma, Geneva, sans-serif; height: 26px; padding: 0 10px;}
 .sf-menu li ul li ul li:first-child{ background:none;}
 
 

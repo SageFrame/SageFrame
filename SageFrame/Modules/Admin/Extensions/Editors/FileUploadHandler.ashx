@@ -4,17 +4,11 @@ using System;
 using System.Web;
 using System.IO;
 public class FileUploadHandler : IHttpHandler {
-
-
     public void ProcessRequest(HttpContext context)
     {
-        //context.Response.ContentType = "text/plain";
-        //context.Response.Write("Hello World");
-
         int retStatus = 0;
         if (HttpContext.Current.Request.Files.Count > 0)
         {
-
             string s = HttpContext.Current.Request.Form["folderPath"] as string;
             string strFileName = Path.GetFileName(HttpContext.Current.Request.Files[0].FileName);
             string strExtension = Path.GetExtension(HttpContext.Current.Request.Files[0].FileName).ToLower();
@@ -23,12 +17,9 @@ public class FileUploadHandler : IHttpHandler {
             object obj = new object();
             lock (obj)
             {
-
                 if (!Directory.Exists(strBaseLocation))
                 {
-
                     Directory.CreateDirectory(strBaseLocation);
-
                 }
             }
             if (!File.Exists(strSaveLocation))
@@ -39,18 +30,13 @@ public class FileUploadHandler : IHttpHandler {
             {
                 retStatus = 1;
             }
-
-
             strSaveLocation = strSaveLocation.Replace(HttpContext.Current.Server.MapPath("~/"), "");
             strSaveLocation = strSaveLocation.Replace("\\", "/");
-
             HttpContext.Current.Response.ContentType = "text/plain";
             HttpContext.Current.Response.Write("({ 'Status': '" + retStatus + "','Message': '' })");
             HttpContext.Current.Response.End();
         }
-
     }
-
     public bool IsReusable
     {
         get

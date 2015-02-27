@@ -1,26 +1,10 @@
-﻿
+﻿#region "Copyright"
 /*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +12,7 @@ using System.Text;
 using System.Xml;
 using SageFrame.Templating.xmlparser;
 using System.IO;
+#endregion
 
 namespace SageFrame.Templating
 {
@@ -61,7 +46,7 @@ namespace SageFrame.Templating
                 tag.PresetName = preset.Attributes["layout"].Value;
                 tag.LSTPages = PageList(preset.InnerText);                
                 lstPreset.Add(tag);
-                if (preset.InnerText.Contains("All") || preset.InnerText.Equals("All") || preset.InnerText.Equals("All"))
+                if (preset.InnerText.Equals("All") || preset.InnerText.Equals("all"))
                 {
                     tag.IsDefault = true;
                 }
@@ -163,9 +148,8 @@ namespace SageFrame.Templating
                     writer.WriteString(Utils.GetSEOName(kvp.Value,"-"));
                     writer.WriteEndElement();
                 }
-                //writer.WriteString(Path.GetFileNameWithoutExtension(objPreset.ActiveLayout));
+                
                 writer.WriteEndElement();
-
                 writer.WriteStartElement("theme");
                 writer.WriteString(objPreset.ActiveTheme);
                 writer.WriteEndElement();
@@ -173,8 +157,6 @@ namespace SageFrame.Templating
                 writer.WriteStartElement("width");
                 writer.WriteString(objPreset.ActiveWidth);
                 writer.WriteEndElement();
-
-
 
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
@@ -277,15 +259,16 @@ namespace SageFrame.Templating
             List<string> lstAllPages = new List<string>();
             if (File.Exists(pagepreset))
             {
-
-                lstActivePresets = PresetHelper.ParsePreset(pagepreset, "pagepreset/layout/preset",out lstAllPages);
+                if (!CacheHelper.Get("PresetList", out lstActivePresets))
+                {
+                    lstActivePresets = PresetHelper.ParsePreset(pagepreset, "pagepreset/layout/preset", out lstAllPages);
+                    CacheHelper.Add(lstActivePresets, "PresetList");
+                }
             }
             else
             {
                 lstActivePresets.Add(PresetInfo.GetPresetPages("default", "*"));
-
             }
-
             string pagepresetactive = string.Empty;
             string defaultpreset = "layout.ascx";
             foreach (PresetInfo preset in lstActivePresets)
@@ -305,28 +288,28 @@ namespace SageFrame.Templating
                             break;
                         }
                     }
-                }              
-               
+                }
             }
             if (pagepresetactive == string.Empty)
             {
                 pagepresetactive = defaultpreset;
             }
-            pagepresetactive =Decide.IsTemplateDefault(TemplateName)?string.Format("~/Core/Template/{1}",TemplateName,pagepresetactive):string.Format("~/Templates/{0}/{1}",TemplateName,pagepresetactive);
-           
+            pagepresetactive =Decide.IsTemplateDefault(TemplateName)?string.Format("~/Core/Template/{1}",TemplateName,pagepresetactive):string.Format("~/Templates/{0}/{1}",TemplateName,pagepresetactive);           
             return pagepresetactive;
-
         }
 
         public static string LoadHandheldControl(string TemplateName)
         {
             return (Decide.IsTemplateDefault(TemplateName) ? "~/Core/Template/handheld.ascx" : string.Format("~/Templates/{0}/handheld.ascx", TemplateName));
         }
+        public static string LoadDeviceType3(string TemplateName)
+        {
+            return (Decide.IsTemplateDefault(TemplateName) ? "~/Core/Template/handheld.ascx" : string.Format("~/Templates/{0}/devicetype3.ascx", TemplateName));
+        }
 
         public static PresetInfo LoadActivePagePreset(string TemplateName, string PageName)
         {
-            string presetPath = TemplateName.ToLower().Equals("default") ? Utils.GetPresetPath_DefaultTemplate(TemplateName) : Utils.GetPresetPath(TemplateName);
-           
+            string presetPath = TemplateName.ToLower().Equals("default") ? Utils.GetPresetPath_DefaultTemplate(TemplateName) : Utils.GetPresetPath(TemplateName);           
             string pagepreset = presetPath + "/" + TemplateConstants.PagePresetFile;           
             PresetInfo pagepresetactive = new PresetInfo();
             pagepresetactive = LoadPresetDetails(pagepreset);
@@ -343,20 +326,16 @@ namespace SageFrame.Templating
                             break;
                         }
                     }
-
                     if (kvp.Value.Equals("all") || kvp.Value.Equals("All") || kvp.Value.Equals("*") || kvp.Value.Equals(""))
                     {
                         defaultPreset = kvp.Key;
                     }
-                
-
             }
             if (pagepresetactive.ActiveLayout == "" || pagepresetactive.ActiveLayout == null)
             {
                 pagepresetactive.ActiveLayout = defaultPreset;
             }
             return pagepresetactive;
-
         }
 
         public static void UpdatePreset(PresetInfo preset, string TemplateName)

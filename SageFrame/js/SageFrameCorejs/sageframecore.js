@@ -21,6 +21,9 @@ function NumberKey(evt) {
         return false;
     }
     return true;
+
+
+
 }
 function NumberKeyWithDecimal(evt) {
     var charCode = (evt.which) ? evt.which : event.keyCode;
@@ -39,7 +42,7 @@ function NumberKeyWithDecimal(evt) {
 }
 
 function __sfe_SectionMaxMin(sender, obj, TemplateName) {
-
+    alert(sender + "111");
     var imgSrc = document.getElementById(sender);
     var el = document.getElementById(obj);
     if (el.style.display != "none") {
@@ -393,3 +396,42 @@ function setMessageToken(val) {
 function SetSearchValue(frmID, toID) {
     $("#" + toID).val($("#" + frmID).val());
 }
+
+
+
+////////////////////Added BY Niranjan ?//////////
+
+function GetSystemLocale(text) {
+    return SystemLocale[$.trim(text)] == undefined ? text : SystemLocale[$.trim(text)];
+}
+
+function getLocale(moduleKey, text) {
+    return moduleKey[$.trim(text)] == undefined ? text : moduleKey[$.trim(text)];
+}
+$.fn.SystemLocalize = function() {
+    return this.each(function() {
+
+        var t = $(this);
+        if (t.is("input:button")) {
+            var text = t.attr("value");
+            var localeValue = SystemLocale[$.trim(text)];
+            t.attr("value", localeValue);
+        }
+        else {
+            t.html(SystemLocale[$.trim(t.text())] == undefined ? $.trim(t.text()) : SystemLocale[$.trim(t.text())]);
+        }
+    }); return false;
+};
+$.fn.Localize = function(p) {
+    return this.each(function() {
+        var t = $(this);
+        if (t.is("input:button")) {
+            var text = t.attr("value");
+            var localeValue = p.moduleKey[$.trim(text)] == undefined ? text : p.moduleKey[$.trim(text)];
+            t.attr("value", localeValue);
+        }
+        else {
+            t.html(p.moduleKey[$.trim(t.text())] == undefined ? $.trim(t.text()) : p.moduleKey[$.trim(t.text())]);
+        }
+    });
+};

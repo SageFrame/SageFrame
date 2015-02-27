@@ -1,37 +1,23 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region References
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Text.RegularExpressions;
+#endregion
 
 namespace SageFrame.Templating.xmlparser
 {
     public class XmlParser
     {
-        public List<XmlTag> GetXmlTags(string xmlFile,string startParseNode)
+        public List<XmlTag> GetXmlTags(string xmlFile, string startParseNode)
         {
             List<XmlTag> lstSectionNodes = new List<XmlTag>();
             XmlDocument doc = XmlHelper.LoadXMLDocument(xmlFile);
@@ -39,12 +25,12 @@ namespace SageFrame.Templating.xmlparser
             foreach (XmlNode section in sectionList)
             {
                 XmlTag tag = new XmlTag();
-                tag.TagName = section.Name;               
-                tag.TagType = GetXmlTagType(section);               
+                tag.TagName = section.Name;
+                tag.TagType = GetXmlTagType(section);
                 tag.ChildNodeCount = GetChildNodeCount(section);
                 tag.AttributeCount = GetAttributeCount(section);
                 tag.LSTAttributes = GetAttributesCollection(section);
-                tag.LSTChildNodes = section.ChildNodes.Count>0?GetChildNodeCollection(section):new List<XmlTag>();
+                tag.LSTChildNodes = section.ChildNodes.Count > 0 ? GetChildNodeCollection(section) : new List<XmlTag>();
                 tag.CompleteTag = BuildCompleteTag(tag);
                 tag.PchArr = GetPlaceholders(section);
                 tag.Placeholders = string.Join(",", tag.PchArr);
@@ -53,7 +39,7 @@ namespace SageFrame.Templating.xmlparser
                     lstSectionNodes.Add(tag);
                 }
             }
-            doc.Save(xmlFile);
+            //doc.Save(xmlFile);
             return lstSectionNodes;
         }
 
@@ -79,7 +65,7 @@ namespace SageFrame.Templating.xmlparser
             switch (xmlNode.Name)
             {
                 case "layout":
-                    tagType=XmlTagTypes.Layout;
+                    tagType = XmlTagTypes.Layout;
                     break;
                 case "section":
                     tagType = XmlTagTypes.Section;
@@ -117,11 +103,11 @@ namespace SageFrame.Templating.xmlparser
                 case "sfright":
                     tagType = XmlTagTypes.SFRIGHT;
                     break;
-                
+
             }
             return tagType;
         }
-               
+
 
         public int GetChildNodeCount(XmlNode xmlNode)
         {
@@ -137,22 +123,22 @@ namespace SageFrame.Templating.xmlparser
         {
             List<LayoutAttribute> lstXmlAttr = new List<LayoutAttribute>();
             int attrCount = xn.Attributes.Count;
-            while (attrCount>0)
+            while (attrCount > 0)
             {
                 attrCount--;
                 LayoutAttribute xa = new LayoutAttribute();
-                xa.Name=Utils.CleanString(xn.Attributes[attrCount].Name);
-                xa.Value=Utils.CleanString(xn.Attributes[attrCount].Value);
-                xa.Type=GetXmlAttributeType(xa);
+                xa.Name = Utils.CleanString(xn.Attributes[attrCount].Name);
+                xa.Value = Utils.CleanString(xn.Attributes[attrCount].Value);
+                xa.Type = GetXmlAttributeType(xa);
                 lstXmlAttr.Add(xa);
-                
+
             }
             return lstXmlAttr;
         }
         public string[] GetPlaceholders(XmlNode node)
-        {           
+        {
             List<string> lstPch = new List<string>();
-          
+
             List<XmlTag> lstChildNodes = new List<XmlTag>();
             string childNode = "";
             if (node.ChildNodes.Count > 0)
@@ -162,11 +148,11 @@ namespace SageFrame.Templating.xmlparser
             XmlNodeList xnList = node.SelectNodes(childNode);
 
             for (int i = 0; i < node.ChildNodes.Count; i++)
-            {              
-                if(node.ChildNodes[i].Attributes["name"]!=null)
-                lstPch.Add(node.ChildNodes[i].Attributes["name"].Value);               
+            {
+                if (node.ChildNodes[i].Attributes["name"] != null)
+                    lstPch.Add(node.ChildNodes[i].Attributes["name"].Value);
 
-            }            
+            }
             return lstPch.ToArray();
         }
 
@@ -196,14 +182,14 @@ namespace SageFrame.Templating.xmlparser
         public List<XmlTag> GetChildNodeCollection(XmlNode node)
         {
             List<XmlTag> lstChildNodes = new List<XmlTag>();
-            string childNode = "";            
+            string childNode = "";
             if (node.ChildNodes.Count > 0)
             {
-                childNode=node.ChildNodes[0].Name;
+                childNode = node.ChildNodes[0].Name;
             }
             XmlNodeList xnList = node.SelectNodes(childNode);
-            
-            for(int i=0;i<node.ChildNodes.Count;i++)
+
+            for (int i = 0; i < node.ChildNodes.Count; i++)
             {
                 XmlTag tag = new XmlTag();
                 tag.TagName = node.ChildNodes[i].Name;
@@ -217,13 +203,13 @@ namespace SageFrame.Templating.xmlparser
                 {
                     lstChildNodes.Add(tag);
                 }
-            
-            }            
-            
+
+            }
+
             return lstChildNodes;
         }
 
-       
+
 
         public string BuildCompleteTag(XmlTag tag)
         {
@@ -237,7 +223,7 @@ namespace SageFrame.Templating.xmlparser
         public string GetStartTag(XmlTag tag)
         {
             bool hasAttribute = tag.LSTAttributes.Count > 0 ? true : false;
-            StringBuilder sb = new StringBuilder();           
+            StringBuilder sb = new StringBuilder();
             if (hasAttribute)
             {
                 sb.Append("<");
@@ -267,7 +253,7 @@ namespace SageFrame.Templating.xmlparser
             {
                 sb.Append(attr.Name);
                 sb.Append("=");
-                sb.Append("'"+attr.Value+"'");
+                sb.Append("'" + attr.Value + "'");
                 sb.Append(" ");
             }
             return sb.ToString();
@@ -277,7 +263,7 @@ namespace SageFrame.Templating.xmlparser
         {
             bool exists;
             exists = Enum.IsDefined(typeof(XmlTagTypes), tag.TagType);
-            return exists;          
+            return exists;
 
         }
 
@@ -322,10 +308,6 @@ namespace SageFrame.Templating.xmlparser
             }
             return attrTypes;
         }
-
-       
-
-       
 
     }
 }

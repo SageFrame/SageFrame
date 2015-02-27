@@ -112,17 +112,11 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnCancelProfileResource1.Text" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="btnCancelProfileResource1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="btnDeleteProfilePicResource1.AlternateText" xml:space="preserve">
     <value />
   </data>
@@ -130,13 +124,19 @@
     <value />
   </data>
   <data name="btnEditResource1.Text" xml:space="preserve">
-    <value>Edit</value>
+    <value />
   </data>
   <data name="btnEditResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="btnManagePasswordSaveResource1.Text" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="btnManagePasswordSaveResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="btnSaveResource1.Text" xml:space="preserve">
-    <value>Save</value>
+    <value />
   </data>
   <data name="btnSaveResource1.ToolTip" xml:space="preserve">
     <value />
@@ -181,7 +181,7 @@
     <value />
   </data>
   <data name="Label18Resource1.Text" xml:space="preserve">
-    <value>Email:</value>
+    <value>Email</value>
   </data>
   <data name="Label18Resource1.ToolTip" xml:space="preserve">
     <value />
@@ -246,6 +246,18 @@
   <data name="lblAboutYouResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lblBirthDateResource1.Text" xml:space="preserve">
+    <value>BirthDate</value>
+  </data>
+  <data name="lblBirthDateResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblBirthDateTestResource1.Text" xml:space="preserve">
+    <value>BirthDate</value>
+  </data>
+  <data name="lblBirthDateTestResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblDisplayUserNameResource1.Text" xml:space="preserve">
     <value />
   </data>
@@ -256,6 +268,18 @@
     <value>FullName</value>
   </data>
   <data name="lblFullNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblGenderResource1.Text" xml:space="preserve">
+    <value>Gender</value>
+  </data>
+  <data name="lblGenderResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblGenderTextResource1.Text" xml:space="preserve">
+    <value>Gender</value>
+  </data>
+  <data name="lblGenderTextResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblImageResource1.Text" xml:space="preserve">
@@ -276,6 +300,12 @@
   <data name="lblMobilePhoneResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="lblNewPasswordResource1.Text" xml:space="preserve">
+    <value>New Password</value>
+  </data>
+  <data name="lblNewPasswordResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblOthersResource1.Text" xml:space="preserve">
     <value>Others</value>
   </data>
@@ -283,15 +313,27 @@
     <value />
   </data>
   <data name="lblResPhoneResource1.Text" xml:space="preserve">
-    <value>Res. Phone:</value>
+    <value>Res. Phone</value>
   </data>
   <data name="lblResPhoneResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblRetypeNewPasswordResource1.Text" xml:space="preserve">
+    <value>Retype New Password</value>
+  </data>
+  <data name="lblRetypeNewPasswordResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblViewAboutYouResource1.Text" xml:space="preserve">
     <value />
   </data>
   <data name="lblViewAboutYouResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblviewBirthDateResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblviewBirthDateResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblViewEmail1Resource1.Text" xml:space="preserve">
@@ -322,6 +364,12 @@
     <value />
   </data>
   <data name="lblviewFullNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblviewGenderResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblviewGenderResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblViewLastNameResource1.Text" xml:space="preserve">
@@ -360,10 +408,55 @@
   <data name="lblViewUserNameResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="ListItemResource1.Text" xml:space="preserve">
+    <value>Male</value>
+  </data>
+  <data name="ListItemResource1.Value" xml:space="preserve">
+    <value>Male</value>
+  </data>
+  <data name="ListItemResource2.Text" xml:space="preserve">
+    <value>Female</value>
+  </data>
+  <data name="ListItemResource2.Value" xml:space="preserve">
+    <value>Female</value>
+  </data>
+  <data name="lnkCancelResource1.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="lnkCancelResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rdbGenderResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator1Resource1.ErrorMessage" xml:space="preserve">
+    <value>Password is required.</value>
+  </data>
+  <data name="RequiredFieldValidator1Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator1Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator5Resource1.ErrorMessage" xml:space="preserve">
+    <value>Type password again.</value>
+  </data>
+  <data name="RequiredFieldValidator5Resource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RequiredFieldValidator5Resource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="txtAboutYouResource1.Text" xml:space="preserve">
     <value />
   </data>
   <data name="txtAboutYouResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtBirthDateResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtBirthDateResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="txtEmail1Resource1.Text" xml:space="preserve">
@@ -414,6 +507,12 @@
   <data name="txtMobileResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="txtNewPasswordResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtNewPasswordResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="txtOthersResource1.Text" xml:space="preserve">
     <value />
   </data>
@@ -424,6 +523,12 @@
     <value />
   </data>
   <data name="txtResPhoneResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtRetypeNewPasswordResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtRetypeNewPasswordResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
 </root>

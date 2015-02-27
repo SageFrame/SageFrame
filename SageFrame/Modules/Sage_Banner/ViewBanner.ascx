@@ -2,28 +2,19 @@
 <script type="text/javascript">
     //<![CDATA[
     $(function() {
-
-        var BannerID = parseInt('<%=BannerId%>');
-     
-        if (BannerID != 0) {
-            $(this).SageBannerjs({
-                baseURL: SageBannerServicePath,
-                BannerId: parseInt('<%=BannerId%>'),
+        if ('<%=bannerCount %>' > 0) {
+            $(this).BannerView({
                 Auto_Slide: '<%=Auto_Slide %>',
                 InfiniteLoop: '<%=InfiniteLoop%>',
-                Pause_Time: parseInt('<%=Pause_Time%>'),
                 NumericPager: '<%=NumericPager%>',
                 TransitionMode: '<%=TransitionMode%>',
-                Speed: parseInt('<%=Speed%>'),
-                PortalID: '<%=PortalId %>',
-                UserModuleID: '<%=UserModuleId%>',
-                SageURL: '<%=SageURL%>',
-                enablecontrol: '<%=EnableControl%>'
+                speed: parseInt('<%=Speed%>'),
+                pause: parseInt('<%=Pause_Time%>'),
+                controls: '<%=EnableControl%>'
             });
         }
     });
     //]]>
 </script>
 
-<ul id="slider">
-</ul>
+<asp:Literal EnableViewState="false" runat="server" ID="sageSlider"></asp:Literal>

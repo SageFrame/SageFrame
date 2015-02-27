@@ -1,4 +1,11 @@
-﻿using System;
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
+*/
+#endregion
+
+#region "References"
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +14,8 @@ using System.Web.Security;
 using SageFrame.ErrorLog;
 using SageFrame.Web;
 using System.Web.UI;
-using SageFrame.Core;
+using SageFrame.Common;
+#endregion
 
 namespace SageFrame.FileManager
 {
@@ -17,11 +25,10 @@ namespace SageFrame.FileManager
 
         public void ProcessException(Exception exc)
         {
-            
             int inID = 0;
-            inID = ErrorLogController.InsertLog((int)SageFrame.Web.SageFrameEnums.ErrorType.AdministrationArea, 11, exc.Message, exc.ToString(),
+            ErrorLogController objController = new ErrorLogController();
+            inID = objController.InsertLog((int)SageFrame.Web.SageFrameEnums.ErrorType.AdministrationArea, 11, exc.Message, exc.ToString(),
                                        HttpContext.Current.Request.UserHostAddress, HttpContext.Current.Request.RawUrl, true, GetPortalID, GetUsername);
-           
         }
         
         public int GetPortalID
@@ -30,9 +37,9 @@ namespace SageFrame.FileManager
             {
                 try
                 {
-                    if (Session["SageFrame.PortalID"] != null && Session["SageFrame.PortalID"].ToString() != "")
+                    if (Session[SessionKeys.SageFrame_PortalID] != null && Session[SessionKeys.SageFrame_PortalID].ToString() != "")
                     {
-                        return int.Parse(Session["SageFrame.PortalID"].ToString());
+                        return int.Parse(Session[SessionKeys.SageFrame_PortalID].ToString());
                     }
                     else
                     {

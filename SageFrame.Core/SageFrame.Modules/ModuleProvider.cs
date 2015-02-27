@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,24 +16,27 @@ using SageFrame.Web.Utilities;
 using SageFrame.Common;
 using System.Data.SqlClient;
 
+#endregion
+
+
 namespace SageFrame.Modules
 {
     public class ModuleProvider
     {
 
-       /// <summary>
-       /// AddModules
-       /// </summary>
-       /// <param name="objList"></param>
-       /// <param name="isAdmin"></param>
-       /// <param name="PackageID"></param>
-       /// <param name="IsActive"></param>
-       /// <param name="AddedOn"></param>
-       /// <param name="PortalID"></param>
-       /// <param name="AddedBy"></param>
-       /// <returns></returns>
-       
-        public static int[] AddModules(ModuleInfo objList,bool isAdmin, int PackageID,bool IsActive,DateTime AddedOn,int PortalID,string AddedBy)
+        /// <summary>
+        /// AddModules
+        /// </summary>
+        /// <param name="objList"></param>
+        /// <param name="isAdmin"></param>
+        /// <param name="PackageID"></param>
+        /// <param name="IsActive"></param>
+        /// <param name="AddedOn"></param>
+        /// <param name="PortalID"></param>
+        /// <param name="AddedBy"></param>
+        /// <returns></returns>
+
+        public int[] AddModules(ModuleInfo objList, bool isAdmin, int PackageID, bool IsActive, DateTime AddedOn, int PortalID, string AddedBy)
         {
             string sp = "[dbo].[sp_ModulesAdd]";
             //SQLHandler sagesql = new SQLHandler();
@@ -60,7 +51,7 @@ namespace SageFrame.Modules
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Version", objList.Version));
 
                 ParamCollInput.Add(new KeyValuePair<string, object>("@isPremium", objList.isPremium));
-                ParamCollInput.Add(new KeyValuePair<string, object>("@isAdmin",isAdmin));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@isAdmin", isAdmin));
 
 
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Owner", objList.Owner));
@@ -82,8 +73,6 @@ namespace SageFrame.Modules
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@AddedBy", AddedBy));
 
-
-
                 List<KeyValuePair<string, object>> ParamCollOutput = new List<KeyValuePair<string, object>>();
                 ParamCollOutput.Add(new KeyValuePair<string, object>("@ModuleID", objList.ModuleID));
                 ParamCollOutput.Add(new KeyValuePair<string, object>("@ModuleDefID", objList.ModuleDefID));
@@ -97,15 +86,14 @@ namespace SageFrame.Modules
                 arrOutPutValue[1] = int.Parse(OutputValColl[1].Value);
 
                 return arrOutPutValue;
-              
+
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
-        
+
         /// <summary>
         /// AddPortalModules
         /// </summary>
@@ -115,9 +103,9 @@ namespace SageFrame.Modules
         /// <param name="AddedOn"></param>
         /// <param name="AddedBy"></param>
         /// <returns></returns>
-        public static int AddPortalModules(int? PortalID, int? ModuleID, bool IsActive, DateTime AddedOn, string AddedBy)
+        public int AddPortalModules(int? PortalID, int? ModuleID, bool IsActive, DateTime AddedOn, string AddedBy)
         {
-           
+
             string sp = "[dbo].[sp_PortalModulesAdd]";
             SQLHandler sagesql = new SQLHandler();
             try
@@ -128,7 +116,7 @@ namespace SageFrame.Modules
                 ParamCollInput.Add(new KeyValuePair<string, object>("@IsActive", IsActive));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@AddedOn", AddedOn));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@AddedBy", AddedBy));
-             
+
                 int pmID = sagesql.ExecuteNonQueryAsGivenType<int>(sp, ParamCollInput, "@PortalModuleID");
                 return pmID;
             }
@@ -137,42 +125,49 @@ namespace SageFrame.Modules
                 throw;
             }
         }
-        
+
         /// <summary>
         /// GetPermissionByCodeAndKey
         /// </summary>
         /// <param name="PermissionCode"></param>
         /// <param name="PermissionKey"></param>
         /// <returns></returns>
-        public static int GetPermissionByCodeAndKey(string PermissionCode, string PermissionKey)
+        public int GetPermissionByCodeAndKey(string PermissionCode, string PermissionKey)
         {
 
             string sp = "[dbo].[sp_GetPermissionByCodeAndKey]";
             SQLHandler SQLH = new SQLHandler();
+            SqlDataReader reader = null;
             try
             {
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PermissionCode", PermissionCode));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PermissionKey", PermissionKey));
 
-                SqlDataReader reader = null;
                 reader = SQLH.ExecuteAsDataReader(sp, ParamCollInput);
                 int PermissionID = 0;
 
                 while (reader.Read())
                 {
-                    PermissionID = int.Parse( reader["PermissionID"].ToString());
+                    PermissionID = int.Parse(reader["PermissionID"].ToString());
 
                 }
                 return PermissionID;
-               
+
             }
             catch (Exception)
             {
                 throw;
             }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
         }
-        
+
         /// <summary>
         /// AddModulePermission
         /// </summary>
@@ -186,10 +181,10 @@ namespace SageFrame.Modules
         /// <param name="AddedOn"></param>
         /// <param name="AddedBy"></param>
         /// <returns></returns>
-        public static int[] AddModulePermission(int? ModuleDefID, int? PermissionID, int? PortalID, int? PortalModuleID, bool AllowAccess, string Username, bool IsActive, DateTime AddedOn, string AddedBy)
+        public int[] AddModulePermission(int? ModuleDefID, int? PermissionID, int? PortalID, int? PortalModuleID, bool AllowAccess, string Username, bool IsActive, DateTime AddedOn, string AddedBy)
         {
-    
-           
+
+
             string sp = "[dbo].[sp_ModulesPermissionAdd]";
             SQLHandler sagesql = new SQLHandler();
             try
@@ -201,7 +196,7 @@ namespace SageFrame.Modules
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalModuleID", PortalModuleID));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@AllowAccess", AllowAccess));
 
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", Username));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", Username));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@IsActive", IsActive));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@AddedOn", AddedOn));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@AddedBy", AddedBy));
@@ -209,7 +204,7 @@ namespace SageFrame.Modules
                 //int ListID = sagesql.ExecuteNonQueryAsGivenType<int>(sp, ParamCollInput, "@ModuleDefPermissionID");
                 //return ListID;
 
-                ModuleInfo objInfo= new ModuleInfo();
+                ModuleInfo objInfo = new ModuleInfo();
                 List<KeyValuePair<string, object>> ParamCollOutput = new List<KeyValuePair<string, object>>();
                 ParamCollOutput.Add(new KeyValuePair<string, object>("@ModuleDefPermissionID", objInfo.ModuleDefPermissionID));
                 ParamCollOutput.Add(new KeyValuePair<string, object>("@PortalModulePermissionID", objInfo.PortalModulePermissionID));
@@ -229,7 +224,7 @@ namespace SageFrame.Modules
                 throw;
             }
         }
-        public static int AddModuleCoontrols(int? ModuleDefID, string ControlKey, string ControlTitle, string ControlSrc, string IconFile, int ControlType, int DisplayOrder, string HelpUrl, bool SupportsPartialRendering, bool IsActive, DateTime AddedOn, int PortalID, string AddedBy)
+        public int AddModuleCoontrols(int? ModuleDefID, string ControlKey, string ControlTitle, string ControlSrc, string IconFile, int ControlType, int DisplayOrder, string HelpUrl, bool SupportsPartialRendering, bool IsActive, DateTime AddedOn, int PortalID, string AddedBy)
         {
 
             string sp = "[dbo].[sp_ModuleControlsAdd]";
@@ -256,8 +251,6 @@ namespace SageFrame.Modules
 
                 int MCID = sagesql.ExecuteNonQueryAsGivenType<int>(sp, ParamCollInput, "@ModuleControlID");
                 return MCID;
-
-
             }
             catch (Exception)
             {
@@ -266,7 +259,7 @@ namespace SageFrame.Modules
             }
         }
         // [dbo].[sp_ModuleControlsUpdate]
-        public static void UpdateModuleCoontrols(int ModuleControlID, string ControlKey, string ControlTitle, string ControlSrc, string IconFile, int ControlType, int DisplayOrder, string HelpUrl, bool SupportsPartialRendering, bool IsActive, bool IsModified, DateTime UpdatedOn, int PortalID, string UpdatedBy)
+        public void UpdateModuleCoontrols(int ModuleControlID, string ControlKey, string ControlTitle, string ControlSrc, string IconFile, int ControlType, int DisplayOrder, string HelpUrl, bool SupportsPartialRendering, bool IsActive, bool IsModified, DateTime UpdatedOn, int PortalID, string UpdatedBy)
         {
 
             string sp = "[dbo].[sp_ModuleControlsUpdate]";
@@ -290,31 +283,24 @@ namespace SageFrame.Modules
                 ParamCollInput.Add(new KeyValuePair<string, object>("@UpdatedOn", UpdatedOn));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@UpdatedBy", UpdatedBy));
-
-
                 sagesql.ExecuteNonQuery(sp, ParamCollInput);
-
-
-
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
         //sp_ExtensionUpdate
-        public static void UpdateExtension(ModuleInfo objInfo)
+        public void UpdateExtension(ModuleInfo objInfo)
         {
             string sp = "[dbo].[sp_ExtensionUpdate]";
             SQLHandler sagesql = new SQLHandler();
             try
             {
-
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-                ParamCollInput.Add(new KeyValuePair<string, object>("@ModuleID",objInfo.ModuleID));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@ModuleID", objInfo.ModuleID));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@FolderName", objInfo.FolderName));
-                ParamCollInput.Add(new KeyValuePair<string, object>("@BusinessControllerClass",objInfo.BusinessControllerClass));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@BusinessControllerClass", objInfo.BusinessControllerClass));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Dependencies", objInfo.dependencies));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Permissions", objInfo.permissions));
 
@@ -335,32 +321,7 @@ namespace SageFrame.Modules
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Url", objInfo.URL));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Email", objInfo.Email));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", objInfo.PortalID));
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", objInfo.Username));
-               
-
-                 sagesql.ExecuteNonQuery(sp, ParamCollInput);
-                
-
-
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-        }
-     
-        public static void DeletePackagesByModuleID(int PortalID, int ModuleID)
-        {
-            string sp = "[dbo].[sp_ModulesRollBack]";
-            SQLHandler sagesql = new SQLHandler();
-            try
-            {
-
-                List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-                ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParamCollInput.Add(new KeyValuePair<string, object>("@ModuleID", ModuleID));              
-             
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", objInfo.Username));
                 sagesql.ExecuteNonQuery(sp, ParamCollInput);
 
 
@@ -368,12 +329,28 @@ namespace SageFrame.Modules
             }
             catch (Exception ex)
             {
+                throw ex;
+            }
+        }
 
+        public void DeletePackagesByModuleID(int PortalID, int ModuleID)
+        {
+            string sp = "[dbo].[sp_ModulesRollBack]";
+            SQLHandler sagesql = new SQLHandler();
+            try
+            {
+                List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
+                ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@ModuleID", ModuleID));
+                sagesql.ExecuteNonQuery(sp, ParamCollInput);
+            }
+            catch (Exception ex)
+            {
                 throw ex;
             }
         }
         //var LINQModule = db.usp_ModuleGetAllExisting();
-        public static List<ModuleInfo> GetAllExistingModule()
+        public List<ModuleInfo> GetAllExistingModule()
         {
             try
             {
@@ -382,13 +359,12 @@ namespace SageFrame.Modules
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
 
         }
         //sp_ModuleControlsGetByModuleControlID
-        public static ModuleEntities ModuleControlsGetByModuleControlID(int ModuleControlID)
+        public ModuleEntities ModuleControlsGetByModuleControlID(int ModuleControlID)
         {
             try
             {
@@ -396,18 +372,16 @@ namespace SageFrame.Modules
                 SQLHandler SQLH = new SQLHandler();
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
                 ParamCollInput.Add(new KeyValuePair<string, object>("@ModuleControlID", ModuleControlID));
-
                 return SQLH.ExecuteAsObject<ModuleEntities>(sp, ParamCollInput);
 
             }
             catch (Exception)
             {
-                
                 throw;
             }
         }
         //[dbo].[sp_CheckUnquieModuleControlsControlType] 
-        public static int CheckUnquieModuleControlsControlType(int ModuleControlID, int ModuleDefID, int ControlType, int PortalID, bool isEdit)
+        public int CheckUnquieModuleControlsControlType(int ModuleControlID, int ModuleDefID, int ControlType, int PortalID, bool isEdit)
         {
 
             string sp = "[dbo].[sp_CheckUnquieModuleControlsControlType]";
@@ -430,7 +404,7 @@ namespace SageFrame.Modules
             }
         }
         //sp_ModuleControlsDeleteByModuleControlID
-        public static void ModuleControlsDeleteByModuleControlID(int ModuleControlID, string DeletedBy)
+        public void ModuleControlsDeleteByModuleControlID(int ModuleControlID, string DeletedBy)
         {
             try
             {
@@ -439,19 +413,16 @@ namespace SageFrame.Modules
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
                 ParamCollInput.Add(new KeyValuePair<string, object>("@ModuleControlID", ModuleControlID));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@DeletedBy", DeletedBy));
-
                 sagesql.ExecuteNonQuery(sp, ParamCollInput);
-
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
-        
 
-        public static void UpdateModuleDefinitions(int ModuleDefID, string FriendlyName, int DefaultCacheTime, bool IsActive, bool IsModified, DateTime UpdatedOn, int PortalID, string UpdatedBy)
+
+        public void UpdateModuleDefinitions(int ModuleDefID, string FriendlyName, int DefaultCacheTime, bool IsActive, bool IsModified, DateTime UpdatedOn, int PortalID, string UpdatedBy)
         {
             string sp = "sp_ModuleDefinitionsUpdate";
             SQLHandler SQLH = new SQLHandler();
@@ -470,12 +441,11 @@ namespace SageFrame.Modules
             }
             catch (Exception)
             {
-                
                 throw;
             }
         }
 
-        public static ModuleInfo GetModuleInformationByModuleID(int ModuleID)
+        public ModuleInfo GetModuleInformationByModuleID(int ModuleID)
         {
             try
             {

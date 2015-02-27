@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion 
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,19 +15,29 @@ using SageFrame.Localization;
 using System.Web.UI.WebControls;
 using SageFrame.Web;
 using System.Threading;
+#endregion 
 
 public partial class Modules_Language_LanguageSetUp : BaseAdministrationUserControl
 {
-    public event ImageClickEventHandler CancelButtonClick;
+    public event EventHandler CancelButtonClick;
+   
     private string languageMode = "Normal";
     public string appPath = string.Empty;
     protected void Page_Load(object sender, EventArgs e)
     {
-        appPath = Request.ApplicationPath != "/" ? Request.ApplicationPath : "";
+        appPath = GetApplicationName;
         if (!Page.IsPostBack)
         {
             LoadAllCultures();           
             GetFlagImage();            
+        }
+    }
+
+    public DropDownList ControlB_DDL
+    {
+        get
+        {
+            return this.ddlLanguage;
         }
     }
     public void LoadAllCultures()
@@ -50,12 +45,18 @@ public partial class Modules_Language_LanguageSetUp : BaseAdministrationUserCont
         string mode = languageMode == "Native" ? "NativeName" : "LanguageName";
         List<Language> lstAllCultures = LocaleController.GetCultures();
         List<Language> lstAvailableLocales = LocalizationSqlDataProvider.GetAvailableLocales();
-        ddlLanguage.DataSource = FilterLocales(lstAllCultures, lstAvailableLocales);
+        List<Language> filterLocales = FilterLocales(lstAllCultures, lstAvailableLocales);
+        ddlLanguage.DataSource = filterLocales.OrderBy(item => mode);
         ddlLanguage.DataTextField = mode;
         ddlLanguage.DataValueField = "LanguageCode";
         ddlLanguage.DataBind();
-        
 
+        List<ListItem> listCopy = new List<ListItem>();
+        foreach (ListItem item in ddlLanguage.Items)
+            listCopy.Add(item);
+        ddlLanguage.Items.Clear();
+        foreach (ListItem item in listCopy.OrderBy(item => item.Text))
+            ddlLanguage.Items.Add(item);
     }
     protected List<Language> FilterLocales(List<Language> lstAllCultures, List<Language> lstAvailableLocales)
     {
@@ -73,36 +74,25 @@ public partial class Modules_Language_LanguageSetUp : BaseAdministrationUserCont
         }
         return lstNotAvailableLocales;
     }
-    //public void LoadAvailableLocales()
-    //{
-    //    string mode = languageMode == "Native" ? "NativeName" : "LanguageName";
-    //    List<Language> lstAvailableLocales =LocaleController.AddNativeNamesToList(LocalizationSqlDataProvider.GetAvailableLocales());
-    //    int index = lstAvailableLocales.FindIndex(delegate(Language obj) { return (obj.LanguageCode == Thread.CurrentThread.CurrentCulture.ToString()); });
-    //    if (index > -1)
-    //    {
-    //        lstAvailableLocales[index].LanguageName += "[Site Default]";
 
-    //    }
-    //    ddlFallBack.DataSource = lstAvailableLocales;
-    //    ddlFallBack.DataTextField = mode;
-    //    ddlFallBack.DataValueField = "LanguageCode";
-    //    ddlFallBack.DataBind();
-    //    if (index > -1)
-    //    {
-    //        ddlFallBack.SelectedIndex = index;
 
-    //    }
-        
-    //}
-
-    protected void imbCancel_Click(object sender, ImageClickEventArgs e)
+    protected void imbCancel_Click(object sender, EventArgs e)
     {
         CancelButtonClick(sender,e);
     }
-    protected void imbUpdate_Click(object sender, ImageClickEventArgs e)
+    protected void imbUpdate_Click(object sender, EventArgs e)
     {
-        AddNewLanguage();
+        if (ddlLanguage.SelectedItem != null)
+        {
+            AddNewLanguage();
+        }
+        else
+        {
+            ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("LanguageModule", "LanguageIsNotAvailable"), "", SageMessageType.Alert);            
+
+        }
     }
+  
     protected void AddNewLanguage()
     {
         Language objLang = new Language();
@@ -113,10 +103,13 @@ public partial class Modules_Language_LanguageSetUp : BaseAdministrationUserCont
         try
         {
             LocalizationSqlDataProvider.AddLanguage(objLang);
-            ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("LanguageModule", "LanguageAddedSuccessfully"), "", SageMessageType.Success);
-            //LoadAvailableLocales();
+            ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("LanguageModule", "LanguageAddedSuccessfully"), "", SageMessageType.Success);            
             LoadAllCultures();
             GetFlagImage();
+            Localization_CreateLanguagePack clp = (Localization_CreateLanguagePack)this.Parent.FindControl("CreateLanguagePack1");
+            DropDownList ddlResourceLocale = (DropDownList)clp.FindControl("ddlResourceLocale");
+            LoadAllCulturesDropDown(ddlResourceLocale);
+            UpdateLocalizeMenuFields();
         }
         catch (Exception ex)
         {
@@ -125,6 +118,43 @@ public partial class Modules_Language_LanguageSetUp : BaseAdministrationUserCont
         }
         
     }
+
+    protected void UpdateLocalizeMenuFields()
+    {
+        Modules_LocalPage_LocalPage localPage = (Modules_LocalPage_LocalPage)this.Parent.FindControl("ctrl_MenuEditor");
+        DropDownList ddlAvailableLocales = (DropDownList)localPage.FindControl("ddlAvailableLocales");
+        ddlAvailableLocales.DataSource = LocalizationSqlDataProvider.GetAvailableLocales();
+        ddlAvailableLocales.DataTextField = "LanguageName";
+        ddlAvailableLocales.DataValueField = "LanguageCode";
+        ddlAvailableLocales.DataBind();
+
+        List<ListItem> listCopy = new List<ListItem>();
+        foreach (ListItem item in ddlAvailableLocales.Items)
+            listCopy.Add(item);
+        ddlAvailableLocales.Items.Clear();
+        foreach (ListItem item in listCopy.OrderBy(item => item.Text))
+            ddlAvailableLocales.Items.Add(item);
+
+        
+    }
+
+    public void LoadAllCulturesDropDown(DropDownList ddl)
+    {
+        string mode = languageMode == "Native" ? "NativeName" : "LanguageName";
+        // List<Language> lstAllCultures = LocaleController.GetCultures();
+        List<Language> lstAvailableLocales = LocalizationSqlDataProvider.GetAvailableLocales();
+        ddl.DataSource = lstAvailableLocales;
+        ddl.DataTextField = mode;
+        ddl.DataValueField = "LanguageCode";
+        ddl.DataBind();
+
+        List<ListItem> listCopy = new List<ListItem>();
+        foreach (ListItem item in ddl.Items)
+            listCopy.Add(item);
+        ddl.Items.Clear();
+        foreach (ListItem item in listCopy.OrderBy(item => item.Text))
+            ddl.Items.Add(item);
+    }
    
     protected void GetFlagImage()
     {
@@ -132,16 +162,7 @@ public partial class Modules_Language_LanguageSetUp : BaseAdministrationUserCont
         imgFlagLanguage.ImageUrl = ResolveUrl("~/images/flags/" + code.Substring(code.IndexOf("-") + 1) + ".png");
         
     }
-    //protected void GetFlagImageFallback()
-    //{
-    //   string  code = this.ddlFallBack.SelectedValue;
-    //    imgFallback.ImageUrl = ResolveUrl(this.AppRelativeTemplateSourceDirectory + "flags/" + code.Substring(code.IndexOf("-") + 1) + ".png");
-
-    //}
-    //protected void ddlFallBack_SelectedIndexChanged(object sender, EventArgs e)
-    //{
-    //    GetFlagImageFallback();
-    //}
+   
     protected void ddlLanguage_SelectedIndexChanged(object sender, EventArgs e)
     {
         GetFlagImage();
@@ -151,10 +172,8 @@ public partial class Modules_Language_LanguageSetUp : BaseAdministrationUserCont
         switch (rbLanguageType.SelectedIndex)
         {
             case 0:
-                LoadAllCultures();
-                //LoadAvailableLocales();
+                LoadAllCultures();                
                 GetFlagImage();
-                //GetFlagImageFallback();
                 break;
             case 1:
                 LoadNativeNames();
@@ -166,9 +185,6 @@ public partial class Modules_Language_LanguageSetUp : BaseAdministrationUserCont
     {
         languageMode = "Native";
         LoadAllCultures();
-        //LoadAvailableLocales();
         GetFlagImage();
-        //GetFlagImageFallback();
-    }
-  
+    }  
 }

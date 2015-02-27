@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,11 +15,14 @@ using System.Text;
 using SageFrame.Web.Utilities;
 using System.Data.SqlClient;
 
+#endregion
+
+
 namespace SageFrame.PortalSetting
 {
     public class PortalProvider
     {
-        
+
         public static List<PortalInfo> GetPortalList()
         {
             try
@@ -46,19 +37,20 @@ namespace SageFrame.PortalSetting
             }
 
         }
-        
+
         public static PortalInfo GetPortalByPortalID(int PortalID, string UserName)
         {
             string sp = "[dbo].[sp_PortalGetByPortalID]";
+            SqlDataReader reader = null;
             try
             {
 
                 SQLHandler SQLH = new SQLHandler();
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", UserName));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
 
-                SqlDataReader reader = null;
+
                 reader = SQLH.ExecuteAsDataReader(sp, ParamCollInput);
                 PortalInfo objList = new PortalInfo();
 
@@ -69,6 +61,7 @@ namespace SageFrame.PortalSetting
                     objList.Name = reader["Name"].ToString();
                     objList.SEOName = reader["SEOName"].ToString();
                     objList.IsParent = bool.Parse(reader["IsParent"].ToString());
+                    objList.ParentPortalName = reader["ParentPortalName"].ToString();
                 }
                 return objList;
             }
@@ -76,6 +69,13 @@ namespace SageFrame.PortalSetting
             {
 
                 throw ex;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
             }
 
         }
@@ -87,7 +87,7 @@ namespace SageFrame.PortalSetting
             {
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", UserName));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
 
                 SQLH.ExecuteNonQuery(sp, ParamCollInput);
             }
@@ -99,7 +99,7 @@ namespace SageFrame.PortalSetting
             }
         }
 
-        public static void UpdatePortal(int PortalID, string PortalName, bool IsParent, string UserName)
+        public static void UpdatePortal(int PortalID, string PortalName, bool IsParent, string UserName, string PortalURL, int ParentID)
         {
             string sp = "[dbo].[sp_PortalUpdate]";
             SQLHandler SQLH = new SQLHandler();
@@ -110,6 +110,8 @@ namespace SageFrame.PortalSetting
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalName", PortalName));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@IsParent", IsParent));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", UserName));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@PortalURL", PortalURL));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@ParentID", ParentID));
 
                 SQLH.ExecuteNonQuery(sp, ParamCollInput);
             }
@@ -138,7 +140,7 @@ namespace SageFrame.PortalSetting
             }
 
         }
-        
+
         public static void UpdatePortalModules(string ModuleIDs, string IsActives, int PortalID, string UpdatedBy)
         {
             string sp = "[dbo].[sp_PortalModulesUpdate]";
@@ -164,5 +166,27 @@ namespace SageFrame.PortalSetting
 
 
 
+
+
+
+        public List<PortalInfo> GetParentPortalList()
+        {
+            string sp = "[dbo].[usp_PortalGetParent]";
+            SQLHandler SQLH = new SQLHandler();
+            try
+            {
+                return SQLH.ExecuteAsList<PortalInfo>(sp);
+            }
+
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+
+
+      
     }
 }

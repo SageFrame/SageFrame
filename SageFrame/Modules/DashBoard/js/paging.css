@@ -1,21 +1,14 @@
-﻿body 
+﻿.pg-normal
 {
-    
-   
+    color: black;
+    font-weight: normal;
+    text-decoration: none;
+    cursor: pointer;
 }
- .pg-normal 
- {
-color: black;
-font-weight: normal;
-text-decoration: none;    
-cursor: pointer;    
-}
-.pg-selected 
+.pg-selected
 {
-color: black;
-font-weight: bold;        
-text-decoration: underline;
-cursor: pointer;
+    color: black;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
 }
-
-            

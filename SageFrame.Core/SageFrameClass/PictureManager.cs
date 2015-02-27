@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +17,12 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Web.UI.WebControls;
 using SageFrame.Setting;
-using AjaxControlToolkit;
-using SageFrame.Common.SageFrame.Setting;
+using System.Drawing.Drawing2D;
+using System.Text.RegularExpressions;
+//using AjaxControlToolkit;
+
+#endregion
+
 /// <summary>
 /// Summary description for PictureManager
 /// </summary>
@@ -39,8 +31,6 @@ namespace SageFrame.Web
 {
     public static class PictureManager
     {
-        public static SettingDataContext dbSetting = new SettingDataContext(SystemSetting.SageFrameConnectionString);
-
         public static string GetImagePathWithFileName(int imageType, string prefix, string localImagePath)
         {
             string SavePath = string.Empty;
@@ -89,61 +79,26 @@ namespace SageFrame.Web
             return strImage;
         }
 
-        public static string SaveImageAsync(AsyncFileUpload Fu, string prefix, string localImagePath)
-        {
-            if (!Directory.Exists(localImagePath))
-                Directory.CreateDirectory(localImagePath);
-            string strImage = string.Empty;
-            string SavePath = string.Empty;
-            //SavePath = GetImagePathWithFileName(3, prefix, localImagePath);
-            SavePath = localImagePath;
-            SavePath += '\\' + prefix;
-            Fu.SaveAs(SavePath);
-            Fu.FileContent.Dispose();
-            strImage = SavePath;
-            //Fu.PostedFile.ContentLength
-            return strImage;
-        }
-                
-
-        public static string CreateCategoryMediumThumnail(string strImage, int PortalID, string prefix, string localImagePath)
-        {
-            string SavePath = string.Empty;
-            SavePath = GetImagePathWithFileName(1, prefix, localImagePath);
-            SavePath += strImage.Substring(strImage.LastIndexOf("."));
-            int imageSidge = Int32.Parse(dbSetting.sp_SettingPortalBySettingID((int)SettingKey.Media_Category_Medium_ThumbnailImageSize, PortalID).SingleOrDefault().Value);
-            CreateThmnail(strImage, imageSidge, SavePath);
-            return SavePath;
-        }
-
-        public static string CreateCategorySmallThumnail(string strImage, int PortalID, string prefix, string localImagePath)
-        {
-            string SavePath = string.Empty;
-            SavePath = GetImagePathWithFileName(2, prefix, localImagePath);
-            SavePath += strImage.Substring(strImage.LastIndexOf("."));
-            int imageSidge = Int32.Parse(dbSetting.sp_SettingPortalBySettingID((int)SettingKey.Media_Category_Small_ThumbnailImageSize, PortalID).SingleOrDefault().Value);
-            CreateThmnail(strImage, imageSidge, SavePath);
-            return SavePath;
-        }
-
         public static void CreateThmnail(string strImage, int TargetSize, string SavePath)
         {
-            System.Drawing.Image imgRetPhoto = null;            
             Bitmap b = new Bitmap(strImage);
             Size newSize = CalculateDimensions(b.Size, TargetSize);
-
+            System.Drawing.Image image = System.Drawing.Image.FromFile(strImage);
             if (newSize.Width < 1)
                 newSize.Width = 1;
             if (newSize.Height < 1)
                 newSize.Height = 1;
-
             b.Dispose();
-
-            imgRetPhoto = ScaleByPercent(strImage, newSize.Height, newSize.Width);
-            imgRetPhoto.Save(SavePath);
-           
-            //b.Dispose();
-            imgRetPhoto.Dispose();
+            var newWidth = (int)(newSize.Width);
+            var newHeight = (int)(newSize.Height);
+            var thumbnailImg = new Bitmap(newWidth, newHeight);
+            var thumbGraph = Graphics.FromImage(thumbnailImg);
+            thumbGraph.CompositingQuality = CompositingQuality.HighQuality;
+            thumbGraph.SmoothingMode = SmoothingMode.HighQuality;
+            thumbGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            var imageRectangle = new Rectangle(0, 0, newWidth, newHeight);
+            thumbGraph.DrawImage(image, imageRectangle);
+            thumbnailImg.Save(SavePath, image.RawFormat);
         }
 
 
@@ -198,6 +153,8 @@ namespace SageFrame.Web
                 throw ex;
             }
         }
+
+
         public static bool IsValidIconContentType(string extension)
         {
             // array of allowed file type extensions
@@ -212,6 +169,21 @@ namespace SageFrame.Web
                 }
             }
             return flag;
+        }
+
+        /// <summary>
+        /// Check the image Extension if it is valid to upload
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static bool ValidImageExtension(string fileName)
+        {
+            return Regex.IsMatch(fileName.ToLower(), @"^.*\.(jpg|gif|jpeg|swf|ico|png|bmp)$");
+        }
+
+        public static bool ValidFileExtension(string fileName)
+        {
+            return Regex.IsMatch(fileName.ToLower(), @"^.*\.(css|html|xml|ascx|js|config)$");
         }
 
         public static bool IsValidIImageTypeWitMime(string extension)
@@ -314,6 +286,27 @@ namespace SageFrame.Web
             SavePath += strImage.Substring(strImage.LastIndexOf("\\"));
             //int imageSize = 125;
             CreateThmnail(strImage, imageSize, SavePath);
+            return SavePath;
+        }
+        [Obsolete("Not in Use In SageFrame2.1")]
+        public static string CreateCategoryMediumThumnail(string strImage, int PortalID, string prefix, string localImagePath)
+        {
+            string SavePath = string.Empty;
+            SavePath = GetImagePathWithFileName(1, prefix, localImagePath);
+            SavePath += strImage.Substring(strImage.LastIndexOf("."));
+            //int imageSidge = Int32.Parse(dbSetting.sp_SettingPortalBySettingID((int)SettingKey.Media_Category_Medium_ThumbnailImageSize, PortalID).SingleOrDefault().Value);
+            //CreateThmnail(strImage, imageSidge, SavePath);
+            return SavePath;
+        }
+
+        [Obsolete("Not in Use In SageFrame2.1")]
+        public static string CreateCategorySmallThumnail(string strImage, int PortalID, string prefix, string localImagePath)
+        {
+            string SavePath = string.Empty;
+            SavePath = GetImagePathWithFileName(2, prefix, localImagePath);
+            SavePath += strImage.Substring(strImage.LastIndexOf("."));
+            //int imageSidge = Int32.Parse(dbSetting.sp_SettingPortalBySettingID((int)SettingKey.Media_Category_Small_ThumbnailImageSize, PortalID).SingleOrDefault().Value);
+            //CreateThmnail(strImage, imageSidge, SavePath);
             return SavePath;
         }
     }

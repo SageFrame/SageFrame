@@ -164,7 +164,7 @@
             </tr>
             <tr>
                 <td>
-                    <asp:Label ID="lblIsActive" runat="server" CssClass="sfFormlabel" Text="Is Active:"
+                    <asp:Label ID="lblIsActive" runat="server" CssClass="sfFormlabel" Text="Active:"
                         meta:resourcekey="lblIsActiveResource1"></asp:Label>
                 </td>
                 <td colspan="2" style="text-align: left">
@@ -183,7 +183,7 @@
             <asp:Label ID="lblPreview" runat="server" Text="Preview" AssociatedControlID="ImbPreview"
                 Style="cursor: pointer;" meta:resourcekey="lblPreviewResource1"></asp:Label>
             <asp:ImageButton ID="ImbSave" runat="server" ToolTip="Save" OnClick="btnSave_Click"
-                meta:resourcekey="ImbSaveResource1" />
+                meta:resourcekey="ImbSaveResource1" CausesValidation="true" ValidationGroup="adsense" />
             <asp:Label ID="lblSave" runat="server" Text="Save" AssociatedControlID="ImbSave"
                 Style="cursor: pointer;" meta:resourcekey="lblSaveResource1"></asp:Label>
             <asp:ImageButton ID="imbDelete" Visible="False" ToolTip="Delete" runat="server" OnClick="imbDelete_Click"

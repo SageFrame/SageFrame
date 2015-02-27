@@ -1,30 +1,16 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SageFrame.Templating.xmlparser;
+#endregion
 
 namespace SageFrame.Templating
 {
@@ -41,7 +27,7 @@ namespace SageFrame.Templating
             }
             //Check for Left Blocks
             //add a wrapper to wrap left middle and right blocks
-            sb.Append("<div class='clearfix'>");
+            sb.Append("<div class='sfMoreblocks clearfix'>");
             foreach (CustomWrapper start in lstWrapper)
             {
                 if (start.Type == "placeholder" && start.Start == "left")
@@ -74,48 +60,48 @@ namespace SageFrame.Templating
                     //sb.Append(HtmlBuilder.GetLeftTop(Mode, Utils.GetTagInnerHtml(Placeholders.LEFTTOP, middleBlock)));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.LEFTTOP));
 
-                    sb.Append(HtmlBuilder.GetLeftColsWrap(widths[1].Value, widths[2].Value, widths[0].Value, Mode, Utils.GetTagInnerHtml(Placeholders.LEFTA, middleBlock), Utils.GetTagInnerHtml(Placeholders.LEFTB, middleBlock),lstWrapper,middleBlock));
+                    sb.Append(HtmlBuilder.GetLeftColsWrap(widths[1].Value, widths[2].Value, widths[0].Value, Mode, Utils.GetTagInnerHtml(Placeholders.LEFTA, middleBlock), Utils.GetTagInnerHtml(Placeholders.LEFTB, middleBlock), lstWrapper, middleBlock));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.LEFTBOTTOM));
-                    
+
                     sb.Append(HtmlBuilder.GetLeftEnd());
                     break;
                 case 3:
                     ///All the blocks without leftA
                     sb.Append(HtmlBuilder.GetLeftBegin(widths[0].Value));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.LEFTTOP));
-                   
+
                     sb.Append(HtmlBuilder.GetLeftRightCol(widths[1].Value, Mode, Placeholders.LEFTB, lstWrapper, middleBlock));
 
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.LEFTBOTTOM));
-                   
-                    
+
+
                     sb.Append(HtmlBuilder.GetLeftEnd());
                     break;
                 case 2:
                     ///All the blocks without leftB
                     sb.Append(HtmlBuilder.GetLeftBegin(widths[0].Value));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.LEFTTOP));
-                    
-                    sb.Append(HtmlBuilder.GetLeftRightCol(widths[1].Value, Mode,Placeholders.LEFTA,lstWrapper,middleBlock));
+
+                    sb.Append(HtmlBuilder.GetLeftRightCol(widths[1].Value, Mode, Placeholders.LEFTA, lstWrapper, middleBlock));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.LEFTBOTTOM));
-                  
-                  
+
+
                     sb.Append(HtmlBuilder.GetLeftEnd());
                     break;
                 case 4:
                     ///All the blocks without leftA
                     sb.Append(HtmlBuilder.GetLeftBegin(widths[0].Value));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.LEFTTOP));
-                    
+
                     sb.Append(HtmlBuilder.GetLeftRightCol(widths[1].Value, Mode, Placeholders.LEFTA, lstWrapper, middleBlock));
-                    
+
                     sb.Append(HtmlBuilder.GetLeftEnd());
                     break;
                 case 5:
                     ///All the blocks without leftA
                     sb.Append(HtmlBuilder.GetLeftBegin(widths[0].Value));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.LEFTTOP));
-                    
+
                     sb.Append(HtmlBuilder.GetLeftRightCol(widths[2].Value, Mode, Placeholders.LEFTB, lstWrapper, middleBlock));
                     sb.Append(HtmlBuilder.GetLeftEnd());
                     break;
@@ -123,22 +109,22 @@ namespace SageFrame.Templating
                     sb.Append(HtmlBuilder.GetLeftBegin(widths[0].Value));
                     sb.Append(HtmlBuilder.GetLeftRightCol(widths[2].Value, Mode, Placeholders.LEFTB, lstWrapper, middleBlock));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.LEFTBOTTOM));
-                    
-                    
+
+
                     sb.Append(HtmlBuilder.GetLeftEnd());
                     break;
                 case 7:
                     sb.Append(HtmlBuilder.GetLeftBegin(widths[0].Value));
                     sb.Append(HtmlBuilder.GetLeftRightCol(widths[1].Value, Mode, Placeholders.LEFTA, lstWrapper, middleBlock));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.LEFTBOTTOM));
-                    
-                   
+
+
                     sb.Append(HtmlBuilder.GetLeftEnd());
                     break;
                 case 8:
                     sb.Append(HtmlBuilder.GetLeftBegin(widths[0].Value));
                     sb.Append(HtmlBuilder.GetLeftColsWrap(widths[1].Value, widths[2].Value, widths[0].Value, Mode, Utils.GetTagInnerHtml(Placeholders.LEFTA, middleBlock), Utils.GetTagInnerHtml(Placeholders.LEFTB, middleBlock), lstWrapper, middleBlock));
-                    
+
                     sb.Append(HtmlBuilder.GetLeftEnd());
                     break;
                 case 9:
@@ -154,9 +140,9 @@ namespace SageFrame.Templating
                 case 11:
                     sb.Append(HtmlBuilder.GetLeftBegin(widths[0].Value));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.LEFTTOP));
-                    
+
                     sb.Append(HtmlBuilder.GetLeftColsWrap(widths[1].Value, widths[2].Value, widths[0].Value, Mode, Utils.GetTagInnerHtml(Placeholders.LEFTA, middleBlock), Utils.GetTagInnerHtml(Placeholders.LEFTB, middleBlock), lstWrapper, middleBlock));
-                    
+
 
                     sb.Append(HtmlBuilder.GetLeftEnd());
                     break;
@@ -164,7 +150,7 @@ namespace SageFrame.Templating
                     sb.Append(HtmlBuilder.GetLeftBegin(widths[0].Value));
                     sb.Append(HtmlBuilder.GetLeftColsWrap(widths[1].Value, widths[2].Value, widths[0].Value, Mode, Utils.GetTagInnerHtml(Placeholders.LEFTA, middleBlock), Utils.GetTagInnerHtml(Placeholders.LEFTB, middleBlock), lstWrapper, middleBlock));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.LEFTBOTTOM));
-                    
+
                     sb.Append(HtmlBuilder.GetLeftEnd());
                     break;
             }
@@ -182,9 +168,6 @@ namespace SageFrame.Templating
 
                 }
             }
-
-
-
 
             //Create the default Middle Block
             foreach (CustomWrapper start in lstWrapper)
@@ -402,8 +385,8 @@ namespace SageFrame.Templating
                 case 1:
                     ///All the blocks
                     sb.Append(HtmlBuilder.GetRightBegin(widths[3].Value));
-                    sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.RIGHTTOP));                    
-                    sb.Append(HtmlBuilder.GetRightColsWrap(widths[4].Value, widths[5].Value, widths[3].Value, Mode,lstWrapper,middleBlock));
+                    sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.RIGHTTOP));
+                    sb.Append(HtmlBuilder.GetRightColsWrap(widths[4].Value, widths[5].Value, widths[3].Value, Mode, lstWrapper, middleBlock));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.RIGHTBOTTOM));
                     sb.Append(HtmlBuilder.GetRightEnd());
                     break;
@@ -451,7 +434,7 @@ namespace SageFrame.Templating
                     break;
                 case 8:
                     sb.Append(HtmlBuilder.GetRightBegin(widths[3].Value));
-                    sb.Append(HtmlBuilder.GetRightColsWrap(widths[4].Value, widths[5].Value, widths[3].Value, Mode, lstWrapper, middleBlock));                    
+                    sb.Append(HtmlBuilder.GetRightColsWrap(widths[4].Value, widths[5].Value, widths[3].Value, Mode, lstWrapper, middleBlock));
                     sb.Append(HtmlBuilder.GetRightEnd());
                     break;
                 case 9:
@@ -468,14 +451,14 @@ namespace SageFrame.Templating
                     sb.Append(HtmlBuilder.GetRightBegin(widths[3].Value));
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.RIGHTTOP));
                     sb.Append(HtmlBuilder.GetRightColsWrap(widths[4].Value, widths[5].Value, widths[3].Value, Mode, lstWrapper, middleBlock));
-                    
+
 
                     sb.Append(HtmlBuilder.GetRightEnd());
                     break;
                 case 12:
                     sb.Append(HtmlBuilder.GetRightBegin(widths[3].Value));
                     sb.Append(HtmlBuilder.GetRightColsWrap(widths[4].Value, widths[5].Value, widths[3].Value, Mode, lstWrapper, middleBlock));
-                    
+
                     sb.Append(HtmlBuilder.GetLeftRightTopBottom(Mode, lstWrapper, middleBlock, Placeholders.RIGHTBOTTOM));
 
                     sb.Append(HtmlBuilder.GetRightEnd());
@@ -540,7 +523,5 @@ namespace SageFrame.Templating
             }
 
         }
-
-
     }
 }

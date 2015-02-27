@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,16 +18,14 @@ using System.Collections;
 using System.Data;
 using System.Text;
 using SageFrame.SageFrameClass;
-
+using SageFrame.Common;
+#endregion 
 
 namespace SageFrame.Modules.Admin.UserManagement
 {
     public partial class ctl_ProfileDefinitions : BaseAdministrationUserControl
     {
-
-       
-
-        ProfilePropertyDefinitionCollection _ProfileProperties;// = new ProfilePropertyDefinitionCollection();
+        ProfilePropertyDefinitionCollection _ProfileProperties;
         protected override void LoadViewState(object savedState)
         {
             if (!(savedState == null))
@@ -80,11 +63,10 @@ namespace SageFrame.Modules.Admin.UserManagement
                     _ProfileProperties = new ProfilePropertyDefinitionCollection();
                     try
                     {
-
-                        List<ProfileManagementInfo> objList = ProfileManagementController.GetProfileList(GetPortalID);
+                        ProfileManagementController objController = new ProfileManagementController();
+                        List<ProfileManagementInfo> objList = objController.GetProfileList(GetPortalID);
                         if (objList != null)
                         {
-
                             foreach (ProfileManagementInfo objInfo in objList)
                             {
                                 _ProfileProperties.Add(objInfo);
@@ -175,13 +157,12 @@ namespace SageFrame.Modules.Admin.UserManagement
             }
         }
 
-
         private void BindDdlList()
         {
             try
             {
-
-                ddlPropertyType.DataSource = ProfileManagementController.GetPropertyTypeList();
+                ProfileManagementController objController = new ProfileManagementController();
+                ddlPropertyType.DataSource = objController.GetPropertyTypeList();
                 ddlPropertyType.DataTextField = "Name";
                 ddlPropertyType.DataValueField = "PropertyTypeID";
                 ddlPropertyType.DataBind();
@@ -208,8 +189,8 @@ namespace SageFrame.Modules.Admin.UserManagement
                 DataTable dt = new DataTable();
                 dt.Columns.Add("ProfileValueID", System.Type.GetType("System.String"));
                 dt.Columns.Add("Name", System.Type.GetType("System.String"));
-                Session["PropertyValueDataTable"] = null;
-                Session["PropertyValueDataTable"] = dt;
+                Session[SessionKeys.PropertyValueDataTable] = null;
+                Session[SessionKeys.PropertyValueDataTable] = dt;
             }
             catch (Exception ex)
             {
@@ -237,7 +218,7 @@ namespace SageFrame.Modules.Admin.UserManagement
             lstvPropertyValue.DataSource = null;
             lstvPropertyValue.DataBind();
             CreatePropertyValueDataTable();
-            Session["EditProfileID"] = null;
+            Session[SessionKeys.EditProfileID] = null;
             HideAll();
             divGridViewWrapper.Style.Add("display", "block");
         }
@@ -275,10 +256,10 @@ namespace SageFrame.Modules.Admin.UserManagement
         {
             if (ValidatePropertyValueForm())
             {
-                if (Session["PropertyValueDataTable"] != null)
+                if (Session[SessionKeys.PropertyValueDataTable] != null)
                 {
                     DataTable dt = new DataTable();
-                    dt = (DataTable)Session["PropertyValueDataTable"];
+                    dt = (DataTable)Session[SessionKeys.PropertyValueDataTable];
 
                     DataRow newrow1 = dt.NewRow();
                     dt.Rows.Add(newrow1);
@@ -331,41 +312,34 @@ namespace SageFrame.Modules.Admin.UserManagement
             bool IsValid = true;
             int PropertyTypeID = Int32.Parse(ddlPropertyType.SelectedValue);
             if (PropertyTypeID == 1 || PropertyTypeID == 5 || PropertyTypeID == 6 || PropertyTypeID == 7 || PropertyTypeID == 8)
-            {
-                //strMessage.AppendLine("Please fill " + Environment.NewLine);
+            {                
                 strMessage.AppendLine(GetSageMessage("UserManagement", "PleaseFil") + Environment.NewLine);
                 if (txtCaption.Text.Trim() == string.Empty)
                 {
                     IsValid = false;
-                    // strMessage.AppendLine(" Caption" + Environment.NewLine);
                     strMessage.AppendLine(GetSageMessage("UserManagement", "Caption") + Environment.NewLine);
                 }
             }
             else
             {
-                // strMessage.AppendLine("Please fill " + Environment.NewLine);
                 strMessage.AppendLine(GetSageMessage("UserManagement", "PleaseFillAgain") + Environment.NewLine);
                 if (txtCaption.Text.Trim() == string.Empty)
                 {
                     IsValid = false;
-                    // strMessage.AppendLine(" Caption" + Environment.NewLine);
                     strMessage.AppendLine(GetSageMessage("UserManagement", "AgainCaption") + Environment.NewLine);
                 }
                 if (lstvPropertyValue.Items.Count == 0 || lstvPropertyValue.Items.Count < 0)
                 {
                     IsValid = false;
-                    // strMessage.AppendLine(" Property Value" + Environment.NewLine);
                     strMessage.AppendLine(GetSageMessage("UserManagement", "PropertyValueAgain") + Environment.NewLine);
                 }
 
                 if (ddlDataType.SelectedItem.Value != "0")
                 {
                     IsValid = false;
-                    //  strMessage.AppendLine(" Data type must be string!" + Environment.NewLine);
                     strMessage.AppendLine(GetSageMessage("UserManagement", "DataTypeMustBeString") + Environment.NewLine);
                 }
             }
-
             return IsValid;
         }
 
@@ -378,7 +352,7 @@ namespace SageFrame.Modules.Admin.UserManagement
                 lstvPropertyValue.DataSource = null;
                 lstvPropertyValue.DataBind();
                 CreatePropertyValueDataTable();
-                Session["EditProfileID"] = null;
+                Session[SessionKeys.EditProfileID] = null;
                 HideAll();
                 divForm.Style.Add("display", "none");
                 divGridViewWrapper.Style.Add("display", "block");
@@ -400,24 +374,22 @@ namespace SageFrame.Modules.Admin.UserManagement
             {
                 if (ValidateProfilepropertyForm())
                 {
-                    if (Session["EditProfileID"] != null)
+                    if (Session[SessionKeys.EditProfileID] != null)
                     {
                         int PropertyTypeID = Int32.Parse(ddlPropertyType.SelectedValue);
-                        int ProfileID = Int32.Parse(Session["EditProfileID"].ToString());
+                        int ProfileID = Int32.Parse(Session[SessionKeys.EditProfileID].ToString());
+                        ProfileManagementController objController = new ProfileManagementController();
                         if (ProfileID != 0)
                         {
-                            ProfileManagementController.UpdateProfile(ProfileID, txtCaption.Text.Trim(), PropertyTypeID, ddlDataType.SelectedItem.Value, chkIsRequred.Checked, true, true, DateTime.Now, GetPortalID, GetUsername);
+                            objController.UpdateProfile(ProfileID, txtCaption.Text.Trim(), PropertyTypeID, ddlDataType.SelectedItem.Value, chkIsRequred.Checked, true, true, DateTime.Now, GetPortalID, GetUsername);
                             if (ProfileID != 0 && PropertyTypeID != 1 && PropertyTypeID != 5 && PropertyTypeID != 6 && PropertyTypeID != 7 && PropertyTypeID != 8 && lstvPropertyValue.Items.Count > 0)
-                            {
-                                //db.sp_ProfileValueDeleteByProfileID(ProfileID, GetPortalID, GetUsername);
-                                ProfileManagementProvider.DeleteProfileValueByProfileID(ProfileID, GetPortalID, GetUsername);
-
+                            {                                
+                                objController.DeleteProfileValueByProfileID(ProfileID, GetPortalID, GetUsername);
                                 for (int i = 0; i < lstvPropertyValue.Items.Count; i++)
                                 {
                                     int ProfileValueID = 0;
-                                    ProfileValueID = ProfileManagementController.AddProfileValue(ProfileID, lstvPropertyValue.Items[i].Text, true, DateTime.Now, GetPortalID, GetUsername);
+                                    ProfileValueID = objController.AddProfileValue(ProfileID, lstvPropertyValue.Items[i].Text, true, DateTime.Now, GetPortalID, GetUsername);
                                 }
-
                             }
                             ShowMessage("", GetSageMessage("UserManagement", "ProfileUpdatedSuccessfully"), "", SageMessageType.Success);
                             ClearProfilepropertyForm();
@@ -426,23 +398,22 @@ namespace SageFrame.Modules.Admin.UserManagement
                     }
                     else
                     {
+                        ProfileManagementController objController = new ProfileManagementController();
                         int PropertyTypeID = Int32.Parse(ddlPropertyType.SelectedValue);
                         int ProfileID = 0;
-                        ProfileID = ProfileManagementController.AddProfile(txtCaption.Text.Trim(), PropertyTypeID, ddlDataType.SelectedItem.Value, chkIsRequred.Checked, true, DateTime.Now, GetPortalID, GetUsername);
+                        ProfileID = objController.AddProfile(txtCaption.Text.Trim(), PropertyTypeID, ddlDataType.SelectedItem.Value, chkIsRequred.Checked, true, DateTime.Now, GetPortalID, GetUsername);
                         if (ProfileID != 0 && PropertyTypeID != 1 && PropertyTypeID != 5 && PropertyTypeID != 6 && PropertyTypeID != 7 && PropertyTypeID != 8 && lstvPropertyValue.Items.Count > 0)
                         {
                             for (int i = 0; i < lstvPropertyValue.Items.Count; i++)
                             {
                                 int ProfileValueID = 0;
-                                ProfileValueID = ProfileManagementController.AddProfileValue(ProfileID, lstvPropertyValue.Items[i].Text, true, DateTime.Now, GetPortalID, GetUsername);
+                                ProfileValueID = objController.AddProfileValue(ProfileID, lstvPropertyValue.Items[i].Text, true, DateTime.Now, GetPortalID, GetUsername);
                             }
-
                         }
                         ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("UserManagement", "ProfileAddedSuccessfully"), "", SageMessageType.Success);
                         ClearProfilepropertyForm();
                         RefreshGrid();
                     }
-
                 }
                 else
                 {
@@ -471,8 +442,8 @@ namespace SageFrame.Modules.Admin.UserManagement
                     {
                         IsActive = true;
                     }
-
-                    ProfileManagementController.UpdateProfileDisplayOrderAndIsActiveOnly(ProfileID, DisplayOrder, IsActive, DateTime.Now, GetPortalID, GetUsername);
+                    ProfileManagementController objController = new ProfileManagementController();
+                    objController.UpdateProfileDisplayOrderAndIsActiveOnly(ProfileID, DisplayOrder, IsActive, DateTime.Now, GetPortalID, GetUsername);
                 }
                 ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("UserManagement", "ChangesSavedSuccessfully"), "", SageMessageType.Success);
                 RefreshGrid();
@@ -502,10 +473,10 @@ namespace SageFrame.Modules.Admin.UserManagement
         {
             try
             {
-                if (Session["PropertyValueDataTable"] != null)
+                if (Session[SessionKeys.PropertyValueDataTable] != null)
                 {
                     DataTable dt = new DataTable();
-                    dt = (DataTable)Session["PropertyValueDataTable"];
+                    dt = (DataTable)Session[SessionKeys.PropertyValueDataTable];
                     if (lstvPropertyValue.Items.Count > 0)
                     {
 
@@ -523,13 +494,11 @@ namespace SageFrame.Modules.Admin.UserManagement
                                 }
                             }
                         }
-
                         lstvPropertyValue.DataSource = dt;
                         lstvPropertyValue.DataTextField = "Name";
                         lstvPropertyValue.DataValueField = "ProfileValueID";
                         lstvPropertyValue.DataBind();
                     }
-
                 }
             }
             catch (Exception ex)
@@ -560,8 +529,6 @@ namespace SageFrame.Modules.Admin.UserManagement
         {
             Cancel();
         }
-
-
 
         protected void gdvList_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
@@ -600,12 +567,11 @@ namespace SageFrame.Modules.Admin.UserManagement
             }
         }
 
-
-
         private void Delete(int DeleteID)
         {
-            ProfileManagementController.DeleteProfileValueByProfileID(DeleteID, GetPortalID, GetUsername);
-            ProfileManagementController.DeleteProfileByProfileID(DeleteID, GetUsername);
+            ProfileManagementController objController = new ProfileManagementController();
+            objController.DeleteProfileValueByProfileID(DeleteID, GetPortalID, GetUsername);
+            objController.DeleteProfileByProfileID(DeleteID, GetUsername);
             RefreshGrid();
             ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("UserManagement", "ProfileDeletedSuccessfully"), "", SageMessageType.Success);
         }
@@ -654,8 +620,8 @@ namespace SageFrame.Modules.Admin.UserManagement
         private void Edit(int EditID)
         {
             ClearProfilepropertyForm();
-            ProfileManagementInfo objinfo = ProfileManagementController.GetProfileByProfileID(EditID);
-
+            ProfileManagementController objController = new ProfileManagementController();
+            ProfileManagementInfo objinfo = objController.GetProfileByProfileID(EditID);
             if (objinfo != null)
             {
                 txtCaption.Text = objinfo.Name;
@@ -663,17 +629,13 @@ namespace SageFrame.Modules.Admin.UserManagement
                 chkIsRequred.Checked = bool.Parse(objinfo.IsRequired.ToString());
                 ddlDataType.SelectedIndex = ddlDataType.Items.IndexOf(ddlDataType.Items.FindByValue(objinfo.DataType));
 
-                if (objinfo.PropertyTypeID != 1 && objinfo.PropertyTypeID != 5 && objinfo.PropertyTypeID != 6 && objinfo.PropertyTypeID != 7 && objinfo.PropertyTypeID != 8 && Session["PropertyValueDataTable"] != null)
+                if (objinfo.PropertyTypeID != 1 && objinfo.PropertyTypeID != 5 && objinfo.PropertyTypeID != 6 && objinfo.PropertyTypeID != 7 && objinfo.PropertyTypeID != 8 && Session[SessionKeys.PropertyValueDataTable] != null)
                 {
-                    //var LINQPropertyValue = db.sp_ProfileValueGetActiveByProfileID(EditID, GetPortalID);
-                    List<ProfileManagementInfo> dtActual = ProfileManagementController.GetActiveProfileValueByProfileID(EditID, GetPortalID);
-
+                    List<ProfileManagementInfo> dtActual = objController.GetActiveProfileValueByProfileID(EditID, GetPortalID);
                     CommonFunction LToDCon = new CommonFunction();
-                    //DataTable dtActual = LToDCon.LINQToDataTable(LINQPropertyValue);
-
                     if (dtActual != null && dtActual.Count > 0)
                     {
-                        DataTable dt = (DataTable)Session["PropertyValueDataTable"];
+                        DataTable dt = (DataTable)Session[SessionKeys.PropertyValueDataTable];
                         for (int i = 0; i < dtActual.Count; i++)
                         {
                             DataRow newrow1 = dt.NewRow();
@@ -689,7 +651,6 @@ namespace SageFrame.Modules.Admin.UserManagement
                         lstvPropertyValue.DataBind();
                         trListPropertyValue.Style.Add("display", "");
                     }
-
                 }
                 else
                 {
@@ -700,9 +661,7 @@ namespace SageFrame.Modules.Admin.UserManagement
             }
             HideAll();
             divForm.Style.Add("display", "block");
-            Session["EditProfileID"] = EditID;
-
+            Session[SessionKeys.EditProfileID] = EditID;
         }
-
     }
 }

@@ -1,5 +1,7 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
+﻿#region "Copyright"
+
+/*
+SageFrame� - http://www.sageframe.com
 Copyright (c) 2009-2012 by SageFrame
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -20,6 +22,11 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,634 +55,203 @@ using SageFrame.ModuleControls;
 using SageFrame.Templating.xmlparser;
 using SageFrame.Common;
 using SageFrame.Security;
+using System.Globalization;
+using SageFrame.UserAgent;
+using SageFrame;
+using SageFrame.Core;
+using SageFrame.Pages;
 
+#endregion
 
 namespace SageFrame
 {
     public partial class _Default : PageBase, SageFrameRoute
     {
+        #region "Public Varibales"
+
         public string ControlPath = string.Empty;
-        bool IsUseFriendlyUrls = true;
-        public static string path = string.Empty,appPath=string.Empty,layoutcontrol=string.Empty;
+        public static string path = string.Empty, appPath = string.Empty, layoutcontrol = string.Empty;
         public static int ModuleId = 0;
-        public string prevpage,templatefavicon="favicon.ico";
+        public string prevpage, templatefavicon = "favicon.ico";
+        public string Extension = string.Empty;
+
+        #endregion
+
+        #region "Event Handlers"
+
+        string activeTemplate = string.Empty;
+        int currentportalID = 0;
         protected void Page_Init(object sender, EventArgs e)
-        {
-            try
-            {
-                SetPortalCofig();
-                BuildLayoutControl();
-                SetFavIcon();
-                
-            }
-            catch (Exception ex)
-            {
-                Session["TemplateError"] = ex;
-                HttpContext.Current.Response.Redirect(ResolveUrl("~/Sagin/Fallback.aspx"));
-               
-            }
-            SageInitPart();
-            ManageSSLConnection();
-            appPath = Request.ApplicationPath != "/" ? Request.ApplicationPath : "";
-            ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "SageFrameGlobalVar1", " var SageFrameAppPath='" + appPath + "';", true);
-        }
-        
-        public List<SecurePageInfo> GetSecurePage(int portalID, string culture)
-        {
-            try
-            {
-                List<SecurePageInfo> portalRoleCollection = new List<SecurePageInfo>();
-                SQLHandler sqLH = new SQLHandler();
-                List<KeyValuePair<string, object>> ParaMeter = new List<KeyValuePair<string, object>>();                
-                ParaMeter.Add(new KeyValuePair<string, object>("@PortalID", portalID));
-                ParaMeter.Add(new KeyValuePair<string, object>("@CultureName", culture));
-                return sqLH.ExecuteAsList<SecurePageInfo>("usp_GetAllSecurePages", ParaMeter);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-        
-
-        public void BuildLayoutControl()
-        {
-           
-                string activeTemplate = GetActiveTemplate;
-                string pagename = Request.Url.ToString();
-                SageFrameConfig sfConfig = new SageFrameConfig();
-                pagename = Path.GetFileNameWithoutExtension(pagename);
-                pagename = pagename.ToLower().Equals("default") ? sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) : pagename;               
-                layoutcontrol = IsHandheld() ? PresetHelper.LoadHandheldControl(activeTemplate) : PresetHelper.LoadActivePresetForPage(activeTemplate, pagename);
-                if (!File.Exists(Server.MapPath(layoutcontrol)))
-                {
-                    PresetInfo objPreset = GetPresetDetails;
-                    if (IsHandheld())
-                    {
-                        LayoutHelper.CreateHandheldLayoutControls(GetActiveTemplate);
-                    }
-                    else
-                    {
-                        LayoutHelper.CreateLayoutControls(GetActiveTemplate, objPreset);
-                    }
-                }
-
-                LoadControl(pchWhole, layoutcontrol, 3);
-                LoadMessageControl();
-           
-           
-          
-        }
-
-        public void LoadMessageControl()
-        {
-            UserControl uc = pchWhole.FindControl("lytA") as UserControl;
-            PlaceHolder phdPlaceHolder = uc.FindControl("pch_message") as PlaceHolder;
-            if (phdPlaceHolder != null)
-            {
-                LoadControl(phdPlaceHolder, "~/Controls/Message.ascx");
-            }
-        }
-        public void InitPositions(string layout)
-        {
-            layout = Path.GetFileNameWithoutExtension(layout);
-            string filePath = Decide.IsTemplateDefault(GetActiveTemplate)
-                              ? string.Format("{0}/Layouts/{1}.xml", Utils.GetTemplatePath_Default("Default"), layout)
-                              : string.Format("{0}/Layouts/{1}.xml", Utils.GetTemplatePath(GetActiveTemplate), layout);
-            XmlParser _parser = new XmlParser();
-            List<string> lstPositions = _parser.GetLayoutPositions(filePath, "layout/section");
-            foreach (string pos in lstPositions)
-            {
-
-                string controlid = string.Format("pch_{0}", pos.ToLower());
-                UserControl uc = pchWhole.FindControl("lytA") as UserControl;
-                PlaceHolder phd = uc.FindControl(controlid) as PlaceHolder;
-                if (phd != null)
-                {
-                    HtmlGenericControl span = new HtmlGenericControl("span");
-                    span.Attributes.Add("class", "sfUsermoduletitle");
-                    span.InnerText = pos;
-                    phd.Controls.Add(span);
-                }
-
-            }
-
-
-        }
-
-        public void SetFavIcon()
-        {
-            templatefavicon = Decide.IsTemplateDefault(GetActiveTemplate) ? ResolveUrl("~/favicon.ico") : ResolveUrl(string.Format("~/Templates/{0}/favicon.ico", GetActiveTemplate));
-        }
-
-
-
-
-        private void SageInitPart()
-        {
-            try
-            {
-                string IsInstalled = Config.GetSetting("IsInstalled").ToString();
-                string InstallationDate = Config.GetSetting("InstallationDate").ToString();
-                if ((IsInstalled != "" && IsInstalled != "false") && InstallationDate != "")
-                {
-                    if (!(Request.CurrentExecutionFilePath.Contains(".gif") || Request.CurrentExecutionFilePath.Contains(".jpg") || Request.CurrentExecutionFilePath.Contains(".png")))
-                    {
-                        //SetPortalCofig();
-                        InitializePage();
-                        SageFrameConfig sfConfig = new SageFrameConfig();
-                        IsUseFriendlyUrls = sfConfig.GetSettingBollByKey(SageFrameSettingKeys.UseFriendlyUrls);
-                        SetAdminParts();
-                        BindModuleControls();
-                    }
-                }
-                else
-                {
-                    HttpContext.Current.Response.Redirect(ResolveUrl("~/Install/InstallWizard.aspx"));
-                }
-            }
-            catch(Exception ex)
-            {
-                //throw ex;
-            }
-        }
-
-        
-        private void SetAdminParts()
-        {
-            //HtmlGenericControl divAdminControlPanel = lytLayout.FindControl("divAdminControlPanel") as HtmlGenericControl;
-            if (HttpContext.Current.User != null)
-            {
-                MembershipUser user = Membership.GetUser();
-                FormsIdentity identity = HttpContext.Current.User.Identity as FormsIdentity;
-
-                if (identity != null)
-                {
-                    FormsAuthenticationTicket ticket = identity.Ticket;
-                    int LoggedInPortalID = ticket.UserData != "" ? int.Parse(ticket.UserData.ToString()) : 0;
-
-                    if (user != null && user.UserName!="")
-                    {
-                        string[] sysRoles = SystemSetting.SUPER_ROLE;
-                        if ((GetPortalID == LoggedInPortalID || Roles.IsUserInRole(user.UserName,sysRoles[0])) && LoggedInPortalID!=0)
-                        {                           
-                            RoleController _role = new RoleController();
-                            string userinroles = _role.GetRoleNames(GetUsername, LoggedInPortalID);
-                            if (userinroles != "" || userinroles != null)
-                            {
-                                divAdminControlPanel.Visible = true;
-                                LeaveMargin();
-                                InitPositions(layoutcontrol);
-                                foreach (string role in sysRoles)
-                                {
-                                    if (Roles.IsUserInRole(user.UserName, role))
-                                    {
-                                        break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                divAdminControlPanel.Visible = false;
-                            }
-                        }
-                        else
-                        {
-                            divAdminControlPanel.Visible = false;
-                        }
-                    }
-                    else
-                    {
-                        divAdminControlPanel.Visible = false;
-                    }
-                }
-                else
-                {
-                    divAdminControlPanel.Visible = false;
-                }
-            }
-            if (IsHandheld())
-            {
-                divAdminControlPanel.Visible = false;
-            }
-           
-        }
-
-        private void SetPortalCofig()
-        {
-            Hashtable hstPortals = GetPortals();
-            SageUserControl suc = new SageUserControl();
-            int portalID = 1;
-            if (string.IsNullOrEmpty(Request.QueryString["ptSEO"]))
-            {
-                if (string.IsNullOrEmpty(PortalSEOName))
-                {
-                    PortalSEOName = "default";
-                }
-                else if (!hstPortals.ContainsKey(PortalSEOName.ToLower().Trim()))
-                {
-                    PortalSEOName = "default";
-                }
-                else
-                {
-                    portalID = int.Parse(hstPortals[PortalSEOName.ToLower().Trim()].ToString());
-                }
-            }
-            else
-            {
-                PortalSEOName = Request.QueryString["ptSEO"].ToString().ToLower().Trim();
-                portalID = Int32.Parse(Request.QueryString["ptlid"].ToString());
-            }
-            suc.SetPortalSEOName(PortalSEOName.ToLower().Trim());
-        
-            Session["SageFrame.PortalSEOName"] = PortalSEOName.ToLower().Trim();
-            Session["SageFrame.PortalID"] = portalID;
-            string tempName = TemplateController.GetActiveTemplate(GetPortalID).TemplateSeoName;
-            string tempPath=Decide.IsTemplateDefault(tempName)?Utils.GetTemplatePath_Default(tempName):Utils.GetTemplatePath(tempName);
-            if (!Directory.Exists(tempPath)) { tempName = "default"; }
-            Session["SageFrame.ActiveTemplate"] = tempName;
-            Session["SageFrame.ActivePreset"] = PresetHelper.LoadActivePagePreset(tempName, GetPageSEOName(Request.Url.ToString()));
-
-            suc.SetPortalID(portalID);
-            SetPortalID(portalID);
-            if (HttpContext.Current.User != null)
-            {
-                if (Membership.GetUser() != null)
-                {
-                    string strRoles = string.Empty;                    
-                    SettingProvider objSP = new SettingProvider();
-                    List<SageUserRole> sageUserRolles = objSP.RoleListGetByUsername(HttpContext.Current.User.Identity.Name, GetPortalID);
-                    if (sageUserRolles != null)
-                    {
-                        foreach (SageUserRole userRole in sageUserRolles)
-                        {
-                            strRoles += userRole.RoleId + ",";
-                        }
-                    }
-                    if (strRoles.Length > 1)
-                    {
-                        strRoles = strRoles.Substring(0, strRoles.Length - 1);
-                    }
-                    if (strRoles.Length > 0)
-                    {
-                        SetUserRoles(strRoles);
-                    }
-                }
-            }
-        }
-        public void SetUserRoles(string strRoles)
-        {
-            Session["SageUserRoles"] = strRoles;
-            HttpCookie cookie = HttpContext.Current.Request.Cookies["SageUserRolesCookie"];
-            if (cookie == null)
-            {
-                cookie = new HttpCookie("SageUserRolesCookie");
-            }
-            cookie["SageUserRolesProtected"] = strRoles;
-            HttpContext.Current.Response.Cookies.Add(cookie);
-        }
-        private Hashtable GetPortals()
-        {
-            
-            Hashtable hstAll = new Hashtable();
-            if (HttpContext.Current.Cache["Portals"] != null)
-            {
-                hstAll = (Hashtable)HttpContext.Current.Cache["Portals"];
-            }
-            else
-            {                
-                SettingProvider objSP = new SettingProvider();
-                List<SagePortals> sagePortals = objSP.PortalGetList();
-                foreach (SagePortals portal in sagePortals)
-                {
-                    hstAll.Add(portal.SEOName.ToLower().Trim(), portal.PortalID);
-                }
-            }
-            HttpContext.Current.Cache.Insert("Portals", hstAll);
-            return hstAll;
+        {            
+            SetPageInitPart();
         }
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!(Request.CurrentExecutionFilePath.Contains(".gif") || Request.CurrentExecutionFilePath.Contains(".jpg") || Request.CurrentExecutionFilePath.Contains(".png")))
-            {
-                SagePageLoadPart();               
-                
-            }
+            SetPageLoadPart();
         }
 
-        
-        private void SagePageLoadPart()
+        protected void Page_End(object sender, EventArgs e)
         {
-            try
-            {
-                if (!IsPostBack)
-                {
-                    SageFrameConfig sfConfig = new SageFrameConfig();
-                    string sageNavigateUrl = string.Empty;
-                    if (IsUseFriendlyUrls)
-                    {
-                        if (GetPortalID > 1)
-                        {
-                            sageNavigateUrl = ResolveUrl("~/portal/" + GetPortalSEOName + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx");
-                        }
-                        else
-                        {
-                            sageNavigateUrl = ResolveUrl("~/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx");
-                        }
-                    }
-                    else
-                    {
-                        sageNavigateUrl = ResolveUrl("~/Default.aspx?ptlid=" + GetPortalID + "&ptSEO=" + GetPortalSEOName + "&pgnm=" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage));
-                    }
-                    
-                    
-                }
-                SessionTracker sessionTracker = (SessionTracker)Session["Tracker"];
-                if (string.IsNullOrEmpty(sessionTracker.PortalID))
-                {
-                    sessionTracker.PortalID = GetPortalID.ToString();
-                    sessionTracker.Username = GetUsername;
-                    SageFrameConfig sfConfig = new SageFrameConfig();
-                    sessionTracker.InsertSessionTrackerPages = sfConfig.GetSettingsByKey(SageFrameSettingKeys.InsertSessionTrackingPages);
 
-                    SageFrame.Web.SessionLog SLog = new SageFrame.Web.SessionLog();
-                    SLog.SessionTrackerUpdateUsername(sessionTracker, GetUsername, GetPortalID.ToString());
-                    Session["Tracker"] = sessionTracker;
-                }
-                
-            }
-            catch
-            {
-            }
         }
 
-       
+        #endregion
 
-        private void BindModuleControls()
+        #region "Public Methods"
+
+        public void BuildLayoutControl()
         {
-            string preFix = string.Empty;
-            string paneName = string.Empty;
-            string ControlSrc = string.Empty;
-            string phdContainer = string.Empty;
-            string PageSEOName = string.Empty;
-            SageUserControl suc = new SageUserControl();
-            if (PagePath != null)
+            string pagename = PagePath;
+            if (pagename == null)
             {
-                suc.PagePath = PagePath;
+                pagename = "default";
+            }
+            SageFrameConfig sfConfig = new SageFrameConfig();
+            pagename = pagename.ToLower().Equals("default") ? sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage).Replace(" ", "-") : pagename.Replace(" ", "-");
+            layoutcontrol = "";
+            switch (HandHeldMode())
+            {
+                case 1:
+                    layoutcontrol = PresetHelper.LoadActivePresetForPage(activeTemplate, pagename);
+                    break;
+                case 2:
+                    layoutcontrol = PresetHelper.LoadHandheldControl(activeTemplate);
+                    break;
+                case 3:
+                    layoutcontrol = PresetHelper.LoadDeviceType3(activeTemplate);
+                    break;
+            }
+            LoadControl(pchWhole, layoutcontrol, 3);
+        }
+
+        public int HandHeldMode()
+        {
+            string GetMode = GetUserAgent();
+            int Mode = 1;
+            string strUserAgent = Request.UserAgent.ToString().ToLower();
+            if (GetMode == "3")
+            {
+                if (strUserAgent != null)
+                {
+                    if (Request.Browser.IsMobileDevice == false)
+                    {
+                        Mode = 1;
+                    }
+                    else if (Request.Browser.IsMobileDevice == true)
+                    {
+                        Mode = 2;
+                        #region "Need to modify when new device mapping will be allowed"
+                        //if ((strUserAgent.Contains("iphone") ||
+                        //strUserAgent.Contains("blackberry") || strUserAgent.Contains("mobile") ||
+                        //strUserAgent.Contains("windows ce") || strUserAgent.Contains("opera mini") ||
+                        //strUserAgent.Contains("palm")))
+                        //{
+                        //    Mode = 2;
+                        //}
+                        //else
+                        //{
+                        //    Mode = 2;
+                        //} 
+                        #endregion
+                    }
+                }
             }
             else
             {
-                SageFrameConfig sfConfig = new SageFrameConfig();
-               suc.PagePath= sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage)+".aspx";
+                Mode = int.Parse(GetMode);
             }
-            if (Request.QueryString["pgnm"] != null)
+            return Mode;
+        }
+
+        public string GetUserAgent()
+        {
+            UserAgentController objController = new UserAgentController();
+            string getMode = string.Empty;
+            if (Globals.sysHst[ApplicationKeys.UserAgent + "_" + currentportalID] != null)
             {
-                PageSEOName = Request.QueryString["pgnm"].ToString();
+                getMode = Globals.sysHst[ApplicationKeys.UserAgent + "_" + currentportalID].ToString();
             }
             else
             {
-                PageSEOName = GetPageSEOName(PagePath);
+                getMode = objController.GetUserAgent(currentportalID, true);
+                Globals.sysHst[ApplicationKeys.UserAgent + "_" + currentportalID] = getMode;
             }
-
-           
-            
-            //:TODO: Need to get controlType and pageID from the selected page from routing path
-            //string controlType = "0";
-            //string pageID = "2";
-            string redirecPath = string.Empty;
-            if (PageSEOName != string.Empty)
-            {
-                SageFrameConfig sfConfig = new SageFrameConfig();
-                string SEOName = sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage);
-              
-             
-                List<UserModuleInfo> lstUserModules = sfConfig.GetPageModules("1", PageSEOName, GetUsername);
-                if (lstUserModules[0].IsPageAvailable)
-                {
-                    if (lstUserModules[0].IsPageAccessible)
-                    {
-                        if (lstUserModules.Count > 0)
-                        {
-                            OverridePageInfo(lstUserModules[0]);
-
-                            int i = 0;
-
-                            foreach (UserModuleInfo usermodule in lstUserModules)
-                            {
-
-                                bool handheld_status = bool.Parse(usermodule.IsHandHeld.ToString());
-                                if (IsHandheld() == handheld_status)
-                                {
-                                    paneName = usermodule.PaneName;
-                                    paneName = "pch_" + paneName;
-
-                                    if (string.IsNullOrEmpty(paneName))
-                                        paneName = "ContentPane";
-                                    string UserModuleTitle = usermodule.UserModuleTitle != "" ? usermodule.UserModuleTitle.ToString() : "";
-
-                                    ControlSrc = usermodule.ControlSrc;
-                                    string SupportsPartialRendering = usermodule.SupportsPartialRendering.ToString();
-
-                                    string SuffixClass = usermodule.SuffixClass.ToString();
-                                    string HeaderText = usermodule.ShowHeaderText ? usermodule.HeaderText : "";
-
-                                    bool ContainsEdit = usermodule.IsEdit;
-                                    int ControlCount = usermodule.ControlsCount;
-                                    UserControl uc = pchWhole.FindControl("lytA") as UserControl;
-                                    PlaceHolder phdPlaceHolder = uc.FindControl(paneName) as PlaceHolder;
-
-                                    SuffixClass = IsUserLoggedIn() || ContainsEdit ? string.Format("sfLogged sfModule{0}", SuffixClass) : string.Format("sfModule{0}", SuffixClass);
-
-
-                                    if (phdPlaceHolder != null)
-                                    {
-                                        string TemplateControls = Server.MapPath(string.Format("~/Templates/{0}/modules/{1}", GetActiveTemplate, ControlSrc.Substring(ControlSrc.IndexOf('/'), ControlSrc.Length - ControlSrc.IndexOf('/'))));
-                                        ControlSrc = File.Exists(TemplateControls) ? string.Format("/Templates/{0}/modules/{1}", GetActiveTemplate, ControlSrc.Substring(ControlSrc.IndexOf('/'), ControlSrc.Length - ControlSrc.IndexOf('/'))) : string.Format("/{0}", ControlSrc);
-                                        phdPlaceHolder = LoadControl(i.ToString(), bool.Parse(SupportsPartialRendering), phdPlaceHolder, ControlSrc, paneName, usermodule.UserModuleID.ToString(), SuffixClass, HeaderText, IsUserLoggedIn(), GetModuleControls(usermodule.UserModuleID, ContainsEdit, ControlCount), GetPaneNameContainer(UserModuleTitle),ContainsEdit);
-                                    }
-                                    i++;
-
-                                }
-                            }
-                        }
-
-
-                        else
-                        {
-
-                            if (GetPortalID > 1)
-                            {
-                                redirecPath = ResolveUrl("~/portal/" + GetPortalSEOName + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalPageNotFound) + ".aspx");
-                            }
-                            else
-                            {
-                                redirecPath = ResolveUrl("~/sf/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalPageNotFound) + ".aspx");
-                            }
-                            Response.Redirect(redirecPath);
-
-                           
-                        }
-                    }
-                    else
-                    {
-                        if (GetPortalID > 1)
-                        {
-                            redirecPath = ResolveUrl("~/portal/" + GetPortalSEOName + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalPageNotAccessible) + ".aspx");
-                        }
-                        else
-                        {
-                            redirecPath = ResolveUrl("~/sf/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalPageNotAccessible) + ".aspx");
-                        }
-                        Response.Redirect(redirecPath);
-                    }
-                }
-                else
-                {
-                    //page is not found
-                    if (GetPortalID > 1)
-                    {
-                        redirecPath = ResolveUrl("~/portal/" + GetPortalSEOName + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalPageNotFound) + ".aspx");
-                    }
-                    else
-                    {
-                        redirecPath = ResolveUrl("~/sf/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalPageNotFound) + ".aspx");
-                    }
-                    Response.Redirect(redirecPath);
-                }
-               
-            }
-           
-
-
-            SetScreenWidth();
-
-            
-        }
-        public void LeaveMargin()
-        {
-            PlaceHolder pchWhole = Page.FindControl("pchWhole") as PlaceHolder;
-            UserControl uc = pchWhole.FindControl("lytA") as UserControl;
-            HtmlGenericControl div = uc.FindControl("sfOuterWrapper") as HtmlGenericControl;
-            div.Attributes.Add("style","margin-top:30px");
+            return getMode;
         }
 
-
-        public HtmlGenericControl GetModuleControls(int UserModuleID,bool ContainsEdit,int ControlCount)
+        public HtmlGenericControl GetModuleControls(int UserModuleID, bool ContainsEdit, int ControlCount)
         {
             HtmlGenericControl div = new HtmlGenericControl("div");
-            if (ContainsEdit && ControlCount>1)
+            if (ContainsEdit && ControlCount > 1)
             {
                 div.Attributes.Add("class", "sfModuleControl");
-                string url = string.Format("{0}/Sagin/HandleModuleControls.aspx?uid={1}&pid={2}", Request.ApplicationPath == "/" ? "" : Request.ApplicationPath, UserModuleID,GetPortalID);
-                string html = "<a class='sfManageControl' href='#' rel='" + url + "'></a>";
+                string url = string.Format("{0}/Sagin/HandleModuleControls" + Extension + "?uid={1}&pid={2}", appPath, UserModuleID, currentportalID);
+                string html = "<a class='sfManageControl' rel='" + url + "'></a>";
                 div.InnerHtml = html;
             }
-           
             return div;
-
         }
+
         public HtmlGenericControl GetPaneNameContainer(string PaneName)
         {
             HtmlGenericControl span = new HtmlGenericControl("span");
             span.Attributes.Add("class", "sfPosition");
+            span.Attributes.Add("style", "display:none;");
             span.InnerHtml = PaneName;
             return span;
-
-        }
-        private void LoadControl(PlaceHolder ContainerControl, string controlSource)
-        {
-            UserControl ctl = this.Page.LoadControl(controlSource) as UserControl;
-            ctl.EnableViewState = true;            
-            ContainerControl.Controls.Add(ctl);
         }
 
-        private void LoadControl(PlaceHolder ContainerControl, string controlSource,int id)
-        {
-            UserControl ctl = this.Page.LoadControl(controlSource) as UserControl;
-            ctl.EnableViewState = true;
-            ctl.ID = "lytA";
-            ContainerControl.Controls.Add(ctl);
-        }
-
-
-        #region SageFrameRoute Members
-
-        public string PagePath
-        {
-            get;
-            set;
-        }
-
-        public string PortalSEOName
-        {
-            get;
-            set;
-        }
-        public string UserModuleID
-        { 
-            get; 
-            set; 
-        }
-        public string ControlType
-        {
-            get;
-            set;
-        }
-		public string ControlMode { get; set; }
-        public string Key { get; set; }
-        #endregion
-
+        /// <summary>
+        /// Show Message In The Page
+        /// </summary>
+        /// <param name="MessageTitle"> Display Message Title</param>
+        /// <param name="Message"> Display Message</param>
+        /// <param name="CompleteMessage">Complete Message</param>
+        /// <param name="isSageAsyncPostBack">Set True If Update Panel Post Back</param>
+        /// <param name="MessageType">Message Type</param>
         public override void ShowMessage(string MessageTitle, string Message, string CompleteMessage, bool isSageAsyncPostBack, SageMessageType MessageType)
         {
-
             string strCssClass = GetMessageCssClass(MessageType);
             int Cont = this.Page.Controls.Count;
             ControlCollection lstControls = Page.FindControl("form1").Controls;
-
-            UserControl uc = pchWhole.FindControl("lytA") as UserControl;          
+            UserControl uc = pchWhole.FindControl("lytA") as UserControl;
             PlaceHolder phd = uc.FindControl("pch_message") as PlaceHolder;
             if (phd != null)
             {
                 foreach (Control c in phd.Controls)
                 {
-
                     if (c.GetType().FullName.ToLower() == "ASP.controls_message_ascx".ToLower())
                     {
                         SageUserControl tt = (SageUserControl)c;
                         tt.Modules_Message_ShowMessage(tt, MessageTitle, Message, CompleteMessage, isSageAsyncPostBack, MessageType, strCssClass);
                     }
-
-
                 }
-
             }
-
         }
 
         public void ManageSSLConnection()
         {
-            if (Request.CurrentExecutionFilePath.Contains("fonts") || Request.CurrentExecutionFilePath.Contains(".gif") || Request.CurrentExecutionFilePath.Contains(".jpg") || Request.CurrentExecutionFilePath.Contains(".png"))
+            ApplicationController objAppController = new ApplicationController();
+            if (!objAppController.CheckRequestExtension(Request))
             {
-                if (Session["Ssl"] == null)
+                if (Session[SessionKeys.Ssl] == null)
                 {
-                    Session["Ssl"] = "True";
+                    Session[SessionKeys.Ssl] = "True";
                     //check logic redirect to or not
                     //btn click login and logout prob
-                    List<SecurePageInfo> sp = GetSecurePage(GetPortalID, GetCurrentCulture());
+                    PageController objController = new PageController();
+                    List<SecurePageInfo> sp = objController.GetSecurePage(currentportalID, GetCurrentCulture());
                     string pagename = GetPageSEOName(PagePath);
                     if (pagename != "Page-Not-Found")
                     {
-                        if (Session["pagename"] != null)
+                        if (Session[SessionKeys.pagename] != null)
                         {
-                            prevpage = Session["pagename"].ToString();
+                            prevpage = Session[SessionKeys.pagename].ToString();
                         }
-
                         if (prevpage != pagename)
                         {
-
-                            Session["pagename"] = pagename;
-
+                            Session[SessionKeys.pagename] = pagename;
                             for (int i = 0; i < sp.Count; i++)
                             {
                                 if (pagename.ToLower() == sp[i].SecurePageName.ToString().ToLower())
@@ -686,24 +262,22 @@ namespace SageFrame
                                         {
                                             if (!HttpContext.Current.Request.Url.IsLoopback) //Don't check when in development mode (i.e. localhost)
                                             {
-                                                Session["prevurl"] = "https";
+                                                Session[SessionKeys.prevurl] = "https";
                                                 Response.Redirect(Request.Url.ToString().Replace("http://", "https://"));
-
                                             }
                                         }
                                     }
                                     else
                                     {
-                                        Session["prevurl"] = "http";
+                                        Session[SessionKeys.prevurl] = "http";
                                         Response.Redirect(Request.Url.ToString().Replace("https://", "http://"));
                                     }
                                 }
                             }
                         }
-                        else if (Session["prevurl"] != null)
+                        else if (Session[SessionKeys.prevurl] != null)
                         {
-
-                            if (Session["prevurl"].ToString() != Request.Url.ToString().Split(':')[0].ToString())
+                            if (Session[SessionKeys.prevurl].ToString() != Request.Url.ToString().Split(':')[0].ToString())
                             {
                                 for (int i = 0; i < sp.Count; i++)
                                 {
@@ -732,5 +306,500 @@ namespace SageFrame
             }
         }
 
+        #endregion
+
+        #region "Private Methods"
+
+        private void SetPageInitPart()
+        {
+            Extension = SageFrameSettingKeys.PageExtension;
+            activeTemplate = GetActiveTemplate;
+            currentportalID = GetPortalID;
+            try
+            {
+                SetPortalCofig();
+                BuildLayoutControl();
+                templatefavicon = SetFavIcon(activeTemplate);
+            }
+            catch (Exception ex)
+            {
+                Session[SessionKeys.TemplateError] = ex;
+            }
+            SageInitPart();
+            // ManageSSLConnection();
+            SetGlobalVariable();
+            bool IsAdmin = false;
+            IncludeStartup(currentportalID, pchWhole, IsAdmin);
+
+        }
+
+        private void SetGlobalVariable()
+        {
+            appPath = GetAppPath();
+            RegisterSageGlobalVariable();
+        }      
+
+        private void SageInitPart()
+        {
+            try
+            {
+                ApplicationController objAppController = new ApplicationController();
+                if (objAppController.IsInstalled())
+                {
+                    if (!objAppController.CheckRequestExtension(Request))
+                    {
+                        InitializePage();
+                        SageFrameConfig sfConfig = new SageFrameConfig();
+                        SetAdminParts();
+                        BindModuleControls();
+                    }
+                }
+                else
+                {
+                    HttpContext.Current.Response.Redirect(ResolveUrl("~/Install/InstallWizard.aspx"));
+                }
+            }
+            catch
+            {
+                //throw ex;
+            }
+        }
+
+        private void SetAdminParts()
+        {
+            SecurityPolicy objSecurity = new SecurityPolicy();
+            HttpCookie authCookie = Request.Cookies[objSecurity.FormsCookieName(GetPortalID)];
+            if (authCookie != null)
+            {
+                FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authCookie.Value);
+                string user = ticket.Name;
+                if (user != string.Empty && user != ApplicationKeys.anonymousUser)
+                {
+                    divAdminControlPanel.Visible = true;
+                    ApplicationController objAppController = new ApplicationController();
+                    // objAppController.ChangeCss(Page, "pchWhole", "lytA", "sfOuterWrapper", "style", "margin-top:30px");
+                }
+            }
+            else
+            {
+                divAdminControlPanel.Visible = false;
+            }
+            if (IsHandheld())
+            {
+                divAdminControlPanel.Visible = false;
+            }
+        }
+
+        private void SetPortalCofig()
+        {
+            Hashtable hstPortals = GetPortals();
+            SageUserControl suc = new SageUserControl();
+            int portalID = 1;
+
+            #region "Get Portal SEO Name and PortalID"
+            if (string.IsNullOrEmpty(Request.QueryString["ptSEO"]))
+            {
+                if (string.IsNullOrEmpty(PortalSEOName))
+                {
+                    PortalSEOName = GetDefaultPortalName(hstPortals, 1);// 1 is for Default Portal
+                }
+                else if (!hstPortals.ContainsKey(PortalSEOName.ToLower().Trim()))
+                {
+                    PortalSEOName = GetDefaultPortalName(hstPortals, 1);// 1 is for Default Portal
+                }
+                else
+                {
+                    portalID = int.Parse(hstPortals[PortalSEOName.ToLower().Trim()].ToString());
+                }
+            }
+            else
+            {
+                PortalSEOName = Request.QueryString["ptSEO"].ToString().ToLower().Trim();
+                portalID = Int32.Parse(Request.QueryString["ptlid"].ToString());
+            }
+            #endregion
+
+            suc.SetPortalSEOName(PortalSEOName.ToLower().Trim());
+            Session[SessionKeys.SageFrame_PortalSEOName] = PortalSEOName.ToLower().Trim();
+            Session[SessionKeys.SageFrame_PortalID] = portalID;
+            string tempName = /*activeTemplate;// */ TemplateController.GetActiveTemplate(currentportalID).TemplateSeoName;
+            string tempPath = Decide.IsTemplateDefault(tempName) ? Utils.GetTemplatePath_Default(tempName) : Utils.GetTemplatePath(tempName);
+            if (!Directory.Exists(tempPath))
+            {
+                tempName = "default";
+            }
+            Globals.sysHst[ApplicationKeys.ActiveTemplate + "_" + currentportalID] = tempName;
+            //Globals.sysHst[ApplicationKeys.ActivePagePreset + "_" + currentportalID] = LoadActivePagePreset() || PresetHelper.LoadActivePagePreset(tempName, GetPageSEOName(Request.Url.ToString()));            
+            LoadActivePagePreset();
+            suc.SetPortalID(portalID);
+            SetPortalID(portalID);
+            #region "Set user credentials for modules"
+            SecurityPolicy objSecurity = new SecurityPolicy();
+            if (objSecurity.GetUser(GetPortalID) != string.Empty)
+            {
+                SettingProvider objSP = new SettingProvider();
+                SageFrameConfig sfConfig = new SageFrameConfig();
+                string strRoles = string.Empty;
+                List<SageUserRole> sageUserRolles = objSP.RoleListGetByUsername(objSecurity.GetUser(GetPortalID), currentportalID);
+                if (sageUserRolles != null)
+                {
+                    foreach (SageUserRole userRole in sageUserRolles)
+                    {
+                        strRoles += userRole.RoleId + ",";
+                    }
+                }
+                if (strRoles.Length > 1)
+                {
+                    strRoles = strRoles.Substring(0, strRoles.Length - 1);
+                }
+                if (strRoles.Length > 0)
+                {
+                    SetUserRoles(strRoles);
+                }
+
+            }
+            #endregion
+        }
+
+        public PresetInfo LoadActivePagePreset()
+        {
+            PresetInfo presetInfo = new PresetInfo();
+            if (Globals.sysHst[ApplicationKeys.ActivePagePreset + "_" + currentportalID] != null)
+            {
+                presetInfo = (PresetInfo)Globals.sysHst[ApplicationKeys.ActivePagePreset + "_" + currentportalID];
+            }
+            else
+            {
+                presetInfo = PresetHelper.LoadActivePagePreset(activeTemplate, GetPageSEOName(Request.Url.ToString()));
+                Globals.sysHst[ApplicationKeys.ActivePagePreset + "_" + currentportalID] = presetInfo;
+            }
+            return presetInfo;
+        }
+
+        private void SetPageLoadPart()
+        {
+            ApplicationController objAppController = new ApplicationController();
+            if (!objAppController.CheckRequestExtension(Request))
+            {
+                CoreJs.IncludeLanguageCoreJs(this.Page);
+                SagePageLoadPart();
+            }
+        }
+
+        private void SagePageLoadPart()
+        {
+            try
+            {
+                SessionTrackerController sTracController = new SessionTrackerController();
+                sTracController.SetSessionTrackerValues(currentportalID.ToString(), GetUsername);
+            }
+            catch
+            {
+            }
+        }
+
+        private void BindModuleControls()
+        {
+            string preFix = string.Empty;
+            string paneName = string.Empty;
+            string ControlSrc = string.Empty;
+            string phdContainer = string.Empty;
+            string PageSEOName = string.Empty;
+            SageUserControl suc = new SageUserControl();
+            if (PagePath != null)
+            {
+                suc.PagePath = PagePath;
+            }
+            else
+            {
+                SageFrameConfig sfConfig = new SageFrameConfig();
+                suc.PagePath = sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage);
+            }
+            if (PagePath != null)
+            {
+                PageSEOName = GetPageSEOName(PagePath);
+            }
+            else
+            {
+                SageFrameConfig sfConfig = new SageFrameConfig();
+                PageSEOName = GetPageSEOName(sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage));
+            }
+            PageSEOName = PageSEOName.Replace("-and-", "&").Replace(" ", "-");
+
+            //:TODO: Need to get controlType and pageID from the selected page from routing path
+            //string controlType = "0";
+            //string pageID = "2";
+            StringBuilder redirecPath = new StringBuilder();
+            if (PageSEOName != string.Empty)
+            {
+                SageFrameConfig sfConfig = new SageFrameConfig();
+                string SEOName = sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage).Replace(" ", "-");
+                List<UserModuleInfo> lstUserModules = new List<UserModuleInfo>();
+                bool SuperRole = false;
+                string previewCode = "none";
+                bool isPreview = false;
+                if (Request.QueryString["preview"] != null)
+                {
+                    previewCode = Request.QueryString["preview"].ToString();
+                    isPreview = true;
+                }
+
+                if (Session[SessionKeys.SageRoles] != string.Empty && Session[SessionKeys.SageRoles] != null)
+                {
+                    string[] objRole = Session[SessionKeys.SageRoles].ToString().Split(',');
+                    foreach (string role in objRole)
+                    {
+                        if (role.Replace(" ", string.Empty).ToLower().Equals(ApplicationKeys.Super_User.ToLower().Replace("-", string.Empty)))
+                        {
+                            SuperRole = true;
+                        }
+                    }
+                }
+                if (GetUsername.Equals(ApplicationKeys.anonymousUser))
+                {
+                    lstUserModules = sfConfig.GetPageModules_Anonymous("1", PageSEOName, GetUsername, GetCurrentCulture());
+                }
+                else if (SuperRole)
+                {
+                    lstUserModules = sfConfig.GetPageModules_Superuser("1", PageSEOName, GetUsername, GetCurrentCulture(), isPreview, previewCode);
+                }
+                else
+                {
+                    lstUserModules = sfConfig.GetPageModules("1", PageSEOName, GetUsername, GetCurrentCulture(), isPreview, previewCode);
+                }
+                Uri url = HttpContext.Current.Request.Url;
+                if (lstUserModules[0].IsPageAvailable)
+                {
+
+                    if (lstUserModules[0].IsPageAccessible)
+                    {
+                        #region "Load Controls"
+
+                        if (lstUserModules.Count > 0)
+                        {
+                            OverridePageInfo(lstUserModules[0]);
+                            int i = 0;
+                            bool isUserLoggedIn = IsUserLoggedIn();
+                            if (isUserLoggedIn)
+                            {
+                                SecurityPolicy objSecurity = new SecurityPolicy();
+                                objSecurity.UpdateExpireTime(GetUsername, GetPortalID);
+                            }
+                            bool isHandheld = IsHandheld();
+                            foreach (UserModuleInfo usermodule in lstUserModules)
+                            {
+                                bool handheld_status = bool.Parse(usermodule.IsHandHeld.ToString());
+                                if (isHandheld == handheld_status)
+                                {
+                                    paneName = usermodule.PaneName;
+                                    paneName = "pch_" + paneName;
+                                    if (string.IsNullOrEmpty(paneName))
+                                        paneName = "ContentPane";
+                                    string UserModuleTitle = usermodule.UserModuleTitle != string.Empty ? usermodule.UserModuleTitle.ToString() : string.Empty;
+                                    ControlSrc = usermodule.ControlSrc;
+                                    string SupportsPartialRendering = usermodule.SupportsPartialRendering.ToString();
+                                    string SuffixClass = usermodule.SuffixClass.ToString();
+                                    string HeaderText = usermodule.ShowHeaderText ? usermodule.HeaderText : "";
+                                    bool ContainsEdit = usermodule.IsEdit;
+                                    int ControlCount = usermodule.ControlsCount;
+                                    UserControl uc = pchWhole.FindControl("lytA") as UserControl;
+                                    PlaceHolder phdPlaceHolder = uc.FindControl(paneName) as PlaceHolder;
+                                    SuffixClass = isUserLoggedIn && ContainsEdit ? string.Format("sfLogged sfModule{0}", SuffixClass) : string.Format("sfModule{0}", SuffixClass);
+                                    if (phdPlaceHolder != null)
+                                    {
+                                        string TemplateControls = Server.MapPath(string.Format("~/Templates/{0}/modules/{1}", activeTemplate, ControlSrc.Substring(ControlSrc.IndexOf('/'), ControlSrc.Length - ControlSrc.IndexOf('/'))));
+                                        ControlSrc = File.Exists(TemplateControls) ? string.Format("/Templates/{0}/modules/{1}", activeTemplate, ControlSrc.Substring(ControlSrc.IndexOf('/'), ControlSrc.Length - ControlSrc.IndexOf('/'))) : string.Format("/{0}", ControlSrc);
+                                        phdPlaceHolder = LoadControl(i.ToString(), bool.Parse(SupportsPartialRendering), phdPlaceHolder, ControlSrc, paneName, usermodule.UserModuleID.ToString(), SuffixClass, HeaderText, isUserLoggedIn, GetModuleControls(usermodule.UserModuleID, ContainsEdit, ControlCount), GetPaneNameContainer(UserModuleTitle), ContainsEdit);
+                                    }
+                                    i++;
+                                }
+                            }
+                        }
+
+                        #endregion
+                        else
+                        {
+                            if (!IsParent)
+                            {
+                                redirecPath.Append(url.Scheme);
+                                redirecPath.Append("://");
+                                redirecPath.Append(url.Authority);
+                                redirecPath.Append(PortalAPI.GetApplicationName);
+                                redirecPath.Append("/portal/");
+                                redirecPath.Append(GetPortalSEOName);
+                                redirecPath.Append("/");
+                                redirecPath.Append(PortalAPI.PageNotFoundPageWithExtension);
+                            }
+                            else
+                            {
+                                redirecPath.Append(url.Scheme);
+                                redirecPath.Append("://");
+                                redirecPath.Append(url.Authority);
+                                redirecPath.Append(PortalAPI.PageNotFoundURL);
+                            }
+
+                            Response.Redirect(redirecPath.ToString());
+                        }
+                    }
+                    else
+                    {
+                        if (!IsParent)
+                        {
+                            redirecPath.Append(url.Scheme);
+                            redirecPath.Append("://");
+                            redirecPath.Append(url.Authority);
+                            redirecPath.Append(PortalAPI.GetApplicationName);
+                            redirecPath.Append("/portal/");
+                            redirecPath.Append(GetPortalSEOName);
+                            redirecPath.Append("/");
+                            redirecPath.Append(PortalAPI.PageNotAccessiblePageWithExtension);
+                        }
+                        else
+                        {
+                            redirecPath.Append(url.Scheme);
+                            redirecPath.Append("://");
+                            redirecPath.Append(url.Authority);
+                            redirecPath.Append(PortalAPI.PageNotAccessibleURL);
+                        }
+                        Response.Redirect(redirecPath.ToString());
+                    }
+                }
+                else
+                {
+                    //page is not found
+                    if (!IsParent)
+                    {
+                        redirecPath.Append(url.Scheme);
+                        redirecPath.Append("://");
+                        redirecPath.Append(url.Authority);
+                        redirecPath.Append(PortalAPI.GetApplicationName);
+                        redirecPath.Append("/portal/");
+                        redirecPath.Append(GetPortalSEOName);
+                        redirecPath.Append("/");
+                        redirecPath.Append(PortalAPI.PageNotFoundPageWithExtension);
+                    }
+                    else
+                    {
+                        redirecPath.Append(url.Scheme);
+                        redirecPath.Append("://");
+                        redirecPath.Append(url.Authority);
+                        redirecPath.Append(PortalAPI.PageNotFoundURL);
+                    }
+                    Response.Redirect(redirecPath.ToString());
+                }
+            }
+            SetScreenWidth(GetUsername);
+        }
+
+        private void LoadControl(PlaceHolder ContainerControl, string controlSource)
+        {
+            UserControl ctl = this.Page.LoadControl(controlSource) as UserControl;
+            ctl.EnableViewState = true;
+            ContainerControl.Controls.Add(ctl);
+        }
+
+        private void LoadControl(PlaceHolder ContainerControl, string controlSource, int id)
+        {
+            UserControl ctl = this.Page.LoadControl(controlSource) as UserControl;
+            ctl.EnableViewState = true;
+            ctl.ID = "lytA";
+            ContainerControl.Controls.Add(ctl);
+        }
+
+        #endregion
+
+        #region "Obsolete Methods"
+        [Obsolete("Not used after SageFrame2.0")]
+        private void Redirect()
+        {
+            HttpContext.Current.Response.Clear();
+            HttpContext.Current.Response.Redirect(ResolveUrl("~/sf/sflogin" + Extension));
+        }
+
+        [Obsolete("Not used after SageFrame2.0")]
+        public void IncludeLanguageCoreJs()
+        {
+            Literal LitLangResc = this.Page.FindControl("LitLangResc") as Literal;
+            string strScript = string.Empty;
+            string langFolder = "~/js/SystemLocale/";
+            if (Directory.Exists(Server.MapPath(langFolder)))
+            {
+                bool isTrue = false;
+                string[] fileList = Directory.GetFiles(Server.MapPath(langFolder));
+                string regexPattern = ".*\\\\(?<file>[^\\.]+)(\\.[a-z]{2}-[A-Z]{2})?\\.js";
+                Regex regex = new Regex(regexPattern, RegexOptions.IgnorePatternWhitespace);
+                Match match = regex.Match(fileList[0]);
+                string languageFile = match.Groups[2].Value;
+                string FileUrl = string.Empty;
+                isTrue = GetCurrentCulture() == "en-US" ? true : false;
+                if (isTrue)
+                {
+                    FileUrl = langFolder + languageFile + ".js";
+                    // strScript = "<script src=\"" + ResolveUrl(FileUrl) + "\" type=\"text/javascript\"></script>";
+                }
+                else
+                {
+                    FileUrl = langFolder + languageFile + "." + GetCurrentCulture() + ".js";
+                    // strScript = "<script src=\"" + ResolveUrl(FileUrl) + "\" type=\"text/javascript\"></script>";
+                }
+                string inputString = string.Empty;
+                StringBuilder sb = new StringBuilder();
+                sb.Append("<script type=\"text/javascript\">\n");
+                using (StreamReader streamReader = File.OpenText(Server.MapPath(FileUrl)))
+                {
+                    inputString = streamReader.ReadLine();
+                    while (inputString != null)
+                    {
+                        sb.Append(inputString + "\n");
+                        inputString = streamReader.ReadLine();
+                    }
+                }
+                sb.Append("</script>\n");
+                if (!LitLangResc.Text.Contains(sb.ToString()))
+                {
+                    LitLangResc.Text += sb.ToString();
+                }
+            }
+        }
+
+        [Obsolete("Not used after SageFrame2.0")]
+        public void LoadMessageControl()
+        {
+            UserControl uc = pchWhole.FindControl("lytA") as UserControl;
+            PlaceHolder phdPlaceHolder = uc.FindControl("pch_message") as PlaceHolder;
+            if (phdPlaceHolder != null)
+            {
+                LoadControl(phdPlaceHolder, "~/Controls/Message.ascx");
+            }
+        }
+        #endregion
+
+        #region SageFrameRoute Members
+
+        public string PagePath
+        {
+            get;
+            set;
+        }
+
+        public string PortalSEOName
+        {
+            get;
+            set;
+        }
+        public string UserModuleID
+        {
+            get;
+            set;
+        }
+        public string ControlType
+        {
+            get;
+            set;
+        }
+        public string ControlMode { get; set; }
+        public string Key { get; set; }
+        public string Param { get; set; }
+        #endregion
     }
 }

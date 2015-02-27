@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,12 +17,15 @@ using System.Data.SqlClient;
 using System.Data;
 using SageFrame.ListManagement;
 
+#endregion
+
+
 namespace SageFrame.Core.ListManagement
 {
     public class ListManagementProvider
     {
 
-        public static List<ListManagementInfo> GetListEntriesByNameParentKeyAndPortalID(string ListName, string ParentKey, int PortalID, string Culture)
+        public List<ListManagementInfo> GetListEntriesByNameParentKeyAndPortalID(string ListName, string ParentKey, int PortalID, string Culture)
         {
             try
             {
@@ -54,7 +45,27 @@ namespace SageFrame.Core.ListManagement
 
         }
 
-        public static int AddNewList(ListInfo objList)
+        public List<ListManagementInfo> GetListCopyEntriesByNameParentKeyAndPortalID(string ListName, string ParentKey, int PortalID, string Culture)
+        {
+            try
+            {
+                SQLHandler SQLH = new SQLHandler();
+                List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
+                ParamCollInput.Add(new KeyValuePair<string, object>("@ListName", ListName));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@ParentKey", ParentKey));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@Culture", Culture));
+                return SQLH.ExecuteAsList<ListManagementInfo>("[dbo].[sp_GetListEntriesByNameParentKeyAndPortalID]", ParamCollInput);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+        }
+
+        public int AddNewList(ListInfo objList)
         {
             string sp = "[dbo].[usp_ListEntryAdd]";
             SQLHandler sagesql = new SQLHandler();
@@ -87,7 +98,7 @@ namespace SageFrame.Core.ListManagement
         }
 
         //sp_ListEntryUpdate(entryId, value, text, currencyCode, displayLocale, "", isActive, createdBy,GetCurrentCultureName);
-        public static void UpdateListEntry(int entryId, string value, string text, string currencyCode, string displayLocale, string Description, bool isActive, string createdBy, string CurrentCultureName)
+        public void UpdateListEntry(int entryId, string value, string text, string currencyCode, string displayLocale, string Description, bool isActive, string createdBy, string CurrentCultureName)
         {
 
             string sp = "[dbo].[sp_ListEntryUpdate]";
@@ -114,10 +125,8 @@ namespace SageFrame.Core.ListManagement
                 throw;
             }
         }
-        public static void DeleteListEntry(int EntryId, bool DeleteChild, string Culture)
+        public bool DeleteListEntry(int EntryId, bool DeleteChild, string Culture)
         {
-
-
             string sp = "[dbo].[sp_ListEntryDeleteByID]";
             SQLHandler sagesql = new SQLHandler();
             try
@@ -127,7 +136,7 @@ namespace SageFrame.Core.ListManagement
                 ParamCollInput.Add(new KeyValuePair<string, object>("@DeleteChild", DeleteChild));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Culture", Culture));
 
-                sagesql.ExecuteNonQuery(sp, ParamCollInput);
+                return sagesql.ExecuteNonQueryAsBool(sp, ParamCollInput, "@IsExist");
             }
             catch (Exception ex)
             {
@@ -136,7 +145,7 @@ namespace SageFrame.Core.ListManagement
         }
 
 
-        public static void SortList(int EntryId, bool MoveUp, string Culture)
+        public void SortList(int EntryId, bool MoveUp, string Culture)
         {
 
             string sp = "[dbo].[sp_ListSortOrderUpdate]";
@@ -158,8 +167,9 @@ namespace SageFrame.Core.ListManagement
 
         // var listLevel = dbList.sp_GetListEntrybyNameValueAndEntryID(selectedListName, "", int.Parse(ddlParentEntry.SelectedValue.ToString()), GetCurrentCultureName);
 
-        public static ListManagementInfo GetListEntryDetails(string ListName, string Value, int EntryID, string Culture)
+        public ListManagementInfo GetListEntryDetails(string ListName, string Value, int EntryID, string Culture)
         {
+            SqlDataReader reader = null;
             try
             {
 
@@ -170,7 +180,7 @@ namespace SageFrame.Core.ListManagement
                 ParamCollInput.Add(new KeyValuePair<string, object>("@EntryID", EntryID));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Culture", Culture));
 
-                SqlDataReader reader = null;
+
                 reader = SQLH.ExecuteAsDataReader("[dbo].[sp_GetListEntrybyNameValueAndEntryID]", ParamCollInput);
                 ListManagementInfo objList = new ListManagementInfo();
 
@@ -192,10 +202,17 @@ namespace SageFrame.Core.ListManagement
 
                 throw ex;
             }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
 
         }
 
-        public static List<ListManagementInfo> GetListEntriesByNameValueAndEntryID(string ListName, string Value, int EntryID, string Culture)
+        public List<ListManagementInfo> GetListEntriesByNameValueAndEntryID(string ListName, string Value, int EntryID, string Culture)
         {
             try
             {
@@ -218,8 +235,9 @@ namespace SageFrame.Core.ListManagement
             }
 
         }
-        public static List<ListManagementInfo> GetEntriesByNameParentKeyAndPortalID(string ListName, string ParentKey, int PortalID, string Culture)
+        public List<ListManagementInfo> GetEntriesByNameParentKeyAndPortalID(string ListName, string ParentKey, int PortalID, string Culture)
         {
+            SqlDataReader reader = null;
             try
             {
                 SQLHandler SQLH = new SQLHandler();
@@ -230,7 +248,7 @@ namespace SageFrame.Core.ListManagement
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Culture", Culture));
 
 
-                SqlDataReader reader = null;
+
                 reader = SQLH.ExecuteAsDataReader("[dbo].[sp_GetListEntriesByNameParentKeyAndPortalID]", ParamCollInput);
                 List<ListManagementInfo> lstList = new List<ListManagementInfo>();
 
@@ -252,11 +270,18 @@ namespace SageFrame.Core.ListManagement
 
                 throw ex;
             }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
 
         }
 
 
-        public static List<ListManagementInfo> GetListEntrybyNameAndID(string ListName, int EntryID, string Culture)
+        public List<ListManagementInfo> GetListEntrybyNameAndID(string ListName, int EntryID, string Culture)
         {
             try
             {
@@ -276,7 +301,7 @@ namespace SageFrame.Core.ListManagement
         }
 
 
-        public static void FeedbackFormAdd(string _FormTitle, string _FormInformation, string _Name, string _PermanentCountry, string _PermanentState,
+        public void FeedbackFormAdd(string _FormTitle, string _FormInformation, string _Name, string _PermanentCountry, string _PermanentState,
                     string _PermanentCity, string _PermanentZipCode, string _PermanentPostCode, string _PermanentAddress, string _TemporaryCountry,
                     string _TemporaryState, string _TemporaryCity, string _TemporaryZipCode, string _TemporaryPostalCode,
                     string _TemporaryAddress, string _Email1, string _Email2, string _Phone1, string _Phone2, string _Mobile,
@@ -288,6 +313,7 @@ namespace SageFrame.Core.ListManagement
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
 
                 ParamCollInput.Add(new KeyValuePair<string, object>("@FormInfo", _FormInformation));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@FormTitle", _FormTitle));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Name", _Name));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PermanentCountry", _PermanentCountry));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PermanentState", _PermanentState));
@@ -325,7 +351,7 @@ namespace SageFrame.Core.ListManagement
         }
 
 
-        public static DataTable FeedbackItemGet(int PortalID, string CultureName)
+        public DataTable FeedbackItemGet(int PortalID, string CultureName)
         {
 
             try
@@ -333,7 +359,7 @@ namespace SageFrame.Core.ListManagement
                 SQLHandler SQLH = new SQLHandler();
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParamCollInput.Add(new KeyValuePair<string, object>("@CultureName", CultureName));                
+                ParamCollInput.Add(new KeyValuePair<string, object>("@CultureName", CultureName));
                 return SQLH.ExecuteAsDataSet("[dbo].[sp_FeedbackItemGet]", ParamCollInput).Tables[0];
             }
             catch (Exception ex)
@@ -344,7 +370,7 @@ namespace SageFrame.Core.ListManagement
 
         }
 
-        public static string GetFeedbackSettingValueList(int PortalID)
+        public string GetFeedbackSettingValueList(int PortalID)
         {
             try
             {
@@ -358,6 +384,111 @@ namespace SageFrame.Core.ListManagement
 
                 throw ex;
             }
+        }
+
+        public List<ListInfo> GetDefaultList(string CultureName, int PortalID)
+        {
+
+            try
+            {
+                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", CultureName));
+
+                SQLHandler sqlH = new SQLHandler();
+                List<ListInfo> defaultList = sqlH.ExecuteAsList<ListInfo>("dbo.sp_GetDefaultList", ParaMeterCollection);
+                return defaultList;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public List<ListInfo> GetListByPortalID(string CultureName, int PortalID)
+        {
+
+            try
+            {
+                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", CultureName));
+
+                SQLHandler sqlH = new SQLHandler();
+                List<ListInfo> defaultList = sqlH.ExecuteAsList<ListInfo>("dbo.sp_GetListsByPortalID", ParaMeterCollection);
+                return defaultList;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public List<ListInfo> GetListInfo(string listName, string parentId,int portalID, string cultureName)
+        {
+            try
+            {
+                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@ListName", listName));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@ParentKey", parentId));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", portalID));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", cultureName));
+
+                SQLHandler sqlH = new SQLHandler();
+                List<ListInfo> listParentEntry = new List<ListInfo>();
+                listParentEntry = sqlH.ExecuteAsList<ListInfo>("dbo.sp_GetListEntriesByNameParentKeyAndPortalID", ParaMeterCollection);
+                return listParentEntry;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        public DataSet GetListInfoInDataSet(string listName, string parentId, int portalID, string cultureName)
+        {
+            try
+            {
+                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@ListName", listName));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@ParentKey", parentId));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", portalID));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", cultureName));
+
+                SQLHandler sqlH = new SQLHandler();
+                DataSet ds = new DataSet();
+                ds = sqlH.ExecuteAsDataSet("dbo.sp_GetListEntriesByNameParentKeyAndPortalID", ParaMeterCollection);
+                return ds;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public List<ListManagementInfo> GetListEntryByParentID(int entryId, string cultureName)
+        {
+            try
+            {
+                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@EntryID", entryId));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", cultureName));
+                SQLHandler sqlH = new SQLHandler();
+                List<ListManagementInfo> objMngInfoLst = new List<ListManagementInfo>();
+                objMngInfoLst = sqlH.ExecuteAsList<ListManagementInfo>("dbo.sp_GetListEntrybyParentId", ParaMeterCollection);
+                return objMngInfoLst;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public List<ListInfo> GetListInfo(string listName, string culture, int parentId)
+        {
+            List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
+            ParaMeterCollection.Add(new KeyValuePair<string, object>("@ListName", listName));
+            ParaMeterCollection.Add(new KeyValuePair<string, object>("@Culture", culture));
+            ParaMeterCollection.Add(new KeyValuePair<string, object>("@ParentId", parentId));
+            SQLHandler sqlH = new SQLHandler();
+            return sqlH.ExecuteAsList<ListInfo>("sp_GetListForUniqueness", ParaMeterCollection);
         }
     }
 }

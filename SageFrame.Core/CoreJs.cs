@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +15,20 @@ using System.Text;
 using SageFrame.Common;
 using SageFrame.Templating;
 using System.IO;
+using System.Web.UI.WebControls;
+using System.Web;
+using System.Web.UI;
+using System.Text.RegularExpressions;
+using System.Threading;
+using SageFrame.Web.Utilities;
+using SageFrame.CDN;
+using SageFrame.Web;
+
+#endregion
 
 namespace SageFrame.Core
 {
+    [Serializable]
     public class CoreJs
     {
         /// <summary>
@@ -38,45 +37,148 @@ namespace SageFrame.Core
         /// <param name="IsAdmin">Include only those files required for the admin mode i.e. the dashboard</param>
         /// <param name="IsUserLoggedIn">Scipts required for the top sticky bar and the edit buttons and popup</param>
         /// <returns>List of scripts to be included</returns>
-        public static List<CssScriptInfo> GetList(bool IsAdmin, bool IsUserLoggedIn)
+        public static List<CssScriptInfo> GetList(bool IsAdmin, bool IsUserLoggedIn, bool IsHandheld, int PortalID)
         {
-            List<CssScriptInfo> lstJS = new List<CssScriptInfo>{                
-                                                    new CssScriptInfo("Core","jquery-1.4.4.js","/js/",0,false),
-                                                    new CssScriptInfo("Core", "jquery-ui-1.8.14.custom.min.js", "/js/jquery-ui-1.8.14.custom/js/", 0, false),
-                                                    new CssScriptInfo("Core","sageframecore.js","/js/SageFrameCorejs/",0,false),
-                                                    new CssScriptInfo("Core","JSON2.js","/js/",0,true),
-                                                    new CssScriptInfo("Core", "superfish.js", "/js/", 0,false)
-                                                  
- 
-            };
-            if (IsAdmin && IsUserLoggedIn)
+            List<CssScriptInfo> jsList = new List<CssScriptInfo>();
+            SageFrameConfig sageConfig = new SageFrameConfig();
+            bool EnableCDN = sageConfig.GetSettingBollByKey(SageFrameSettingKeys.EnableCDN);
+            if (EnableCDN)
             {
-                //lstJS.Add(new CssScriptInfo("Core", "jquery-ui-1.8.14.custom.min.js", "/js/jquery-ui-1.8.14.custom/js/", 0, false));
-                lstJS.Add(new CssScriptInfo("Core", "jquery.tooltip.js", "/Administrator/Templates/Default/js/", 0, false));
-                lstJS.Add(new CssScriptInfo("Core", "jquery.uniform.js", "/Administrator/Templates/Default/js/", 0, false));
-                lstJS.Add(new CssScriptInfo("Core", "dashboardjs.js", "/Administrator/Templates/Default/js/", 0, false));
-                lstJS.Add(new CssScriptInfo("Core", "sidebar_accordian.js", "/Administrator/Templates/Default/js/", 1, false));
-                lstJS.Add(new CssScriptInfo("Core", "jquery.jcarousel.js", "/Administrator/Templates/Default/js/", 0, false));
-                lstJS.Add(new CssScriptInfo("Core", "jquery.qtip-1.0.0-rc3.js", "/Administrator/Templates/Default/js/", 1, false));
-                lstJS.Add(new CssScriptInfo("Core", "jquery.dialogextend.js", "/js/", 1, true));
+                CDNController objCDN = new CDNController();
+                List<CDNInfo> obj = objCDN.GetCDNLinks(PortalID);
+                // public CssScriptInfo(string _ModuleName,  string _Path, int _Position)
+                List<CssScriptInfo> lstJS = new List<CssScriptInfo>();
+                int GetCDNPosition = 0;
+                foreach (CDNInfo objInfo in obj)
+                {
+                    if (GetCDNPosition < 2)
+
+                        lstJS.Add(new CssScriptInfo("Core", objInfo.URL, 0, true, objInfo.IsJS));
+
+                    else
+                        lstJS.Add(new CssScriptInfo("Core", objInfo.URL, objInfo.URLOrder, true, objInfo.IsJS));
+
+                    GetCDNPosition++;
+                    if (GetCDNPosition == 2)
+                    {
+                        if (!IsHandheld)
+                        {
+                            lstJS.Add(new CssScriptInfo("Core", "~/js/SageFrameCorejs/sageframecore.min.js", 0, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/js/JSON2.min.js", 0, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/js/default.js", 0, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/jQuery-browser.js", 0, true, true));
+                        }
+                        if (IsAdmin && IsUserLoggedIn)//Mode=1
+                        {
+
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/jquery.tooltip.js", 0, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/js/superfish.js", 0, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/jquery.uniform.js", 0, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/dashboardjs.js", 0, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/saginjs.js", 0, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/sidebar_accordian.js", 1, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/jquery.jcarousel.js", 0, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/jquery.qtip-1.0.0-rc3.js", 1, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/js/jquery.dialogextend.js", 1, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/message.js", 1, true, true));
 
 
-            }
-            else if (!IsAdmin && IsUserLoggedIn)
-            {
-                //lstJS.Add(new CssScriptInfo("Core", "jquery-ui-1.8.14.custom.min.js", "/js/jquery-ui-1.8.14.custom/js/", 0,false));
-                lstJS.Add(new CssScriptInfo("Core", "max-z-index.js", "/Administrator/Templates/Default/js/", 1));
-                lstJS.Add(new CssScriptInfo("Core", "jquery.tooltip.js", "/Administrator/Templates/Default/js/", 0, false));
-                lstJS.Add(new CssScriptInfo("Core", "dashboardjs.js", "/Administrator/Templates/Default/js/", 0, false));
-                lstJS.Add(new CssScriptInfo("Core", "jquery.dialogextend.js", "/js/", 1, true));
+                        }
+                        if (!IsAdmin && IsUserLoggedIn)//Mode=2
+                        {
+                            //lstJS.Add(new CssScriptInfo("Core", "jquery-ui-1.8.14.custom.min.js", "/js/jquery-ui-1.8.14.custom/js/", 0,false));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/max-z-index.js", 1, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/jquery.tooltip.js", 0, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/dashboardjs.js", 0, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/saginjs.js", 0, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/js/jquery.dialogextend.js", 1, true, true));
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/message.js", 1, true, true));//added by shyam
+                            lstJS.Add(new CssScriptInfo("Core", "~/Administrator/Templates/Default/js/jquery.uniform.js", 0, true, true));
+                        }
 
+                        jsList = lstJS;
+
+                    }
+                }
+
+                jsList = lstJS;
             }
             else
             {
-                lstJS.Add(new CssScriptInfo("Core", "jquery.dialogextend.js", "/js/", 1, true));
+
+
+                if (!IsHandheld)
+                {
+                    //Mode=0
+                    List<CssScriptInfo> lstJS = new List<CssScriptInfo>{                
+                                                    new CssScriptInfo("Core","jquery-1.9.1.js","/js/",0,false),                                                    
+                                                    new CssScriptInfo("Core","sageframecore.min.js","/js/SageFrameCorejs/",0,false),
+                                                    new CssScriptInfo("Core","JSON2.min.js","/js/",0,true) ,
+                                                    new CssScriptInfo("Core", "default.js", "/js/", 1, true),
+                                                    new CssScriptInfo("Core", "jquery-ui-1.10.3.custom.min.js", "/js/jquery-ui-1.8.14.custom/js/", 0, false),
+                                                    new CssScriptInfo("Core", "jQuery-browser.js", "/Administrator/Templates/Default/js/", 0, false)
+                                                    //,new CssScriptInfo("Core", "jquery-migrate.js", "/Administrator/Templates/Default/js/", 0, false)
+                 };
+                    if (IsAdmin && IsUserLoggedIn)//Mode=1
+                    {
+                        //lstJS.Add(new CssScriptInfo("Core", "jquery-ui-1.8.14.custom.min.js", "/js/jquery-ui-1.8.14.custom/js/", 0, false));
+                        lstJS.Add(new CssScriptInfo("Core", "jquery.tooltip.js", "/Administrator/Templates/Default/js/", 0, false));
+                        lstJS.Add(new CssScriptInfo("Core", "superfish.js", "/js/", 0, false));
+                        lstJS.Add(new CssScriptInfo("Core", "jquery.uniform.js", "/Administrator/Templates/Default/js/", 0, false));
+                        lstJS.Add(new CssScriptInfo("Core", "dashboardjs.js", "/Administrator/Templates/Default/js/", 0, false));
+                        lstJS.Add(new CssScriptInfo("Core", "saginjs.js", "/Administrator/Templates/Default/js/", 0, false));
+                        lstJS.Add(new CssScriptInfo("Core", "sidebar_accordian.js", "/Administrator/Templates/Default/js/", 1, false));
+                        lstJS.Add(new CssScriptInfo("Core", "jquery.jcarousel.js", "/Administrator/Templates/Default/js/", 0, false));
+                        lstJS.Add(new CssScriptInfo("Core", "jquery.qtip-1.0.0-rc3.js", "/Administrator/Templates/Default/js/", 1, false));
+                        lstJS.Add(new CssScriptInfo("Core", "jquery.dialogextend.js", "/js/", 1, true));
+                        lstJS.Add(new CssScriptInfo("Core", "message.js", "/Administrator/Templates/Default/js/", 1, false));
+
+                    }
+                    else if (!IsAdmin && IsUserLoggedIn)//Mode=2
+                    {
+                        //lstJS.Add(new CssScriptInfo("Core", "jquery-ui-1.8.14.custom.min.js", "/js/jquery-ui-1.8.14.custom/js/", 0,false));
+                        lstJS.Add(new CssScriptInfo("Core", "max-z-index.js", "/Administrator/Templates/Default/js/", 1));
+                        lstJS.Add(new CssScriptInfo("Core", "jquery.tooltip.js", "/Administrator/Templates/Default/js/", 0, false));
+                        lstJS.Add(new CssScriptInfo("Core", "dashboardjs.js", "/Administrator/Templates/Default/js/", 0, false));
+                        lstJS.Add(new CssScriptInfo("Core", "saginjs.js", "/Administrator/Templates/Default/js/", 0, false));
+                        lstJS.Add(new CssScriptInfo("Core", "jquery.dialogextend.js", "/js/", 1, true));
+                        lstJS.Add(new CssScriptInfo("Core", "message.js", "/Administrator/Templates/Default/js/", 1, false));//added by shyam
+                        lstJS.Add(new CssScriptInfo("Core", "jquery.uniform.js", "/Administrator/Templates/Default/js/", 0, false));
+                    }
+                    else
+                    {
+                        lstJS.Add(new CssScriptInfo("Core", "jquery.dialogextend.js", "/js/", 1, true));
+                    }
+                    jsList = lstJS;
+                }
+                else
+                {
+                    List<CssScriptInfo> lstJS = new List<CssScriptInfo>{                
+                                                    new CssScriptInfo("Core","jquery-1.7.js","/js/",0,false),   
+                                                    new CssScriptInfo("Core", "jquery-ui-1.8.14.custom.min.js", "/js/jquery-ui-1.8.14.custom/js/", 0, false),
+                                                    new CssScriptInfo("Core","sageframecore.min.js","/js/SageFrameCorejs/",0,false),
+                                                    new CssScriptInfo("Core","JSON2.min.js","/js/",0,true),     
+                                                    new CssScriptInfo("Core", "default.js", "/js/", 1, true),                                               
+                                                    new CssScriptInfo("Core", "superfish.js", "/js/", 0,false),
+                                                    new CssScriptInfo("Core", "jquery.tooltip.js", "/Administrator/Templates/Default/js/", 0, false),
+                                                    new CssScriptInfo("Core", "dashboardjs.js", "/Administrator/Templates/Default/js/", 0, false),
+                                                    new CssScriptInfo("Core", "saginjs.js", "/Administrator/Templates/Default/js/", 0, false),
+                                                    new CssScriptInfo("Core", "sidebar_accordian.js", "/Administrator/Templates/Default/js/", 1, false),
+                                                    new CssScriptInfo("Core", "jquery.jcarousel.js", "/Administrator/Templates/Default/js/", 0, false),
+                                                    new CssScriptInfo("Core", "jquery.uniform.js", "/Administrator/Templates/Default/js/", 0, false),
+                                                    new CssScriptInfo("Core", "jquery.qtip-1.0.0-rc3.js", "/Administrator/Templates/Default/js/", 1, false)
+                
+            };
+
+
+
+                    jsList = lstJS;
+                }
+
+
             }
 
-            return lstJS;
+            return jsList;
         }
 
 
@@ -105,6 +207,67 @@ namespace SageFrame.Core
             );
             return lstJs;
 
+        }
+        public static void IncludeLanguageCoreJs(Page sfPage)
+        {
+            Literal LitLangResc = sfPage.FindControl("LitLangResc") as Literal;
+            string strScript = string.Empty;
+            string langFolder = "~/js/SystemLocale/";
+            if (Directory.Exists(HttpContext.Current.Server.MapPath(langFolder)))
+            {
+                bool isTrue = false;
+                string[] fileList = Directory.GetFiles(HttpContext.Current.Server.MapPath(langFolder));
+                string regexPattern = ".*\\\\(?<file>[^\\.]+)(\\.[a-z]{2}-[A-Z]{2})?\\.js";
+                Regex regex = new Regex(regexPattern, RegexOptions.IgnorePatternWhitespace);
+                Match match = regex.Match(fileList[0]);
+                string languageFile = match.Groups[2].Value;
+                string FileUrl = string.Empty;
+                isTrue = Thread.CurrentThread.CurrentCulture.ToString() == "en-US" ? true : false;
+                if (isTrue)
+                {
+                    FileUrl = langFolder + languageFile + ".js";
+                    // strScript = "<script src=\"" + ResolveUrl(FileUrl) + "\" type=\"text/javascript\"></script>";
+                }
+                else
+                {
+                    FileUrl = langFolder + languageFile + "." + Thread.CurrentThread.CurrentCulture.ToString() + ".js";
+                    // strScript = "<script src=\"" + ResolveUrl(FileUrl) + "\" type=\"text/javascript\"></script>";
+                }
+                string inputString = string.Empty;
+                StringBuilder sb = new StringBuilder();
+                sb.Append("<script type=\"text/javascript\">\n");
+
+                if (File.Exists(HttpContext.Current.Server.MapPath(FileUrl)))
+                {
+                    using (StreamReader streamReader = File.OpenText(HttpContext.Current.Server.MapPath(FileUrl)))
+                    {
+                        inputString = streamReader.ReadLine();
+                        while (inputString != null)
+                        {
+                            sb.Append(inputString + "\n");
+                            inputString = streamReader.ReadLine();
+                        }
+                    }
+                }
+                else
+                {
+                    FileUrl = langFolder + languageFile + ".js";
+                    using (StreamReader streamReader = File.OpenText(HttpContext.Current.Server.MapPath(FileUrl)))
+                    {
+                        inputString = streamReader.ReadLine();
+                        while (inputString != null)
+                        {
+                            sb.Append(inputString + "\n");
+                            inputString = streamReader.ReadLine();
+                        }
+                    }
+                }
+                sb.Append("</script>\n");
+                if (!LitLangResc.Text.Contains(sb.ToString()))
+                {
+                    LitLangResc.Text += sb.ToString();
+                }
+            }
         }
     }
 }

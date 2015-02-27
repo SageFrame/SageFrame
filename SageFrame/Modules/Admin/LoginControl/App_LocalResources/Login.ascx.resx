@@ -117,19 +117,76 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CaptchaImageResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CaptchaImageResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CaptchaValueResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CaptchaValueResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cvCaptchaValueResource1.ErrorMessage" xml:space="preserve">
+    <value>*</value>
+  </data>
+  <data name="cvCaptchaValueResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cvCaptchaValueResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="FailureTextResource1.Text" xml:space="preserve">
     <value />
   </data>
-  <data name="hypForgetPasswordResource1.Text" xml:space="preserve">
+  <data name="hypForgotPasswordResource1.Text" xml:space="preserve">
     <value>Forgot Password?</value>
   </data>
-  <data name="hypForgetPasswordResource1.ToolTip" xml:space="preserve">
+  <data name="hypForgotPasswordResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgBtnFacebookResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgBtnFacebookResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgBtnGoogleResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgBtnGoogleResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgBtnLinkedInResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgBtnLinkedInResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgBtnYahooResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgBtnYahooResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="lblAdminLoginResource1.Text" xml:space="preserve">
     <value>Login</value>
   </data>
   <data name="lblAdminLoginResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblAlertMsgResource1.Text" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="lblAlertMsgResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblrmntResource1.Text" xml:space="preserve">
+    <value>Remember me.</value>
+  </data>
+  <data name="lblrmntResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="LoginButtonResource1.Text" xml:space="preserve">
@@ -159,8 +216,29 @@
   <data name="PasswordResource1.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="RefreshResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RefreshResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RememberMeResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RememberMeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rfvCaptchaValueValidatorResource1.ErrorMessage" xml:space="preserve">
+    <value>*</value>
+  </data>
+  <data name="rfvCaptchaValueValidatorResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rfvCaptchaValueValidatorResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="UserNameLabelResource1.Text" xml:space="preserve">
-    <value>User Name:</value>
+    <value> </value>
   </data>
   <data name="UserNameLabelResource1.ToolTip" xml:space="preserve">
     <value />

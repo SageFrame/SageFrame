@@ -5,7 +5,7 @@
 <%@ Import Namespace="System.Text" %>
 <%@ Import Namespace="System" %>
 <%@ Import Namespace="System.Data" %>
-<div class="sfFormwrapper sfPadding">
+<div class="sfFormwrapper">
     <h2>
         <asp:Label ID="lblTitle" runat="server" Text="Install Module" meta:resourcekey="lblTitleResource1"></asp:Label>
     </h2>
@@ -17,16 +17,24 @@
         <NavigationButtonStyle CssClass="CommandButton" BorderStyle="None" BackColor="Transparent" />--%>
         <FinishNavigationTemplate>
             <div class="sfButtonwrapper">
+            <label class="icon-complet sfBtn"> Finish
                 <asp:Button ID="FinishButton" runat="server" AlternateText="Finish" CausesValidation="False"
-                    CommandName="MoveComplete" CssClass="sfBtn" Text="Finish" meta:resourcekey="FinishButtonResource1" />
+                    CommandName="MoveComplete"   meta:resourcekey="FinishButtonResource1" />
+                    </label>
             </div>
         </FinishNavigationTemplate>
         <StartNavigationTemplate>
             <div class="sfButtonwrapper">
-                <asp:Button ID="StartNextButton" runat="server" AlternateText="Next" CausesValidation="False"
-                    CommandName="MoveNext" CssClass="sfBtn" Text="Next" meta:resourcekey="StartNextButtonResource1" />
-                <asp:Button ID="CancelButton" runat="server" AlternateText="Cancel" CausesValidation="False"
-                    CommandName="Cancel" CssClass="sfBtn" Text="Cancel" meta:resourcekey="CancelButtonResource1" />
+                <label class="sfBtn">
+                    Next <i class="icon-arrow-slim-e sfTxtOrange"></i>
+                    <asp:Button ID="StartNextButton" runat="server" AlternateText="Next" CausesValidation="False"
+                        CommandName="MoveNext" meta:resourcekey="StartNextButtonResource1" />
+                </label>
+                <label class="icon-close sfBtn">
+                    Cancel
+                    <asp:Button ID="CancelButton" runat="server" AlternateText="Cancel" CausesValidation="False"
+                        CommandName="Cancel" Text="Cancel" meta:resourcekey="CancelButtonResource1" />
+                </label>
             </div>
         </StartNavigationTemplate>
         <WizardSteps>
@@ -70,41 +78,33 @@
                 meta:resourcekey="Step2Resource1">
                 <asp:Panel ID="pnlPackage" runat="server" meta:resourcekey="pnlPackageResource1"
                     CssClass="sfGridwrapper">
-                    <asp:GridView ID="gdvModule" runat="server" AutoGenerateColumns="false" 
-                        Width="100%" meta:resourcekey="gdvModuleResource1">
+                    <asp:GridView ID="gdvModule" runat="server" AutoGenerateColumns="false" Width="100%"
+                        meta:resourcekey="gdvModuleResource1">
                         <Columns>
                             <asp:TemplateField HeaderText="Name" meta:resourcekey="TemplateFieldResource1">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblname" runat="server" Text='<%# Eval("Name") %>' 
-                                        meta:resourcekey="lblnameResource1"></asp:Label>
+                                    <asp:Label ID="lblname" runat="server" Text='<%# Eval("Name") %>' meta:resourcekey="lblnameResource1"></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Friendly Name" 
-                                meta:resourcekey="TemplateFieldResource2">
+                            <asp:TemplateField HeaderText="Friendly Name" meta:resourcekey="TemplateFieldResource2">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblFriendlyname" runat="server" 
-                                        Text='<%# Eval("FriendlyName") %>' meta:resourcekey="lblFriendlynameResource1"></asp:Label>
+                                    <asp:Label ID="lblFriendlyname" runat="server" Text='<%# Eval("FriendlyName") %>'
+                                        meta:resourcekey="lblFriendlynameResource1"></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Description" 
-                                meta:resourcekey="TemplateFieldResource3">
+                            <asp:TemplateField HeaderText="Description" meta:resourcekey="TemplateFieldResource3">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblDescription" runat="server" Text='<%# Eval("Description") %>' 
-                                        meta:resourcekey="lblDescriptionResource1"></asp:Label>
+                                    <asp:Label ID="lblDescription" runat="server" Text='<%# Eval("Description") %>' meta:resourcekey="lblDescriptionResource1"></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Version" 
-                                meta:resourcekey="TemplateFieldResource4">
+                            <asp:TemplateField HeaderText="Version" meta:resourcekey="TemplateFieldResource4">
                                 <ItemTemplate>
-                                    <asp:Label ID="lblVersion" runat="server" Text='<%# Eval("Version") %>' 
-                                        meta:resourcekey="lblVersionResource1"></asp:Label>
+                                    <asp:Label ID="lblVersion" runat="server" Text='<%# Eval("Version") %>' meta:resourcekey="lblVersionResource1"></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Install" 
-                                meta:resourcekey="TemplateFieldResource5">
+                            <asp:TemplateField HeaderText="Install" meta:resourcekey="TemplateFieldResource5">
                                 <ItemTemplate>
-                                    <asp:CheckBox ID="cbInstall" runat="server" 
-                                        meta:resourcekey="cbInstallResource1" />
+                                    <asp:CheckBox ID="cbInstall" runat="server" meta:resourcekey="cbInstallResource1" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>
@@ -115,7 +115,7 @@
                 meta:resourcekey="Step3Resource1">
                 <div class="sfFormwrapper">
                     <asp:Panel ID="pnlReleaseNotes" runat="server" meta:resourcekey="pnlReleaseNotesResource1">
-                        <asp:Label CssClass="sfFormlabel" ID="lblReleaseNotes" runat="server" Text="ReleaseNotes:"
+                        <asp:Label CssClass="sfFormlabel" ID="lblReleaseNotes" runat="server" Text="Release Notes:"
                             meta:resourcekey="lblReleaseNotesResource1"></asp:Label>
                         <asp:Label ID="lblReleaseNotesD" CssClass="sfFormlabel" runat="server" Text="" meta:resourcekey="lblReleaseNotesDResource1"></asp:Label>
                     </asp:Panel>
@@ -166,10 +166,16 @@
         </WizardSteps>
         <StepNavigationTemplate>
             <div class="sfButtonwrapper">
+            <label class="sfBtn">
+                    Next <i class="icon-arrow-slim-e sfTxtOrange"></i>
                 <asp:Button ID="StepNextButton" runat="server" AlternateText="Next" CausesValidation="False"
                     CommandName="MoveNext" CssClass="sfBtn" Text="Next" meta:resourcekey="StepNextButtonResource1" />
+                    </label>
+                      <label class="icon-close sfBtn">
+                    Cancel
                 <asp:Button ID="CancelButton" runat="server" AlternateText="Cancel" CausesValidation="False"
                     CommandName="Cancel" CssClass="sfBtn" Text="Cancel" meta:resourcekey="CancelButtonResource2" />
+                    </label>
             </div>
         </StepNavigationTemplate>
     </asp:Wizard>

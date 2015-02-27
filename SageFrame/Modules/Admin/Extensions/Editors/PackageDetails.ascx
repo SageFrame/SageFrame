@@ -2,9 +2,9 @@
     Inherits="SageFrame.Modules.Admin.Extensions.Editors.PackageDetails" %>
 
 <div id="divPackageSettings" runat="server">
-    <div class="sfFormwrapper sfPadding">
-        <h2>
-            Package Settings</h2>
+    <div class="sfMarginTopPri sfFormwrapper sfPadding">
+        <h3>
+            Package Settings</h3>
         <p class="sfNote">
             <asp:Label ID="lblPackageSettingsHelp" runat="server" Text="In this section you can configure the package information for this Module."
                 meta:resourcekey="lblPackageSettingsHelpResource1"></asp:Label>
@@ -14,9 +14,6 @@
                 <td width="20%">
                     <asp:Label ID="lblPackageName" runat="server" Text="Package Name" CssClass="sfFormlabel"></asp:Label>
                 </td>
-                <td width="30">
-                    :
-                </td>
                 <td>
                     <asp:TextBox ID="txtPackageName" runat="server" CssClass="sfInputbox required"></asp:TextBox>
                 </td>
@@ -25,9 +22,6 @@
                 <td>
                     <asp:Label ID="lblDescription" runat="server" Text="Description" CssClass="sfFormlabel"></asp:Label>
                 </td>
-                <td width="30">
-                    :
-                </td>
                 <td>
                     <asp:TextBox ID="txtDescription" runat="server" CssClass="sfInputbox" Rows="5" TextMode="MultiLine"></asp:TextBox>
                 </td>
@@ -35,9 +29,6 @@
             <tr>
                 <td>
                     <asp:Label ID="lblVersion" runat="server" Text="Version" CssClass="sfFormlabel"></asp:Label>
-                </td>
-                <td width="30">
-                    :
                 </td>
                 <td>
                     <asp:DropDownList ID="ddlFirst" runat="server" CssClass="sfListmenu sfAuto" meta:resourcekey="ddlFirstResource1">
@@ -52,9 +43,6 @@
                 <td>
                     <asp:Label ID="lblLicense" runat="server" Text="License" CssClass="sfFormlabel"></asp:Label>
                 </td>
-                <td width="30">
-                    :
-                </td>
                 <td>
                     <asp:TextBox ID="txtLicense" runat="server" CssClass="sfInputbox" Rows="5" TextMode="MultiLine"></asp:TextBox>
                 </td>
@@ -62,9 +50,6 @@
             <tr>
                 <td>
                     <asp:Label ID="lblReleaseNotes" runat="server" Text="Release Notes" CssClass="sfFormlabel"></asp:Label>
-                </td>
-                <td width="30">
-                    :
                 </td>
                 <td>
                     <asp:TextBox ID="txtReleaseNotes" runat="server" CssClass="sfInputbox" Rows="5" TextMode="MultiLine"></asp:TextBox>
@@ -74,9 +59,6 @@
                 <td>
                     <asp:Label ID="lblOwner" runat="server" Text="Owner" CssClass="sfFormlabel"></asp:Label>
                 </td>
-                <td width="30">
-                    :
-                </td>
                 <td>
                     <asp:TextBox ID="txtOwner" runat="server" CssClass="sfInputbox" meta:resourcekey="txtOwnerResource1"></asp:TextBox>
                 </td>
@@ -85,9 +67,6 @@
                 <td>
                     <asp:Label ID="lblOrganization" runat="server" Text="Organization" CssClass="sfFormlabel"></asp:Label>
                 </td>
-                <td width="30">
-                    :
-                </td>
                 <td>
                     <asp:TextBox ID="txtOrganization" runat="server" CssClass="sfInputbox"></asp:TextBox>
                 </td>
@@ -95,9 +74,6 @@
             <tr>
                 <td>
                     <asp:Label ID="lblUrl" runat="server" Text="Url" CssClass="sfFormlabel"></asp:Label>
-                </td>
-                <td width="30">
-                    :
                 </td>
                 <td>
                     <asp:TextBox ID="txtUrl" runat="server" CssClass="sfInputbox" meta:resourcekey="txtUrlResource1"></asp:TextBox>
@@ -110,9 +86,6 @@
             <tr>
                 <td>
                     <asp:Label ID="lblEmail" runat="server" Text="Email" CssClass="sfFormlabel"></asp:Label>
-                </td>
-                <td width="30">
-                    :
                 </td>
                 <td>
                     <asp:TextBox ID="txtEmail" runat="server" CssClass="sfInputbox" meta:resourcekey="txtEmailResource1"></asp:TextBox>

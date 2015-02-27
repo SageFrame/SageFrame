@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,11 +19,11 @@ using SageFrame.Localization;
 using System.Text;
 using System.IO;
 using System.Threading;
-
+#endregion
 
 public partial class Localization_CreateLanguagePack : BaseAdministrationUserControl
 {
-    public event ImageClickEventHandler CancelButtonClick;
+    public event EventHandler CancelButtonClick;
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!Page.IsPostBack)
@@ -48,28 +33,38 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
             this.lblDownLoadPathLabel.Visible = false;
         }
         this.divModuleDetails.Visible = false;
+        IncludeLanguageJS();
+        togglingTr.Visible = false;
 
     }
     public void GetLocale()
     {
         List<string> localeList = new List<string>();
         localeList = GetLocaleList("~/Modules", ".resx", localeList);
+        localeList = GetLocaleList("~/Modules", ".js", localeList);
         localeList = GetLocaleList("~/Modules", ".xml", localeList);
         localeList = GetLocaleList("~/XMLMessage", ".xml", localeList);
-
         List<string> localeListWihoutDuplicates = localeList.Distinct().ToList();
         List<Language> lstAllCultures = LocaleController.GetCultures();
         List<Language> lstNewCulture = new List<Language>();
         foreach (string locale in localeListWihoutDuplicates)
         {
             int index = lstAllCultures.FindIndex(delegate(Language obj) { return (obj.LanguageCode == locale); });
-            if(index>-1)
+            if (index > -1)
                 lstNewCulture.Add(lstAllCultures[index]);
         }
-        ddlResourceLocale.DataSource = lstNewCulture;
+        List<Language> lstAvailableLocales = LocaleController.AddNativeNamesToList(LocalizationSqlDataProvider.GetAvailableLocales());
+        ddlResourceLocale.DataSource = lstAvailableLocales;
         ddlResourceLocale.DataTextField = "LanguageName";
         ddlResourceLocale.DataValueField = "LanguageCode";
         ddlResourceLocale.DataBind();
+
+        List<ListItem> listCopy = new List<ListItem>();
+        foreach (ListItem item in ddlResourceLocale.Items)
+            listCopy.Add(item);
+        ddlResourceLocale.Items.Clear();
+        foreach (ListItem item in listCopy.OrderBy(item => item.Text))
+            ddlResourceLocale.Items.Add(item);
     }
     public List<string> GetLocaleList(string filePath, string extension, List<string> localeList)
     {
@@ -81,7 +76,7 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
             if (code != "")
                 localeList.Add(code);
         }
-        return(DirectoryWalkThroughLocalList(di, filePath, extension, localeList));        
+        return (DirectoryWalkThroughLocalList(di, filePath, extension, localeList));
     }
     public List<string> DirectoryWalkThroughLocalList(System.IO.DirectoryInfo di, string filePath, string extension, List<string> localeList)
     {
@@ -105,14 +100,15 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
         string aspxString = filename.Substring(filename.LastIndexOf('.') + 1);
         isAspx = aspxString.Equals("aspx") || aspxString.Equals("ascx") || !aspxString.Contains("-") ? true : false;
         if (!isAspx)
-           langCode = aspxString;
+            langCode = aspxString;
         return langCode;
     }
-    protected void imbCreatePackage_Click(object sender, ImageClickEventArgs e)
+    protected void imbCreatePackage_Click(object sender, EventArgs e)
     {
         string FullFilePath = "";
         List<FileDetails> selectedFiles = new List<FileDetails>();
         List<FileDetails> selectedResxFiles = GetSelectedLanguageFiles(this.ddlResourceLocale.SelectedValue.ToString(), selectedFiles, "~/Modules", "*.resx");
+        selectedResxFiles = GetSelectedLanguageFiles(this.ddlResourceLocale.SelectedValue.ToString(), selectedResxFiles, "~/Modules", "*.js");
         selectedResxFiles = GetSelectedLanguageFiles(this.ddlResourceLocale.SelectedValue.ToString(), selectedResxFiles, "~/XMLMessage", "*.xml");
         selectedResxFiles = GetSelectedLanguageFiles(this.ddlResourceLocale.SelectedValue.ToString(), selectedResxFiles, "~/Modules", "*.xml");
         string filepath = Server.MapPath("~/Install/Language");
@@ -140,7 +136,7 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
                 newFileList = GetCoreModuleResources(selectedResxFiles); ;
                 break;
             case 1:
-                GetSelectedModules(ref newFileList,selectedResxFiles);
+                GetSelectedModules(ref newFileList, selectedResxFiles);
                 break;
             case 2:
                 newFileList = selectedResxFiles;
@@ -157,17 +153,6 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
                 Response.ClearContent();
                 Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName + ".zip");
                 Response.ContentType = "application/octet-stream";
-                
-
-                //Response.ClearContent();
-                //Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName + ".zip");
-                //Response.ContentType = "application/octet-stream";
-                //Response.TransmitFile(FullFilePath);
-                ////Response.End();
-                ////ApplicationInstance.CompleteRequest();
-                //ApplicationInstance.CompleteRequest();
-
-
                 using (Stream input = File.OpenRead(FullFilePath))
                 {
                     byte[] buffer = new byte[4096];
@@ -180,16 +165,12 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
                 }
                 ShowMessage("", GetSageMessage("LanguageModule", "PackageCreatedSuccessfully"), "", SageMessageType.Success);
                 File.Delete(FullFilePath);
-
-                
-
             }
             if (rbResourcePackType.SelectedIndex == 1)
             {
                 divModuleDetails.Visible = true;
 
             }
-
         }
         catch (Exception ex)
         {
@@ -198,48 +179,45 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
         finally
         {
             Response.End();
-
-
         }
-        
+
     }
-  
+
     protected void GetSelectedModules(ref List<FileDetails> newFileList, List<FileDetails> selectedResxFiles)
     {
         foreach (RepeaterItem item in rptrModules.Items)
         {
             if (((CheckBox)item.FindControl("chkSelect")).Checked)
             {
-                int index = selectedResxFiles.FindIndex(
-                    delegate(FileDetails fd)
+                foreach (FileDetails fd in selectedResxFiles)
+                {
+                    if (fd.FolderInfo.Contains(((Label)item.FindControl("lblModuleName")).Text))
                     {
-                        return (fd.FolderInfo.Contains(((Label)item.FindControl("lblModuleName")).Text));
+                        newFileList.Add(fd);
                     }
-                    );
-                if (index > -1)
-                    newFileList.Add(selectedResxFiles[index]);
+                }
             }
         }
     }
     protected List<FileDetails> GetCoreModuleResources(List<FileDetails> lstFullResourceList)
     {
         List<ModuleInfo> lstCoreModules = LocalizationSqlDataProvider.GetCoreModules();
-        List<FileDetails> lstCoreModuleResx = new List<FileDetails>();        
+        List<FileDetails> lstCoreModuleResx = new List<FileDetails>();
         foreach (FileDetails objFD in lstFullResourceList)
         {
-            string fileName=objFD.FileName.Substring(0,objFD.FileName.IndexOf("."));
-             if (lstCoreModules.Exists(
-                delegate(ModuleInfo obj)
-                    { 
-                        return fileName.Equals(obj.ModuleName);
-                    }
-                    )
-                )
+            string fileName = objFD.FileName.Substring(0, objFD.FileName.IndexOf("."));
+            if (lstCoreModules.Exists(
+               delegate(ModuleInfo obj)
+               {
+                   return fileName.Equals(obj.ModuleName);
+               }
+                   )
+               )
             {
                 lstCoreModuleResx.Add(objFD);
             }
         }
-        return lstCoreModuleResx;        
+        return lstCoreModuleResx;
     }
     public List<FileDetails> GetSelectedLanguageFiles(string cultureCode, List<FileDetails> localeList, string filePath, string extension)
     {
@@ -253,7 +231,7 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
             fd.FolderInfo = di.Name;
             localeList.Add(fd);
         }
-        return(DirectoryWalkThrough(di, localeList, cultureCode, extension, filePath.Replace("~/", "")));
+        return (DirectoryWalkThrough(di, localeList, cultureCode, extension, filePath.Replace("~/", "")));
     }
 
     public List<FileDetails> DirectoryWalkThrough(System.IO.DirectoryInfo di, List<FileDetails> localeList, string cultureCode, string extension, string filePath)
@@ -264,10 +242,8 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
             FileDetails fd = new FileDetails();
             fd.FileName = fi.Name;
             fd.FilePath = fi.FullName;
-
             int indexStart = fi.FullName.IndexOf(filePath);
             int indexEnd = fi.FullName.LastIndexOf("\\");
-
             fd.FolderInfo = fi.FullName.Substring(indexStart, indexEnd - indexStart);
             localeList.Add(fd);
         }
@@ -275,7 +251,6 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
         {
             localeList = DirectoryWalkThrough(di_child, localeList, cultureCode, extension, filePath);
         }
-
         List<FileDetails> selectedResxList = new List<FileDetails>();
         foreach (FileDetails obj in localeList)
         {
@@ -289,12 +264,12 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
     public PackageInfo GetPackageInfo()
     {
         PackageInfo package = new PackageInfo();
-        package = XMLHelper.GetPackageManifest(Server.MapPath("~/")+"Modules\\Language\\Manifest\\ManifestData.xml");
+        package = XMLHelper.GetPackageManifest(Server.MapPath("~/") + "Modules\\Language\\Manifest\\ManifestData.xml");
         package.PackageName = this.txtResourcePackName.Text + "." + "1.0.0.1";
         package.PackageType = "Core";
         package.FriendlyName = this.txtResourcePackName.Text;
-        package.OwnerName = GetUsername;        
-        package.Version = "1.0.0.1";     
+        package.OwnerName = GetUsername;
+        package.Version = "1.0.0.1";
         return package;
     }
     protected void rbResourcePackType_SelectedIndexChanged(object sender, EventArgs e)
@@ -309,6 +284,7 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
                 txtResourcePackName.Text = "Core";
                 this.lblDownLoadPathLabel.Visible = false;
                 this.lnkBtnDownloadPackage.Text = "";
+                this.togglingTr.Visible = false;
                 break;
             case 1:
                 divModuleDetails.Visible = true;
@@ -316,15 +292,17 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
                 ListAvailableModules();
                 this.lblDownLoadPathLabel.Visible = false;
                 this.lnkBtnDownloadPackage.Text = "";
+                this.togglingTr.Visible = true;
                 break;
             case 2:
                 txtResourcePackName.Text = "Full";
                 this.lblDownLoadPathLabel.Visible = false;
                 this.lnkBtnDownloadPackage.Text = "";
+                this.togglingTr.Visible = false;
                 break;
-
         }
     }
+
     public void ListAvailableModules()
     {
         List<ModuleInfo> lstModules = new List<ModuleInfo>();
@@ -334,9 +312,9 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
             module.ModuleName = "Test Module" + i.ToString();
             lstModules.Add(module);
         }
-
         List<FileDetails> selectedFiles = new List<FileDetails>();
         List<FileDetails> selectedResxFiles = GetSelectedLanguageFiles(this.ddlResourceLocale.SelectedValue.ToString(), selectedFiles, "~/Modules", "*.resx");
+        selectedResxFiles = GetSelectedLanguageFiles(this.ddlResourceLocale.SelectedValue.ToString(), selectedResxFiles, "~/Modules", "*.js");
         selectedResxFiles = GetSelectedLanguageFiles(this.ddlResourceLocale.SelectedValue.ToString(), selectedResxFiles, "~/Modules", "*.xml");
         selectedResxFiles = GetSelectedLanguageFiles(this.ddlResourceLocale.SelectedValue.ToString(), selectedResxFiles, "~/XMLMessage", "*.xml");
         List<Module> ModuleList = new List<Module>();
@@ -348,7 +326,6 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
                 modulename = fd.FolderInfo.Replace("Modules\\Admin\\", "");
                 int index = modulename.IndexOf("\\");
                 modulename = modulename.Substring(0, index);
-
             }
             else if (fd.FolderInfo.Contains("Modules"))
             {
@@ -370,11 +347,11 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
             if (!isContains && modulename != "")
                 ModuleList.Add(new Module(modulename));
         }
-
         rptrModules.DataSource = ModuleList;
         rptrModules.DataBind();
     }
-    public class Module    {
+    public class Module
+    {
         public string ModuleName { get; set; }
         public string FolderName { get; set; }
         public Module() { }
@@ -393,16 +370,14 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
         this.txtResourcePackName.Text = "";
         this.rbResourcePackType.SelectedIndex = 0;
     }
-    protected void imbCancel_Click(object sender, ImageClickEventArgs e)
+    protected void imbCancel_Click(object sender, EventArgs e)
     {
         CancelButtonClick(sender, e);
-        
     }
 
     protected void lnkBtnDownloadPackage_Click(object sender, EventArgs e)
     {
         string fileName = ViewState["FilePath"].ToString();
-
         FileInfo file = new FileInfo(fileName);
         string actualFileName = file.Name.Substring(0, file.Name.LastIndexOf("."));
         if (file.Exists)
@@ -411,7 +386,6 @@ public partial class Localization_CreateLanguagePack : BaseAdministrationUserCon
             Response.AddHeader("Content-Disposition", "attachment; filename=" + file.Name.Replace(' ', '_'));
             Response.ContentType = "application/zip";
             Response.TransmitFile(file.FullName);
-            //Response.End();
         }
     }
 }

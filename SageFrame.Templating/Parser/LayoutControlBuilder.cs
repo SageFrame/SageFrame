@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,11 +13,13 @@ using System.Collections;
 using SageFrame.Templating.xmlparser;
 using System.IO;
 using System.Web;
+#endregion
 
 namespace SageFrame.Templating
 {
     public class LayoutControlBuilder
     {
+        const string sfCol = "sfCol_";
         public static TemplateInfo CreateTemplateObject(List<XmlTag> lstXml)
         {
             TemplateInfo objTemp = new TemplateInfo();
@@ -192,7 +179,6 @@ namespace SageFrame.Templating
                     sb.Append(GetLeftColsWrap(widths[1].Value, widths[2].Value, widths[0].Value));
                     sb.Append(GetLeftEnd());
                 }
-
             }
             else if (HasBlock(Placeholders.LEFTA, middleBlock))
             {
@@ -582,12 +568,10 @@ namespace SageFrame.Templating
                 if (kvp.Value != "NaN" && kvp.Value != "0")
                 {
                     kvp.Value = (double.Parse(kvp.Value.ToString())).ToString();
-                    kvp.Value = kvp.Value + "%";
+                    //kvp.Value = kvp.Value + "%";
                 }
             }
         }
-
-
 
         public static string GetMiddleDefaultMarkup()
         {
@@ -717,10 +701,9 @@ namespace SageFrame.Templating
 
         static bool IsCustomBlockDefined(XmlTag placeholder)
         {
-
             string activeTemplate = HttpContext.Current.Session["SageFrame.ActiveTemplate"] != null ? HttpContext.Current.Session["SageFrame.ActiveTemplate"].ToString() : "Default";
             string pchName = GetAttributeValueByName(placeholder, XmlAttributeTypes.NAME);
-            string FilePath = "E://DotNetProjects//sftemplating//SageFrame//" + activeTemplate + "//sections";
+            string FilePath = HttpContext.Current.Server.MapPath("~/") + "//" + activeTemplate + "//sections";
             bool status = false;
             if (Directory.Exists(FilePath))
             {
@@ -741,7 +724,7 @@ namespace SageFrame.Templating
         {
             string activeTemplate = HttpContext.Current.Session["SageFrame.ActiveTemplate"] != null ? HttpContext.Current.Session["SageFrame.ActiveTemplate"].ToString() : "Default";
 
-            string FilePath = "E://DotNetProjects//sftemplating//SageFrame//" + activeTemplate + "//sections";
+            string FilePath = HttpContext.Current.Server.MapPath("~/") + "//" + activeTemplate + "//sections";
             string fileName = GetAttributeValueByName(placeholder, XmlAttributeTypes.NAME);
             fileName = UppercaseFirst(fileName);
             FilePath = FilePath + fileName + ".htm";
@@ -759,7 +742,7 @@ namespace SageFrame.Templating
         public static string GetLeftBegin(string Left)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("<div id='sfLeft' style='width:" + Left + "'><div class='sfContainer'>");
+            sb.Append("<div id='sfLeft' class='" + sfCol + Left + "'><div class='sfContainer'>");
             return sb.ToString();
         }
 
@@ -790,9 +773,9 @@ namespace SageFrame.Templating
         public static string GetLeftColsWrap(string LeftA, string LeftB, string Left)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("<div class='sfColswrap sfDouble clearfix'><div class='sfLeftA' style='width:" + LeftA + "'><div class='sfWrapper'>");
+            sb.Append("<div class='sfColswrap sfDouble clearfix'><div class='sfLeftA " + sfCol + LeftA + "'><div class='sfWrapper'>");
             sb.Append(AddPlaceholder("leftA"));
-            sb.Append("</div></div><div class='sfLeftB' style='width:" + LeftB + "'><div class='sfWrapper'>");
+            sb.Append("</div></div><div class='sfLeftB " + sfCol + LeftB + "'><div class='sfWrapper'>");
             sb.Append(AddPlaceholder("leftB"));
             sb.Append("</div></div></div>");
             return sb.ToString();
@@ -801,7 +784,7 @@ namespace SageFrame.Templating
         public static string GetLeftA(string LeftA)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("<div class='sfColswrap sfSingle clearfix'><div class='sfLeftA' style='width:" + LeftA + "'><div class='sfWrapper'>");
+            sb.Append("<div class='sfColswrap sfSingle clearfix'><div class='sfLeftA " + sfCol + LeftA + "'><div class='sfWrapper'>");
             sb.Append(AddPlaceholder("leftA"));
             sb.Append("</div></div></div>");
             return sb.ToString();
@@ -809,7 +792,7 @@ namespace SageFrame.Templating
         public static string GetLeftB(string LeftB)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("<div class='sfColswrap sfSingle clearfix'><div class='sfLeftB' style='width:" + LeftB + "'><div class='sfWrapper'>");
+            sb.Append("<div class='sfColswrap sfSingle clearfix'><div class='sfLeftB " + sfCol + LeftB + "'><div class='sfWrapper'>");
             sb.Append(AddPlaceholder("leftB"));
             sb.Append("</div></div></div>");
             return sb.ToString();
@@ -821,7 +804,8 @@ namespace SageFrame.Templating
         public static string GetRightBegin(string Right)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("<div id='sfRight' style='width:" + Right + "'><div class='sfContainer'>");
+            //sb.Append("<div id='sfRight' style='width:" + Right + "'><div class='sfContainer'>");
+            sb.Append("<div id='sfRight' class='" + sfCol + Right + "'><div class='sfContainer'>");
             return sb.ToString();
         }
 
@@ -852,9 +836,9 @@ namespace SageFrame.Templating
         public static string GetRightColsWrap(string RightA, string RightB, string Right)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("<div class='sfColswrap sfDouble clearfix'><div  class='sfRightA' style='width:" + RightA + "'><div class='sfWrapper'>");
+            sb.Append("<div class='sfColswrap sfDouble clearfix'><div  class='sfRightA'" + " " + sfCol + RightA + "'><div class='sfWrapper'>");
             sb.Append(AddPlaceholder("rightA"));
-            sb.Append("</div></div><div  class='sfRightB' style='width:" + RightB + "'><div class='sfWrapper'>");
+            sb.Append("</div></div><div  class='sfRightB " + sfCol + RightB + "'><div class='sfWrapper'>");
             sb.Append(AddPlaceholder("rightB"));
             sb.Append("</div></div></div>");
             return sb.ToString();
@@ -863,7 +847,7 @@ namespace SageFrame.Templating
         public static string GetRightA(string RightA)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("<div class='sfColswrap sfSingle clearfix'><div class='sfRightA' style='width:" + RightA + "'><div class='sfWrapper'>");
+            sb.Append("<div class='sfColswrap sfSingle clearfix'><div class='sfRightA " + sfCol + RightA + "'><div class='sfWrapper'>");
             sb.Append(AddPlaceholder("rightA"));
             sb.Append("</div></div></div>");
             return sb.ToString();
@@ -871,7 +855,7 @@ namespace SageFrame.Templating
         public static string GetRightB(string RightB)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("<div class='sfColswrap sfSingle'><div  class='sfRightB' style='width:" + RightB + "'><div class='sfWrapper'>");
+            sb.Append("<div class='sfColswrap sfSingle'><div  class='sfRightB " + sfCol + RightB + "'><div class='sfWrapper'>");
             sb.Append(AddPlaceholder("rightB"));
             sb.Append("</div></div></div>");
             return sb.ToString();
@@ -898,7 +882,7 @@ namespace SageFrame.Templating
         public static string GetMiddleWrapperBegin(string Center)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("<div id='sfMainWrapper'  style='width:" + Center + "'><div class='sfContainer'>");
+            sb.Append("<div id='sfMainWrapper' class=' " + sfCol + Center + "'><div class='sfContainer'>");
             return sb.ToString();
         }
         public static string GetMiddleWrapperEnd()
@@ -1089,7 +1073,7 @@ namespace SageFrame.Templating
         {
 
         }
-     
+
 
         public static string AddPlaceholder(string position)
         {
@@ -1098,8 +1082,6 @@ namespace SageFrame.Templating
             sb.Append("<asp:PlaceHolder ID=" + PlaceHolderID + " runat=\"server\"></asp:PlaceHolder>");
             return sb.ToString();
         }
-
-       
 
     }
 }

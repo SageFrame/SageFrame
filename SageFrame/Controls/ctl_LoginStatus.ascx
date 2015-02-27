@@ -1,5 +1,6 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ctl_LoginStatus.ascx.cs" Inherits="SageFrame.Controls.ctl_LoginStatus" %>
-<%@ Register src="LoginStatus.ascx" tagname="LoginStatus" tagprefix="uc1" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ctl_LoginStatus.ascx.cs"
+    Inherits="SageFrame.Controls.ctl_LoginStatus" %>
+<%@ Register Src="LoginStatus.ascx" TagName="LoginStatus" TagPrefix="uc1" %>
 <ul>
     <asp:LoginView ID="LoginView1" runat="server">
         <AnonymousTemplate>
@@ -13,11 +14,11 @@
         </AnonymousTemplate>
         <LoggedInTemplate>
             <li>
-                <%=Page.User.Identity.Name %>
+                <%=userName%>
             </li>
-            <li>
+            <%--<li>
                 <uc1:LoginStatus ID="LoginStatus2" runat="server" />
-            </li>
+            </li>--%>
         </LoggedInTemplate>
     </asp:LoginView>
 </ul>

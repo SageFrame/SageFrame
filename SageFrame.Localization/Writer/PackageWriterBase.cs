@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,14 +16,14 @@ using ICSharpCode.SharpZipLib.Checksums;
 using System.Xml;
 using SageFrame.Common;
 using SageFrame.Localization;
+#endregion
 
 
- public class PackageWriterBase
+public class PackageWriterBase
     {
         public static void WriteZipFile(List<FileDetails> filesToZip, string path,string manifestPath,string manifest )
         {
             int compression = 9;
-          
             FileDetails fd = new FileDetails(manifest, manifestPath,manifestPath);
             filesToZip.Insert(0,fd);
 
@@ -60,7 +45,6 @@ using SageFrame.Localization;
                     {
                         entry = new ZipEntry(manifest);
                     }
-
                     using (FileStream fs = File.OpenRead(filesToZip[i].FilePath))
                     {
                         byte[] buffer = new byte[fs.Length];
@@ -78,25 +62,18 @@ using SageFrame.Localization;
                 stream.Close();
                 DeleteManifest(manifestPath);
             }
-            
-
-          
-
            
         }
 
         public static void WriteManifest(string path,string filename,List<FileDetails> selectedResxFiles,PackageInfo package)
         {
-            
             XmlWriter writer = XmlWriter.Create(path + @"/" + filename + ".sfe",XMLUtils.GetXmlWriterSettings());
-            
             // Write first element
             writer.WriteStartElement("sageframe");
             writer.WriteAttributeString("type", "Package");
             writer.WriteAttributeString("version", "1.0.0.1");
             writer.WriteStartElement("packages");
             WritePackageDetails(writer,selectedResxFiles,package);
-
             // close writer
             writer.Close();
            
@@ -127,7 +104,6 @@ using SageFrame.Localization;
             writer.WriteElementString("fallback", "");           
            
             WritePackageResources(writer,selectedResxFiles);
-
             WritePackageEndElements(writer);
            
 
@@ -151,7 +127,7 @@ using SageFrame.Localization;
             writer.WriteEndElement();
             writer.WriteEndElement();
         }
-      
+
         public static void DeleteManifest(string manifest)
         {
             if(File.Exists(manifest))

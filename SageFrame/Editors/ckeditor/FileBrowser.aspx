@@ -60,26 +60,28 @@ li:hover{background-color:#eee;}
 	
     <div id="wrapper">
         <ul>
-            <%  
-                if (this.ImageFiles.Count == 0)
-                { 
+            <%  if (this.ImageFiles != null)
+                {
+                    if (this.ImageFiles.Count == 0)
+                    { 
             %>Empty!!<%
-                         }
-                else
-                    foreach (ImageFile file in this.ImageFiles)
-                    {
+                    }
+                    else
+                        foreach (ImageFile file in this.ImageFiles)
+                        {
                       
             %><li>
 			
                 <img src="<%=file.ThumbImageFileName %>" onclick="GoBack('<%=file.FileName %>')"/>
 				
-                <b><%=file.FileName.LastIndexOf("/") > 1 ? file.FileName.Substring(file.FileName.LastIndexOf("/")+1) : file.FileName%>
+                <b><%=file.FileName.LastIndexOf("/") > 1 ? file.FileName.Substring(file.FileName.LastIndexOf("/") + 1) : file.FileName%>
                 </b><br>
-                <%=file.Size %> KB
+                <%=file.Size%> KB
                 <br />
                 <%= file.CreatedDate.Substring(0, file.CreatedDate.IndexOf(" "))%>
             </li>
-            <% } %>
+            <% }
+                } %>
         </ul>
         
         

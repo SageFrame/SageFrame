@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="DashboardQuickLinks.ascx.cs" Inherits="Controls_DashboardQuickLinks" %>
 <script type="text/javascript">
-    $(function() {
+    //<![CDATA[    
+    $(function () {
         var QuickLinks = {
             config: {
                 isPostBack: false,
@@ -22,13 +23,12 @@
                 UserName: '<%=UserName%>',
                 ShowSideBar: '<%=IsSideBarVisible%>',
                 PortalID: '<%=PortalID%>'
-
             },
-            init: function() {               
+            init: function () {
                 $('div.sfquicklinks').jcarousel();
-                $('ul.jcarousel-list li').each(function() {
+                $('ul.jcarousel-list li').each(function () {
                     $(this).tooltip({
-                        bodyHandler: function() {
+                        bodyHandler: function () {
                             return $(this).find("span").text()
                         },
                         showURL: false,
@@ -39,13 +39,13 @@
             }
         };
         QuickLinks.init();
-
     });
+    //]]>	
 </script>
 
 <div class="sfTopwrapper">
   <!--Logo-->
-  <div class="sfLogo"> <a href="../Admin/Admin.aspx"> <img src="<%=appPath%>/Administrator/Templates/Default/images/sageframe.png" alt="Sageframe" /></a>
+  <div class="sfLogo"> <a href="../Admin/Admin<%=Extension %>"> <img src="<%=appPath%>/Administrator/Templates/Default/images/sageframe.png" alt="Sageframe" /></a>
     <asp:Label runat="server" ID="lblVersion"></asp:Label>
   </div>
   <!--Quick Links-->

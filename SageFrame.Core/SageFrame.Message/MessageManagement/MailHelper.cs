@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections;
 using System.Data;
@@ -30,11 +18,149 @@ using System.Web;
 using System.Net.Mail;
 using SageFrame.Web;
 
+#endregion
+
+
 
 namespace SageFrame.SageFrameClass.MessageManagement
 {
     public class MailHelper
     {
+        public static void SendMultipleEmail(string From, string sendTo, string Subject, string Body)
+        {
+            SageFrameConfig sfConfig = new SageFrameConfig();
+            string ServerPort = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPServer);
+            string SMTPAuthentication = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPAuthentication);
+            string SMTPEnableSSL = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPEnableSSL);
+            string SMTPPassword = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPPassword);
+            string SMTPUsername = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPUsername);
+            string[] SMTPServer = ServerPort.Split(':');
+            try
+            {
+                MailMessage myMessage = new MailMessage();
+                foreach (string emailTo in sendTo.Split(','))
+                {
+                    myMessage.To.Add(new MailAddress(emailTo));
+                }
+                myMessage.From = new MailAddress(From);
+                myMessage.Subject = Subject;
+                myMessage.Body = Body;
+                myMessage.IsBodyHtml = true;
+
+                SmtpClient smtp = new SmtpClient();
+                if (SMTPAuthentication == "1")
+                {
+                    if (SMTPUsername.Length > 0 && SMTPPassword.Length > 0)
+                    {
+                        smtp.Credentials = new System.Net.NetworkCredential(SMTPUsername, SMTPPassword);
+                    }
+                }
+                smtp.EnableSsl = bool.Parse(SMTPEnableSSL.ToString());
+                if (SMTPServer.Length > 0)
+                {
+                    if (SMTPServer[0].Length != 0)
+                    {
+                        smtp.Host = SMTPServer[0];
+                        if (SMTPServer.Length == 2)
+                        {
+                            smtp.Port = int.Parse(SMTPServer[1]);
+                        }
+                        else
+                        {
+                            smtp.Port = 25;
+                        }
+                        smtp.Send(myMessage);
+                    }
+                    else
+                    {
+                        throw new Exception("SMTP Host must be provided");
+                    }
+                }
+
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public static void SendMultipleEmail(string From, string sendTo, string Subject, string Body, string Identifiers, string pageName)
+        {
+            SageFrameConfig sfConfig = new SageFrameConfig();
+            string ServerPort = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPServer);
+            string SMTPAuthentication = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPAuthentication);
+            string SMTPEnableSSL = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPEnableSSL);
+            string SMTPPassword = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPPassword);
+            string SMTPUsername = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPUsername);
+            string[] SMTPServer = ServerPort.Split(':');
+            try
+            {
+                MailMessage myMessage = new MailMessage();
+                List<string> lstTo = new List<string>();
+                List<string> lstidentity = new List<string>();
+                foreach (string emailTo in sendTo.Split(','))
+                {
+                    lstTo.Add(emailTo);
+                    myMessage.To.Add(new MailAddress(emailTo));
+                }
+                foreach (string identity in Identifiers.Split(','))
+                {
+                    lstidentity.Add(identity);
+                }
+
+
+                SmtpClient smtp = new SmtpClient();
+                if (SMTPAuthentication == "1")
+                {
+                    if (SMTPUsername.Length > 0 && SMTPPassword.Length > 0)
+                    {
+                        smtp.Credentials = new System.Net.NetworkCredential(SMTPUsername, SMTPPassword);
+                    }
+                }
+                smtp.EnableSsl = bool.Parse(SMTPEnableSSL.ToString());
+                if (SMTPServer.Length > 0)
+                {
+                    if (SMTPServer[0].Length != 0)
+                    {
+                        smtp.Host = SMTPServer[0];
+                        if (SMTPServer.Length == 2)
+                        {
+                            smtp.Port = int.Parse(SMTPServer[1]);
+                        }
+                        else
+                        {
+                            smtp.Port = 25;
+                        }
+                        int length = lstidentity.Count;
+                        for (int j = 0; j < length; j++)
+                        {
+                            try
+                            {
+                                myMessage.From = new MailAddress(From);
+                                myMessage.To.Add(lstTo[j]);
+                                myMessage.Subject = Subject;
+                                myMessage.Body = Body + "<br/><br/>if you want to unsubscribe click the link below <br/> " + pageName + "?id=" + lstidentity[j];
+                                myMessage.IsBodyHtml = true;
+                                smtp.Send(myMessage);
+                            }
+                            catch (Exception e)
+                            {
+                                throw e;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("SMTP Host must be provided");
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         public static void SendMailNoAttachment(string From, string sendTo, string Subject, string Body, string CC,
                                                 string BCC)
@@ -42,21 +168,21 @@ namespace SageFrame.SageFrameClass.MessageManagement
             SendEMail(From, sendTo, Subject, Body, CC, BCC);
         }
 
-     
+
         public static void SendMailOneAttachment(string From, string sendTo, string Subject, string Body,
                                                  string AttachmentFile, string CC, string BCC)
         {
             SendEMail(From, sendTo, Subject, Body, AttachmentFile, CC, BCC);
         }
 
-        
+
         public static void SendMailMultipleAttachments(string From, string sendTo, string Subject, string Body,
                                                        ArrayList AttachmentFiles, string CC, string BCC)
         {
             SendEMail(From, sendTo, Subject, Body, AttachmentFiles, CC, BCC);
         }
 
-         public static void SendEMail(string From, string sendTo, string Subject, string Body, string CC, string BCC)
+        public static void SendEMail(string From, string sendTo, string Subject, string Body, string CC, string BCC)
         {
             ArrayList AttachmentFiles;
             AttachmentFiles = null;
@@ -88,12 +214,12 @@ namespace SageFrame.SageFrameClass.MessageManagement
 
         public static void SendEMail(string From, string sendTo, string Subject, string Body, ArrayList AttachmentFiles, string CC, string BCC, bool IsHtmlFormat)
         {
-            SageFrameConfig sfConfig = new SageFrameConfig();           
-            string ServerPort = sfConfig.GetSettingsByKey(SageFrameSettingKeys.SMTPServer);
-            string SMTPAuthentication = sfConfig.GetSettingsByKey(SageFrameSettingKeys.SMTPAuthentication);
-            string SMTPEnableSSL = sfConfig.GetSettingsByKey(SageFrameSettingKeys.SMTPEnableSSL);
-            string SMTPPassword = sfConfig.GetSettingsByKey(SageFrameSettingKeys.SMTPPassword);
-            string SMTPUsername = sfConfig.GetSettingsByKey(SageFrameSettingKeys.SMTPUsername);
+            SageFrameConfig sfConfig = new SageFrameConfig();
+            string ServerPort = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPServer);
+            string SMTPAuthentication = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPAuthentication);
+            string SMTPEnableSSL = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPEnableSSL);
+            string SMTPPassword = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPPassword);
+            string SMTPUsername = sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.SMTPUsername);
             string[] SMTPServer = ServerPort.Split(':');
             try
             {
@@ -104,10 +230,10 @@ namespace SageFrame.SageFrameClass.MessageManagement
                 myMessage.Body = Body;
                 myMessage.IsBodyHtml = true;
 
-                if (CC.Length != 0) 
+                if (CC.Length != 0)
                     myMessage.CC.Add(CC);
 
-                if (BCC.Length != 0) 
+                if (BCC.Length != 0)
                     myMessage.Bcc.Add(BCC);
 
                 if (AttachmentFiles != null)
@@ -146,7 +272,7 @@ namespace SageFrame.SageFrameClass.MessageManagement
                         throw new Exception("SMTP Host must be provided");
                     }
                 }
-                
+
             }
 
             catch (Exception ex)

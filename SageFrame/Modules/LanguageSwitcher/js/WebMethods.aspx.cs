@@ -13,6 +13,7 @@ using SageFrame.Core;
 using SageFrame.Web;
 using SageFrame.Framework;
 using System.Threading;
+using SageFrame.Common;
 
 [ScriptService]
 public partial class Modules_LanguageSwitcher_js_WebMethods : PageBase
@@ -73,21 +74,30 @@ public partial class Modules_LanguageSwitcher_js_WebMethods : PageBase
     [WebMethod]
     public static List<Language> GetAvailableLanguages(string baseURL,int PortalID)
     {
-        List<Language> lstLanguage =LocaleController.AddNativeNamesToList(AddFlagPath(LocalizationSqlDataProvider.GetPortalLanguages(PortalID),baseURL));
+        List<Language> lstLanguage = LocaleController.AddNativeNamesToList(AddFlagPath(LocalizationSqlDataProvider.GetPortalLanguages(PortalID), baseURL));
         return lstLanguage;
     }
     protected static List<Language> AddFlagPath(List<Language> lstAvailableLocales,string baseURL)
     {
-        lstAvailableLocales.ForEach(
+        List<Language> filtered = new List<Language> { };
+       string currentCulture = GetCurrentCultureInfo();
+       foreach (Language li in lstAvailableLocales)
+       {
+           //if (li.LanguageCode != currentCulture)
+           //{
+               filtered.Add(li);
+           //}
+       }
+
+        filtered.ForEach(
             delegate(Language obj)
             {
                 obj.FlagPath = baseURL + "/images/flags/" + obj.LanguageCode.Substring(obj.LanguageCode.IndexOf("-") + 1).ToLower() + ".png";
             }
             );
-        return lstAvailableLocales;
-
+        return filtered;
     }
-
+    
     [WebMethod]
     public static List<LanguageSwitchKeyValue> GetLanguageSettings(int PortalID, int UserModuleID)
     {
@@ -95,16 +105,20 @@ public partial class Modules_LanguageSwitcher_js_WebMethods : PageBase
     }
     [WebMethod]
     public static void SetCultureInfo(string CultureCode)
-    {        
-        PageBase.SetCultureInfo(CultureCode, CultureCode);                
+    {
+       AppErazer.ClearSysCache();
+        PageBase.SetCultureInfo(CultureCode, CultureCode);
+
+        HttpContext.Current.Session["IsCultureChange"] = 1;
+            
     }
 
     [WebMethod]
-    public static string GetCurrentCulture()
+    public static string GetCurrentCultureInfo()
     {
         if (HttpContext.Current.Session != null)
         {
-            string code = HttpContext.Current.Session["SageUICulture"] == null ? "en-US" : HttpContext.Current.Session["SageUICulture"].ToString();
+            string code = HttpContext.Current.Session[SessionKeys.SageUICulture] == null ? "en-US" : HttpContext.Current.Session[SessionKeys.SageUICulture].ToString();
             return code;
         }
         return "en-US";

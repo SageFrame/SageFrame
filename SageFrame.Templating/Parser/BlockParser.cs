@@ -1,36 +1,24 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SageFrame.Templating.xmlparser;
+#endregion
 
 namespace SageFrame.Templating
 {
     public class BlockParser
     {
         public static int Mode = 0;
+        public static bool Flag = false;
+        const string sfCol = "sfCol_";
         public static string ProcessPlaceholder(XmlTag placeholder, List<CustomWrapper> lstWrapper, int _Mode)
         {
             Mode = _Mode;
@@ -82,7 +70,6 @@ namespace SageFrame.Templating
                     string pchName = Utils.GetAttributeValueByName(pch, XmlAttributeTypes.NAME).ToLower();
                     if (start.Type == "placeholder" && pchName.Equals(start.End))
                     {
-
                         for (int i = 1; i <= start.Depth; i++)
                         {
                             sb.Append("</div>");
@@ -94,23 +81,31 @@ namespace SageFrame.Templating
         }
         public static string ParseFixedBlocks(XmlTag placeholder, List<CustomWrapper> lstWrapper)
         {
+
+            string pchName = string.Format("{0}{1}{2}", "sf", Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.NAME).ToLower(), "_mytable");
+
             StringBuilder sb = new StringBuilder();
+            string tableID = placeholder.PresetName;
             string positions = placeholder.InnerHtml;
             string[] positionsAr = positions.Split(',');
             double spotWidth = 100 / positionsAr.Length;
-            string width = spotWidth.ToString() + "%";
+            string col = spotWidth.ToString();
+            string width = col + "%";
             string minheight = Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.MINHEIGHT, "200px");
 
             if (positionsAr.Length > 1)
             {
-                sb.Append(Mode == 2 ? "<div class='sfMoreblocks clearfix'>" : "<div class='sfMoreblocks sfCurve clearfix'>");
+                if (Flag)
+                    sb.Append(Mode == 2 ? "<div class='sfMoreblocks  clearfix'>" : "<div class='sfMoreblocks sfCurve clearfix'>");
+                else
+                    sb.Append(Mode == 2 ? "<table id=" + pchName + " class='sfMoreblocks sfFullWidth'><thead><tr>" : "<table id=" + pchName + "  class='sfMoreblocks sfCurve sfFullWidth'><thead><tr>");
             }
             for (int i = 0; i < positionsAr.Length; i++)
             {
                 string adjustedWidth = width;
                 if (positionsAr.Length % 2 != 0 && i == positionsAr.Length - 1)
                 {
-                    adjustedWidth = string.Format("{0}%",(int.Parse(width.Replace("%","")) + 1).ToString());
+                    adjustedWidth = string.Format("{0}%", (int.Parse(width.Replace("%", "")) + 1).ToString());
                 }
                 string style = Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.CLASS);
                 if (i == 0)
@@ -135,7 +130,8 @@ namespace SageFrame.Templating
                                 if (j == 1)
                                 {
                                     string wrapstyle = start.Depth > 1 ? string.Format("sfWrap sfInnerwrap{0}{1}", start.Index, start.Class == "" ? "" : string.Format(" {0}", start.Class)) : string.Format("sfWrap sfInnerwrap{0}{1} clearfix", start.Index, start.Class == "" ? "" : string.Format(" {0}", start.Class));
-                                    sb.Append("<div style='float:left;width:" + wrapperwidth + "' class='" + wrapstyle + "'>");
+                                    //sb.Append("<div style='float:left;width:" + wrapperwidth + "' class='" + wrapstyle + "'>");
+                                    sb.Append("<div class='" + wrapstyle + " " + sfCol + wrapperwidth + "'>");
                                 }
                                 else
                                 {
@@ -147,24 +143,48 @@ namespace SageFrame.Templating
                         }
                         if (start.LSTPositions.Contains(positionsAr[i]))
                         {
-                            int fixedWidth=Calculator.CalculatePostWrapWidth(positionsAr, positionsAr[i], totalwidth, "fixed", lstWidths);
-                           
+                            int fixedWidth = Calculator.CalculatePostWrapWidth(positionsAr, positionsAr[i], totalwidth, "fixed", lstWidths);
+
                             adjustedWidth = string.Format("{0}%", fixedWidth.ToString());
                         }
                     }
                 }
+                string customStyle = "";
+                if (Flag)
+                    customStyle = Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.MINHEIGHT) == "" ? string.Format("float:left;width:{0}", adjustedWidth) : string.Format("float:left;width:{0};min-height:{1}px", adjustedWidth, Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.MINHEIGHT));
+                else
+                    customStyle = Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.MINHEIGHT) == "" ? string.Format("width:{0}", adjustedWidth) : string.Format("width:{0};min-height:{1}px", adjustedWidth, Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.MINHEIGHT));
 
-                string customStyle = Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.MINHEIGHT) == "" ? string.Format("float:left;width:{0}", adjustedWidth) : string.Format("float:left;width:{0};min-height:{1}px", adjustedWidth, Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.MINHEIGHT));
+
+                //if (customStyle != "")
+                //{
+                //    string styleClass = string.Format("class='sfFixed{0}'", i + 1);
+                //    if (Flag)
+                //        sb.Append("<div " + styleClass + " style='" + customStyle + "'>");
+                //    else
+                //        sb.Append("<th " + styleClass + " style='" + customStyle + "'>");
+                //}
                 if (customStyle != "")
                 {
-                    string styleClass = string.Format("class='sfFixed{0}'", i + 1);
-                    sb.Append("<div " + styleClass + " style='" + customStyle + "'>");
+                    string styleClass = string.Format("class='sfFixed {0}'", sfCol + col);
+                    if (Flag)
+                        // sb.Append("<div " + styleClass + " style='" + customStyle + "'>");
+                        sb.Append("<div " + styleClass + ">");
+                    else
+                        // sb.Append("<th " + styleClass + " style='" + customStyle + "'>");
+                        sb.Append("<th " + styleClass + " style='" + customStyle + "'>");
                 }
-                sb.Append(Mode==2?"<div class='sfWrapper'>":"<div class='sfWrapper sfCurve'>");
+                sb.Append(Mode == 2 ? "<div class='sfWrapper'>" : "<div class='sfWrapper sfCurve'>");
                 sb.Append(HtmlBuilder.AddPlaceholder(positionsAr[i], Mode));
                 sb.Append("</div>");
                 if (customStyle != "")
-                    sb.Append("</div>");
+                {
+                    if (Flag)
+                        sb.Append("</div>");
+                    else
+                        sb.Append("</th>");
+                }
+
 
                 foreach (CustomWrapper start in lstWrapper)
                 {
@@ -180,23 +200,45 @@ namespace SageFrame.Templating
             }
             if (positionsAr.Length > 1)
             {
-                sb.Append("</div>");
+                if (Flag)
+                    sb.Append("</div>");
+                else
+                    sb.Append("</tr></thead></table>");
             }
 
             return sb.ToString();
         }
         static string ParseNormalBlocks(XmlTag placeholder, List<CustomWrapper> lstWrapper)
         {
-
+            string pchName = string.Format("{0}{1}{2}", "sf", Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.NAME).ToLower(), "_mytable");
+            string checkpchName = Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.NAME).ToLower();
+            bool chkPch = false;
+            string[] checkpch = { "lefttop", "leftbottom", "righttop", "rightbottom" };
+            foreach (string pch in checkpch)
+            {
+                if (checkpchName == pch)
+                {
+                    chkPch = true;
+                    break;
+                }
+                else
+                    chkPch = false;
+            }
+            if (Flag)
+                chkPch = true;
             StringBuilder sb = new StringBuilder();
             string positions = placeholder.InnerHtml;
             string[] positionsAr = positions.Split(',');
             bool fullWidth = Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.WIDTH) == "" ? true : false;
             string[] arrWidth = (Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.WIDTH) == "" ? "100" : Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.WIDTH)).Split(',');
-            if (positionsAr.Length > 1)
-            {
+            // if (positionsAr.Length > 1)
+            //{
+            // sb.Append(Mode == 2 ? "<div class='sfMoreblocks clearfix'>" : "<div class='sfMoreblocks sfCurve clearfix'>");
+            if (chkPch)
                 sb.Append(Mode == 2 ? "<div class='sfMoreblocks clearfix'>" : "<div class='sfMoreblocks sfCurve clearfix'>");
-            }
+            else
+                sb.Append(Mode == 2 ? "<table class='sfMoreblocks sfFullWidth' id=" + pchName + "><thead><tr>" : "<table  class='sfMoreblocks sfCurve sfFullWidth'id=" + pchName + "><thead><tr>");
+            //}
             for (int i = 0; i < positionsAr.Length; i++)
             {
                 string style = "";
@@ -204,14 +246,23 @@ namespace SageFrame.Templating
                 {
                     if (arrWidth.Length > i)
                     {
-                        style += arrWidth[i] == "100" ? "float:left" : string.Format("width:{0}%;float:left", arrWidth[i]);
+                        if (chkPch)
+                            //style += arrWidth[i] == "100" ? "float:left" : string.Format("width:{0}%;float:left", arrWidth[i]);
+                            style += sfCol + arrWidth[i];// == "100" ? "float:left" : string.Format("width:{0}%;float:left", arrWidth[i]);
+                        else
+                            style += sfCol + arrWidth[i];
                     }
                     else if (i == arrWidth.Length)
                     {
                         var remaining = Calculator.GetRemainingWidth(arrWidth);
                         int finalWidth = remaining == 0 ? 100 : remaining;
-                        style += finalWidth == 100 ? "float:left" : string.Format("width:{0}%;float:left", finalWidth);
-
+                        if (chkPch)
+                            //style += finalWidth == 100 ? "float:left" : string.Format("width:{0}%;float:left", finalWidth);
+                            style += sfCol + finalWidth;
+                        else
+                            //    style += finalWidth == 100 ? "" : string.Format("width:{0}%;", finalWidth);
+                            //style += finalWidth == 100 ? "" : sfCol + finalWidth;
+                            style += sfCol + finalWidth;
                     }
                 }
                 else
@@ -225,7 +276,6 @@ namespace SageFrame.Templating
                     {
                         List<KeyValue> lstWidths = new List<KeyValue>();
                         int wrapperwidth = Calculator.CalculateWrapperWidth(positionsAr, arrWidth, start.LSTPositions.ToArray(), "normal", out lstWidths);
-
                         if (start.Start.ToLower() == positionsAr[i])
                         {
                             string divwidth = string.Format("{0}%", (wrapperwidth).ToString());
@@ -234,38 +284,71 @@ namespace SageFrame.Templating
                                 if (j == 1)
                                 {
                                     string wrapstyle = start.Depth > 1 ? string.Format("sfWrap sfInnerwrap{0}{1}", start.Index, start.Class == "" ? "" : string.Format(" {0}", start.Class)) : string.Format("sfWrap sfInnerwrap{0}{1} clearfix", start.Index, start.Class == "" ? "" : string.Format(" {0}", start.Class));
-                                    string floatstyle = divwidth == "100%" ? string.Format("width:{0}", divwidth) : string.Format("width:{0};float:left", divwidth);
-                                    sb.Append("<div style='" + floatstyle + "' class='" + wrapstyle + "'>");
+                                    //string floatstyle = divwidth == "100%" ? string.Format("width:{0}", divwidth) : string.Format("width:{0};float:left", divwidth);
+                                    //sb.Append("<div style='" + floatstyle + "' class='" + wrapstyle + "'>");
+                                    sb.Append("<div class='" + wrapstyle + " " + sfCol + wrapperwidth + "'>");
                                 }
                                 else
                                 {
                                     string multiplewrappers = start.Depth == j ? string.Format("sfWrap {0} sf{1} clearfix", start.Class, j) : string.Format("sfWrap {0} sf{1}", start.Class == "" ? "" : string.Format(" {0}", start.Class), j);
-                                    string floatstyle = divwidth == "100%" ? string.Format("width:{0}", divwidth) : string.Format("width:{0};float:left", divwidth);
-                                    sb.Append("<div style='" + floatstyle + "' class='" + multiplewrappers + "'>");
+                                    //string floatstyle = divwidth == "100%" ? string.Format("width:{0}", divwidth) : string.Format("width:{0};float:left", divwidth);
+                                    //sb.Append("<div style='" + floatstyle + "' class='" + multiplewrappers + "'>");
+                                    sb.Append("<div class='" + multiplewrappers + " " + sfCol + wrapperwidth + "'>");
                                 }
                             }
                         }
                         if (start.LSTPositions.Contains(positionsAr[i]))
                         {
                             int width = Calculator.CalculatePostWrapWidth(start.LSTPositions.ToArray(), positionsAr[i], wrapperwidth, "normal", lstWidths);
-                            style = Mode == 0 ? string.Format("width:{0}%;float:left", width) : width == 100 ? "float:left" : string.Format("width:{0}%;float:left", width);
-
+                            style = sfCol + width; // Mode == 0 ? string.Format("width:{0}%;float:left", width) : width == 100 ? "float:left" : string.Format("width:{0}%;float:left", width);
                         }
                     }
-
                 }
                 string customStyle = Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.MINHEIGHT) == "" ? string.Format("{0}", style) : string.Format("{0};min-height:{1}px", style, Utils.GetAttributeValueByName(placeholder, XmlAttributeTypes.MINHEIGHT));
                 if (customStyle != "")
                 {
                     string id = string.Format("sf{0}", Utils.UppercaseFirst(positionsAr[i]));
-                    sb.Append("<div id=" + id + " style='" + customStyle + "'>");
+                    if (chkPch)
+                        //sb.Append("<div id=" + id + "  style='" + customStyle + "'>");
+                        sb.Append("<div id=" + id + "  class='" + customStyle + "'>");
+                    else
+                        sb.Append("<th id=" + id + " style='" + customStyle + "'>");
+                }
+                else
+                {
+                    string id = string.Format("sf{0}", Utils.UppercaseFirst(positionsAr[i]));
+                    //sb.Append("<div id=" + id + " style='" + customStyle + "'>");
+                    if (!chkPch)
+                    {
+                        sb.Append("<th id=" + id + " style='Width=100%'>");
+                    }
+                    else
+                    {
+                        sb.Append("<div class='sfCol_100'>");
+                    }
                 }
                 sb.Append(Mode == 2 ? "<div class='sfWrapper'>" : "<div class='sfWrapper sfCurve'>");
                 //sb.Append(positionsAr[i]);
                 sb.Append(HtmlBuilder.AddPlaceholder(positionsAr[i], Mode));
                 sb.Append("</div>");
                 if (customStyle != "")
-                    sb.Append("</div>");
+                {
+                    if (chkPch)
+                        sb.Append("</div>");
+                    else
+                        sb.Append("</th>");
+                }
+                else
+                {
+                    if (!chkPch)
+                    {
+                        sb.Append("</th>");
+                    }
+                    else
+                    {
+                        sb.Append("</div>");
+                    }
+                }
 
                 if (arrWidth.Length == i)
                 {
@@ -282,10 +365,14 @@ namespace SageFrame.Templating
                     }
                 }
             }
-            if (positionsAr.Length > 1)
-            {
+            //if (positionsAr.Length > 1)
+            // {
+            if (chkPch)
                 sb.Append("</div>");
-            }
+            else
+                sb.Append("</tr></thead></table>");
+
+            //}
             return sb.ToString();
         }
         static string ParseNormalLeftRightBlocks(XmlTag placeholder, List<CustomWrapper> lstWrapper)
@@ -302,7 +389,7 @@ namespace SageFrame.Templating
             }
             for (int i = 0; i < positionsAr.Length; i++)
             {
-                string style = "";               
+                string style = "";
                 foreach (CustomWrapper start in lstWrapper)
                 {
                     if (start.Type == "position")
@@ -318,21 +405,26 @@ namespace SageFrame.Templating
                                 if (j == 1)
                                 {
                                     string wrapstyle = start.Depth > 1 ? string.Format("sfWrap sfInnerwrap{0}{1}", start.Index, start.Class == "" ? "" : string.Format(" {0}", start.Class)) : string.Format("sfWrap sfInnerwrap{0}{1} clearfix", start.Index, start.Class == "" ? "" : string.Format(" {0}", start.Class));
-                                    string floatstyle = divwidth == "100%" ? string.Format("width:{0}", divwidth) : string.Format("width:{0};float:left", divwidth);
-                                    sb.Append("<div style='" + floatstyle + "' class='" + wrapstyle + "'>");
+                                    //string floatstyle = divwidth == "100%" ? string.Format("width:{0}", divwidth) : string.Format("width:{0};float:left", divwidth);
+                                    string floatstyle = sfCol + wrapperwidth.ToString();// == "100%" ? string.Format("width:{0}", divwidth) : string.Format("width:{0};float:left", divwidth);
+                                    //sb.Append("<div style='" + floatstyle + "' class='" + wrapstyle + "'>");
+                                    sb.Append("<div class='" + wrapstyle + " " + floatstyle + "'>");
                                 }
                                 else
                                 {
                                     string multiplewrappers = start.Depth == j ? string.Format("sfWrap {0} sf{1} clearfix", start.Class, j) : string.Format("sfWrap {0} sf{1}", start.Class == "" ? "" : string.Format(" {0}", start.Class), j);
-                                    string floatstyle = divwidth == "100%" ? string.Format("width:{0}", divwidth) : string.Format("width:{0};float:left", divwidth);
-                                    sb.Append("<div style='" + floatstyle + "' class='" + multiplewrappers + "'>");
+                                    //string floatstyle = divwidth == "100%" ? string.Format("width:{0}", divwidth) : string.Format("width:{0};float:left", divwidth);
+                                    string floatstyle = sfCol + wrapperwidth.ToString();
+                                    //sb.Append("<div style='" + floatstyle + "' class='" + multiplewrappers + "'>");
+                                    sb.Append("<div class='" + multiplewrappers + " " + floatstyle + "'>");
                                 }
                             }
                         }
                         if (start.LSTPositions.Contains(positionsAr[i]))
                         {
                             int width = Calculator.CalculatePostWrapWidth(start.LSTPositions.ToArray(), positionsAr[i], wrapperwidth, "normal", lstWidths);
-                            style = Mode == 0 ? string.Format("width:{0}%;float:left", width) : width == 100 ? "float:left" : string.Format("width:{0}%;float:left", width);
+                            //style = Mode == 0 ? string.Format("width:{0}%;float:left", width) : width == 100 ? "float:left" : string.Format("width:{0}%;float:left", width);
+                            style = sfCol + width.ToString();// Mode == 0 ? string.Format("width:{0}%;float:left", width) : width == 100 ? "float:left" : string.Format("width:{0}%;float:left", width);
 
                         }
                     }
@@ -343,6 +435,7 @@ namespace SageFrame.Templating
                 {
                     string id = string.Format("sf{0}", Utils.UppercaseFirst(positionsAr[i]));
                     sb.Append("<div id=" + id + " style='" + customStyle + "'>");
+                    //sb.Append("<div id=" + id + " class='" + style.Replace('%','') + "'>");
                 }
                 sb.Append(Mode == 2 ? "<div class='sfWrapper'>" : "<div class='sfWrapper sfCurve'>");
                 //sb.Append(positionsAr[i]);
@@ -405,9 +498,9 @@ namespace SageFrame.Templating
 
                     string[] positions = pch.InnerHtml.Split(',');
                     int mode = Utils.GetAttributeValueByName(pch, XmlAttributeTypes.MODE) == "" ? 0 : 1;
-                    string wrapperclass =placeholder.ToString().ToLower().Equals("fulltopspan")||placeholder.ToString().ToLower().Equals("fullbottomspan")?string.Format("sf{0} clearfix", Utils.UppercaseFirst(Utils.GetAttributeValueByName(pch, XmlAttributeTypes.NAME)))
-                                            :string.Format("sf{0}", Utils.UppercaseFirst(Utils.GetAttributeValueByName(pch, XmlAttributeTypes.NAME)));
-                    wrapperclass = string.Format("{0} {1}",wrapperclass,Utils.GetAttributeValueByName(pch, XmlAttributeTypes.CLASS));
+                    string wrapperclass = placeholder.ToString().ToLower().Equals("fulltopspan") || placeholder.ToString().ToLower().Equals("fullbottomspan") ? string.Format("sf{0} clearfix", Utils.UppercaseFirst(Utils.GetAttributeValueByName(pch, XmlAttributeTypes.NAME)))
+                                            : string.Format("sf{0}", Utils.UppercaseFirst(Utils.GetAttributeValueByName(pch, XmlAttributeTypes.NAME)));
+                    wrapperclass = string.Format("{0} {1}", wrapperclass, Utils.GetAttributeValueByName(pch, XmlAttributeTypes.CLASS));
                     sb.Append("<div class='" + wrapperclass + "'>");
                     switch (mode)
                     {
@@ -496,7 +589,7 @@ namespace SageFrame.Templating
 
             return sb.ToString();
         }
-        public static string ProcessLeftRightPlaceholders(Placeholders placeholder, XmlTag middleblock, List<CustomWrapper> lstWrapper, int _Mode,string Width)
+        public static string ProcessLeftRightPlaceholders(Placeholders placeholder, XmlTag middleblock, List<CustomWrapper> lstWrapper, int _Mode, string Width)
         {
             Mode = _Mode;
             StringBuilder sb = new StringBuilder();
@@ -523,16 +616,16 @@ namespace SageFrame.Templating
                                     sb.Append("<div class='" + style + "'>");
                                 }
                             }
-
                         }
                     }
 
                     string[] positions = pch.InnerHtml.Split(',');
                     int mode = Utils.GetAttributeValueByName(pch, XmlAttributeTypes.MODE) == "" ? 0 : 1;
-                    string wrapperclass = string.Format("sf{0} clearfix", Utils.UppercaseFirst(Utils.GetAttributeValueByName(pch, XmlAttributeTypes.NAME)));                                            
+                    string wrapperclass = string.Format("sf{0} clearfix", Utils.UppercaseFirst(Utils.GetAttributeValueByName(pch, XmlAttributeTypes.NAME)));
                     wrapperclass = string.Format("{0} {1}", wrapperclass, Utils.GetAttributeValueByName(pch, XmlAttributeTypes.CLASS));
-                    string colwidth = string.Format("class='{0}' style='width:{1}'",wrapperclass,Width);
-                    sb.Append("<div "+colwidth+">");
+                    //string colwidth = string.Format("class='{0}' style='width:{1}'", wrapperclass, Width);
+                    string colwidth = string.Format("class='{0} {1}'", wrapperclass, sfCol + Width);
+                    sb.Append("<div " + colwidth + ">");
                     switch (mode)
                     {
                         case 0:
@@ -568,5 +661,16 @@ namespace SageFrame.Templating
             return sb.ToString();
         }
 
+        public static void CheckFilePath(string FileName)
+        {
+            if (FileName == "core")
+                Flag = true;
+            else
+                Flag = false;
+        }
+        public static void CheckFilePath()
+        {
+            Flag = true;
+        }
     }
 }

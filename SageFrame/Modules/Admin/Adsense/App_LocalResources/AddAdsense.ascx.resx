@@ -235,7 +235,7 @@
     <value />
   </data>
   <data name="lblIsActiveResource1.Text" xml:space="preserve">
-    <value>Is Active:</value>
+    <value>Active:</value>
   </data>
   <data name="lblIsActiveResource1.ToolTip" xml:space="preserve">
     <value />

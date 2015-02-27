@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion 
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,16 +16,17 @@ using SageFrame.SageFrameClass.Services;
 using SageFrame.Web;
 using SageFrame.Localization;
 using System.Threading;
+#endregion 
 
 public partial class Localization_LanguagePackInstaller : BaseAdministrationUserControl
 {
     LanguagePackInstaller installhelp = new LanguagePackInstaller();
     PackageInfo package = new PackageInfo();
-    public event ImageClickEventHandler CancelButtonClick;
+    public event EventHandler CancelButtonClick;
     protected void Page_Load(object sender, EventArgs e)
     {
         //this.wzrdInstallLanguagePack.ActiveStepIndex = 0;
-        imbCancel.ImageUrl = GetAdminImageUrl("btncancel.png", true);
+        //imbCancel.ImageUrl = GetAdminImageUrl("btncancel.png", true);
        
     }
     protected void wzrdInstallLanguagePack_NextButtonClick(object sender, WizardNavigationEventArgs e)
@@ -67,7 +53,7 @@ public partial class Localization_LanguagePackInstaller : BaseAdministrationUser
                     }
                     else if (ReturnValue == -1)
                     {
-                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "InvalidFileExtension"), "", SageMessageType.Alert);
+                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "InvalidFileExtension"), "", SageMessageType.Alert);
                         e.Cancel = true;
                         break;
                     }
@@ -83,19 +69,19 @@ public partial class Localization_LanguagePackInstaller : BaseAdministrationUser
                     }
                     else if (ReturnValue == 3)
                     {
-                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ThisPackageIsNotValid"), "", SageMessageType.Alert);
+                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ThisPackageIsNotValid"), "", SageMessageType.Alert);
                         e.Cancel = true;
                         break;
                     }
                     else if (ReturnValue == 4)
                     {
-                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ThisPackageDoesNotAppearToBeValid"), "", SageMessageType.Alert);
+                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ThisPackageDoesNotAppearToBeValid"), "", SageMessageType.Alert);
                         e.Cancel = true;
                         break;
                     }
                     else
                     {
-                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ThereIsErrorWhileInstallingThisModule"), "", SageMessageType.Alert);
+                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ThereIsErrorWhileInstallingThisModule"), "", SageMessageType.Alert);
                         e.Cancel = true;
                         break;
                     }
@@ -113,7 +99,7 @@ public partial class Localization_LanguagePackInstaller : BaseAdministrationUser
                 }
                 else
                 {
-                    ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "AcceptThePackageLicenseAgreementFirst"), "", SageMessageType.Alert);
+                    ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "AcceptThePackageLicenseAgreementFirst"), "", SageMessageType.Alert);
                     e.Cancel = true;
                 }
                 break;
@@ -151,7 +137,7 @@ public partial class Localization_LanguagePackInstaller : BaseAdministrationUser
         return (fileName.Substring(fileName.IndexOf("-") - 2, 5));
         
     }
-    protected void imbCancel_Click(object sender, ImageClickEventArgs e)
+    protected void imbCancel_Click(object sender, EventArgs e)
     {
         CancelButtonClick(sender, e);
         this.wzrdInstallLanguagePack.ActiveStepIndex = 0;
@@ -179,7 +165,6 @@ public partial class Localization_LanguagePackInstaller : BaseAdministrationUser
             lblEmailD.Text = packageInfo.Email;
             lblLicense.Text = packageInfo.License;
             lblReleaseNotes.Text = packageInfo.ReleaseNotes;
-
         }
     }
     private void LoadExistingResourceDetails(PackageInfo package)
@@ -254,7 +239,6 @@ public partial class Localization_LanguagePackInstaller : BaseAdministrationUser
     }
     protected void wzrdInstallLanguagePack_FinishButtonClick(object sender, WizardNavigationEventArgs e)
     {
-        this.wzrdInstallLanguagePack.ActiveStepIndex = 0;
-        
+        this.wzrdInstallLanguagePack.ActiveStepIndex = 0;        
     }
 }

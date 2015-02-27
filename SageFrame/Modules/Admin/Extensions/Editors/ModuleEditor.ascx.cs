@@ -42,22 +42,18 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
 {
     public partial class ModuleEditor : BaseAdministrationUserControl
     {
-        
-        
         string Exceptions = string.Empty;
-
         protected void Page_Init(object sender, EventArgs e)
         {
             try
             {
-                
+
             }
             catch (Exception ex)
             {
                 ProcessException(ex);
             }
         }
-
         protected void Page_Load(object sender, EventArgs e)
         {
             try
@@ -68,9 +64,9 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 }
                 if (!IsPostBack)
                 {
-                    imbUninstall.Attributes.Add("onclick", "javascript:return confirm('" + GetSageMessage("Extensions_Editors", "ConfirmUninstallExtension") + "')");
+                    imbUninstall.Attributes.Add("onclick", "javascript:return confirm('" + GetSageMessage("Extensions", "ConfirmUninstallExtension") + "')");
 
-                    AddImageUrls();
+                    //AddImageUrls();
                     AddScript();
                     if (HttpContext.Current.Session["moduleid"] != null)
                     {
@@ -91,11 +87,11 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
 
         private void AddImageUrls()
         {
-            imbUpdate.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
-            imbUninstall.ImageUrl = GetTemplateImageUrl("imgdelete.png", true);           
-            imbCancel.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-            imbUpdateDefinition.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
-            imbAddControl.ImageUrl = GetTemplateImageUrl("imgadd.png", true);
+            //imbUpdate.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
+            //imbUninstall.ImageUrl = GetTemplateImageUrl("imgdelete.png", true);
+            //imbCancel.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
+            //imbUpdateDefinition.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
+            //imbAddControl.ImageUrl = GetTemplateImageUrl("imgadd.png", true);
         }
 
         private void AddScript()
@@ -156,11 +152,11 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                         }
                         auditBar.Visible = true;
                         lblCreatedBy.Visible = true;
-                        lblCreatedBy.Text = GetSageMessage("Extensions_Editors", "CreatedBy ") + dtModules.Rows[0]["AddedBy"].ToString() + " " + dtModules.Rows[0]["AddedOn"].ToString();
+                        lblCreatedBy.Text = GetSageMessage("Extensions", "CreatedBy ") + dtModules.Rows[0]["AddedBy"].ToString() + " " + dtModules.Rows[0]["AddedOn"].ToString();
                         if (dtModules.Rows[0]["UpdatedBy"].ToString() != "" && dtModules.Rows[0]["UpdatedOn"].ToString() != "")
                         {
                             lblUpdatedBy.Visible = true;
-                            lblUpdatedBy.Text = GetSageMessage("Extensions_Editors", "LastUpdatedBy ") + dtModules.Rows[0]["UpdatedBy"].ToString() + " " + dtModules.Rows[0]["UpdatedOn"].ToString();
+                            lblUpdatedBy.Text = GetSageMessage("Extensions", "LastUpdatedBy ") + dtModules.Rows[0]["UpdatedBy"].ToString() + " " + dtModules.Rows[0]["UpdatedOn"].ToString();
                         }
                     }
                     catch (Exception ex)
@@ -243,14 +239,12 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 ProcessException(ex);
             }
         }
-
         private string[] SeparateByDots(string _version)
         {
             string[] arrColl = _version.Split('.');
             return arrColl;
         }
-
-        protected void imbAddControl_Click(object sender, ImageClickEventArgs e)
+        protected void imbAddControl_Click(object sender, EventArgs e)
         {
             int Id = 0;
             if (gdvControls.Rows.Count > 0)
@@ -271,7 +265,6 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 ProcessSourceControlUrl(Request.RawUrl, ControlPath, "extension");
             }
         }
-
         protected void gdvControls_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             int Id = int.Parse(e.CommandArgument.ToString());
@@ -287,8 +280,8 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                 case "Delete":
                     try
                     {
-                        
-                        ModuleController.ModuleControlsDeleteByModuleControlID(Id, GetUsername);
+                        ModuleController objController = new ModuleController();
+                        objController.ModuleControlsDeleteByModuleControlID(Id, GetUsername);
 
                         DataSet dsExtensionSettings = new DataSet();
                         if (HttpContext.Current.Session["moduleid"] != null)
@@ -302,7 +295,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                                 gdvControls.DataBind();
                             }
                         }
-                        ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("Extensions_Editors", "ModuleControlIsDeletedSuccessfully"), "", SageMessageType.Success);
+                        ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("Extensions", "ModuleControlIsDeletedSuccessfully"), "", SageMessageType.Success);
                     }
                     catch (Exception ex)
                     {
@@ -321,16 +314,14 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
         {
 
         }
-
-        protected void imbUpdateDefinition_Click(object sender, ImageClickEventArgs e)
+        protected void imbUpdateDefinition_Click(object sender, EventArgs e)
         {
             try
-            {
-
-                //dbModules.sp_ModuleDefinitionsUpdate(int.Parse(ddlDefinitions.SelectedValue), txtFriendlyName.Text, int.Parse(txtDefaultCacheTime.Text), true, true, DateTime.Now, GetPortalID, GetUsername);
-                ModuleController.UpdateModuleDefinitions(int.Parse(ddlDefinitions.SelectedValue), txtFriendlyName.Text, int.Parse(txtDefaultCacheTime.Text), true, true, DateTime.Now, GetPortalID, GetUsername);
+            {                
+                ModuleController objController = new ModuleController();
+                objController.UpdateModuleDefinitions(int.Parse(ddlDefinitions.SelectedValue), txtFriendlyName.Text, int.Parse(txtDefaultCacheTime.Text), true, true, DateTime.Now, GetPortalID, GetUsername);
                 BindModuleDefDropDown();
-                ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("Extensions_Editors", "ModuleDefinitionIsUpdatedSuccessfully"), "", SageMessageType.Success);
+                ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("Extensions", "ModuleDefinitionIsUpdatedSuccessfully"), "", SageMessageType.Success);
             }
             catch (Exception ex)
             {
@@ -338,7 +329,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             }
         }
 
-        protected void imbUpdate_Click(object sender, ImageClickEventArgs e)
+        protected void imbUpdate_Click(object sender, EventArgs e)
         {
             ModuleInfo objModule = new ModuleInfo();
             objModule.ModuleID = int.Parse(HttpContext.Current.Session["moduleid"].ToString());
@@ -364,9 +355,10 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             objModule.Email = PackageDetails1.Email;
             objModule.PortalID = GetPortalID;
             objModule.Username = GetUsername;
-            
-            ModuleController.UpdateExtension(objModule);
-            string ExtensionMessage = GetSageMessage("Extensions_Editors", "ModuleExtensionIsUpdatedSuccessfully");
+
+            ModuleController objController = new ModuleController();
+            objController.UpdateExtension(objModule);
+            string ExtensionMessage = GetSageMessage("Extensions", "ModuleExtensionIsUpdatedSuccessfully");
             ProcessCancelRequestBase(Request.RawUrl, true, ExtensionMessage);
 
         }
@@ -376,12 +368,13 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
 
         }
 
-        protected void imbCancel_Click(object sender, ImageClickEventArgs e)
+        protected void imbCancel_Click(object sender, EventArgs e)
         {
             ProcessCancelRequest(Request.RawUrl);
         }
 
-        protected void imbUninstall_Click(object sender, ImageClickEventArgs e)
+       
+        protected void imbUninstall_Click(object sender, EventArgs e)
         {
             UninstallModule();
         }
@@ -395,7 +388,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
             //checked if directory exist for current module foldername
             if (!string.IsNullOrEmpty(txtFolderName.Text))
             {
-                string moduleFolderPath = path + SageFrame.Core.RegisterModule.Common.ModuleFolder + '\\' + txtFolderName.Text;
+                string moduleFolderPath = path + SageFrame.Common.RegisterModule.Common.ModuleFolder + '\\' + txtFolderName.Text;
                 if (Directory.Exists(moduleFolderPath))
                 {
                     //check for valid .sfe file exist or not
@@ -414,12 +407,12 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
 
                                 if (!String.IsNullOrEmpty(module.ModuleName) && !String.IsNullOrEmpty(module.FolderName) && hdnModuleName.Value == module.ModuleName && txtFolderName.Text == module.FolderName && installerClass.IsModuleExist(module.ModuleName.ToLower(), module))
                                 {
-                                    string moduleInstalledPath = path + SageFrame.Core.RegisterModule.Common.ModuleFolder + '\\' + module.FolderName;
+                                    string moduleInstalledPath = path + SageFrame.Common.RegisterModule.Common.ModuleFolder + '\\' + module.FolderName;
                                     module.InstalledFolderPath = moduleInstalledPath;
                                 }
                                 else
                                 {
-                                    ShowMessage(SageMessageTitle.Exception.ToString(), GetSageMessage("Extensions_Editors", "ThisModuleSeemsToBeCorrupted"), "", SageMessageType.Error);
+                                    ShowMessage(SageMessageTitle.Exception.ToString(), GetSageMessage("Extensions", "ThisModuleSeemsToBeCorrupted"), "", SageMessageType.Error);
                                 }
                             }
                             try
@@ -441,74 +434,31 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
 
                             if (Exceptions != string.Empty)
                             {
-                                ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ModuleExtensionIsUninstallError"), "", SageMessageType.Alert);
+                                ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ModuleExtensionIsUninstallError"), "", SageMessageType.Alert);
                             }
                             else
                             {
-                                string ExtensionMessage = GetSageMessage("Extensions_Editors", "ModuleExtensionIsUninstalledSuccessfully");
+                                string ExtensionMessage = GetSageMessage("Extensions", "ModuleExtensionIsUninstalledSuccessfully");
                                 ProcessCancelRequestBase(Request.RawUrl, true, ExtensionMessage);
                             }
                         }
                         else
                         {
-                            ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ThisPackageIsNotValid"), "", SageMessageType.Alert);
+                            ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ThisPackageIsNotValid"), "", SageMessageType.Alert);
                         }
                     }
                     else
                     {
-                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions_Editors", "ThisPackageDoesNotAppearToHaveManifestFile"), "", SageMessageType.Alert);
+                        ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("Extensions", "ThisPackageDoesNotAppearToHaveManifestFile"), "", SageMessageType.Alert);
                     }
                 }
                 else
                 {
-                    ShowMessage(SageMessageTitle.Exception.ToString(), GetSageMessage("Extensions_Editors", "ModuleFolderDoesnotExist"), "", SageMessageType.Error);
+                    ShowMessage(SageMessageTitle.Exception.ToString(), GetSageMessage("Extensions", "ModuleFolderDoesnotExist"), "", SageMessageType.Error);
                 }
             }
         }
-
-        //private void UninstallProcessCancelRequestBase(string RedirectUrl, bool IsSupress, string ExtensionMessage)
-        //{
-        //    string strURL = string.Empty;
-        //    PageBase pagebase = new PageBase();
-        //    bool IsUseFriendlyUrls = pagebase.GetSettingBollByKey(SageFrameSettingKeys.UseFriendlyUrls);
-        //    if (!IsUseFriendlyUrls)
-        //    {
-        //        string[] arrUrl;
-        //        arrUrl = Request.RawUrl.Split('&');
-        //        if (arrUrl.Length > 0)
-        //        {
-        //            for (int i = 0; i < 3; i++)
-        //            {
-        //                strURL += arrUrl[i] + "&";
-        //            }
-        //            strURL = strURL.Remove(strURL.LastIndexOf('&'));
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (RedirectUrl.Contains("?"))
-        //        {
-        //            string[] d = RedirectUrl.Split('?');
-        //            strURL = d[0];
-        //        }
-        //    }
-        //    if (strURL.Contains("?"))
-        //    {
-        //        strURL += "&ExtensionMessage=" + ExtensionMessage;
-        //    }
-        //    else if (strURL.Contains("&"))
-        //    {
-        //        strURL += "&ExtensionMessage=" + ExtensionMessage;
-        //    }
-        //    else
-        //    {
-        //        strURL += "?ExtensionMessage=" + ExtensionMessage;
-        //    }
-
-        //    HttpContext.Current.Response.Redirect(strURL, IsSupress);
-
-        //}
-
+       
         private void ReadUninstallScriptAndDLLFiles(XmlDocument doc, string moduleFolderPath, Installers installerClass)
         {
             XmlElement root = doc.DocumentElement;
@@ -546,6 +496,12 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
                     {
                         RunUninstallScript(_unistallScriptFile, moduleFolderPath, installerClass);
                     }
+
+                    // check IModuleExtraCodeExecute interface is implemented or not for install/unInstall of module
+                    if (installerClass.IsIModuleExtraCodeInterfaceImplemented(doc))
+                    {
+                        installerClass.ExtraCodeOnUnInstallation(doc);
+                    }   
                     DeleteAllDllsFromBin(dllFiles, moduleFolderPath);
                 }
             }
@@ -564,7 +520,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
 
                 foreach (string dll in dllFiles)
                 {
-                    string targetdllPath = path + SageFrame.Core.RegisterModule.Common.DLLTargetPath + '\\' + dll;
+                    string targetdllPath = path + SageFrame.Common.RegisterModule.Common.DLLTargetPath + '\\' + dll;
                     FileInfo imgInfo = new FileInfo(targetdllPath);
                     if (imgInfo != null)
                     {
@@ -581,5 +537,7 @@ namespace SageFrame.Modules.Admin.Extensions.Editors
         {
 
         }
+      
+       
 }
 }

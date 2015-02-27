@@ -1,35 +1,31 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Security.Permissions;
+using System.Web.Security;
+using SageFrame.Common;
+using SageFrame.Web;
+
+#endregion
 
 namespace SageFrame.Framework
 {
+    [Serializable]
     public class SecurityPolicy
     {
+        #region "Private Static Variables"
+
         private static bool m_Initialized = false;
 
         private static bool m_ReflectionPermission;
@@ -38,6 +34,10 @@ namespace SageFrame.Framework
 
         private static bool m_AspNetHostingPermission;
 
+        #endregion
+
+        #region "Public Constants"
+
         //  all supported permissions need an associated public string constant
         public const string ReflectionPermission = "ReflectionPermission";
 
@@ -45,31 +45,13 @@ namespace SageFrame.Framework
 
         public const string AspNetHostingPermission = "AspNetHostingPermission";
 
-        public static string Permissions
-        {
-            get
-            {
-                string strPermissions = "";
-                if (Framework.SecurityPolicy.HasReflectionPermission())
-                {
-                    strPermissions = (strPermissions + (", " + Framework.SecurityPolicy.ReflectionPermission));
-                }
-                if (Framework.SecurityPolicy.HasWebPermission())
-                {
-                    strPermissions = (strPermissions + (", " + Framework.SecurityPolicy.WebPermission));
-                }
-                if (Framework.SecurityPolicy.HasAspNetHostingPermission())
-                {
-                    strPermissions = (strPermissions + (", " + Framework.SecurityPolicy.AspNetHostingPermission));
-                }
-                if ((strPermissions != ""))
-                {
-                    strPermissions = strPermissions.Substring(2);
-                }
-                return strPermissions;
-            }
-        }
+        #endregion
 
+        #region "Private Methods"
+
+        /// <summary>
+        /// 
+        /// </summary>
         private static void GetPermissions()
         {
             if (!m_Initialized)
@@ -95,7 +77,7 @@ namespace SageFrame.Framework
                 }
                 catch
                 {
-                   m_WebPermission = false;
+                    m_WebPermission = false;
                 }
                 //  test WebHosting Permission (Full Trust)
                 try
@@ -112,24 +94,74 @@ namespace SageFrame.Framework
             }
         }
 
+        #endregion
+
+        #region "Public Methods"
+
+        /// <summary>
+        ///  Get Permission For The Web Application On Which The Application Is Deployed
+        /// </summary>
+        public static string Permissions
+        {
+            get
+            {
+                string strPermissions = "";
+                if (Framework.SecurityPolicy.HasReflectionPermission())
+                {
+                    strPermissions = (strPermissions + (", " + Framework.SecurityPolicy.ReflectionPermission));
+                }
+                if (Framework.SecurityPolicy.HasWebPermission())
+                {
+                    strPermissions = (strPermissions + (", " + Framework.SecurityPolicy.WebPermission));
+                }
+                if (Framework.SecurityPolicy.HasAspNetHostingPermission())
+                {
+                    strPermissions = (strPermissions + (", " + Framework.SecurityPolicy.AspNetHostingPermission));
+                }
+                if ((strPermissions != ""))
+                {
+                    strPermissions = strPermissions.Substring(2);
+                }
+                return strPermissions;
+            }
+        }
+
+        /// <summary>
+        /// Provide IsHosting Permission Granted
+        /// </summary>
+        /// <returns></returns>
         public static bool HasAspNetHostingPermission()
         {
             GetPermissions();
             return m_AspNetHostingPermission;
         }
 
+        /// <summary>
+        /// Provide IsReflection Permission Granted
+        /// </summary>
+        /// <returns></returns>
         public static bool HasReflectionPermission()
         {
             GetPermissions();
             return m_ReflectionPermission;
         }
 
+        /// <summary>
+        /// Provide Has Web Permission Granted
+        /// </summary>
+        /// <returns></returns>
         public static bool HasWebPermission()
         {
             GetPermissions();
             return m_WebPermission;
         }
 
+        /// <summary>
+        /// Check Permission 
+        /// </summary>
+        /// <param name="permissions">Permissions</param>
+        /// <param name="permission"></param>
+        /// <returns></returns>
         public static bool HasPermissions(string permissions, ref string permission)
         {
             bool _HasPermission = true;
@@ -166,12 +198,169 @@ namespace SageFrame.Framework
             return _HasPermission;
         }
 
+        /// <summary>
+        /// Return The Name of the Logged in User by PortalID
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>Logged In UserName</returns>
+        public string GetUser(int portalID)
+        {
+            string user = string.Empty;
+            try
+            {
+                PageBase objPageBase = new PageBase();
+                HttpCookie authCookie = HttpContext.Current.Request.Cookies[FormsCookieName(portalID)];
+
+                //authCookie.
+                if (authCookie != null && authCookie.Value != ApplicationKeys.anonymousUser)
+                {
+                    if (authCookie.Value != null)
+                    {
+                        FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authCookie.Value);
+                        if (ticket != null)
+                        {
+                            user = ticket.Name;
+                        }
+                        else
+                        {
+                            user = ApplicationKeys.anonymousUser;
+                        }
+                    }
+                    else
+                    {
+                        user = ApplicationKeys.anonymousUser;
+                    }
+                }
+                else
+                {
+                    user = ApplicationKeys.anonymousUser;
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return user;
+        }
+
+
+        /// <summary>
+        /// Return The Name of the Logged in User by PortalID
+        /// </summary>
+        /// <param name="PortalID">PortalID</param>
+        /// <returns>Logged In UserName</returns>
+        public string GetUser(int portalID, string cookieFormName)
+        {
+            string user = string.Empty;
+            try
+            {
+                PageBase objPageBase = new PageBase();
+                HttpCookie authCookie = HttpContext.Current.Request.Cookies[cookieFormName];
+
+                //authCookie.
+                if (authCookie != null && authCookie.Value != ApplicationKeys.anonymousUser)
+                {
+                    if (authCookie.Value != null)
+                    {
+                        FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authCookie.Value);
+                        if (ticket != null)
+                        {
+                            user = ticket.Name;
+                        }
+                        else
+                        {
+                            user = ApplicationKeys.anonymousUser;
+                        }
+                    }
+                    else
+                    {
+                        user = ApplicationKeys.anonymousUser;
+                    }
+                }
+                else
+                {
+                    user = ApplicationKeys.anonymousUser;
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return user;
+        }
+
+        public FormsAuthenticationTicket GetUserTicket(int portalID)
+        {
+            PageBase objPageBase = new PageBase();
+            HttpCookie authCookie = HttpContext.Current.Request.Cookies[FormsCookieName(portalID)];              
+            if (authCookie != null && authCookie.Value != string.Empty)
+            {
+                FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authCookie.Value);
+                return ticket;
+            }
+            else
+            {
+                FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, ApplicationKeys.anonymousUser, DateTime.Now,
+                                                                            DateTime.Now.AddMinutes(30),
+                                                                              true,
+                                                                              portalID.ToString(),
+                                                                              FormsAuthentication.FormsCookiePath);
+                return ticket;
+            }
+        }
+
+        public string FormsCookieName(int portalID)
+        {
+            string formName = string.Empty;
+            if (HttpContext.Current.Session[SessionKeys.RandomCookieValue] != null && HttpContext.Current.Session[SessionKeys.RandomCookieValue].ToString() != string.Empty)
+            {
+                formName = FormsAuthentication.FormsCookieName + HttpContext.Current.Session.SessionID + HttpContext.Current.Session[SessionKeys.RandomCookieValue].ToString() + portalID.ToString();
+            }
+            return formName;
+        }
+
+
+        /// <summary>        
+        /// To update Cockies expireTime from browser while refressing page 
+        /// </summary>
+        public void UpdateExpireTime(string userName, int portalID)
+        {
+            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1,
+                     userName,
+                     DateTime.Now,
+                     DateTime.Now.AddMinutes(30),
+                     true,
+                     portalID.ToString(),
+                     FormsAuthentication.FormsCookiePath);
+            // Encrypt the ticket.
+            string encTicket = FormsAuthentication.Encrypt(ticket);
+            // Create the cookie.
+            HttpCookie objCookie = HttpContext.Current.Request.Cookies[FormsCookieName(portalID)];
+            if (objCookie != null)
+            {
+                SageFrameConfig objConfig = new SageFrameConfig();
+                string ServerCookieExpiration = objConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.ServerCookieExpiration);
+                int expiryTime = Math.Abs(int.Parse(ServerCookieExpiration));
+                expiryTime = expiryTime < 5 ? 5 : expiryTime;
+                objCookie.Expires = DateTime.Now.AddMinutes(expiryTime);
+                HttpContext.Current.Response.Cookies.Set(objCookie);
+            }
+            else
+            {
+                HttpContext.Current.Response.Cookies.Remove(FormsCookieName(portalID));
+            }
+        }
+        #endregion
+
+        #region "Obsolete Methods"
+
         [Obsolete("Replaced by correctly spelt method")]
         public static bool HasRelectionPermission()
         {
             GetPermissions();
             return m_ReflectionPermission;
         }
-    }
 
+        #endregion
+    }
 }

@@ -1,28 +1,15 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Xml;
 using System.IO;
@@ -31,6 +18,9 @@ using RegisterModule;
 using System.Web.Hosting;
 using SageFrame.SageFrameClass.Services;
 using System.Web;
+
+#endregion
+
 
 [Serializable]
     public class ModuleSfeWriter : BaseAdministrationUserControl
@@ -56,12 +46,14 @@ using System.Web;
             get {return _module;}
             set { _module = value; }
         }
+
+        string strFilesToMove = "";
         #endregion
 
-        public void CreatePackage(string archiveName, string manifestName,List<string> FileList,HttpResponse Response,string SFEPath,ModuleInfoPackage package)
+        public void CreatePackage(string archiveName, string manifestName,List<string> FileList,HttpResponse Response,string SFEPath,ModuleInfoPackage package,string strFiles)
         {
-
-            WriteManifest(manifestName, SFEPath, package);         
+            strFilesToMove = strFiles;
+            WriteManifest(manifestName, SFEPath, package);
             CreateZipResponse(FileList, Response, Module.FolderName, SFEPath);
         }
 
@@ -120,7 +112,7 @@ using System.Web;
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.OmitXmlDeclaration = true;
-            settings.NewLineOnAttributes = true;
+            settings.NewLineOnAttributes = false;
 
             XmlWriter writer = XmlWriter.Create(manifestPath, settings);
 
@@ -128,8 +120,9 @@ using System.Web;
             
             WritePackageStartElement(writer);
             WriteModuleElements(writer);
-            WriteFilesInfo(writer);
-           
+            WriteFilesInfo(writer);           
+            WriteFileMoveInfo(writer);
+          
             WriteManifestEndElement(writer);
            // WriteManifestEndElement(writer);
 
@@ -211,30 +204,74 @@ using System.Web;
 
         private void WriteFilesInfo(XmlWriter writer)
         {
+            string file = "";
             writer.WriteStartElement("files");
-            foreach(string fileName in Module.FileNames)
+            foreach (string fileName in Module.FileNames)
             {
                 if (!string.IsNullOrEmpty(fileName) && (fileName.EndsWith(".dll") || fileName.EndsWith(".SqlDataProvider")))
                 {
+                    file = fileName.Substring(fileName.LastIndexOf("\\") + 1);
+
                     writer.WriteStartElement("file");
-                    writer.WriteElementString("name", fileName.Substring(fileName.LastIndexOf("\\") + 1));
+                    if (fileName.EndsWith(".dll"))
+                        writer.WriteAttributeString("order", "0");
+                    //else if (file.Split('.')[0].ToString() == "Uninstall")
+                    //    writer.WriteAttributeString("order", "4");
+                    else
+                        writer.WriteAttributeString("order", "" + int.Parse(file.Split('.')[2].ToString()) + "");
+
+                    writer.WriteElementString("name", file);
                     writer.WriteEndElement();
-                }    
+                }
             }
             writer.WriteEndElement();
         }
 
-        public static void WriteManifestEndElement(XmlWriter writer)
+        private void WriteFileMoveInfo(XmlWriter writer)
         {
+            if (strFilesToMove.Length > 0)
+            {
+                string[] str = strFilesToMove.Split(',');
+                writer.WriteStartElement("move");
+                writer.WriteStartElement("files");
+                foreach (string fileName in str)
+                {
+                    if (!Directory.Exists(fileName.Split('#')[0]))
+                    {
+                        writer.WriteStartElement("file");
+                        writer.WriteElementString("from", fileName.Split('#')[0]);
+                        writer.WriteElementString("to", fileName.Split('#')[1]);
+                        writer.WriteEndElement();
+                    }
+                }
+                writer.WriteEndElement();
+                WriteDirectriesInfo(writer);
+                writer.WriteEndElement();
+            }
+        }
 
-            
+        private void WriteDirectriesInfo(XmlWriter writer)
+        {
+            writer.WriteStartElement("directories");
+            string[] str = strFilesToMove.Split(',');
+            foreach (string fileName in str)
+            {
+                if (Directory.Exists(fileName.Split('#')[0]))
+                {                   
+                    writer.WriteStartElement("directory");
+                    writer.WriteElementString("from", fileName.Split('#')[0]);
+                    writer.WriteElementString("to", fileName.Split('#')[1]);
+                    writer.WriteEndElement();
+                }
+            }
             writer.WriteEndElement();
-         
+        }
+        public static void WriteManifestEndElement(XmlWriter writer)
+        {            
+            writer.WriteEndElement();         
             writer.WriteEndElement();
-
             //Close root Element
             writer.WriteEndElement();
-
         }
 
         public static void WriteManifestStartElement(XmlWriter writer)
@@ -242,7 +279,7 @@ using System.Web;
             //Start the new Root Element
             writer.WriteStartElement("sageframe");
             writer.WriteAttributeString("version", "1.0.0.0");
-            writer.WriteAttributeString("type", "Package");
+            writer.WriteAttributeString("type", "module");
 
             //Start packages Element
             writer.WriteStartElement("folders");

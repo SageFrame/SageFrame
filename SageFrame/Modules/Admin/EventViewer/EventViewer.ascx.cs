@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,19 +14,18 @@ using System.Web.UI.WebControls;
 using SageFrame.ErrorLog;
 using SageFrame.Web;
 using SageFrame.Message;
-using SageFrame.SageFrameClass.MessageManagement;
 using System.Text;
 using SageFrame.Framework;
 using SageFrame.LogView;
-
-
+using SageFrame.SageFrameClass.MessageManagement;
+#endregion 
 
 namespace SageFrame.Modules.Admin.EventViewer
 {
     public partial class EventViewer : BaseAdministrationUserControl
     {
         StringBuilder str = new StringBuilder();
-        
+
         MailHelper SendMessage = new MailHelper();
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -49,37 +33,36 @@ namespace SageFrame.Modules.Admin.EventViewer
             {
                 PopulateLogType();
                 BindGrid();
-                imgLogClear.ImageUrl = GetTemplateImageUrl("imgclearlog.png", true);
-                imgLogDelete.ImageUrl = GetTemplateImageUrl("imgdelete.png", true);
-                imgSendEmail.ImageUrl = GetTemplateImageUrl("imgsend.png", true);
                 imgLogClear.Attributes.Add("onclick", "javascript:return confirm('" + GetSageMessage("EventViewer", "AreYouSureToClearLogs") + "')");
                 imgLogDelete.Attributes.Add("onclick", "javascript:return confirm('" + GetSageMessage("EventViewer", "AreYouSureToDeleteLogs") + "')");
             }
         }
-         
+
         private void BindGrid()
         {
-            string logType = string.Empty; 
+            string logType = string.Empty;
             if (ddlLogType.SelectedValue != "-1")
             {
                 logType = ddlLogType.SelectedItem.Text;
             }
             try
             {
-                gdvLog.DataSource = LogController.GetLogView(GetPortalID, logType);
+                LogController objController = new LogController();
+                gdvLog.DataSource = objController.GetLogView(GetPortalID, logType);
                 gdvLog.DataBind();
             }
             catch (Exception ex)
             {
                 ProcessException(ex);
             }
-        }        
+        }
 
         private void PopulateLogType()
         {
             try
             {
-                ddlLogType.DataSource = LogController.GetLogType();
+                LogController objController = new LogController();
+                ddlLogType.DataSource = objController.GetLogType();
                 ddlLogType.DataValueField = "LogTypeID";
                 ddlLogType.DataTextField = "Name";
                 ddlLogType.DataBind();
@@ -90,14 +73,14 @@ namespace SageFrame.Modules.Admin.EventViewer
                 ProcessException(ex);
             }
         }
-       
+
         protected void ddlLogType_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindGrid();
-        }        
+        }
 
         protected void ddlRecordsPerPage_SelectedIndexChanged(object sender, EventArgs e)
-        {           
+        {
             gdvLog.PageSize = int.Parse(ddlRecordsPerPage.SelectedValue.ToString());
             BindGrid();
         }
@@ -112,18 +95,16 @@ namespace SageFrame.Modules.Admin.EventViewer
         {
 
         }
-        
+
         protected void gdvLog_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-           
+
         }
 
         protected void gdvLog_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
 
         }
-
-
         protected void gdvLog_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             int Id = int.Parse(e.CommandArgument.ToString());
@@ -132,8 +113,8 @@ namespace SageFrame.Modules.Admin.EventViewer
                 case "Delete":
                     try
                     {
-                        
-                        ErrorLogController.DeleteLogByLogID(Id, GetPortalID, GetUsername);
+                        ErrorLogController objController = new ErrorLogController();
+                        objController.DeleteLogByLogID(Id, GetPortalID, GetUsername);
                         BindGrid();
                         ShowMessage("", GetSageMessage("EventViewer", "LogDeletedSuccessfully"), "", SageMessageType.Success);
                     }
@@ -142,16 +123,16 @@ namespace SageFrame.Modules.Admin.EventViewer
                         ProcessException(ex);
                     }
                     break;
-            }            
-        } 
+            }
+        }
 
-        protected void imgLogClear_Click(object sender, ImageClickEventArgs e)
+        protected void imgLogClear_Click(object sender, EventArgs e)
         {
             try
             {
-                ErrorLogController.ClearLog(GetPortalID);
+                ErrorLogController objController = new ErrorLogController();
+                objController.ClearLog(GetPortalID);
                 BindGrid();
-                //ShowMessage(SageMessageTitle.Information.ToString(), "Log Cleared Successfully.", "", SageMessageType.Success);
                 ShowMessage("", GetSageMessage("EventViewer", "LogClearedSuccessfully"), "", SageMessageType.Success);
             }
             catch (Exception ex)
@@ -160,13 +141,13 @@ namespace SageFrame.Modules.Admin.EventViewer
             }
         }
 
-        protected void imgSendEmail_Click(object sender, ImageClickEventArgs e)
+        protected void imgSendEmail_Click(object sender, EventArgs e)
         {
             try
             {
                 if (Page.IsValid)
                 {
-                    string messageText = txtMessage1.Text;                    
+                    string messageText = txtMessage1.Text;
                     for (int i = 0; i < gdvLog.Rows.Count; i++)
                     {
                         GridViewRow row = gdvLog.Rows[i];
@@ -179,9 +160,9 @@ namespace SageFrame.Modules.Admin.EventViewer
                         }
                     }
                     SageFrameConfig pagebase = new SageFrameConfig();
-                    string emailSuperAdmin = pagebase.GetSettingsByKey(SageFrameSettingKeys.SuperUserEmail);//"milsonmun@hotmail.com";
-                    string emailSiteAdmin = pagebase.GetSettingsByKey(SageFrameSettingKeys.SiteAdminEmailAddress);
-                    MailHelper.SendMailNoAttachment(emailSiteAdmin,txtEmailAdd.Text,txtSubject1.Text, messageText, emailSuperAdmin, string.Empty);
+                    string emailSuperAdmin = pagebase.GetSettingValueByIndividualKey(SageFrameSettingKeys.SuperUserEmail);
+                    string emailSiteAdmin = pagebase.GetSettingValueByIndividualKey(SageFrameSettingKeys.SiteAdminEmailAddress);
+                    MailHelper.SendMailNoAttachment(emailSiteAdmin, txtEmailAdd.Text, txtSubject1.Text, messageText, emailSuperAdmin, string.Empty);
                     ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("EventViewer", "MailSentSuccessfully"), "", SageMessageType.Success);
                     ClearEmailForm();
                 }
@@ -199,24 +180,34 @@ namespace SageFrame.Modules.Admin.EventViewer
             txtMessage1.Text = "";
         }
 
-        protected void imgLogDelete_Click(object sender, ImageClickEventArgs e)
+        protected void imgLogDelete_Click(object sender, EventArgs e)
         {
+            bool isChkChecked = false;
             for (int i = 0; i < gdvLog.Rows.Count; i++)
             {
-                GridViewRow row = gdvLog.Rows[i];                
+                GridViewRow row = gdvLog.Rows[i];
                 bool isChecked = ((CheckBox)row.FindControl("chkSendEmail")).Checked;
                 if (isChecked)
                 {
                     HiddenField hdfLogID = (HiddenField)row.FindControl("hdfLogID");
                     int LogID = Int32.Parse(hdfLogID.Value);
-                    ErrorLogController.DeleteLogByLogID(LogID, GetPortalID, GetUsername);                  
+                    ErrorLogController objController = new ErrorLogController();
+                    objController.DeleteLogByLogID(LogID, GetPortalID, GetUsername);
+                    isChkChecked = true;
                 }
             }
-            BindGrid();
-            ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("EventViewer", "LogDeletedSuccessfully"), "", SageMessageType.Success);
+            if (isChkChecked)
+            {
+                BindGrid();
+                ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("EventViewer", "LogDeletedSuccessfully"), "", SageMessageType.Success);
+            }
+            else
+            {
+                ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("EventViewer", "CheckCheckBoxAlert"), "", SageMessageType.Alert);
+            }
         }
-}
+    }
 }
 
 
- 
+

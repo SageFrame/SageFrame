@@ -39,10 +39,10 @@
 .cssClassAdminMenu ul li ul li a {
 	border-bottom:none;
 }
-.cssClassForgetPasswordPage {
+.cssClassForgotPasswordPage {
 	padding:12px;
 }
-.cssClassForgetPasswordBtnPadding {
+.cssClassForgotPasswordBtnPadding {
 	padding:0 0 10px 116px !important;
 }
 .cssClassMailTest a {
@@ -58,5 +58,11 @@
 
 legend { position: absolute; top: -.8em; left: .8em; }
 
+.sfMenugroup { border:1px solid #ccc !important;}
 
+#header-container .header-menu, div.menu-wrapper { background:#fff;}
+.icon-arrow-s:before { line-height:45px !important; }
 
+/*fix bug for button,input not clickable wrapped by label */
+
+.sfButtonwrapper label input,.sfSelectarrow input, label[class*="icon-"] input { background:none; border:none; visibility:visible; position:absolute; }

@@ -8,69 +8,86 @@ using System.Collections.Generic;
 using SageFrame.Web;
 using SageFrame.Web.Utilities;
 using System.IO;
+using SageFrame.Logo;
+using SageFrame.Services;
 
 [WebService(Namespace = "http://tempuri.org/")]
 [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
- [System.Web.Script.Services.ScriptService]
-public class LogoWebService  : System.Web.Services.WebService {
-
-    SQLHandler sqLH = new SQLHandler();
-    [WebMethod]
-    public void SaveLogoSettings(string logoText, string logoPath, int userModuleID, int portalID,string Slogan,string URL)
-    {
-        try
-        {
-            List<KeyValuePair<string, object>> Param = new List<KeyValuePair<string, object>>();
-            Param.Add(new KeyValuePair<string, object>("@LogoText", logoText));
-            Param.Add(new KeyValuePair<string, object>("@LogoPath", logoPath));
-            Param.Add(new KeyValuePair<string,object>("@UserModuleID",userModuleID));
-            Param.Add(new KeyValuePair<string,object>("@PortalID",portalID));
-            Param.Add(new KeyValuePair<string, object>("@Slogan", Slogan));
-            Param.Add(new KeyValuePair<string, object>("@url", URL));
-            sqLH.ExecuteNonQuery("usp_Logo_AddUpdate", Param);           
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
-    [WebMethod]
-    public SageFrame.Logo.LogoEntity GetLogoData(int userModuleID, int portalID)
-    {
-        try
-        {
-            List<KeyValuePair<string, object>> Param = new List<KeyValuePair<string, object>>();
-            Param.Add(new KeyValuePair<string,object>("@UserModuleID",userModuleID));
-            Param.Add(new KeyValuePair<string,object>("@PortalID",portalID));           
-           return sqLH.ExecuteAsObject<SageFrame.Logo.LogoEntity>("usp_Logo_GetData",Param);
-        }
-        catch (Exception ex)
-        {
-            throw ex;
-        }
-    }
+[System.Web.Script.Services.ScriptService]
+public class LogoWebService : AuthenticateService
+{
 
     [WebMethod]
-    public void DeleteIcon(string IconPath)
+    public void SaveLogoSettings(string logoText, string logoPath, int userModuleID, int portalID, string Slogan, string URL, string CultureCode, string UserName, string secureToken)
     {
         try
         {
-            string filepath = SageFrame.Templating.Utils.GetAbsolutePath(string.Format("Modules/Logo/image/{0}", IconPath));
-            if (File.Exists(filepath))
+            if (IsPostAuthenticated(portalID, userModuleID, UserName, secureToken))
             {
-                File.SetAttributes(filepath, System.IO.FileAttributes.Normal);
-                File.Delete(filepath);
+                LogoController objController = new LogoController();
+                objController.SaveLogoSettings(logoText, logoPath, userModuleID, portalID, Slogan, URL, CultureCode);
+                HttpRuntime.Cache.Remove("LogoImage_" + CultureCode + "_" + userModuleID.ToString());
+            }
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+    [WebMethod]
+    public LogoEntity GetLogoData(int userModuleID, int portalID, string CultureCode, string UserName, string secureToken)
+    {
+        try
+        {
+            if (IsPostAuthenticated(portalID, userModuleID, UserName, secureToken))
+            {
+                LogoEntity objLogEntity = new LogoEntity();
+                if (HttpRuntime.Cache["LogoImage_" + CultureCode + "_" + userModuleID.ToString()] != null)
+                {
+                    objLogEntity = HttpRuntime.Cache["LogoImage_" + CultureCode + "_" + userModuleID.ToString()] as LogoEntity;
+                }
+                else
+                {
+                    LogoController objController = new LogoController();
+                    objLogEntity = objController.GetLogoData(userModuleID, portalID, CultureCode);
+                    if (objLogEntity != null)
+                    {
+                        HttpRuntime.Cache["LogoImage_" + CultureCode + "_" + userModuleID.ToString()] = objLogEntity;
+                    }
+                }
+                return objLogEntity;
+            }
+            else
+            {
+                return null;
             }
         }
         catch (Exception ex)
         {
-
             throw ex;
         }
-
     }
-    
-    
-}
 
+    [WebMethod]
+    public void DeleteIcon(string IconPath, int userModuleID, string CultureCode, int PortalID, string UserName, string secureToken)
+    {
+        try
+        {
+            if (IsPostAuthenticated(PortalID, userModuleID, UserName, secureToken))
+            {
+                string filepath = SageFrame.Templating.Utils.GetAbsolutePath(string.Format("Modules/Logo/image/{0}", IconPath));
+                if (File.Exists(filepath))
+                {
+                    File.SetAttributes(filepath, System.IO.FileAttributes.Normal);
+                    File.Delete(filepath);
+                }
+                HttpRuntime.Cache.Remove("LogoImage_" + CultureCode + "_" + userModuleID.ToString());
+            }
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+}

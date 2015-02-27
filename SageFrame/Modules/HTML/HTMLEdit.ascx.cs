@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -29,15 +14,19 @@ using SageFrame.HTMLText;
 using System.Web.Security;
 using System.Collections;
 using SageFrame.Web.Utilities;
+using SageFrame.Localization;
+#endregion
 
 namespace SageFrame.Modules.HTML
 {
+      
     public partial class HTMLEdit : BaseAdministrationUserControl
     {
+        private string languageMode = "Normal";
         System.Nullable<Int32> _newHTMLContentID = 0;
         protected void Page_Init(object sender, EventArgs e)
         {
-            hdnUserModuleID.Value = SageUserModuleID;            
+            hdnUserModuleID.Value = SageUserModuleID;
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -47,39 +36,68 @@ namespace SageFrame.Modules.HTML
                 int portalid = GetPortalID;
                 if (!IsPostBack)
                 {
-                    AddImageUrls();                  
+                    AddImageUrls();
+                    BindLanguageList();
                     string strCommentErrorMSG = GetSageMessage("HTML", "PleaseWriteComments");
                     imbAdd.Attributes.Add("onclick", string.Format("return ValidateHTMLComments('{0}','{1}','{2}');", txtComment.ClientID, lblErrorMessage.ClientID, strCommentErrorMSG));
-                    
+                    BindEditor();
                 }
-                BindEditor();
-               
-               
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "ckEditorUserModuleID", " var ckEditorUserModuleID='" + SageUserModuleID + "';", true);
             }
             catch (Exception ex)
             {
                 ProcessException(ex);
             }
         }
-
-      
-
+       
+        public void BindLanguageList()
+        {
+            try
+            {
+                string mode = languageMode == "Native" ? "NativeName" : "LanguageName";
+                List<Language> lstAllCultures = LocaleController.GetCultures();
+                List<Language> lstAvailableLocales = LocalizationSqlDataProvider.GetAvailableLocales();
+                List<Language> filterLocales = FilterLocales(lstAllCultures, lstAvailableLocales);
+                ddlLanuage.DataSource = filterLocales; 
+                ddlLanuage.DataBind();
+                ddlLanuage.SelectedValue = GetCurrentCulture();
+            }
+            catch (Exception ex)
+            {
+                ProcessException(ex);
+            }
+        }
+        protected List<Language> FilterLocales(List<Language> lstAllCultures, List<Language> lstAvailableLocales)
+        {
+            List<Language> lstNotAvailableLocales = new List<Language>();
+            foreach (Language objLang in lstAllCultures)
+            {
+                bool isExist = lstAvailableLocales.Exists(
+                        delegate(Language obj)
+                        {
+                            return (obj.LanguageCode == objLang.LanguageCode);
+                        }
+                    );
+                if (isExist)
+                    lstNotAvailableLocales.Add(objLang);
+            }
+            return lstNotAvailableLocales;
+        }
         private void AddImageUrls()
         {
             imbAddComment.Visible = false;
             lblAddComment.Visible = false;
             imbAdd.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
             imbBack.ImageUrl = GetTemplateImageUrl("imgcancel.png", true);
-            imbSave.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
-
+            //imbSave.ImageUrl = GetTemplateImageUrl("imgsave.png", true);
         }
 
         private void HideAll()
         {
             try
-            {   
+            {
                 divViewWrapper.Visible = false;
-                divEditWrapper.Visible = false;               
+                divEditWrapper.Visible = false;
                 divEditComment.Visible = false;
             }
             catch (Exception ex)
@@ -87,14 +105,13 @@ namespace SageFrame.Modules.HTML
                 ProcessException(ex);
             }
         }
-        
+
         private void BindContent()
         {
             try
             {
                 HTMLController _html = new HTMLController();
                 HTMLContentInfo contentInfo = _html.GetHTMLContent(GetPortalID, Int32.Parse(hdnUserModuleID.Value), GetCurrentCultureName);
-
                 if (contentInfo != null)
                 {
                     hdfHTMLTextID.Value = contentInfo.HtmlTextID.ToString();
@@ -103,7 +120,7 @@ namespace SageFrame.Modules.HTML
                     {
                         divViewWrapper.Visible = true;
 
-                        if (HTMLController.IsAuthenticatedToEdit(hdnUserModuleID.Value,GetUsername,GetPortalID) && GetUsername != SystemSetting.SYSTEM_USER_NOTALLOW_HTMLCOMMENT[0])
+                        if (HTMLController.IsAuthenticatedToEdit(hdnUserModuleID.Value, GetUsername, GetPortalID) && GetUsername != SystemSetting.SYSTEM_USER_NOTALLOW_HTMLCOMMENT[0])
                         {
                             divEditContent.Visible = true;
                         }
@@ -120,7 +137,7 @@ namespace SageFrame.Modules.HTML
                             {
                                 BindComment();
                             }
-                        }                     
+                        }
                         else
                         {
                             divAddComment.Visible = false;
@@ -142,7 +159,7 @@ namespace SageFrame.Modules.HTML
                         {
                             divViewWrapper.Visible = true;
                             divEditContent.Visible = true;
-                        }  
+                        }
                     }
                 }
                 else if (contentInfo == null && Request.QueryString["ManageReturnUrl"] != null && GetUsername != SystemSetting.SYSTEM_USER_NOTALLOW_HTMLCOMMENT[0])
@@ -175,24 +192,16 @@ namespace SageFrame.Modules.HTML
             catch (Exception ex)
             {
                 ProcessException(ex);
-            }           
-        }       
+            }
+        }
 
         private void BindComment()
         {
             HTMLController objHtml = new HTMLController();
             try
             {
-                SQLHandler Sq = new SQLHandler();
                 if (IsSuperUser() && GetUsername != SystemSetting.SYSTEM_USER_NOTALLOW_HTMLCOMMENT[0])
-                {     
-                    //List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", GetPortalID));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@HTMLTextID", hdfHTMLTextID.Value));
-
-                    //List<HTMLContentInfo> ml = Sq.ExecuteAsList<HTMLContentInfo>("dbo.sp_HtmlCommentGetAllByHTMLTextID", ParaMeterCollection);
-                   
-
+                {
                     List<HTMLContentInfo> ml = objHtml.BindCommentForSuperUser(GetPortalID, hdfHTMLTextID.Value);
                     if (ml != null)
                     {
@@ -208,7 +217,6 @@ namespace SageFrame.Modules.HTML
                             }
                             gdvHTMLList.Columns[gdvHTMLList.Columns.Count - 1].Visible = true;
                             gdvHTMLList.Columns[gdvHTMLList.Columns.Count - 2].Visible = true;
-
                             rowApprove.Visible = true;
                             rowIsActive.Visible = true;
                         }
@@ -216,12 +224,7 @@ namespace SageFrame.Modules.HTML
                 }
                 else
                 {
-                    //List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", GetPortalID));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@HTMLTextID", hdfHTMLTextID.Value));
-                    //List<HTMLContentInfo> nl = Sq.ExecuteAsList<HTMLContentInfo>("dbo.sp_HtmlActiveCommentGetByHTMLTextID", ParaMeterCollection);
                     List<HTMLContentInfo> nl = objHtml.BindCommentForOthers(GetPortalID, hdfHTMLTextID.Value);
-
                     if (nl != null)
                     {
                         gdvHTMLList.DataSource = nl;
@@ -238,16 +241,15 @@ namespace SageFrame.Modules.HTML
                             gdvHTMLList.Columns[gdvHTMLList.Columns.Count - 1].Visible = false;
                             gdvHTMLList.Columns[gdvHTMLList.Columns.Count - 2].Visible = false;
                         }
-
                         rowApprove.Visible = false;
                         rowIsActive.Visible = false;
                     }
                 }
-            } 
+            }
             catch (Exception ex)
             {
                 ProcessException(ex);
-            }    
+            }
         }
 
         private bool IsSuperUser()
@@ -286,31 +288,29 @@ namespace SageFrame.Modules.HTML
             {
                 HideAll();
                 divEditWrapper.Visible = true;
-                //divViewComment.Visible = true;                 
                 BindEditor();
             }
             catch (Exception ex)
             {
                 ProcessException(ex);
             }
-        
         }
-                
-    
+
         private void BindEditor()
         {
             try
             {
                 HTMLController _html = new HTMLController();
-                HTMLContentInfo objHtmlInfo = _html.GetHTMLContent(GetPortalID, Int32.Parse(hdnUserModuleID.Value), GetCurrentCultureName);
+                txtBody.Text = string.Empty;
+                HTMLContentInfo objHtmlInfo = _html.GetHTMLContent(GetPortalID, Int32.Parse(hdnUserModuleID.Value), ddlLanuage.SelectedValue.ToString());//GetCurrentCultureName
                 if (objHtmlInfo != null)
-                 {
-                     txtBody.Text = objHtmlInfo.Content;
-                     chkPublish.Checked = bool.Parse(objHtmlInfo.IsActive.ToString());
-                     chkAllowComment.Checked = bool.Parse(objHtmlInfo.IsAllowedToComment.ToString());
-                     ViewState["EditHtmlTextID"] = objHtmlInfo.HtmlTextID;
-                     divEditWrapper.Visible = true;     
-                 }
+                {
+                    txtBody.Text = objHtmlInfo.Content;
+                    chkPublish.Checked = bool.Parse(objHtmlInfo.IsActive.ToString());
+                    chkAllowComment.Checked = bool.Parse(objHtmlInfo.IsAllowedToComment.ToString());
+                    ViewState["EditHtmlTextID"] = objHtmlInfo.HtmlTextID;
+                    divEditWrapper.Visible = true;
+                }
             }
             catch (Exception ex)
             {
@@ -318,60 +318,28 @@ namespace SageFrame.Modules.HTML
             }
         }
 
-        protected void imbSave_Click(object sender, ImageClickEventArgs e)
+        protected void imbSave_Click(object sender, EventArgs e)
         {
             try
             {
                 HTMLController objHtml = new HTMLController();
-               
-                    ArrayList arrColl = null;
-                    arrColl = IsContentValid(txtBody.Text.ToString());
-                  
-                        SQLHandler sq = new SQLHandler();
-                        string HTMLBodyText = arrColl[1].ToString().Trim();
-                        if (ViewState["EditHtmlTextID"] != null)
-                        {
-                            //List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserModuleID", hdnUserModuleID.Value));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@Content", HTMLBodyText));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@CultureName", GetCurrentCultureName));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsAllowedToComment", chkAllowComment.Checked));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsActive", chkPublish.Checked));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsModified", true));
+                ArrayList arrColl = null;
+                arrColl = IsContentValid(txtBody.Text.ToString());
+                string HTMLBodyText = arrColl[1].ToString().Trim();
+                if (ViewState["EditHtmlTextID"] != null)
+                {
+                    objHtml.HtmlTextUpdate(hdnUserModuleID.Value, HTMLBodyText, ddlLanuage.SelectedValue.ToString(), chkAllowComment.Checked, chkPublish.Checked, true, DateTime.Now, GetPortalID, GetUsername);
+                    ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("HTML", "HTMLContentIsUpdatedSuccessfully"), "", SageMessageType.Success);
+                }
+                else
+                {
+                    _newHTMLContentID = objHtml.HtmlTextAdd(hdnUserModuleID.Value, HTMLBodyText, ddlLanuage.SelectedValue.ToString(), chkAllowComment.Checked, true, chkPublish.Checked, DateTime.Now, GetPortalID, GetUsername);
+                    if (_newHTMLContentID != 0)
+                    {
+                        ShowMessage("", GetSageMessage("HTML", "HTMLContentIsAddedSuccessfully"), "", SageMessageType.Success);
+                    }
+                }
 
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@UpdatedOn", DateTime.Now));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", GetPortalID));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@UpdatedBy", GetUsername));
-                            //sq.ExecuteNonQuery("dbo.sp_HtmlTextUpdate", ParaMeterCollection);
-
-                            objHtml.HtmlTextUpdate(hdnUserModuleID.Value, HTMLBodyText, GetCurrentCultureName, chkAllowComment.Checked, chkPublish.Checked, true, DateTime.Now, GetPortalID, GetUsername);
-                            //AfterSaveContent();
-                            ViewState["EditHtmlTextID"] = null;
-                            ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("HTML", "HTMLContentIsUpdatedSuccessfully"), "", SageMessageType.Success);
-                        }
-                        else
-                        {
-                            //List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserModuleID", hdnUserModuleID.Value));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@Content", HTMLBodyText));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@CultureName", GetCurrentCultureName));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsAllowedToComment", chkAllowComment.Checked));                            
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsModified", true));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsActive", chkPublish.Checked));
-
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@AddedOn", DateTime.Now));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", GetPortalID));
-                            //ParaMeterCollection.Add(new KeyValuePair<string, object>("@AddedBy", GetUsername));
-                            //sq.ExecuteNonQuery("dbo.sp_HtmlTextAdd", ParaMeterCollection, "@HTMLTextID");
-                            objHtml.HtmlTextAdd(hdnUserModuleID.Value, HTMLBodyText, GetCurrentCultureName, chkAllowComment.Checked, true, chkPublish.Checked, DateTime.Now, GetPortalID, GetUsername);
-                            //AfterSaveContent();
-                            if (_newHTMLContentID != 0)
-                            {
-                                ShowMessage("", GetSageMessage("HTML", "HTMLContentIsAddedSuccessfully"), "", SageMessageType.Success);
-                            }
-                        }
-                        BindComment();
-                
             }
             catch (Exception ex)
             {
@@ -392,11 +360,11 @@ namespace SageFrame.Modules.HTML
         }
 
         public string RemoveUnwantedHTMLTAG(string str)
-        {            
-            str = System.Text.RegularExpressions.Regex.Replace(str, "<br/>$", "");            
+        {
+            str = System.Text.RegularExpressions.Regex.Replace(str, "<br/>$", "");
             str = System.Text.RegularExpressions.Regex.Replace(str, "<br />$", "");
             str = System.Text.RegularExpressions.Regex.Replace(str, "^&nbsp;", "");
-            str = System.Text.RegularExpressions.Regex.Replace(str, "<form[^>]*>", "");            
+            str = System.Text.RegularExpressions.Regex.Replace(str, "<form[^>]*>", "");
             str = System.Text.RegularExpressions.Regex.Replace(str, "</form>", "");
             return str;
         }
@@ -405,7 +373,7 @@ namespace SageFrame.Modules.HTML
         {
             try
             {
-                HideAll();       
+                HideAll();
                 Response.Redirect(Request.Url.OriginalString);
             }
             catch (Exception ex)
@@ -419,7 +387,6 @@ namespace SageFrame.Modules.HTML
             try
             {
                 HideAll();
-
                 divViewWrapper.Visible = true;
                 divViewComment.Visible = false;
                 divEditComment.Visible = true;
@@ -435,41 +402,14 @@ namespace SageFrame.Modules.HTML
             HTMLController objHtml = new HTMLController();
             try
             {
-                SQLHandler sq = new SQLHandler();
-
-                
                 if (Session["EditCommentID"] != null)
                 {
-                    //List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@HTMLCommentID", Session["EditCommentID"]));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@Comment", txtComment.Text));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsApproved", chkApprove.Checked));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsActive", chkIsActive.Checked));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsModified", true));
-
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@UpdatedOn", DateTime.Now));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", GetPortalID));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@UpdatedBy", GetUsername));
-                    //sq.ExecuteNonQuery("dbo.sp_HtmlCommentUpdate", ParaMeterCollection);
                     objHtml.HtmlCommentUpdate(Session["EditCommentID"], txtComment.Text, chkApprove.Checked, chkApprove.Checked, true, DateTime.Now, GetPortalID, GetUsername);
-
                     ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("HTML", "CommentIsUpdatedSuccessfully"), "", SageMessageType.Success);
                 }
                 else
                 {
-                    //objHtml.HtmlCommentAdd(hdfHTMLTextID.Value, txtComment.Text, chkApprove.Checked, chkIsActive.Checked, DateTime.Now, GetPortalID, GetUsername);
                     objHtml.HtmlCommentAdd(hdfHTMLTextID.Value, txtComment.Text, chkApprove.Checked, chkIsActive.Checked, DateTime.Now, GetPortalID, GetUsername);
-                    //List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@HTMLTextID", hdfHTMLTextID.Value));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@Comment", txtComment.Text));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsApproved", chkApprove.Checked));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsActive", chkIsActive.Checked));
-
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@AddedOn", DateTime.Now));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", GetPortalID));
-                    //ParaMeterCollection.Add(new KeyValuePair<string, object>("@AddedBy", GetUsername));
-                    //sq.ExecuteNonQuery("dbo.sp_HtmlCommentAdd", ParaMeterCollection, "@HTMLCommentID");
-
                     if (chkApprove.Checked && chkIsActive.Checked)
                     {
                         ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("HTML", "CommentIsAddedSuccessfully"), "", SageMessageType.Success);
@@ -479,13 +419,10 @@ namespace SageFrame.Modules.HTML
                         ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("HTML", "CommentWillBeAddedAfterApproved"), "", SageMessageType.Alert);
                     }
                 }
-
                 HideAll();
                 BindComment();
-
                 divViewWrapper.Visible = true;
                 divViewComment.Visible = true;
-
                 ClearComment();
             }
             catch (Exception ex)
@@ -535,20 +472,14 @@ namespace SageFrame.Modules.HTML
             HTMLController objHtml = new HTMLController();
             try
             {
-                SQLHandler sq = new SQLHandler();
-                //List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                //ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", GetPortalID));
-                //ParaMeterCollection.Add(new KeyValuePair<string, object>("@HTMLCommentID", EditID));
-                //HTMLContentInfo CommentInfo= sq.ExecuteAsObject<HTMLContentInfo>("dbo.sp_HtmlCommentGetByHTMLCommentID", ParaMeterCollection);
                 HTMLContentInfo CommentInfo = objHtml.HtmlCommentGetByHTMLCommentID(GetPortalID, EditID);
-
                 if (CommentInfo != null)
                 {
                     txtComment.Text = CommentInfo.Comment;
                     chkApprove.Checked = (bool)CommentInfo.IsApproved;
                     chkIsActive.Checked = (bool)CommentInfo.IsActive;
                     Session["EditCommentID"] = EditID;
-                    HideAll();                   
+                    HideAll();
                     divViewWrapper.Visible = true;
                     divEditComment.Visible = true;
                 }
@@ -563,12 +494,6 @@ namespace SageFrame.Modules.HTML
         {
             try
             {
-                //SQLHandler sq = new SQLHandler();
-                //List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                //ParaMeterCollection.Add(new KeyValuePair<string, object>("@HTMLCommentID", DeleteID));
-                //ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", GetPortalID));
-                //ParaMeterCollection.Add(new KeyValuePair<string, object>("@DeletedBy", GetUsername));
-                //sq.ExecuteNonQuery("dbo.sp_HTMLCommentDeleteByCommentID", ParaMeterCollection);
                 HTMLController objHtml = new HTMLController();
                 objHtml.HTMLCommentDeleteByCommentID(DeleteID, GetPortalID, GetUsername);
                 ShowMessage(SageMessageTitle.Information.ToString(), GetSageMessage("HTML", "CommentIsDeletedSuccessfully"), "", SageMessageType.Success);
@@ -586,9 +511,9 @@ namespace SageFrame.Modules.HTML
             {
                 ImageButton btnDelete = (ImageButton)e.Row.FindControl("imgDelete");
                 btnDelete.Attributes.Add("onclick", "javascript:return confirm('" + GetSageMessage("HTML", "AreYouSureToDelete") + "')");
-            }            
+            }
         }
-        
+
         protected void gdvList_RowDeleting(object sender, GridViewDeleteEventArgs e)
         {
 
@@ -632,6 +557,11 @@ namespace SageFrame.Modules.HTML
             btnDefault.Visible = false;
             HideAll();
             divEditWrapper.Visible = true;
+        }
+
+        protected void ddlLanuage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindEditor();
         }
     }
 }

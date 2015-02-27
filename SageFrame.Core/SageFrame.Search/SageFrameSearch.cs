@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +18,13 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Collections;
 using SageFrame.Common.CommonFunction;
+using SageFrame.Core.SageFrame.Search;
+using System.Data.SqlClient;
+using SageFrame.Common;
 namespace SageFrame.Search
+
+#endregion
+
 {
     public class SageFrameSearch
     {
@@ -40,18 +34,19 @@ namespace SageFrame.Search
         }
 
         public void AddUpdateSageFrameSearchSetting(SageFrameSearchSettingInfo objSearchSettingInfo, int PortalID, string CultureName, string AddedBy)
-        {            
-            
+        {
+
             try
             {
                 string SettingKeys = string.Empty;
                 string SettingValues = string.Empty;
                 //Pre pare Key value for the save;
-                SettingKeys = "SearchButtonType#SearchButtonText#SearchButtonImage#SearchResultPerPage#SearchResultPageName#MaxSearchChracterAllowedWithSpace";
+                SettingKeys = "SearchButtonType#SearchButtonText#SearchButtonImage#SearchResultPerPage#SearchResultPageName#MaxSearchChracterAllowedWithSpace#MaxResultChracterAllowedWithSpace";
                 SettingValues = objSearchSettingInfo.SearchButtonType.ToString() + "#" + objSearchSettingInfo.SearchButtonText + "#" +
-                    objSearchSettingInfo.SearchButtonImage + "#" + objSearchSettingInfo.SearchResultPerPage.ToString() + 
+                    objSearchSettingInfo.SearchButtonImage + "#" + objSearchSettingInfo.SearchResultPerPage.ToString() +
                     "#" + objSearchSettingInfo.SearchResultPageName +
-                    "#" + objSearchSettingInfo.MaxSearchChracterAllowedWithSpace.ToString();
+                    "#" + objSearchSettingInfo.MaxSearchChracterAllowedWithSpace.ToString() +
+                    "#" + objSearchSettingInfo.MaxResultChracterAllowedWithSpace.ToString();
 
                 List<KeyValuePair<string, string>> ParaMeterCollection = new List<KeyValuePair<string, string>>();
 
@@ -73,7 +68,7 @@ namespace SageFrame.Search
         public void SageFrameSearchProcedureDelete(int SageFrameSearchProcedureID, string DeletedBy)
         {
             try
-            {                
+            {
                 List<KeyValuePair<string, string>> ParaMeterCollection = new List<KeyValuePair<string, string>>();
 
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@SageFrameSearchProcedureID", SageFrameSearchProcedureID.ToString()));
@@ -84,7 +79,7 @@ namespace SageFrame.Search
             catch (Exception e)
             {
                 throw e;
-            }            
+            }
         }
 
         public void SageFrameSearchProcedureAddUpdate(SageFrameSearchProcedureInfo objInfo, int PortalID, string AddedBy)
@@ -109,8 +104,7 @@ namespace SageFrame.Search
                 throw e;
             }
         }
-        
-        public static bool SearchPageExists(int PortalID,string PageName)
+        public bool SearchPageExists(int PortalID, string PageName)
         {
             try
             {
@@ -118,11 +112,89 @@ namespace SageFrame.Search
 
                 ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
                 ParaMeterCollection.Add(new KeyValuePair<string, object>("@PageName", PageName));
-             
+
                 SQLHandler sagesql = new SQLHandler();
                 int count = 0;
-                count=sagesql.ExecuteAsScalar<int>("usp_SearchResultPageExists", ParaMeterCollection);
+                count = sagesql.ExecuteAsScalar<int>("usp_SearchResultPageExists", ParaMeterCollection);
                 return count > 0 ? true : false;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public List<SageFrameSearchInfo> GetSageSearchResultBySearchWord(int offset, int limit, string Searchword, string SearchBy, string CultureName, bool IsUseFriendlyUrls, int PortalID)
+        {
+            SqlDataReader reader=null;
+            try
+            {
+                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Searchword", Searchword));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@CultureName", CultureName));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsUseFriendlyUrls", IsUseFriendlyUrls));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@SearchBy", SearchBy));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@offset", offset));
+                ParaMeterCollection.Add(new KeyValuePair<string, object>("@limit", limit));
+                SQLHandler Objsql = new SQLHandler();
+
+                reader = Objsql.ExecuteAsDataReader("[dbo].[sp_HtmlContentSearch]", ParaMeterCollection);
+                List<SageFrameSearchInfo> searchList = new List<SageFrameSearchInfo>();
+                while (reader.Read())
+                {
+                    SageFrameSearchInfo obj = new SageFrameSearchInfo();
+                    obj.RowTotal = Convert.ToInt32(reader["RowTotal"]);
+                    obj.PageName = reader["PageName"].ToString();
+                    obj.HTMLContent = reader["HTMLContent"].ToString();
+                    obj.URL = reader["URL"].ToString();
+                    obj.UpdatedContentOn = reader["UpdatedContentOn"].ToString();
+                    searchList.Add(obj);
+                }
+                return searchList;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
+
+        }
+
+        public List<SageFrameSearchInfo> SageSearchBySearchWord(int offset, int limit, string Searchword, string SearchBy, string CultureName, bool IsUseFriendlyUrls, int PortalID)
+        {
+
+            try
+            {
+                bool ValidateTemplate = TemplateValidation.GetTemplateValidation();
+                List<SageFrameSearchInfo> searchList = new List<SageFrameSearchInfo>();
+                if (ValidateTemplate)
+                {
+                    SQLHandler sagesql = new SQLHandler();
+
+                    DataSet ds = new DataSet();
+
+                    ds = sagesql.ExecuteScriptAsDataSet("[dbo].[sp_SageSearchBySearchKey] N'" + Searchword + "','" + SearchBy + "','" + IsUseFriendlyUrls + "','" + CultureName + "','" + PortalID + "','" + offset + "'," + limit);
+
+                    foreach (DataRow row in ds.Tables[0].Rows)
+                    {
+                        SageFrameSearchInfo obj = new SageFrameSearchInfo();
+                        obj.RowTotal = Convert.ToInt32(row["RowTotal"]);
+                        obj.PageName = row["PageName"].ToString();
+                        obj.HTMLContent = row["HTMLContent"].ToString();
+                        obj.URL = row["URL"].ToString();
+                        obj.UpdatedContentOn = row["UpdatedContentOn"].ToString();
+                        obj.SearchWord = row["SearchWord"].ToString();
+                        searchList.Add(obj);
+                    }
+                }
+                return searchList;
             }
             catch (Exception e)
             {
@@ -177,11 +249,16 @@ namespace SageFrame.Search
                                     objSearchSettingInfo.MaxSearchChracterAllowedWithSpace = Int32.Parse(dt.Rows[i]["SettingValue"].ToString());
                                 }
                                 break;
+                            case "MaxResultChracterAllowedWithSpace":
+                                if (dt.Rows[i]["SettingValue"].ToString() != string.Empty)
+                                {
+                                    objSearchSettingInfo.MaxResultChracterAllowedWithSpace = Int32.Parse(dt.Rows[i]["SettingValue"].ToString());
+                                }
+                                break;
                         }
                     }
                 }
                 return objSearchSettingInfo;
-               
             }
             catch (Exception e)
             {
@@ -194,19 +271,19 @@ namespace SageFrame.Search
             try
             {
                 List<KeyValuePair<string, string>> ParaMeterCollection = new List<KeyValuePair<string, string>>();
-                
+
                 ParaMeterCollection.Add(new KeyValuePair<string, string>("@PortalID", PortalID.ToString()));
                 DataSet ds = new DataSet();
                 SQLHandler sagesql = new SQLHandler();
                 ds = sagesql.ExecuteAsDataSet("dbo.sp_SageFrameSearchProcedureList", ParaMeterCollection);
-                return ds.Tables[0];                
+                return ds.Tables[0];
 
             }
             catch (Exception e)
             {
                 throw e;
             }
-            
+
         }
 
         public DataSet SageSearchBySearchWord(string Searchword, string SearchBy, string CultureName, bool IsUseFriendlyUrls, int PortalID)
@@ -229,14 +306,15 @@ namespace SageFrame.Search
             {
                 throw e;
             }
-            
+
         }
+
 
         public SageFrameSearchProcedureInfo SageFrameSearchProcedureGet(string SageFrameSearchProcedureID)
         {
             try
             {
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();                              
+                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
                 ParaMeterCollection.Add(new KeyValuePair<string, object>("@SageFrameSearchProcedureID", SageFrameSearchProcedureID));
                 SQLHandler sagesql = new SQLHandler();
                 SageFrameSearchProcedureInfo objSpIno = sagesql.ExecuteAsObject<SageFrameSearchProcedureInfo>("dbo.sp_SageFrameSearchProcedureGet", ParaMeterCollection);
@@ -254,7 +332,7 @@ namespace SageFrame.Search
             string ReturnString = string.Empty;
             try
             {
-               ReturnString = InputString.Trim();
+                ReturnString = InputString.Trim();
                 // Remove white space from beginning and end.
                 if (InputString.Contains("'"))
                 {
@@ -283,21 +361,29 @@ namespace SageFrame.Search
             return ReturnString;
         }
 
-        public bool CheckIgnorWords(string SearchString)
+        public bool CheckIgnorWords(string SearchString,string currentCulture)
         {
             string IgnorWords = string.Empty;
-            IgnorWords = "^ , ; : [] ] [ {} () } { ) ( _ = < > . + - \\ / \" \"\" ' ! % * @~ @# @& &? & # ? about 1 after 2 all also 3 an 4 and 5 another 6 any 7 are 8 as 9 at 0 be $ because been before being between both but by came can come could did do each for from get got has had he have her here him himself his how if in into is it like make many me might more most much must my never now of on only or other our out over said same see should since some still such take than that the their them then there these they this those through to too under up very was way we well were what where which while who with would you your a b c d e f g h i j k l m n o p q r s t u v w x y z";
-            SearchString = RemoveSpcalSymbol(SearchString);
-            if (IgnorWords.Contains(SearchString) || SearchString.Trim() == "" || !HTMLHelper.IsValidSearchWord(SearchString))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            
+                IgnorWords = "^ , ; : [] ] [ {} () } { ) ( _ = < > . + - \\ / \" \"\" ' ! % * @~ @# @& &? & # ? about 1 after 2 all also 3 an 4 and 5 another 6 any 7 are 8 as 9 at 0 be $ because been before being between both but by came can come could did do each for from get got has had he have her here him himself his how if in into is it like make many me might more most much must my never now of on only or other our out over said same see should since some still such take than that the their them then there these they this those through to too under up very was way we well were what where which while who with would you your a b c d e f g h i j k l m n o p q r s t u v w x y z";
+                SearchString = RemoveSpcalSymbol(SearchString);
+                if (currentCulture == "en-US")
+                {
+                    if (IgnorWords.Contains(SearchString) || SearchString.Trim() == "" || !HTMLHelper.IsValidSearchWord(SearchString))
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    return true;
+                }
+           
         }
-
         public string RemoveSpcalSymbol(string SearchString)
         {
             SearchString = SearchString.Replace("\"", "");
@@ -333,5 +419,5 @@ namespace SageFrame.Search
             return SearchString;
         }
     }
-    
+
 }

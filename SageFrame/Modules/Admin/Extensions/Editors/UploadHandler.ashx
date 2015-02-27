@@ -4,13 +4,14 @@ using System;
 using System.Web;
 using System.IO;
 
-public class UploadHandler : IHttpHandler {
-    
-    public void ProcessRequest (HttpContext context) {     
+public class UploadHandler : IHttpHandler
+{
 
+    public void ProcessRequest(HttpContext context)
+    {
         int retStatus = 0;
         if (HttpContext.Current.Request.Files.Count > 0)
-        {   
+        {
             string s = HttpContext.Current.Request.Form["folderPath"] as string;
             string strFileName = Path.GetFileName(HttpContext.Current.Request.Files[0].FileName);
             string strExtension = Path.GetExtension(HttpContext.Current.Request.Files[0].FileName).ToLower();
@@ -30,21 +31,20 @@ public class UploadHandler : IHttpHandler {
             }
             else
             {
-                retStatus = 1; 
+                retStatus = 1;
             }
-
             strSaveLocation = strSaveLocation.Replace(HttpContext.Current.Server.MapPath("~/"), "");
             strSaveLocation = strSaveLocation.Replace("\\", "/");
-        
             HttpContext.Current.Response.ContentType = "text/plain";
             HttpContext.Current.Response.Write("({ 'Status': '" + retStatus + "','Message': '' })");
             HttpContext.Current.Response.End();
         }
-        
     }
- 
-    public bool IsReusable {
-        get {
+
+    public bool IsReusable
+    {
+        get
+        {
             return false;
         }
     }

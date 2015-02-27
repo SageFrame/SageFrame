@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,109 +21,248 @@ using System.Data;
 using System.Text.RegularExpressions;
 using System.Text;
 using SageFrame.Common.CommonFunction;
+using System.IO;
+#endregion
 
 public partial class Modules_SageSearch_ctl_SageSearchResult : BaseAdministrationUserControl
 {
+    public int PortalID;
+    public string CulturalName;
+    public string baseURL;
+    public string UserName;
+    public int viewPerPage = 10;
+    string IDOfTxtBox = string.Empty;
+    public string SageSearchResultPage
+    {
+        get
+        {
+            string strResqltPage = string.Empty;
+            if (ViewState["__mSageSearchRPage"] != null)
+            {
+                strResqltPage = ViewState["__mSageSearchRPage"].ToString();
+            }
+            return strResqltPage;
+        }
+        set
+        {
+            ViewState["__mSageSearchRPage"] = value;
+        }
+    }
     protected void Page_Init(object sender, EventArgs e)
     {
-        
+        IncludeJs("SageSearch", "/Modules/SageSearch/js/searchResult.js", "/Modules/SageSearch/js/Paging/jquery.pagination.js");
+        IncludeCss("SageSearch", "/Modules/SageSearch/css/module.css");
+        GenrateSageSerchForm();
+        SetSearchText();
     }
 
     protected void Page_Load(object sender, EventArgs e)
     {
         try
         {
+            CulturalName = GetCurrentCultureName;
+            PortalID = GetPortalID;
+            UserName = GetUsername;
+            baseURL = ResolveUrl(this.AppRelativeTemplateSourceDirectory);
             if (!IsPostBack)
             {
                 Session["SageDtv"] = null;
-                AddImageUrl();
             }
-            SageSearchBySearchWord();
         }
         catch
         {
         }
     }
 
-    private void AddImageUrl()
+    protected void Page_PreRender(object sender, EventArgs e)
     {
-        imbFilter.ImageUrl = GetTemplateImageUrl("imgfilter.png", true);
+        SageFrameSearch con = new SageFrameSearch();
+        SageFrameSearchSettingInfo objSearchSettingInfo = con.LoadSearchSettings(GetPortalID, GetCurrentCultureName);
+        string ClientID = string.Empty;
+        if (objSearchSettingInfo.SearchButtonType == 0)
+        {
+            ClientID = ((Button)this.FindControl("btnSageSearchWord")).ClientID;
+        }
+        else if (objSearchSettingInfo.SearchButtonType == 1)
+        {
+            ClientID = ((ImageButton)this.FindControl("btnSageSearchWord")).ClientID;
+        }
+        else if (objSearchSettingInfo.SearchButtonType == 2)
+        {
+            ClientID = ((LinkButton)this.FindControl("btnSageSearchWord")).ClientID;
+        }
+        ((TextBox)this.FindControl(IDOfTxtBox)).Attributes.Add("onkeypress", "return clickButton(event,'" + ClientID + "')");
     }
 
-    private void SageSearchBySearchWord()
+    private void SetSearchText()
+    {
+        if (Request.QueryString["searchword"] != null && Request.QueryString["searchword"].ToString() != string.Empty)
+        {
+            #region "Get Data From Form Page"
+            foreach (Control ctl in pnlSearchWord.Controls)
+            {
+                if (ctl.HasControls())
+                {
+                    foreach (Control mctl in ctl.Controls)
+                    {
+                        if (mctl.HasControls())
+                        {
+                            foreach (Control nctl in mctl.Controls)
+                            {
+                                if (nctl.GetType() == typeof(TextBox))
+                                {
+                                    TextBox txtSearch = (TextBox)nctl;
+                                    if (txtSearch != null)
+                                    {
+                                        txtSearch.Text = Request.QueryString["searchword"].ToString();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+        }
+    }
+
+    private void GenrateSageSerchForm()
     {
         try
         {
-            if (Request.QueryString["searchword"] != null && Request.QueryString["searchword"].ToString() != string.Empty)
+            if (pnlSearchWord.Controls.Count == 1)
             {
-                string searchword = Request.QueryString["searchword"].ToString();
-                if (!HTMLHelper.IsValidSearchWord(searchword))
+                SageFrameSearch con = new SageFrameSearch();
+                SageFrameSearchSettingInfo objSearchSettingInfo = con.LoadSearchSettings(GetPortalID, GetCurrentCultureName);
+                viewPerPage = objSearchSettingInfo.SearchResultPerPage;
+                HtmlGenericControl sageUl = new HtmlGenericControl("ul");
+                sageUl.Attributes.Add("class", "sfSearchheader");
+                HtmlGenericControl sageLi = new HtmlGenericControl("li");
+                sageUl.Attributes.Add("class", "sfSearchheader");
+                TextBox txtSageSearch = new TextBox();
+                txtSageSearch.CssClass = "sfInputbox";
+                txtSageSearch.MaxLength = objSearchSettingInfo.MaxSearchChracterAllowedWithSpace;
+                IDOfTxtBox = "txtSage_" + this.Page.Controls.Count.ToString();
+                txtSageSearch.ID = IDOfTxtBox;
+                RequiredFieldValidator ReqV = new RequiredFieldValidator();
+                ReqV.ControlToValidate = IDOfTxtBox;
+                ReqV.ErrorMessage = "*";
+                ReqV.CssClass = "sfError";
+                ReqV.ValidationGroup = "grp_SageSearch";
+                sageLi.Controls.Add(ReqV);
+                sageLi.Controls.Add(txtSageSearch);
+                HtmlGenericControl sageLiButton = new HtmlGenericControl("li");
+                string SearchReasultPageName = objSearchSettingInfo.SearchResultPageName;
+                if (!SearchReasultPageName.Contains(SageFrameSettingKeys.PageExtension))
                 {
-                    lblSearchKeyword.Text = "";
-                    gdvList.DataSource = null;
-                    gdvList.DataBind();
+                    SearchReasultPageName += SageFrameSettingKeys.PageExtension;
+                }
+                SageSearchResultPage = SearchReasultPageName;
+                if (objSearchSettingInfo.SearchButtonType == 0)
+                {
+                    Button btnSageSearch = new Button();
+                    btnSageSearch.ID = "btnSageSearchWord";
+                    btnSageSearch.Text = "Search";
+                    btnSageSearch.CssClass = "sfBtn";
+                    btnSageSearch.Click += new EventHandler(btnSageSearch_Click);
+                    btnSageSearch.ValidationGroup = "grp_SageSearch_" + SageUserModuleID.ToString();
+                    sageLiButton.Controls.Add(btnSageSearch);
+                }
+                else if (objSearchSettingInfo.SearchButtonType == 1)
+                {
+                    ImageButton btnSageSearch = new ImageButton();
+                    btnSageSearch.ID = "btnSageSearchWord";
+                    btnSageSearch.AlternateText = objSearchSettingInfo.SearchButtonText;
+                    string SearchButtonImageUrl = objSearchSettingInfo.SearchButtonImage;
+                    btnSageSearch.ImageUrl = GetTemplateImageUrl(SearchButtonImageUrl, true);
+                    btnSageSearch.CssClass = "sfBtn";
+                    btnSageSearch.ValidationGroup = "grp_SageSearch_" + SageUserModuleID.ToString();
+                    btnSageSearch.Click += new ImageClickEventHandler(btnSageSearch_Click);
+                    sageLiButton.Controls.Add(btnSageSearch);
+                }
+                else if (objSearchSettingInfo.SearchButtonType == 2)
+                {
+                    LinkButton btnSageSearch = new LinkButton();
+                    btnSageSearch.ID = "btnSageSearchWord";
+                    btnSageSearch.Text = "Search";
+                    //btnSageSearch.CssClass = "sfBtn";
+                    btnSageSearch.Click += new EventHandler(btnSageSearch_Click);
+                    btnSageSearch.ValidationGroup = "grp_SageSearch_" + SageUserModuleID.ToString();
+                    sageLiButton.Controls.Add(btnSageSearch);
+                }
+                sageUl.Controls.Add(sageLi);
+                sageUl.Controls.Add(sageLiButton);
+                pnlSearchWord.Controls.Add(sageUl);
+            }
+        }
+        catch (Exception ex)
+        {
+            ProcessException(ex);
+        }
+    }
+
+    void btnSageSearch_Click(object sender, ImageClickEventArgs e)
+    {
+        GetSearchParameter();
+    }
+
+    void btnSageSearch_Click(object sender, EventArgs e)
+    {
+        GetSearchParameter();
+    }
+
+    private void GetSearchParameter()
+    {
+        try
+        {
+            string SearchKey = string.Empty;
+            #region "Get Data From Page"
+            foreach (Control ctl in pnlSearchWord.Controls)
+            {
+                if (ctl.HasControls())
+                {
+                    foreach (Control mctl in ctl.Controls)
+                    {
+                        if (mctl.HasControls())
+                        {
+                            foreach (Control nctl in mctl.Controls)
+                            {
+                                if (nctl.GetType() == typeof(TextBox))
+                                {
+                                    TextBox txtSearch = (TextBox)nctl;
+                                    if (txtSearch != null)
+                                    {
+                                        SearchKey = txtSearch.Text.Trim();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            #endregion
+            //Remove unwanted html text from the Search text
+            SearchKey = RemoveUnwantedSearchText(SearchKey);
+            SageFrameSearch SFS = new SageFrameSearch();
+            if (SFS.CheckIgnorWords(SearchKey, GetCurrentCultureName))
+            {
+                //Call Search function to get result
+                if (SearchKey != string.Empty)
+                {
+                    SearchData(SearchKey);
                 }
                 else
                 {
-                    lblSearchKeyword.Text = searchword;
-                    SageFrameSearch stb = new SageFrameSearch();
-                    searchword = stb.AddQuotesForSQLSearch(searchword);
-                    GetSearchResultFromDataBase(searchword);
+                    ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("SageFrameSearch", "PleaseFillValidTextToSearch"), "", SageMessageType.Alert);
                 }
             }
-        }
-        catch
-        {
-        }
-    }
-
-    private void BindSearchResult()
-    {
-        try
-        {
-            if (Session["SageDtv"] != null)
+            else
             {
-                DataTable dt = (DataTable)Session["SageDtv"];
-                DataView dtv = new DataView(dt);
-                gdvList.DataSource = dtv;
-                gdvList.DataBind();
+                ShowMessage(SageMessageTitle.Notification.ToString(), GetSageMessage("SageFrameSearch", "PleaseFillValidTextToSearch"), "", SageMessageType.Alert);
             }
-        }
-        catch
-        {
-        }
-    }
 
-    private void GetSearchResultFromDataBase(string searchword)
-    {
-        try
-        {
-            if (Session["SageDtv"] == null)
-            {
-                SageFrameConfig pagebase = new SageFrameConfig();
-                bool IsUseFriendlyUrls = pagebase.GetSettingBollByKey(SageFrameSettingKeys.UseFriendlyUrls);
-                SageFrameSearch SFS = new SageFrameSearch();
-                DataSet ds = SFS.SageSearchBySearchWord(searchword, GetUsername, GetCurrentCultureName, IsUseFriendlyUrls, GetPortalID);
-                if (ds != null && ds.Tables != null && ds.Tables.Count > 0 && ds.Tables[0] != null)
-                {
-                    DataTable dt = ds.Tables[0];//Result
-                    DataView dtv = new DataView(dt);
-                    Session["SageDtv"] = ds;
-                    DataTable dtSections = ds.Tables[1];//For Sections
-                    BindOrderingSection();
-                    BindResultSections(dtSections);
-                    DataTable dtTime = ds.Tables[2];//Time of Execution in millisecond                
-                    gdvList.DataSource = dtv;
-                    gdvList.DataBind();
-                    
-
-                }
-            }
-            //else
-            //{
-            //    BindOrderingSection();                
-            //    FilterSerchResult();                
-            //}
         }
         catch (Exception ex)
         {
@@ -146,127 +270,12 @@ public partial class Modules_SageSearch_ctl_SageSearchResult : BaseAdministratio
         }
     }
 
-    protected void imbFilter_Click(object sender, ImageClickEventArgs e)
+    private string RemoveUnwantedSearchText(string SearchKey)
     {
         try
         {
-            FilterSerchResult();
-        }
-        catch
-        {
-        }
-    }
-
-    private void FilterSerchResult()
-    {
-        try
-        {
-            if (Session["SageDtv"] != null)
-            {
-                DataSet ds = (DataSet)Session["SageDtv"];
-
-                DataTable dt = ds.Tables[0];//Result
-                DataView dtv = new DataView(dt);
-                Session["SageDtv"] = ds;
-                DataTable dtSections = ds.Tables[1];//For Sections
-                //BindOrderingSection();
-                //BindResultSections(dtSections);
-                DataTable dtTime = ds.Tables[2];//Time of Execution in millisecond
-                string strSelectedSection = string.Empty;
-                for (int i = 0; i < cblResultSection.Items.Count; i++)
-                {
-                    if (cblResultSection.Items[i].Selected == true)
-                    {
-                        strSelectedSection += "'" + cblResultSection.Items[i].Value + "',";
-                    }
-                }
-                if (strSelectedSection != string.Empty && strSelectedSection.Contains(","))
-                {
-                    strSelectedSection = strSelectedSection.Remove(strSelectedSection.LastIndexOf(","));
-                    strSelectedSection = "(" + strSelectedSection + ")";
-                    dtv.RowFilter = "ResultSection IN  " + strSelectedSection;
-                }
-                string SortCondition = string.Empty;
-                SortCondition = rblOrdering.SelectedItem.Value;
-                if (SortCondition != string.Empty)
-                {
-                    if (SortCondition == "0")
-                    {
-                        SortCondition = "LasUpdated DESC";
-                    }
-                    else if (SortCondition == "1")
-                    {
-                        SortCondition = "LasUpdated ASC";
-                    }
-                    else if (SortCondition == "2")
-                    {
-                        SortCondition = "ResultTitle ASC";
-                    }
-                    else if (SortCondition == "3")
-                    {
-                        SortCondition = "ResultTitle DESC";
-                    }
-                    dtv.Sort = SortCondition;
-                }
-                gdvList.DataSource = dtv;
-                gdvList.DataBind();
-
-            }
-        }
-        catch (Exception ex)
-        {
-            ProcessException(ex);
-        }
-    }
-
-    private void BindOrderingSection()
-    {
-        try
-        {
-            rblOrdering.DataSource = SageFrameLists.SearchOrderingTypes();
-            rblOrdering.DataTextField = "Value";
-            rblOrdering.DataValueField = "Key";
-            rblOrdering.DataBind();
-            if (rblOrdering.Items.Count > 0)
-            {
-                rblOrdering.SelectedIndex = 0;
-            }
-        }
-        catch
-        {
-        }
-    }
-
-    private void BindResultSections(DataTable dt)
-    {
-        try
-        {
-            cblResultSection.DataSource = dt;
-            cblResultSection.DataTextField = "ResultSection";
-            cblResultSection.DataValueField = "ResultSection";
-            cblResultSection.DataBind();
-        }
-        catch
-        {
-        }
-    }
-
-    public string FormatResult(string strResult)
-    {        
-        strResult = RemoveUnwantedHTMLTAG(strResult);
-        if (strResult.Length > 300)
-        {
-           strResult = strResult.Remove(300);
-        }
-        strResult = HigLishtResult(strResult);
-        return strResult;
-    }
-
-    public string RemoveUnwantedHTMLTAG(string stringWithHTML)
-    {
-        try
-        {
-            return Regex.Replace(stringWithHTML, @"<(.|\n)*?>", string.Empty);
+            SEOHelper seoHelper = new SEOHelper();
+            return seoHelper.RemoveUnwantedHTMLTAG(SearchKey);
         }
         catch (Exception ex)
         {
@@ -274,108 +283,42 @@ public partial class Modules_SageSearch_ctl_SageSearchResult : BaseAdministratio
         }
     }
 
-    private string HigLishtResult(string strResult)
-    {
-        string searchword = string.Empty;
-        if (Request.QueryString["searchword"] != null && Request.QueryString["searchword"].ToString() != string.Empty)
-        {
-            searchword = Request.QueryString["searchword"].ToString();
-        }
-        string strKey = searchword;
-        if (strKey != string.Empty && strKey.Length > 0 && strKey.Contains(" "))
-        {
-            string[] arrColl = strKey.Split(" ".ToCharArray());
-            for (int i = 0; i < arrColl.Length; i++)
-            {
-                strResult = ResultHighliter(strResult, arrColl[i].ToString());
-            }
-        }
-        else
-        {
-            strResult = ResultHighliter(strResult, strKey);
-        }
-        return strResult;
-    }
-
-    private string ResultHighliter(string strResult, string key)
+    private void SearchData(string SearchKey)
     {
         try
         {
-            if (strResult.ToLower().Contains(key.ToLower()))
+            //Now Send to The Result Page;
+            string strURL = string.Empty;
+            SearchKey = Server.HtmlEncode(SearchKey);
+            SageFrameSearch objSearch = new SageFrameSearch();
+            if (objSearch.SearchPageExists(GetPortalID, Path.GetFileNameWithoutExtension(SageSearchResultPage)))
             {
-                strResult = Replace(strResult, key, "<strong>" + key + "</strong>", StringComparison.InvariantCultureIgnoreCase);
-            }            
-        }
-        catch
-        {
-        }
-        return strResult;
-    }
-
-    public string Replace(string original, string oldValue, string newValue, StringComparison comparisionType)
-    {
-        if (oldValue == null)
-            throw new ArgumentNullException("oldValue");
-        if (newValue == null)
-            throw new ArgumentNullException("newValue");
-
-        var result = original;
-
-        if (oldValue != newValue)
-        {
-            int index = -1;
-            int lastIndex = 0;
-
-            var buffer = new StringBuilder();
-
-            while ((index = original.IndexOf(oldValue, index + 1, comparisionType)) >= 0)
-            {
-                buffer.Append(original, lastIndex, index - lastIndex);
-                string tempValue = original.Remove(index + oldValue.Length);
-                tempValue = tempValue.Remove(0, tempValue.LastIndexOf(oldValue, StringComparison.CurrentCultureIgnoreCase));
-                buffer.Append("<strong>" + tempValue + "</strong>");
-                lastIndex = index + oldValue.Length;
-            }
-            buffer.Append(original, lastIndex, original.Length - lastIndex);
-            result = buffer.ToString();
-        }
-        return result;
-    }
-
-    protected void gdvList_PageIndexChanging(object sender, GridViewPageEventArgs e)
-    {
-        try
-        {
-            gdvList.PageIndex = e.NewPageIndex;
-            FilterSerchResult();
-        }
-        catch
-        {
-        }
-    }   
-
-    protected void ddlGridPager_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        try
-        {
-            int PageSize = Int32.Parse(ddlGridPager.SelectedValue);
-            if (PageSize != 0)
-            {
-                gdvList.PageSize = PageSize;
-                gdvList.AllowPaging = true;
+                if (!IsParent)
+                {
+                    strURL = GetParentURL + "/portal/" + GetPortalSEOName + "/" + SageSearchResultPage + "?searchword=" + SearchKey;
+                }
+                else
+                {
+                    strURL = GetParentURL + "/" + SageSearchResultPage + "?searchword=" + SearchKey;
+                }
             }
             else
             {
-                gdvList.AllowPaging = false;
-
+                if (!IsParent)
+                {
+                    strURL = GetParentURL + "/sf/portal/" + GetPortalSEOName + "/Search-Result" + SageFrameSettingKeys.PageExtension + "?searchword=" + SearchKey;
+                }
+                else
+                {
+                    strURL = GetParentURL + "/sf/Search-Result" + SageFrameSettingKeys.PageExtension + "?searchword=" + SearchKey;
+                }
             }
-            FilterSerchResult();
+            Session["SageDtv"] = null;
+            Response.Redirect(strURL, false);
         }
-        catch
+        catch (Exception ex)
         {
+            ProcessException(ex);
         }
     }
-
-           
-   
 }

@@ -1,1 +1,1 @@
-﻿<%@ Application CodeBehind="Global.asax.cs" Inherits="SageFrame.Global" Language="C#" %>
+﻿<%@ Application CodeBehind="Global.asax.cs" Inherits="SageFrame.Core.Global" Language="C#" %>

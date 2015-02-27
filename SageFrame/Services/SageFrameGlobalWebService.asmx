@@ -14,7 +14,7 @@ using SageFrame.Web;
 [WebService(Namespace = "http://tempuri.org/")]
 [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 
- [System.Web.Script.Services.ScriptService]
+[System.Web.Script.Services.ScriptService]
 public class SageFrameGlobalWebService : System.Web.Services.WebService
 {
 
@@ -26,22 +26,13 @@ public class SageFrameGlobalWebService : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public string HelloWorld()
-    {
-        return "Hello World";
-    }
-
-    [WebMethod]
     public string GetLocalizedMessage(string CultureCode, string ModuleName, string MessageType)
     {
         return (SageMessage.ProcessSageMessage(CultureCode, ModuleName, MessageType));
     }
-    [WebMethod]
-    public void ActivateDefaultTemplate(int PortalID)
-    {
-        SageFrame.Templating.TemplateController.ActivateTemplate("default", PortalID);
-    }
-
+    //[WebMethod]
+    //public void ActivateDefaultTemplate(int PortalID)
+    //{
+    //    SageFrame.Templating.TemplateController.ActivateTemplate("default", PortalID);
+    //}
 }
-
-

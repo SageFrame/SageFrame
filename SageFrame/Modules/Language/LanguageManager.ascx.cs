@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,29 +26,23 @@ using System.Threading;
 using System.Collections;
 using System.Text.RegularExpressions;
 using System.Xml;
+using SageFrame.Localization.Info;
+using System.Web.UI.HtmlControls;
+#endregion
 
 
 public partial class Localization_Language : BaseAdministrationUserControl
 {
-    public static string path="";
+    public static string path = string.Empty;
     private string languageMode = "Normal";
-    public static string CultureCode = "";
+    public static string CultureCode = string.Empty;
     protected string BaseDir;
+    protected string ModuleDir;
+    protected  string controlsDir;
     public void Initialize()
     {
-        string appPath = Request.ApplicationPath != "/" ? Request.ApplicationPath : "";
-        ArrayList jsArrColl = new ArrayList();
-        jsArrColl.Add(appPath + "/Editors/ckeditor/ckeditor.js");
-        jsArrColl.Add(appPath + "/Editors/ckeditor/adapters/jquery.js");
-        jsArrColl.Add(AppRelativeTemplateSourceDirectory+"js/jqueryFileTree.js");
-        jsArrColl.Add(AppRelativeTemplateSourceDirectory+"js/jquery.dd.js");
-        jsArrColl.Add(AppRelativeTemplateSourceDirectory + "js/jquery.pagination.js");
-        jsArrColl.Add(AppRelativeTemplateSourceDirectory + "js/googletranslate.js");
-        jsArrColl.Add(AppRelativeTemplateSourceDirectory + "js/json2.js");
-        jsArrColl.Add(AppRelativeTemplateSourceDirectory + "js/encoder.js");   
-        IncludeScriptFile(jsArrColl);
-        IncludeCss("Language","/Modules/Language/css/module.css");
-        
+        IncludeJs("languageManager", "/Modules/Language/js/jqueryFileTree.js", "/Editors/ckeditor/ckeditor.js", "/Editors/ckeditor/adapters/jquery.js", "js/jquery.dd.js", "js/jquery.pagination.js");
+        IncludeCss("Language", "/Modules/Language/css/module.css", "/Modules/Language/css/popup.css");
 
     }
     protected void Page_Load(object sender, EventArgs e)
@@ -73,28 +52,40 @@ public partial class Localization_Language : BaseAdministrationUserControl
         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "LocalizationGlobalVariable1", " var LocalizationFilePath='" + ResolveUrl(modulePath) + "';", true);
         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "LocalizationGlobalVariable2", " var resourceRootTreePath='/Modules/';", true);
         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "LocalizationGlobalVariable3", " var ImagePath='/SageFrame/Modules/';", true);
-
+        ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "ckEditorUserModuleID", " var ckEditorUserModuleID='" + SageUserModuleID + "';", true);
         BaseDir = GetAbsolutePath(HttpContext.Current.Request.PhysicalApplicationPath.ToString());
-        BaseDir = Path.Combine(BaseDir, "Modules");
-
+        controlsDir=Path.Combine(BaseDir,"Controls");   
+        ModuleDir = Path.Combine(BaseDir, "Modules");
         Initialize();
         InitializePagetPath();
         HookEventHandlers();
-        if (!Page.IsPostBack)
-        {           
+
+
+        if (HttpContext.Current.Session!=null && HttpContext.Current.Session["IsCultureChange"] != null &&
+           ( (int)HttpContext.Current.Session["IsCultureChange"] == 1 || ((int)HttpContext.Current.Session["IsCultureChange"] == 2 && Page.IsPostBack && this.hdntemp.Value == "")))
+        {
+            HttpContext.Current.Session["IsCultureChange"] = 2;
+            hlRefresh.Visible= true;
+            hlRefresh.NavigateUrl = Request.Url.ToString();
+            ControlVisibility(false, false, false, false, false, false, false, false);
+           
+            if (this.hdntemp.Value == "") this.hdntemp.Value="0";
+                     
+        
+        }else if (!Page.IsPostBack)
+        {
+            this.hdntemp.Value = "1"; 
             CreatePortalLanguageSession();
             GetLanguageList();
             LoadCurrentCulture();
             AddImageUrl();
             AddConfirmationJS();
             LoadSystemDefaultLanguage();
-            ControlVisibility(true, false, false, false, false, false, false);   
-            LoadPagerDDL(int.Parse(ViewState["RowCount"].ToString()));            
+            ControlVisibility(true, false, false, false, false, false, false,false);
+            LoadPagerDDL(int.Parse(ViewState["RowCount"].ToString()));
         }
-        
-        
     }
-    
+
     protected void CreatePortalLanguageSession()
     {
         ViewState["PortalLanguages"] = LocalizationSqlDataProvider.GetPortalLanguages(GetPortalID);
@@ -105,26 +96,36 @@ public partial class Localization_Language : BaseAdministrationUserControl
     }
     public void HookEventHandlers()
     {
-        ctrl_LanguagePackSetup.CancelButtonClick += new ImageClickEventHandler(ctrl_AddLanguage_CancelClick);
-        CreateLanguagePack1.CancelButtonClick += new ImageClickEventHandler(ctrl_CreateLanguagePack_CancelClick);
-        ctrl_TimeZoneEditor.CancelButtonClick += new ImageClickEventHandler(ctrl_TimeZoneEditor_CancelClick);
-        LanguagePackInstaller1.CancelButtonClick += new ImageClickEventHandler(ctrl_LanguagePackInstaller_CancelClick);
-       
+        ctrl_LanguagePackSetup.CancelButtonClick += new EventHandler(ctrl_AddLanguage_CancelClick);
+        CreateLanguagePack1.CancelButtonClick += new EventHandler(ctrl_CreateLanguagePack_CancelClick);
+        ctrl_TimeZoneEditor.CancelButtonClick += new EventHandler(ctrl_TimeZoneEditor_CancelClick);
+        LanguagePackInstaller1.CancelButtonClick += new EventHandler(ctrl_LanguagePackInstaller_CancelClick);
+        ctrl_MenuEditor.CancelButtonClick += new EventHandler(ctrl_MenuEditor_CancelClick);
+        ctrl_ModuleTitleEditor.CancelButtonClick += new EventHandler(ctrl_ModuleLocaleTitle_CancelClick);
+
     }
+
+    protected void ctrl_ModuleLocaleTitle_CancelClick(object sender, EventArgs e)
+    {
+        ControlVisibility(true, false, false, false, false, false, false, false);
+        GetLanguageList();
+    }
+
     private void AddImageUrl()
     {
-        imbAddLanguage.ImageUrl = GetAdminImageUrl("add.png", true);
-        imbInstallLang.ImageUrl = GetAdminImageUrl("imginstall.png", true);
-        imbCreateLangPack.ImageUrl = GetAdminImageUrl("btncreatepackage.png", true);
-        imbEditTimeZone.ImageUrl = GetAdminImageUrl("btnedittimezone.png", true);
-        imbCancel.ImageUrl =GetAdminImageUrl("btnback.png", true);
+        //imbAddLanguage.ImageUrl = GetAdminImageUrl("add.png", true);
+        //imbInstallLang.ImageUrl = GetAdminImageUrl("imginstall.png", true);
+        //imbCreateLangPack.ImageUrl = GetAdminImageUrl("btncreatepackage.png", true);
+        //imbEditTimeZone.ImageUrl = GetAdminImageUrl("btnedittimezone.png", true);
+        //imbCancel.ImageUrl = GetAdminImageUrl("btnback.png", true);
         imbDeleteResxFile.ImageUrl = GetAdminImageUrl("imgdelete.png", true);
-        imbUpdate.ImageUrl = GetAdminImageUrl("btnSave.png", true);
+        //imbUpdate.ImageUrl = GetAdminImageUrl("btnSave.png", true);
         imbDeleteResxFile.Visible = false;
-        lblDeleteResx.Visible = false;
+        //lblDeleteResx.Visible = false;
         imbUpdate.Visible = false;
-        lblUpdateResxFile.Visible = false;
-        imbLocalizeMenu.ImageUrl = GetTemplateImageUrl("menu.png", true);
+        //lblUpdateResxFile.Visible = false;
+        //imbLocalizeMenu.ImageUrl = GetTemplateImageUrl("menu.png", true);
+        //imbLocalizeModuleTitle.ImageUrl = GetTemplateImageUrl("menu.png", true);
 
     }
 
@@ -136,22 +137,31 @@ public partial class Localization_Language : BaseAdministrationUserControl
     {
         string mode = languageMode == "Native" ? "NativeName" : "LanguageName";
         List<Language> lstAvailableLocales = LocaleController.AddNativeNamesToList(LocalizationSqlDataProvider.GetAvailableLocales());
-        gdvLangList.DataSource = lstAvailableLocales;
-        gdvLangList.DataBind();       
-        ViewState["RowCount"] = lstAvailableLocales.Count;
-        
 
+        List<Language> sortedLanguage = new List<Language> { };
+        foreach (Language item in lstAvailableLocales)
+        {
+            sortedLanguage.Add(item);
+        }
+        lstAvailableLocales.Clear();
+        foreach (Language lang in sortedLanguage.OrderBy(lang => lang.LanguageName))
+        {
+            lstAvailableLocales.Add(lang);
+        }
+        gdvLangList.DataSource = lstAvailableLocales;
+        gdvLangList.DataBind();
+        ViewState["RowCount"] = lstAvailableLocales.Count;
     }
     protected List<Language> AddSiteDefaultLanguage(List<Language> lstAvailableLocales)
     {
-        lstAvailableLocales.Insert(0, new Language(0,Thread.CurrentThread.CurrentCulture.EnglishName.ToString(),Thread.CurrentThread.CurrentCulture.ToString()));
+        lstAvailableLocales.Insert(0, new Language(0, Thread.CurrentThread.CurrentCulture.EnglishName.ToString(), Thread.CurrentThread.CurrentCulture.ToString()));
         return lstAvailableLocales;
     }
-   
+
     public void LoadSystemDefaultLanguage()
     {
         SageFrameConfig sfConf = new SageFrameConfig();
-        string cultureCode = sfConf.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultLanguage);
+        string cultureCode = sfConf.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalDefaultLanguage);
         lblSystemDefault.Text = LocaleController.GetLanguageNameFromCode(cultureCode);
         imgFlagSystemDefault.ImageUrl = ResolveUrl("~/images/flags/" + Regex.Replace(cultureCode, "[a-z]{2}-", "").ToLower() + ".png");
 
@@ -168,18 +178,22 @@ public partial class Localization_Language : BaseAdministrationUserControl
                 }
                 else
                 {
-                    Code = gdvLangList.Rows[int.Parse(e.CommandArgument.ToString())-gdvLangList.PageSize].Cells[1].Text;
+                    //int index=int.Parse(e.CommandArgument.ToString())-gdvLangList.PageSize;
+                    //index=index>gdvLangList.PageSize?gdv
+
+                   Code = gdvLangList.Rows[int.Parse(e.CommandArgument.ToString()) - gdvLangList.PageSize*gdvLangList.PageIndex].Cells[1].Text;
+                   //Code = e.Row.Cells[1].Text.ToString();
                 }
                 CultureCode = Code;
                 hdnCultureCode.Value = Code;
                 InitializeTreeview();
-                ControlVisibility(false, true, false, false, false, false,false);
+                ControlVisibility(false, true, false, false, false, false, false,false);
                 languageContent.Visible = false;
-                controlButtons.Visible = false;   
+                controlButtons.Visible = false;
                 break;
-            case "EditLanguage":
-                Response.Redirect("LanguageSetup.aspx");
-                break;
+            //case "EditLanguage":
+            //    Response.Redirect("LanguageSetup.aspx");
+            //break;
             case "DeleteResources":
                 if (gdvLangList.PageIndex == 0)
                 {
@@ -188,21 +202,209 @@ public partial class Localization_Language : BaseAdministrationUserControl
                 }
                 else
                 {
-                    Code = gdvLangList.Rows[int.Parse(e.CommandArgument.ToString()) - gdvLangList.PageSize].Cells[1].Text;
+                    Code = gdvLangList.Rows[int.Parse(e.CommandArgument.ToString()) - gdvLangList.PageSize*gdvLangList.PageIndex].Cells[1].Text;
                     DeleteLanguage(Code);
                 }
                 break;
-        }      
+        }
     }
 
     private void DeleteLanguage(string code)
     {
+       // UserControl ucControl = (UserControl)this.FindControl("ctrl_LanguagePackSetup");
+      
+        Page page = this.Page;
         LocaleController lcl = new LocaleController();
         lcl.DeleteLanguage(code);
         ShowMessage("", GetSageMessage("LanguageModule", "LanguageDeletedSuccessfully"), "", SageMessageType.Success);
         GetLanguageList();
+        LoadPagerDDL(int.Parse(ViewState["RowCount"].ToString()));
+        Modules_Language_LanguageSetUp ctrlB = (Modules_Language_LanguageSetUp)this.FindControl("ctrl_LanguagePackSetup");
+        DropDownList ddlLanguage = ctrlB.ControlB_DDL;
+        //DropDownList ddlLanguage = (DropDownList)ucLanguageSetUp.FindControl("ddlLanguage");
+        LoadAllCultures(ddlLanguage);
+
+        if (code == GetCurrentCulture())
+        {
+            PageBase.SetCultureInfo("en-US", "en-US");
+            Response.Redirect(Request.Url.ToString());
+        }
+        UpdateLocalizeMenuFields();
+        Localization_CreateLanguagePack clp = (Localization_CreateLanguagePack)this.FindControl("CreateLanguagePack1");
+        DropDownList ddlResourceLocale = (DropDownList)clp.FindControl("ddlResourceLocale");
+        LoadAllCultureInCreatePack(ddlResourceLocale);
+        UpdateLocalizeMenuFields();
+
+        DeleteAllResources(code);
     }
-   
+
+    protected void DeleteAllResources(string langCode)
+    {
+        try
+        {
+            
+            string adminFolder = BaseDir + "Sagin";
+            TraverseForDeletion(adminFolder, langCode,false);
+
+            TraverseForDeletion(controlsDir,langCode,false);
+
+            TraverseForDeletion(ModuleDir,langCode,false);
+
+            string XmlrootFolder = Path.Combine(GetAbsolutePath(HttpContext.Current.Request.PhysicalApplicationPath.ToString()), "XMLMessage");
+            TraverseForDeletion(XmlrootFolder,langCode,true);
+
+            string clientRescFolder= Path.Combine(GetAbsolutePath(HttpContext.Current.Request.PhysicalApplicationPath.ToString()), "js/SystemLocale");
+            TraverseForDeletion(clientRescFolder,langCode,true);
+
+          
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+    protected void TraverseForDeletion(string folderPath,string langCode,bool deleteFile)
+    {
+        
+        DirectoryInfo DirInfo = new DirectoryInfo(folderPath);
+        if (deleteFile)
+        {
+            foreach (FileInfo fileInfo in DirInfo.GetFiles())
+            {
+                if (fileInfo.Name.Contains(langCode))
+                {
+                    fileInfo.Delete();
+                }
+            }
+        }
+         bool flag = false;
+            IsValidateTraverse(DirInfo, "App_LocalResources", ref flag);
+            if (flag)
+            {
+                foreach (DirectoryInfo dirInfor in DirInfo.GetDirectories())
+                {
+
+                    TraverseChildDirectory(dirInfor.FullName, langCode);
+                }
+
+            }
+            flag = false;
+            IsValidateTraverse(DirInfo, "Language", ref flag);           
+                if (flag)
+                {
+                    foreach (DirectoryInfo dirInfor in DirInfo.GetDirectories())
+                    {
+
+                        TraverseChildDirectory(dirInfor.FullName, langCode);
+                    }
+                }
+
+               
+    }
+    protected void TraverseChildDirectory(string folderPath, string langCode)
+    {
+        try
+        {
+            DirectoryInfo info = new DirectoryInfo(folderPath);
+            foreach (FileInfo folderFile in info.GetFiles())
+            {
+                string name = folderFile.Name;
+                if (Path.GetExtension(name).Equals(".resx") || Path.GetExtension(name).Equals(".xml") || Path.GetExtension(name).Equals(".js"))
+                {
+                    bool status = VerifyFile(ref name, Path.GetExtension(name));
+                    if (status)
+                    {
+                        if (folderFile.Name.Contains(langCode))
+                        {
+                            folderFile.Delete();
+                        }
+                    }
+                }
+            }
+            foreach (DirectoryInfo dirInfor in info.GetDirectories())
+            {
+                TraverseChildDirectory(dirInfor.FullName, langCode);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+    
+    protected void UpdateLocalizeMenuFields()
+    {
+        Modules_LocalPage_LocalPage localPage = (Modules_LocalPage_LocalPage)this.FindControl("ctrl_MenuEditor");
+        DropDownList ddlAvailableLocales = (DropDownList)localPage.FindControl("ddlAvailableLocales");
+        GridView gdvLocalPage = (GridView)localPage.FindControl("gdvLocalPage");
+        ddlAvailableLocales.DataSource = LocalizationSqlDataProvider.GetAvailableLocales();
+        ddlAvailableLocales.DataTextField = "LanguageName";
+        ddlAvailableLocales.DataValueField = "LanguageCode";
+        ddlAvailableLocales.DataBind();
+
+        List<ListItem> listCopy = new List<ListItem>();
+        foreach (ListItem item in ddlAvailableLocales.Items)
+            listCopy.Add(item);
+        ddlAvailableLocales.Items.Clear();
+        foreach (ListItem item in listCopy.OrderBy(item => item.Text))
+            ddlAvailableLocales.Items.Add(item);
+
+        List<LocalPageInfo> lstPages = LocaleController.GetLocalPageName(GetPortalID,ddlAvailableLocales.SelectedValue.ToString());
+        gdvLocalPage.DataSource = lstPages;
+        gdvLocalPage.DataBind();
+    }
+
+    protected void LoadAllCultureInCreatePack(DropDownList ddl)
+    {
+        string mode = languageMode == "Native" ? "NativeName" : "LanguageName";
+        // List<Language> lstAllCultures = LocaleController.GetCultures();
+        List<Language> lstAvailableLocales = LocalizationSqlDataProvider.GetAvailableLocales();
+        ddl.DataSource = lstAvailableLocales;
+        ddl.DataTextField = mode;
+        ddl.DataValueField = "LanguageCode";
+        ddl.DataBind();
+
+        List<ListItem> listCopy = new List<ListItem>();
+        foreach (ListItem item in ddl.Items)
+            listCopy.Add(item);
+        ddl.Items.Clear();
+        foreach (ListItem item in listCopy.OrderBy(item => item.Text))
+            ddl.Items.Add(item);
+    }
+    public void LoadAllCultures(DropDownList ddl)
+    {
+        string mode = languageMode == "Native" ? "NativeName" : "LanguageName";
+        List<Language> lstAllCultures = LocaleController.GetCultures();
+        List<Language> lstAvailableLocales = LocalizationSqlDataProvider.GetAvailableLocales();
+        ddl.DataSource = FilterLocales(lstAllCultures, lstAvailableLocales);
+        ddl.DataTextField = mode;
+        ddl.DataValueField = "LanguageCode";
+        ddl.DataBind();
+
+        List<ListItem> listCopy = new List<ListItem>();
+        foreach (ListItem item in ddl.Items)
+            listCopy.Add(item);
+        ddl.Items.Clear();
+        foreach (ListItem item in listCopy.OrderBy(item => item.Text))
+            ddl.Items.Add(item);
+    }
+
+    protected List<Language> FilterLocales(List<Language> lstAllCultures, List<Language> lstAvailableLocales)
+    {
+        List<Language> lstNotAvailableLocales = new List<Language>();
+        foreach (Language objLang in lstAllCultures)
+        {
+            bool isExist = lstAvailableLocales.Exists(
+                    delegate(Language obj)
+                    {
+                        return (obj.LanguageCode == objLang.LanguageCode);
+                    }
+                );
+            if (!isExist)
+                lstNotAvailableLocales.Add(objLang);
+        }
+        return lstNotAvailableLocales;
+    }
     protected void gdvLangList_RowDataBound(object sender, GridViewRowEventArgs e)
     {
 
@@ -213,42 +415,49 @@ public partial class Localization_Language : BaseAdministrationUserControl
             string shortCode = code.Substring(index + 1);
             Image img = (Image)e.Row.FindControl("imgFlag");
             img.Attributes.Add("src", ResolveUrl("~/images/flags/" + shortCode.ToLower() + ".png"));
-
             List<Language> lstPortalLanguage = (List<Language>)ViewState["PortalLanguages"];
             if (lstPortalLanguage.Exists(delegate(Language obj) { return obj.LanguageID == int.Parse(e.Row.Cells[4].Text); }))
             {
                 ((CheckBox)e.Row.FindControl("chkIsEnabled")).Checked = true;
             }
-            if (code.Equals(Thread.CurrentThread.CurrentCulture.ToString()))
+            SageFrameConfig sfConf = new SageFrameConfig();
+            string portalCulture = sfConf.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalDefaultLanguage);
+            if (code.Equals(portalCulture))
             {
                 ((CheckBox)e.Row.FindControl("chkIsEnabled")).Enabled = false;
                 ((CheckBox)e.Row.FindControl("chkIsEnabled")).Checked = true;
-                ((ImageButton)e.Row.FindControl("btnLanguageDelete")).Visible = false;
+                ((LinkButton)e.Row.FindControl("btnLanguageDelete")).Visible = false;
+            }
+            if (code.Equals("en-US"))
+            {
+                ((CheckBox)e.Row.FindControl("chkIsEnabled")).Enabled = false;
+                ((CheckBox)e.Row.FindControl("chkIsEnabled")).Checked = true;
+                ((LinkButton)e.Row.FindControl("btnLanguageDelete")).Visible = false;
             }
 
             e.Row.Cells[4].Visible = false;
             this.gdvLangList.HeaderRow.Cells[4].Visible = false;
 
-        }    
-        
+        }
+
     }
-   
-    protected void imbCreateLangPack_Click(object sender, ImageClickEventArgs e)
+
+    protected void imbCreateLangPack_Click(object sender, EventArgs e)
     {
-        ControlVisibility(false, false, false, true,false,false,false);
-        ResetChildControls();        
+        ControlVisibility(false, false, false, true, false, false, false,false);
+        ResetChildControls();
     }
     public void ResetChildControls()
     {
-        ((TextBox)CreateLanguagePack1.FindControl("txtResourcePackName")).Text="Core";
+        ((TextBox)CreateLanguagePack1.FindControl("txtResourcePackName")).Text = "Core";
         ((RadioButtonList)CreateLanguagePack1.FindControl("rbResourcePackType")).SelectedIndex = 0; ;
-        ((DropDownList)CreateLanguagePack1.FindControl("ddlResourceLocale")).SelectedIndex = 0; ;        
-    }      
-    protected void imbInstallLang_Click(object sender, ImageClickEventArgs e)
-    {
-        ControlVisibility(false,false,true,false,false,false,false);
+        ((DropDownList)CreateLanguagePack1.FindControl("ddlResourceLocale")).SelectedIndex = 0; ;
     }
-    public void ControlVisibility(bool firstDiv, bool resxeditorDiv, bool installLangDiv, bool createLangPackDiv,bool languageSetup,bool timezoneEditor,bool menueditor)
+    protected void imbInstallLang_Click(object sender, EventArgs e)
+    {
+        ControlVisibility(false, false, true, false, false, false, false,false);
+    }
+    public void ControlVisibility(bool firstDiv, bool resxeditorDiv, bool installLangDiv, bool createLangPackDiv, bool languageSetup, bool timezoneEditor, bool menueditor,bool moduleTitleEditor)
     {
         langEditFirstDiv.Visible = firstDiv;
         langEditSecondDiv.Visible = resxeditorDiv;
@@ -256,80 +465,179 @@ public partial class Localization_Language : BaseAdministrationUserControl
         CreateLanguagePack1.Visible = createLangPackDiv;
         ctrl_LanguagePackSetup.Visible = languageSetup;
         ctrl_TimeZoneEditor.Visible = timezoneEditor;
+        ctrl_MenuEditor.Visible = menueditor;
+        ctrl_ModuleTitleEditor.Visible = moduleTitleEditor;
     }
-    protected void imbAddLanguage_Click(object sender, ImageClickEventArgs e)
+    protected void imbAddLanguage_Click(object sender, EventArgs e)
     {
-        ControlVisibility(false, false, false, false, true,false,false);
+        ControlVisibility(false, false, false, false, true, false, false,false);
     }
-    protected void ctrl_AddLanguage_CancelClick(object sender, ImageClickEventArgs e)
+    protected void ctrl_AddLanguage_CancelClick(object sender, EventArgs e)
     {
-        ControlVisibility(true, false, false, false, false,false,false);
-        GetLanguageList();       
-        
+        ControlVisibility(true, false, false, false, false, false, false,false);
+        GetLanguageList();
+        LoadPagerDDL(int.Parse(ViewState["RowCount"].ToString()));
     }
-    protected void ctrl_CreateLanguagePack_CancelClick(object sender, ImageClickEventArgs e)
+    protected void ctrl_CreateLanguagePack_CancelClick(object sender, EventArgs e)
     {
-        ControlVisibility(true, false, false, false, false, false, false);
+        ControlVisibility(true, false, false, false, false, false, false,false);
         GetLanguageList();
     }
-    protected void ctrl_LanguagePackInstaller_CancelClick(object sender, ImageClickEventArgs e)
+    protected void ctrl_LanguagePackInstaller_CancelClick(object sender, EventArgs e)
     {
-        ControlVisibility(true, false, false, false, false, false, false);
+        ControlVisibility(true, false, false, false, false, false, false,false);
         GetLanguageList();
     }
     protected void ctrl_ResourceEditor_CancelClick(object sender, ImageClickEventArgs e)
     {
-        ControlVisibility(true, false, false, false, false, false, false);
+        ControlVisibility(true, false, false, false, false, false, false,false);
         GetLanguageList();
     }
-    protected void imbEditTimeZone_Click(object sender, ImageClickEventArgs e)
+    protected void imbEditTimeZone_Click(object sender, EventArgs e)
     {
-        ControlVisibility(false, false, false, false, false, true, false);
+        Modules_Language_TimeZoneEditor TimeZoneEditor = (Modules_Language_TimeZoneEditor)this.FindControl("ctrl_TimeZoneEditor");
+        if (TimeZoneEditor != null)
+        {
+            DropDownList ddlAvailableLocales = (DropDownList)TimeZoneEditor.FindControl("ddlAvailableLocales");
+            if (ddlAvailableLocales != null)
+            {
+                List<Language> lstAvailableLocales = LocalizationSqlDataProvider.GetAvailableLocales();
+                ddlAvailableLocales.DataSource = lstAvailableLocales;
+                ddlAvailableLocales.DataTextField = "LanguageName";
+                ddlAvailableLocales.DataValueField = "LanguageCode";
+                ddlAvailableLocales.DataBind();
+            }
+
+            GridView gdvTimeZoneEditor = (GridView)TimeZoneEditor.FindControl("gdvTimeZoneEditor");
+            if (gdvTimeZoneEditor != null)
+            {
+                BindGridTimeZoneEditor(ddlAvailableLocales.SelectedValue.ToString(), gdvTimeZoneEditor);
+            }
+        }
+        ControlVisibility(false, false, false, false, false, true, false,false);
         GetLanguageList();
     }
-    protected void ctrl_TimeZoneEditor_CancelClick(object sender, ImageClickEventArgs e)
+    protected void BindGridTimeZoneEditor(string language, GridView gdv)
     {
-        ControlVisibility(true, false, false, false, false, false, false);
+        DataSet ds = new DataSet();
+        bool isExists = File.Exists(Server.MapPath(ResourceFile(Localization.TimezonesFile, language, true)));
+        if (isExists)
+        {
+            ds.ReadXml(Server.MapPath(ResourceFile(Localization.TimezonesFile, language, isExists)));
+            gdv.DataSource = ds;
+            gdv.DataBind();
+        }
+    }
+    private string ResourceFile(string filename, string language, bool isExists)
+    {
+        return (isExists ? filename.Substring(0, filename.Length - 4) + "." + language + ".xml" : filename);
+    }
+    protected void ctrl_TimeZoneEditor_CancelClick(object sender, EventArgs e)
+    {
+        ControlVisibility(true, false, false, false, false, false, false,false);
         GetLanguageList();
     }
-    protected void ctrl_MenuEditor_CancelClick(object sender, ImageClickEventArgs e)
+    protected void ctrl_MenuEditor_CancelClick(object sender, EventArgs e)
     {
-        ControlVisibility(true, false, false, false, false, false, false);
+        ControlVisibility(true, false, false, false, false, false, false,false);
         GetLanguageList();
-    } 
+    }
     protected void RestrictDefaultSiteLanguageEdit()
     {
-        CultureInfo ci = Thread.CurrentThread.CurrentCulture;        
+        CultureInfo ci = Thread.CurrentThread.CurrentCulture;
     }
     protected void chkIsEnabled_CheckedChanged(object sender, EventArgs e)
-    {       
+    {
         int isEnabled = ((CheckBox)sender).Checked ? 1 : 0;
         int isPublished = 0;
-        GridViewRow row=(GridViewRow)((CheckBox)sender).Parent.Parent;
+        GridViewRow row = (GridViewRow)((CheckBox)sender).Parent.Parent;
         int languageId = int.Parse(gdvLangList.DataKeys[row.RowIndex].Values["LanguageID"].ToString());
+        string Code=string.Empty;
+          if (gdvLangList.PageIndex == 0)
+                {
+                    Code = row.Cells[1].Text;
+                  // Code = e.Row.Cells[1].Text.ToString();
+                }
+                else
+                {
+                    //int index=int.Parse(e.CommandArgument.ToString())-gdvLangList.PageSize;
+                    //index=index>gdvLangList.PageSize?gdv
+
+                   Code = row.Cells[1].Text;
+                   //Code = e.Row.Cells[1].Text.ToString();
+                }
         try
         {
-            LocalizationSqlDataProvider.EnableLanguage(GetPortalID, languageId,GetUsername.ToString(), isEnabled, isPublished);
-            Response.Redirect(Request.Url.OriginalString);
-            ShowMessage("", GetSageMessage("LanguageModule", "LanguageIsEnabled"), "", SageMessageType.Alert);
+            if (isEnabled == 1)
+            {
+                if (CheckIfResourceFileExists(Code))
+                {
+                    LocalizationSqlDataProvider.EnableLanguage(GetPortalID, languageId, GetUsername.ToString(), isEnabled, isPublished);
+                   // Response.Redirect(Request.Url.OriginalString);
+                    ShowMessage("", GetSageMessage("LanguageModule", "LanguageIsEnabled"), "", SageMessageType.Success);
+                }
+
+                else
+                {
+                    ShowMessage("", GetSageMessage("LanguageModule", "LanguageCannotBeEnabled"), "", SageMessageType.Alert);
+                    CheckBox thisCheckbox = (CheckBox)sender;
+                    thisCheckbox.Checked = false;
+                }
+            }
+            else {
+                LocalizationSqlDataProvider.EnableLanguage(GetPortalID, languageId, GetUsername.ToString(), isEnabled, isPublished);
+                //Response.Redirect(Request.Url.OriginalString);
+                ShowMessage("", GetSageMessage("LanguageModule", "LanguageIsDisabled"), "", SageMessageType.Success);
+            }
+            ViewState["PortalLanguages"] = LocalizationSqlDataProvider.GetPortalLanguages(GetPortalID);
+
         }
         catch (Exception ex)
         {
             ProcessException(ex);
-        }       
-        
+        }
+
+    }
+    protected bool CheckIfResourceFileExists(string languageCode)
+    {
+        try
+        {
+            bool isExists = true;
+            if (languageCode == "en-US")
+            {
+                isExists = true;
+            }
+            else
+            {
+                string[] files = Directory.GetFiles(Server.MapPath(ResolveUrl("~") + "Controls/App_LocalResources"));
+                foreach (string file in files)
+                {
+                    if (file.IndexOf(languageCode) > 1)
+                    {
+                        isExists = true;
+                        break;
+                    }
+                }
+
+            }
+            return isExists;
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
     protected void gdvLangList_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
-        gdvLangList.PageIndex = e.NewPageIndex;       
+        gdvLangList.PageIndex = e.NewPageIndex;
         GetLanguageList();
     }
-    protected void imbCancelResxEdit_Click(object sender, ImageClickEventArgs e)
+    protected void imbCancelResxEdit_Click(object sender, EventArgs e)
     {
-        ControlVisibility(true, false, false, false, false, false, false);
+        ControlVisibility(true, false, false, false, false, false, false,false);
         GetLanguageList();
     }
-   
+
     protected void ddlPageSize_SelectedIndexChanged1(object sender, EventArgs e)
     {
         if (ddlPageSize.SelectedValue != "0")
@@ -363,7 +671,7 @@ public partial class Localization_Language : BaseAdministrationUserControl
 
     public void LoadCurrentCulture()
     {
-        lblCurrentCulture.Text =LocaleController.GetLanguageNameFromCode(GetCurrentCulture());
+        lblCurrentCulture.Text = LocaleController.GetLanguageNameFromCode(GetCurrentCulture());
         imgFlagCurrentCulture.ImageUrl = ResolveUrl("~/images/flags/" + Regex.Replace(GetCurrentCulture(), "[a-z]{2}-", "").ToLower() + ".png");
     }
 
@@ -400,19 +708,41 @@ public partial class Localization_Language : BaseAdministrationUserControl
     private void BindTree()
     {
         tvList.Nodes.Clear();
-        string rootFolder = BaseDir;
+
+        string adminFolder =BaseDir+"Sagin";
+        TreeNode rootNodeAdmin = new TreeNode();
+        rootNodeAdmin.SelectAction = TreeNodeSelectAction.Expand;
+        rootNodeAdmin.Text = "Admin Default";
+        rootNodeAdmin.Expanded = true;
+        rootNodeAdmin.ImageUrl = "images/directory.png";
+        rootNodeAdmin.Value = adminFolder.Replace("\\", "~").Replace(" ", "|");
+        tvList.Nodes.Add(rootNodeAdmin);
+        tvList.ShowLines = false;
+        BuildTreeDirectory(adminFolder, rootNodeAdmin, true);
+
+        string controlFolder = controlsDir;
         TreeNode rootNode = new TreeNode();
         rootNode.SelectAction = TreeNodeSelectAction.Expand;
-        rootNode.Text = "Local Resources";
+        rootNode.Text = "Root Local Resources";
         rootNode.Expanded = true;
         rootNode.ImageUrl = "images/directory.png";
-        rootNode.Value = rootFolder.Replace("\\", "~").Replace(" ", "|");
+        rootNode.Value = controlFolder.Replace("\\", "~").Replace(" ", "|");
         tvList.Nodes.Add(rootNode);
         tvList.ShowLines = false;
-        BuildTreeDirectory(rootFolder, rootNode);
+        BuildTreeDirectory(controlFolder, rootNode,true);
 
-        rootFolder = Path.Combine(GetAbsolutePath(HttpContext.Current.Request.PhysicalApplicationPath.ToString()),
-                                  "XMLMessage");
+        string ModuleFolder = ModuleDir;
+        TreeNode rootModuleNode = new TreeNode();
+        rootModuleNode.SelectAction = TreeNodeSelectAction.Expand;
+        rootModuleNode.Text = "Module Local Resources";
+        rootModuleNode.Expanded = true;
+        rootModuleNode.ImageUrl = "images/directory.png";
+        rootModuleNode.Value = ModuleFolder.Replace("\\", "~").Replace(" ", "|");
+        tvList.Nodes.Add(rootModuleNode);
+        tvList.ShowLines = false;
+        BuildTreeDirectory(ModuleFolder, rootModuleNode,false);
+
+       string rootFolder = Path.Combine(GetAbsolutePath(HttpContext.Current.Request.PhysicalApplicationPath.ToString()), "XMLMessage");
         TreeNode rootNodeGlobal2 = new TreeNode();
         rootNodeGlobal2.SelectAction = TreeNodeSelectAction.Expand;
         rootNodeGlobal2.Text = "XML Resources";
@@ -421,13 +751,26 @@ public partial class Localization_Language : BaseAdministrationUserControl
         rootNodeGlobal2.Value = rootFolder.Replace("\\", "~").Replace(" ", "|");
         tvList.Nodes.Add(rootNodeGlobal2);
         tvList.ShowLines = false;
-        BuildTreeDirectory(rootFolder, rootNodeGlobal2);
+        BuildTreeDirectory(rootFolder, rootNodeGlobal2,false);
+
+        rootFolder = Path.Combine(GetAbsolutePath(HttpContext.Current.Request.PhysicalApplicationPath.ToString()), "js/SystemLocale");
+
+        TreeNode rootNodeGlobal3 = new TreeNode();
+        rootNodeGlobal3.SelectAction = TreeNodeSelectAction.Expand;
+        rootNodeGlobal3.Text = "Client Resources";
+        rootNodeGlobal3.Expanded = true;
+        rootNodeGlobal3.ImageUrl = "images/directory.png";
+        rootNodeGlobal3.Value = rootFolder.Replace("\\", "~").Replace(" ", "|");
+        tvList.Nodes.Add(rootNodeGlobal3);
+        tvList.ShowLines = false;
+        BuildTreeDirectory(rootFolder, rootNodeGlobal3,false);
+
 
 
 
     }
 
-    private void BuildTreeDirectory(string dirPath, TreeNode parentNode)
+    private void BuildTreeDirectory(string dirPath, TreeNode parentNode,bool isControl)
     {
         string[] subDirectories = Directory.GetDirectories(dirPath);
 
@@ -446,20 +789,34 @@ public partial class Localization_Language : BaseAdministrationUserControl
             DirectoryInfo dir = new DirectoryInfo(directory);
             bool flag = false;
             IsValidateTraverse(dir, "App_LocalResources", ref flag);
+
             if (flag || name.Equals("App_LocalResources"))
             {
                 parentNode.ChildNodes.Add(node);
             }
-            BuildSubDirectory(directory, node);
+            else
+            {
+                IsValidateTraverse(dir, "Language", ref flag);
+                if (flag || name.Equals("Language"))
+                {
+                    parentNode.ChildNodes.Add(node);
+                }
+            }
+            BuildSubDirectory(directory, node,isControl);
         }
     }
 
-    private void BuildSubDirectory(string dirPath, TreeNode parentNode)
+    private void BuildSubDirectory(string dirPath, TreeNode parentNode,bool isControl)
     {
         string[] subDirectories = Directory.GetDirectories(dirPath);
-
-        foreach (string directory in subDirectories)
+        if (isControl)
         {
+            AddFiles(dirPath, ref parentNode);
+        }
+        else
+        {
+            foreach (string directory in subDirectories)
+            {
 
             string[] parts = directory.Split('\\');
             string name = parts[parts.Length - 1];
@@ -474,11 +831,19 @@ public partial class Localization_Language : BaseAdministrationUserControl
             {
                 parentNode.ChildNodes.Add(node);
             }
+            else
+            {
+                IsValidateTraverse(dir, "Language", ref flag);
+                if (flag || name.Equals("Language"))
+                {
+                    parentNode.ChildNodes.Add(node);
+                }
+            }
             node.Expanded = false;
             AddFiles(directory, ref node);
-            BuildSubDirectory(directory, node);
+                BuildSubDirectory(directory, node, isControl);
+            }
         }
-
     }
 
     public bool IsValidateTraverse(DirectoryInfo dir, string dirName, ref bool flag)
@@ -508,7 +873,7 @@ public partial class Localization_Language : BaseAdministrationUserControl
 
             TreeNode fileNode = new TreeNode();
             fileNode.ImageUrl = "images/resx.png";
-            if (Path.GetExtension(name).Equals(".resx") || Path.GetExtension(name).Equals(".xml"))
+            if (Path.GetExtension(name).Equals(".resx") || Path.GetExtension(name).Equals(".xml") || Path.GetExtension(name).Equals(".js"))
             {
                 bool status = VerifyFile(ref name, Path.GetExtension(name));
                 if (status)
@@ -535,13 +900,13 @@ public partial class Localization_Language : BaseAdministrationUserControl
     {
         bool status = false;
         string actualFileName = Regex.Replace(filePath, @".[a-z]{2}-[A-Z]{2}" + ext + "|" + ext + "|." + @"[a-z]{2}-[A-Z]{1}[a-z]{3}-[A-Z]{2}" + ext, "").Trim();
-        if (filePath == actualFileName + "." + CultureCode + ".resx" || filePath == actualFileName + "." + CultureCode + ".xml")
+        if (filePath == actualFileName + "." + CultureCode + ".resx" || filePath == actualFileName + "." + CultureCode + ".xml" || filePath == actualFileName + "." + CultureCode + ".js")
         {
             //localized file is present
             status = true;
 
         }
-        else if (filePath == actualFileName + ".resx" || filePath == actualFileName + ".xml")
+        else if (filePath == actualFileName + ".resx" || filePath == actualFileName + ".xml" || filePath == actualFileName + ".js")
         {
             //its the default file
             filePath += "[Default]";
@@ -561,41 +926,91 @@ public partial class Localization_Language : BaseAdministrationUserControl
     protected void tvList_SelectedNodeChanged(object sender, EventArgs e)
     {
         if (Path.HasExtension(tvList.SelectedNode.Value))
-        {
+         {
             languageContent.Visible = true;
-            controlButtons.Visible = true;
+             controlButtons.Visible = true;
         }
         string[] parts = tvList.SelectedNode.Value.Replace("[Default]", "").ToString().Split('\\');
         string filePath = tvList.SelectedNode.ValuePath.Replace("[Default]", "").ToString();
-        filePath=filePath.Replace('|',' ');  
+        filePath = filePath.Replace('|', ' ');
         List<ResourceDefinition> lstResDef = new List<ResourceDefinition>();
         try
         {
-            lstResDef = Path.GetExtension(filePath) == ".resx" ? ReadResourceFile(filePath) : ReadXMLResource(filePath);
+            if (Path.GetExtension(filePath) == ".resx")
+            {
+                lstResDef = ReadResourceFile(filePath);
+            }
+            else if (Path.GetExtension(filePath) == ".xml")
+            {
+                lstResDef = ReadXMLResource(filePath);
+            }
+            else
+            {
+                lstResDef = ReadJavaScriptResource(filePath);
+            }
+            //   lstResDef = Path.GetExtension(filePath) == ".resx" ? ReadResourceFile(filePath) : ReadXMLResource(filePath);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+
             ShowMessage("", GetSageMessage("LanguageModule", "ResourceFileCouldNotBeRead"), "", SageMessageType.Error);
+            
+            throw ex;
         }
-        
+
+
+        SetFolderLabel(tvList.SelectedNode.ValuePath.ToString().Replace("/", "\\").Replace("[Default]", ""), '\\');
+
 
         gdvResxKeyValue.DataSource = lstResDef;
         gdvResxKeyValue.DataBind();
 
-        SetFolderLabel(tvList.SelectedNode.ValuePath.ToString().Replace("/", "\\").Replace("[Default]",""), '\\');
         imbDeleteResxFile.Visible = true;
-        lblDeleteResx.Visible = true;
         imbUpdate.Visible = true;
-        lblUpdateResxFile.Visible = true;
+        
     }
 
-    public void SetFolderLabel(string filePath,char delimiter)
+    public List<ResourceDefinition> ReadJavaScriptResource(string filePath)
+    {
+        string inputString;
+
+        List<ResourceDefinition> lstResDef = new List<ResourceDefinition>();
+
+        using (StreamReader streamReader = File.OpenText(filePath))
+        {
+            inputString = streamReader.ReadLine();
+            while (inputString != null)
+            {
+
+                string regexPattern = "(\"(?<key>[^\"]+)\"\\s*:\\s*\"(?<value>[^\"]+)\")|(\'(?<key>[^\']+)\'\\s*:\\s*\'(?<value>[^\']+)\')";
+                Regex regex = new Regex(regexPattern, RegexOptions.IgnorePatternWhitespace);
+                if (regex.IsMatch(inputString))
+                {
+                    Match match = regex.Match(inputString);
+
+                    string key = match.Groups[3].Value.Trim();
+                    string value = match.Groups[4].Value.Trim();
+                    ResourceDefinition resDef = new ResourceDefinition();
+                    resDef.Key = key;
+                    resDef.Value = value;
+                    lstResDef.Add(resDef);
+                }
+
+                inputString = streamReader.ReadLine();
+            }
+
+        }
+
+        return lstResDef;
+    }
+
+    public void SetFolderLabel(string filePath, char delimiter)
     {
         string[] parts = filePath.Split(delimiter);
         string fileName = parts[parts.Length - 1];
-        filePath = filePath.Replace(fileName, "");      
+        filePath = filePath.Replace(fileName, "");
         string folderName = parts.ToString();
-        this.lblSelectedFolder.Text = delimiter=='/'?filePath.Replace(LocalizationHelper.ReplaceBackSlash(Request.PhysicalApplicationPath.ToString()),""):filePath.Replace(Request.PhysicalApplicationPath.ToString(),"");
+        this.lblSelectedFolder.Text = delimiter == '/' ? filePath.Replace(LocalizationHelper.ReplaceBackSlash(Request.PhysicalApplicationPath.ToString()), "") : filePath.Replace(Request.PhysicalApplicationPath.ToString(), "");
         this.lblSelectedFile.Text = fileName;
     }
 
@@ -707,7 +1122,7 @@ public partial class Localization_Language : BaseAdministrationUserControl
 
     public List<ResourceDefinition> ReadXml(string filePath)
     {
-        List<ResourceDefinition> resxList = new List<ResourceDefinition>();
+         List<ResourceDefinition> resxList = new List<ResourceDefinition>();
         string xmlFile = filePath;
         string defaultFile = LocalizationHelper.GetDefaultFilePath(filePath);
 
@@ -724,7 +1139,6 @@ public partial class Localization_Language : BaseAdministrationUserControl
             }
             XmlNodeList nodeList = currentDocument.DocumentElement.ChildNodes;
             IDictionary<string, string> keyValuePairList = new Dictionary<string, string>();
-
             foreach (XmlNode node in nodeList)
             {
                 Displaychild(node, currentDocument.DocumentElement, keyValuePairList);
@@ -779,38 +1193,59 @@ public partial class Localization_Language : BaseAdministrationUserControl
 
     protected void gdvResxKeyValue_RowDataBound(object sender, GridViewRowEventArgs e)
     {
+      
+            if (lblSelectedFile.Text.ToString().Contains("TopStickyBar"))
+            {
+                if (e.Row.RowType == DataControlRowType.DataRow)
+                {
 
+                    HtmlGenericControl keyvalue = (HtmlGenericControl)e.Row.FindControl("keyvalue");
+                    HtmlGenericControl li = (HtmlGenericControl)keyvalue.FindControl("defaultvalue");
+                    if (li != null)
+                    {
+                        string text = li.InnerText.ToString().Trim();
+                        if (text.Equals("wide") || text.Equals("fluid") || text.Equals("narrow"))
+                        {
+                            e.Row.Cells[1].Enabled = false;
+                        }
+                    }
+                }
+        }
+      
     }
 
-    protected void imbUpdate_Click(object sender, ImageClickEventArgs e)
+    protected void imbUpdate_Click(object sender, EventArgs e)
     {
         List<ResourceDefinition> lstResDef = new List<ResourceDefinition>();
         GetResxKeyValueList(ref lstResDef);
         string filePath = tvList.SelectedNode.ValuePath.Replace("[Default]", "").ToString();
+        filePath = filePath.Replace('|', ' ');
         try
         {
             Save(filePath, lstResDef);
-            if(filePath.EndsWith(".resx"))
+            if (filePath.EndsWith(".resx"))
             {
                 ReadResourceFile(filePath);
             }
-            else if(filePath.EndsWith(".xml"))
+            else if (filePath.EndsWith(".xml"))
             {
                 ReadXml(filePath);
             }
-            SetFolderLabel(ConstructLocalizedFilePath(filePath),'/');
+            else if (filePath.EndsWith(".js"))
+            {
+            }
+            SetFolderLabel(ConstructLocalizedFilePath(filePath), '/');
             InitializeTreeview();
             ShowMessage("", GetSageMessage("LanguageModule", "ResourceFileSavedSuccessfully"), "", SageMessageType.Success);
             imbDeleteResxFile.Visible = false;
-            lblDeleteResx.Visible = false;
             imbUpdate.Visible = false;
-            lblUpdateResxFile.Visible = false;
+           
 
         }
         catch (Exception ex)
         {
-                      
-           ProcessException(ex);
+
+            ProcessException(ex);
         }
 
 
@@ -842,6 +1277,12 @@ public partial class Localization_Language : BaseAdministrationUserControl
             defaultfile = LocalizationHelper.GetDefaultFilePath(filePath).Replace(".xml", ""); ;
             newfilepath = defaultfile + "." + CultureCode + ".xml";
         }
+        else if (filePath.EndsWith(".js"))
+        {
+            defaultfile = LocalizationHelper.GetDefaultFilePath(filePath).Replace(".js", ""); ;
+            newfilepath = defaultfile + "." + CultureCode + ".js";
+        }
+
         return newfilepath;
     }
 
@@ -855,14 +1296,37 @@ public partial class Localization_Language : BaseAdministrationUserControl
                           : CultureCode;
 
         if (filePath.EndsWith(".resx"))
-        {
-            defaultfile = LocalizationHelper.GetDefaultFilePath(filePath).Replace(".resx", ""); ;
-            newfilepath = defaultfile + "." + CultureCode + ".resx";
+        {  SageFrameConfig sfConf = new SageFrameConfig();
+        string portalCulture = sfConf.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalDefaultLanguage);
+
+            defaultfile = LocalizationHelper.GetDefaultFilePath(filePath).Replace(".resx", "");
+            if (CultureCode != "en-US")
+                newfilepath = defaultfile + "." + CultureCode + ".resx";
+            else
+            {
+                newfilepath = defaultfile + ".resx";
+            }
         }
         else if (filePath.EndsWith(".xml"))
         {
             defaultfile = LocalizationHelper.GetDefaultFilePath(filePath).Replace(".xml", ""); ;
-            newfilepath = defaultfile + "." + CultureCode + ".xml";
+            if (CultureCode != "en-US")
+                newfilepath = defaultfile + "." + CultureCode + ".xml";
+            else
+            {
+                newfilepath = defaultfile + ".xml";
+            }
+           // newfilepath = defaultfile + "." + CultureCode + ".xml";
+        }
+        else if (filePath.EndsWith(".js"))
+        {
+            defaultfile = LocalizationHelper.GetDefaultFilePath(filePath).Replace(".js", ""); ;
+            if (CultureCode != "en-US")
+                newfilepath = defaultfile + "." + CultureCode + ".js";
+            else
+            {
+                newfilepath = defaultfile + ".js";
+            }
         }
 
         string fileName = newfilepath == destinationPath ? destinationPath : newfilepath;
@@ -879,7 +1343,68 @@ public partial class Localization_Language : BaseAdministrationUserControl
         {
             ResXHelper.WriteResX(fileName, lstResDef);
         }
+        else if (filePath.EndsWith(".js"))
+        {
+            CreateLocalizedJavascriptFile(fileName, defaultfile + ".js", lstResDef);
+        }
 
+    }
+    public void CreateLocalizedJavascriptFile(string filePath, string defaultFile, List<ResourceDefinition> lstResDef)
+    {
+        try
+        {
+            string inputString = string.Empty;
+            FileStream fs = File.Create(filePath);
+
+            fs.Close();
+            int count = 0;
+
+            StreamWriter sw = new StreamWriter(filePath);
+
+            using (StreamReader streamReader = File.OpenText(defaultFile))
+            {
+
+                inputString = streamReader.ReadLine();
+                while (inputString != null)
+                {
+
+                    string regexPattern = "(\"(?<key>[^\"]+)\"\\s*:\\s*\"(?<value>[^\"]+)\")|(\'(?<key>[^\']+)\'\\s*:\\s*\'(?<value>[^\']+)\')";
+                    Regex regex = new Regex(regexPattern, RegexOptions.IgnorePatternWhitespace);
+                    if (regex.IsMatch(inputString))
+                    {
+                        Match match = regex.Match(inputString);
+
+                        string key = match.Groups[3].Value.Trim();
+                        string value = match.Groups[4].Value.Trim();
+
+                        ResourceDefinition resDef = lstResDef[count];
+
+                        if (inputString.Trim().EndsWith(","))
+                        {
+                            sw.WriteLine('"' + key.Trim() + '"' + ":" + '"' + resDef.Value.Trim() + '"' + ",");
+                        }
+                        else
+                        {
+                            sw.WriteLine('"' + key.Trim() + '"' + ":" + '"' + resDef.Value.Trim() + '"');
+                        }
+
+                        //lstResDef.Add(resDef);
+                        count++;
+                    }
+                    else
+                    {
+                        sw.WriteLine(inputString);
+                    }
+                    inputString = streamReader.ReadLine();
+                }
+
+            }
+            sw.Close();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
 
     public static void CreateXmlFile(string filePath, List<ResourceDefinition> keyValuePairList)
@@ -898,7 +1423,7 @@ public partial class Localization_Language : BaseAdministrationUserControl
         foreach (ResourceDefinition entry in keyValuePairList)
         {
             string key = Regex.Replace(entry.Key, @"\s", "");
-            baseXml =key.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
+            baseXml = key.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
             List<string> listobj = baseXml.ToList();
 
             string xpath = GetXpath(listobj);
@@ -962,9 +1487,9 @@ public partial class Localization_Language : BaseAdministrationUserControl
         return parentNode;
     }
 
-    protected void imbCancel_Click(object sender, ImageClickEventArgs e)
+    protected void imbCancel_Click(object sender, EventArgs e)
     {
-        ControlVisibility(true,false,false,false,false,false,false);
+        ControlVisibility(true, false, false, false, false, false, false,false);
     }
 
     protected void imbDeleteResxFile_Click(object sender, ImageClickEventArgs e)
@@ -972,8 +1497,8 @@ public partial class Localization_Language : BaseAdministrationUserControl
         try
         {
             string filePath = tvList.SelectedNode.ValuePath.Replace("[Default]", "").ToString();
-           
-            if(!LocalizationHelper.IsDefaultFile(filePath))
+            filePath = filePath.Replace('|', ' ');
+            if (!LocalizationHelper.IsDefaultFile(filePath))
             {
                 DeleteFile(tvList.SelectedNode.ValuePath.Replace("[Default]", "").ToString());
                 ShowMessage("", GetSageMessage("LanguageModule", "ResourceFileDeletedSuccessfully"), "", SageMessageType.Success);
@@ -988,13 +1513,12 @@ public partial class Localization_Language : BaseAdministrationUserControl
                 {
                     ReadXml(defaultFilePath);
                 }
+
                 SetFolderLabel(ConstructLocalizedFilePath(defaultFilePath), '/');
                 imbDeleteResxFile.Visible = false;
-                lblDeleteResx.Visible = false;
                 languageContent.Visible = false;
-                lblUpdateResxFile.Visible=false;
                 imbUpdate.Visible = false;
-                
+
             }
             else
             {
@@ -1005,7 +1529,7 @@ public partial class Localization_Language : BaseAdministrationUserControl
         }
         catch (Exception ex)
         {
-                
+
             ProcessException(ex);
         }
     }
@@ -1020,8 +1544,37 @@ public partial class Localization_Language : BaseAdministrationUserControl
     }
 
     #endregion
-    protected void imbLocalizeMenu_Click(object sender, ImageClickEventArgs e)
+    protected void imbLocalizeMenu_Click(object sender, EventArgs e)
     {
-        ControlVisibility(false, false, false, false, false, false, true);
+        ControlVisibility(false, false, false, false, false, false, true,false);
+        UpdateLocalizeMenuFields();
+    }
+
+    protected void imbLocalizeModuleTitle_Click(object sender, EventArgs e)
+    {
+        ControlVisibility(false, false, false, false, false, false, false,true);
+        UpdateModuleTitleFields();
+    }
+
+    protected void UpdateModuleTitleFields()
+    {
+        Modules_Language_LocalModuleTitle lmt = (Modules_Language_LocalModuleTitle)this.FindControl("ctrl_ModuleTitleEditor");
+        DropDownList ddlAvailableLocales = (DropDownList)lmt.FindControl("ddlAvailableLocales");
+        GridView gdvLocalModuleTitle = (GridView)lmt.FindControl("gdvLocalModuleTitle");
+        ddlAvailableLocales.DataSource = LocalizationSqlDataProvider.GetAvailableLocales();
+        ddlAvailableLocales.DataTextField = "LanguageName";
+        ddlAvailableLocales.DataValueField = "LanguageCode";
+        ddlAvailableLocales.DataBind();
+
+        List<ListItem> listCopy = new List<ListItem>();
+        foreach (ListItem item in ddlAvailableLocales.Items)
+            listCopy.Add(item);
+        ddlAvailableLocales.Items.Clear();
+        foreach (ListItem item in listCopy.OrderBy(item => item.Text))
+            ddlAvailableLocales.Items.Add(item);
+
+        List<LocalModuleInfo> lstPages = LocaleController.GetLocalModuleTitle(GetPortalID, ddlAvailableLocales.SelectedValue.ToString());
+        gdvLocalModuleTitle.DataSource = lstPages;
+        gdvLocalModuleTitle.DataBind();
     }
 }

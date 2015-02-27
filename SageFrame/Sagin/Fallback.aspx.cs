@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References
+
 using System;
 using System.Collections;
 using System.Configuration;
@@ -36,38 +24,56 @@ using System.Text;
 using SageFrame.Templating;
 using SageFrame.Web;
 using SageFrame.Framework;
+using SageFrame.Common;
+
+#endregion
 
 public partial class Sagin_Fallback : PageBase
 {
+    #region "Public Variables"
+
     public int PortalID = 0;
     public string appPath = string.Empty;
     public string fallBackPath = string.Empty;
+    public string Extension;
+    public string templateFavicon = string.Empty;
+
+    #endregion
+
+    #region "Event Handlers"
+
     protected void Page_Load(object sender, EventArgs e)
     {
+        templateFavicon = SetFavIcon(GetActiveTemplate);
         imgLogo.ImageUrl = ResolveUrl("~/") + "images/sageframe.png";
+        Extension = SageFrameSettingKeys.PageExtension;
         SageFrameConfig sfConfig = new SageFrameConfig();
-        appPath = Request.ApplicationPath == "/" ? "" : Request.ApplicationPath;
-        string pagePath = Request.ApplicationPath != "/" ? Request.ApplicationPath : "";
+        appPath = GetAppPath();
+        string pagePath = ResolveUrl(GetParentURL) + GetReduceApplicationName;
         ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "BreadCrumGlobal1", " var BreadCrumPagePath='" + pagePath + "';", true);
-        pagePath = GetPortalID == 1 ? pagePath : pagePath + "/portal/" + GetPortalSEOName;
+        pagePath = IsParent ? pagePath : pagePath + "portal/" + GetPortalSEOName;
         PortalID = GetPortalID;
-
-        if (PortalID > 1)
+        if (!IsParent)
         {
-            fallBackPath = ResolveUrl("~/portal/" + GetPortalSEOName + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx");
+            fallBackPath = GetParentURL + "/portal/" + GetPortalSEOName + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + Extension;
         }
         else
         {
-            fallBackPath = ResolveUrl("~/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx");
+            fallBackPath = GetParentURL + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + Extension;
         }
-
-        if (Session["TemplateError"] != null)
+        if (Session[SessionKeys.TemplateError] != null)
         {
-            Exception ex = Session["TemplateError"] as Exception;
+            Exception ex = Session[SessionKeys.TemplateError] as Exception;
             StringBuilder sb = new StringBuilder();
-            sb.Append(string.Format("<h3>{0}</h3>",ex.Message));
+            sb.Append(string.Format("<h3>{0}</h3>", ex.Message));
             sb.Append(string.Format("<p>{0}</p>", ex.ToString()));
             ltrErrorMessage.Text = sb.ToString();
         }
+    }
+    #endregion
+    protected void btnFallback_Click(object sender, EventArgs e)
+    {
+        SageFrame.Templating.TemplateController.ActivateTemplate("default", PortalID);
+        Response.Redirect(fallBackPath);
     }
 }

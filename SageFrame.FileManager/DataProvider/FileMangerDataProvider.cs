@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +13,8 @@ using SageFrame.Web.Utilities;
 using System.Data;
 using System.Data.SqlClient;
 using SageFrame.Web;
-using SageFrame.Core;
 using System.Data.Common;
+#endregion
 
 namespace SageFrame.FileManager
 {
@@ -115,11 +100,11 @@ namespace SageFrame.FileManager
         {
             List<Folder> lstFolders = new List<Folder>();
             string StoredProcedureName = "usp_FileManagerGetFolders";
-            SqlDataReader SQLReader;
+            SqlDataReader SQLReader = null;
             SQLHandler sagesql = new SQLHandler();
             try
             {
-               
+
                 SQLReader = sagesql.ExecuteAsDataReader(StoredProcedureName);
                 while (SQLReader.Read())
                 {
@@ -129,13 +114,19 @@ namespace SageFrame.FileManager
                     obj.StorageLocation = int.Parse(SQLReader["StorageLocation"].ToString());
                     lstFolders.Add(obj);
                 }
-                SQLReader.Dispose();
             }
             catch (Exception e)
             {
                 throw e;
             }
-             
+            finally
+            {
+                if (SQLReader != null)
+                {
+                    SQLReader.Close();
+                }
+            }
+
 
             return lstFolders;
         }
@@ -143,10 +134,11 @@ namespace SageFrame.FileManager
         public static List<Folder> GetRootFolders()
         {
             List<Folder> lstFolders = new List<Folder>();
-            string StoredProcedureName = "usp_FileManagerGetRootFolders";           
+            string StoredProcedureName = "usp_FileManagerGetRootFolders";
+            SqlDataReader SQLReader = null;
             try
             {
-                SqlDataReader SQLReader;
+
                 SQLHandler sagesql = new SQLHandler();
                 SQLReader = sagesql.ExecuteAsDataReader(StoredProcedureName);
                 while (SQLReader.Read())
@@ -158,24 +150,29 @@ namespace SageFrame.FileManager
                     obj.IsEnabled = bool.Parse(SQLReader["IsActive"].ToString());
                     lstFolders.Add(obj);
                 }
-                SQLReader.Dispose();
             }
             catch (Exception e)
             {
                 throw e;
             }
-           
-           
+            finally
+            {
+                if (SQLReader != null)
+                {
+                    SQLReader.Close();
+                }
+            }
             return lstFolders;
         }
 
         public static List<Folder> GetActiveRootFolders()
         {
             List<Folder> lstFolders = new List<Folder>();
-            string StoredProcedureName = "usp_FileManagerGetActiveRootFolders";          
+            string StoredProcedureName = "usp_FileManagerGetActiveRootFolders";
+            SqlDataReader SQLReader = null;
             try
             {
-                SqlDataReader SQLReader;
+
                 SQLHandler sagesql = new SQLHandler();
                 SQLReader = sagesql.ExecuteAsDataReader(StoredProcedureName);
                 while (SQLReader.Read())
@@ -187,23 +184,30 @@ namespace SageFrame.FileManager
                     obj.IsEnabled = bool.Parse(SQLReader["IsActive"].ToString());
                     lstFolders.Add(obj);
                 }
-                SQLReader.Dispose();
             }
             catch (Exception e)
             {
                 throw e;
             }
-           
+            finally
+            {
+                if (SQLReader != null)
+                {
+                    SQLReader.Close();
+                }
+            }
+
             return lstFolders;
         }
 
         public static List<Folder> GetAllFolders()
         {
             List<Folder> lstFolders = new List<Folder>();
-            string StoredProcedureName = "usp_FileManagerGetAllFolders";           
+            string StoredProcedureName = "usp_FileManagerGetAllFolders";
+            SqlDataReader SQLReader = null;
             try
             {
-                SqlDataReader SQLReader;
+
                 SQLHandler sagesql = new SQLHandler();
                 SQLReader = sagesql.ExecuteAsDataReader(StoredProcedureName);
                 while (SQLReader.Read())
@@ -214,12 +218,18 @@ namespace SageFrame.FileManager
                     obj.StorageLocation = int.Parse(SQLReader["StorageLocation"].ToString());
                     lstFolders.Add(obj);
                 }
-                SQLReader.Dispose();
             }
             catch (Exception e)
             {
                 throw e;
-            }            
+            }
+            finally
+            {
+                if (SQLReader != null)
+                {
+                    SQLReader.Close();
+                }
+            }
 
             return lstFolders;
 
@@ -233,7 +243,7 @@ namespace SageFrame.FileManager
             SQLHandler sagesql = new SQLHandler();
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@FolderID", FolderID));
-            SqlDataReader SQLReader;
+            SqlDataReader SQLReader = null;
             try
             {
                 SQLReader = sagesql.ExecuteAsDataReader(StoredProcedureName, ParaMeterCollection);
@@ -252,11 +262,17 @@ namespace SageFrame.FileManager
 
                     lstFiles.Add(obj);
                 }
-                SQLReader.Dispose();
             }
             catch (Exception e)
             {
                 throw e;
+            }
+            finally
+            {
+                if (SQLReader != null)
+                {
+                    SQLReader.Close();
+                }
             }
             return lstFiles;
         }
@@ -268,7 +284,7 @@ namespace SageFrame.FileManager
             SQLHandler sagesql = new SQLHandler();
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@SearchQuery", SearchQuery));
-            SqlDataReader SQLReader;
+            SqlDataReader SQLReader = null;
             try
             {
                 SQLReader = sagesql.ExecuteAsDataReader(StoredProcedureName, ParaMeterCollection);
@@ -286,11 +302,17 @@ namespace SageFrame.FileManager
 
                     lstFiles.Add(obj);
                 }
-                SQLReader.Dispose();
             }
             catch (Exception e)
             {
                 throw e;
+            }
+            finally
+            {
+                if (SQLReader != null)
+                {
+                    SQLReader.Close();
+                }
             }
             return lstFiles;
         }
@@ -407,7 +429,7 @@ namespace SageFrame.FileManager
             SQLHandler sagesql = new SQLHandler();
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@FolderID", FolderID));
-            SqlDataReader SQLReader;
+            SqlDataReader SQLReader = null;
             try
             {
                 SQLReader = sagesql.ExecuteAsDataReader(StoredProcedureName, ParaMeterCollection);
@@ -423,11 +445,17 @@ namespace SageFrame.FileManager
 
                     lstFolderPer.Add(obj);
                 }
-                SQLReader.Dispose();
             }
             catch (Exception e)
             {
                 throw e;
+            }
+            finally
+            {
+                if (SQLReader != null)
+                {
+                    SQLReader.Close();
+                }
             }
             return lstFolderPer;
         }
@@ -439,7 +467,7 @@ namespace SageFrame.FileManager
             SQLHandler sagesql = new SQLHandler();
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@FolderID", FolderID));
-            SqlDataReader SQLReader;
+            SqlDataReader SQLReader = null;
             try
             {
                 SQLReader = sagesql.ExecuteAsDataReader(StoredProcedureName, ParaMeterCollection);
@@ -451,11 +479,17 @@ namespace SageFrame.FileManager
 
                     lstFolderPer.Add(obj);
                 }
-                SQLReader.Dispose();
             }
             catch (Exception e)
             {
                 throw e;
+            }
+            finally
+            {
+                if (SQLReader != null)
+                {
+                    SQLReader.Close();
+                }
             }
             return lstFolderPer;
         }
@@ -482,7 +516,7 @@ namespace SageFrame.FileManager
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserID", UserID));
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserModuleID", UserModuleID));
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserName", UserName));
-            SqlDataReader SQLReader;
+            SqlDataReader SQLReader = null;
             try
             {
                 SQLReader = sagesql.ExecuteAsDataReader(StoredProcedureName, ParaMeterCollection);
@@ -490,11 +524,17 @@ namespace SageFrame.FileManager
                 {
                     lstPermissions.Add(SQLReader["permissionkey"].ToString());
                 }
-                SQLReader.Dispose();
             }
             catch (Exception e)
             {
                 throw e;
+            }
+            finally
+            {
+                if (SQLReader != null)
+                {
+                    SQLReader.Close();
+                }
             }
             return lstPermissions;
         }
@@ -506,8 +546,8 @@ namespace SageFrame.FileManager
             SQLHandler sagesql = new SQLHandler();
             List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
             ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserModuleID", UserModuleID));
-            ParaMeterCollection.Add(new KeyValuePair<string, object>("@Username", UserName));
-            SqlDataReader SQLReader;
+            ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserName", UserName));
+            SqlDataReader SQLReader = null;
             try
             {
                 SQLReader = sagesql.ExecuteAsDataReader(StoredProcedureName, ParaMeterCollection);
@@ -515,12 +555,17 @@ namespace SageFrame.FileManager
                 {
                     lstPermissions.Add(SQLReader["permissionkey"].ToString());
                 }
-                SQLReader.Dispose();
-                
             }
             catch (Exception e)
             {
                 throw e;
+            }
+            finally
+            {
+                if (SQLReader != null)
+                {
+                    SQLReader.Close();
+                }
             }
             return lstPermissions;
         }

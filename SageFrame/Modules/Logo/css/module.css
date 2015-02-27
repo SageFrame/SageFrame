@@ -9,7 +9,6 @@
 }
 /*front logo view*/
 .sfLogo a {
-	width:100%;
 	overflow:hidden;
 	clear:both;
 }
@@ -20,6 +19,6 @@
 	margin:0 0 0 5px;
 }
 .sfLogo span.sfSlogan {
-	font:normal 11px Arial, Helvetica, sans-serif;
+	font:normal 11px Tahoma, Geneva, sans-serif;
 	display:block;
 }

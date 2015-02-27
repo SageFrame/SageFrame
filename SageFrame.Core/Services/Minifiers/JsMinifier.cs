@@ -1,6 +1,19 @@
-﻿using System;
+﻿#region "Copyright"
+
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
+*/
+
+#endregion
+
+#region "References"
+
+using System;
 using System.IO;
 using System.Text;
+
+#endregion
+
 
 /* Originally written in 'C', this code has been converted to the C# language.
  * The author's copyright message is reproduced below.

@@ -10,8 +10,11 @@
                 :
             </td>
             <td>
+                
                 <asp:DropDownList ID="ddlBannerListToUse" runat="server" AutoPostBack="False" CssClass="sfListmenu">
-                </asp:DropDownList>
+                </asp:DropDownList> 
+                <label class="icon-refresh">              
+                <asp:Button runat="server" ID="btnRefreshList" OnClick=" btnRefreshList_Click" /></label>
             </td>
         </tr>
         <tr>
@@ -114,9 +117,10 @@
             </td>
             <td>
                 <div class="sfButtonwrapper" runat="server">
-                    <asp:ImageButton ID="imbSaveBannerSetting" runat="server" ValidationGroup="bannersetting"
-                        OnClick="imbSaveBannerSetting_Click" />
-                    <asp:Label ID="lblSaveBannerSetting" runat="server" Text="Save" AssociatedControlID="imbSaveBannerSetting"></asp:Label>
+                 <label class="sfLocale icon-save sfBtn">Save
+                    <asp:Button ID="imbSaveBannerSetting" runat="server" ValidationGroup="bannersetting"
+                        OnClick="imbSaveBannerSetting_Click" /></label>
+                    
                 </div>
             </td>
         </tr>

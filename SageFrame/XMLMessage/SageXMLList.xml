@@ -76,14 +76,16 @@
     <MonthNameDayYearDayName>Month Name Day, Year(Day Name)</MonthNameDayYearDayName>
     <Simple>Simple</Simple>
     <Modalbox>Modalbox</Modalbox>
-    <All>--All--</All>	
-	  <Button>Button</Button>
-    <Image>Image</Image>
-    <Link>Link</Link>
-    <NewFirst>New First</NewFirst>
-    <OldFirst>Old First</OldFirst>
-    <AlphaBaticallyASC>Alphabeticaly ASC</AlphaBaticallyASC>
-    <AlphaBaticallyDESC>Alphabeticaly DESC</AlphaBaticallyDESC>
+    <All>--All--</All>
+	
+	<Button>Button</Button>
+      <Image>Image</Image>
+      <Link>Link</Link>
+
+      <NewFirst>New First</NewFirst>
+      <OldFirst>Old First</OldFirst>
+      <AlphaBaticallyASC>Alphabeticaly ASC</AlphaBaticallyASC>
+      <AlphaBaticallyDESC>Alphabeticaly DESC</AlphaBaticallyDESC>
   </SageFrameLists>
   <ModulesPanes>
     <navigationsdf>navigatisfdsdon</navigationsdf>

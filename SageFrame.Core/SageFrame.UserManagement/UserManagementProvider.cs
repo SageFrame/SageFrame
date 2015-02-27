@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +15,9 @@ using System.Text;
 using SageFrame.Web.Utilities;
 using System.Data.SqlClient;
 using System.Data;
+
+#endregion
+
 
 namespace SageFrame.UserManagement
 {
@@ -80,7 +71,7 @@ namespace SageFrame.UserManagement
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Prefix", Prefix));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Count", Count));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", Username));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", Username));
 
                 return SQLH.ExecuteAsList<UserManagementInfo>("[dbo].[sp_GetUsernameByPortalIDAuto]", ParamCollInput);
             }
@@ -91,8 +82,9 @@ namespace SageFrame.UserManagement
             }
 
         }
-        public static ForgetPasswordInfo GetMessageTemplateByMessageTemplateTypeID(int MessageTemplateTypeID, int PortalID)
+        public static ForgotPasswordInfo GetMessageTemplateByMessageTemplateTypeID(int MessageTemplateTypeID, int PortalID)
         {
+            SqlDataReader reader = null;
             try
             {
                 SQLHandler SQLH = new SQLHandler();
@@ -101,9 +93,9 @@ namespace SageFrame.UserManagement
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
 
 
-                SqlDataReader reader = null;
+
                 reader = SQLH.ExecuteAsDataReader("[dbo].[sp_MessageTemplateByMessageTemplateTypeID]", ParamCollInput);
-                ForgetPasswordInfo objList = new ForgetPasswordInfo();
+                ForgotPasswordInfo objList = new ForgotPasswordInfo();
 
                 while (reader.Read())
                 {
@@ -122,9 +114,16 @@ namespace SageFrame.UserManagement
 
                 throw ex;
             }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+            }
 
         }
-        public static List<ForgetPasswordInfo> GetMessageTemplateListByMessageTemplateTypeID(int MessageTemplateTypeID, int PortalID)
+        public static List<ForgotPasswordInfo> GetMessageTemplateListByMessageTemplateTypeID(int MessageTemplateTypeID, int PortalID)
         {
             try
             {
@@ -133,7 +132,7 @@ namespace SageFrame.UserManagement
                 ParamCollInput.Add(new KeyValuePair<string, object>("@MessageTemplateTypeID", MessageTemplateTypeID));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
 
-                return SQLH.ExecuteAsList<ForgetPasswordInfo>("[dbo].[sp_MessageTemplateByMessageTemplateTypeID]", ParamCollInput);
+                return SQLH.ExecuteAsList<ForgotPasswordInfo>("[dbo].[sp_MessageTemplateByMessageTemplateTypeID]", ParamCollInput);
 
             }
             catch (Exception ex)
@@ -151,7 +150,7 @@ namespace SageFrame.UserManagement
             {
                 SQLHandler SQLH = new SQLHandler();
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", Username));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", Username));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
                 DataSet ds = SQLH.ExecuteAsDataSet("[dbo].[sp_GetPasswordRecoverySuccessfulTokenValue]", ParamCollInput);
                 return ds.Tables[0];
@@ -170,7 +169,7 @@ namespace SageFrame.UserManagement
             {
                 SQLHandler SQLH = new SQLHandler();
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", Username));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", Username));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
                 SQLH.ExecuteNonQuery("[dbo].[usp_PasswordRecoveryDeactivateCode]", ParamCollInput);
               
@@ -189,7 +188,7 @@ namespace SageFrame.UserManagement
             {
                 SQLHandler SQLH = new SQLHandler();
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", Username));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", Username));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
 
                 DataSet ds = SQLH.ExecuteAsDataSet("[dbo].[sp_GetActivationSuccessfulTokenValue]", ParamCollInput);
@@ -209,7 +208,7 @@ namespace SageFrame.UserManagement
             {
                 SQLHandler SQLH = new SQLHandler();
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", Username));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", Username));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
 
                 DataSet ds = SQLH.ExecuteAsDataSet("[dbo].[sp_GetActivationTokenValue]", ParamCollInput);
@@ -228,7 +227,7 @@ namespace SageFrame.UserManagement
             {
                 SQLHandler SQLH = new SQLHandler();
                 List<KeyValuePair<string, object>> ParamCollInput = new List<KeyValuePair<string, object>>();
-                ParamCollInput.Add(new KeyValuePair<string, object>("@Username", Username));
+                ParamCollInput.Add(new KeyValuePair<string, object>("@UserName", Username));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
 
                 DataSet ds= SQLH.ExecuteAsDataSet("[dbo].[sp_GetPasswordRecoveryTokenValue]", ParamCollInput);
@@ -243,7 +242,7 @@ namespace SageFrame.UserManagement
         }
         
     
-        public static ForgetPasswordInfo GetUsernameByActivationOrRecoveryCode(string Code, int PortalID)
+        public static ForgotPasswordInfo GetUsernameByActivationOrRecoveryCode(string Code, int PortalID)
         {
             try
             {
@@ -252,9 +251,9 @@ namespace SageFrame.UserManagement
                 ParamCollInput.Add(new KeyValuePair<string, object>("@Code", Code));
                 ParamCollInput.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
 
-                List<ForgetPasswordInfo> lstpwdinfo = new List<ForgetPasswordInfo>();
-                lstpwdinfo = SQLH.ExecuteAsList<ForgetPasswordInfo>("[dbo].[sp_GetUsernameByActivationOrRecoveryCode]", ParamCollInput);
-                ForgetPasswordInfo objInfo = new ForgetPasswordInfo();              
+                List<ForgotPasswordInfo> lstpwdinfo = new List<ForgotPasswordInfo>();
+                lstpwdinfo = SQLH.ExecuteAsList<ForgotPasswordInfo>("[dbo].[sp_GetUsernameByActivationOrRecoveryCode]", ParamCollInput);
+                ForgotPasswordInfo objInfo = new ForgotPasswordInfo();              
                 if (lstpwdinfo.Count > 0)
                 {
                     return lstpwdinfo[0];

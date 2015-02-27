@@ -1,24 +1,5 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
 using System;
 using System.Collections.Generic;
@@ -30,51 +11,32 @@ using System.Web.Security;
 using SageFrame.Web;
 using SageFrame.Framework;
 using SageFrame.Security;
+using SageFrame.Common;
 
-    public partial class LoginStatus : BaseAdministrationUserControl
+public partial class LoginStatus : BaseAdministrationUserControl
+{
+    string Extension;
+    protected void Page_Load(object sender, EventArgs e)
     {
-        
-        bool IsUseFriendlyUrls = true;
-        protected void Page_Load(object sender, EventArgs e)
+        try
         {
-            try
+            IncludeLanguageJS();
+            Extension = SageFrameSettingKeys.PageExtension;
+            SecurityPolicy objSecurity = new SecurityPolicy();
+            FormsAuthenticationTicket ticket = objSecurity.GetUserTicket(GetPortalID);
+            if (ticket != null)
             {
-                SageFrameConfig sfConfig = new SageFrameConfig();
-                IsUseFriendlyUrls = sfConfig.GetSettingBollByKey(SageFrameSettingKeys.UseFriendlyUrls);
-
-                if (HttpContext.Current.User != null)
+                int LoggedInPortalID = int.Parse(ticket.UserData.ToString());
+                if (ticket.Name != ApplicationKeys.anonymousUser)
                 {
-                    MembershipUser user = Membership.GetUser();
-                    FormsIdentity identity = HttpContext.Current.User.Identity as FormsIdentity;
-
-                    if (identity != null)
+                    string[] sysRoles = SystemSetting.SUPER_ROLE;
+                    if (GetPortalID == LoggedInPortalID || Roles.IsUserInRole(ticket.Name, sysRoles[0]))
                     {
-                        FormsAuthenticationTicket ticket = identity.Ticket;
-                        int LoggedInPortalID = int.Parse(ticket.UserData.ToString());
-
-                        if (user != null && user.UserName != "")
+                        RoleController _role = new RoleController();
+                        string userinroles = _role.GetRoleNames(GetUsername, LoggedInPortalID);
+                        if (userinroles != string.Empty || userinroles != null)
                         {
-                            string[] sysRoles = SystemSetting.SUPER_ROLE;
-                            if (GetPortalID == LoggedInPortalID || Roles.IsUserInRole(user.UserName, sysRoles[0]))
-                            {
-                                RoleController _role = new RoleController();
-                                string userinroles = _role.GetRoleNames(GetUsername, LoggedInPortalID);
-                                if (userinroles != "" || userinroles != null)
-                                {
-                                    lnkloginStatus.Text = SageLogOutText;
-                                    lnkloginStatus.CommandName = "LOGOUT";                                   
-                                }
-                                else
-                                {
-                                    lnkloginStatus.Text = SageLogInText;
-                                    lnkloginStatus.CommandName = "LOGIN";
-                                }
-                            }
-                            else
-                            {
-                                lnkloginStatus.Text = SageLogInText;
-                                lnkloginStatus.CommandName = "LOGIN";
-                            }
+
                         }
                         else
                         {
@@ -87,155 +49,141 @@ using SageFrame.Security;
                         lnkloginStatus.Text = SageLogInText;
                         lnkloginStatus.CommandName = "LOGIN";
                     }
+                    lnkloginStatus.Text = SageLogOutText;
+                    lnkloginStatus.CommandName = "LOGOUT";
                 }
-              
-            }
-            catch
-            {
-            }
-        }
-
-
-
-        private string strLogOut = string.Empty;
-        private string strLogIn = string.Empty;
-        public string SageLogInText
-        {
-            get
-            {
-                if (strLogIn == string.Empty)
+                else
                 {
-                    strLogIn = GetSageMessage("LoginStatus", "Login");
+                    lnkloginStatus.Text = SageLogInText;
+                    lnkloginStatus.CommandName = "LOGIN";
                 }
-                return strLogIn;
+            }
+            else
+            {
+                lnkloginStatus.Text = SageLogInText;
+                lnkloginStatus.CommandName = "LOGIN";
             }
         }
-        public string SageLogOutText
+        catch
         {
-            get 
-            {
-                if (strLogOut == string.Empty)
-                {
-                    strLogOut = GetSageMessage("LoginStatus", "Logout");
-                }
-                return strLogOut;
-            }            
         }
-
-        protected void lnkloginStatus_Click(object sender, EventArgs e)
+    }
+    private string strLogOut = string.Empty;
+    private string strLogIn = string.Empty;
+    public string SageLogInText
+    {
+        get
         {
-            try
+            if (strLogIn == string.Empty)
             {
-                ///Update the Session Tracker
-                SessionTracker sessionTracker = (SessionTracker)Session["Tracker"];
-                if (sessionTracker != null)
-                {
-                    SageFrame.Web.SessionLog sLog = new SageFrame.Web.SessionLog();
-                    sLog.SessionLogEnd(sessionTracker);
-                }
+                strLogIn = GetSageMessage("LoginStatus", "Login");
+            }
+            return strLogIn;
+        }
+    }
+    public string SageLogOutText
+    {
+        get
+        {
+            if (strLogOut == string.Empty)
+            {
+                strLogOut = GetSageMessage("LoginStatus", "Logout");
+            }
+            return strLogOut;
+        }
+    }
 
-                SessionTracker sessionTrackerNew = new SessionTracker();
-                if (sessionTrackerNew != null)
-                {
-                    SageFrame.Web.SessionLog sLogNew = new SageFrame.Web.SessionLog();
-                    sLogNew.SessionLogStart(sessionTrackerNew);
-                }
-                HttpContext.Current.Session["Tracker"] = sessionTrackerNew;
+    protected void lnkloginStatus_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            ///Update the Session Tracker
+            SessionTracker sessionTracker = (SessionTracker)Session[SessionKeys.Tracker];
+            if (sessionTracker != null)
+            {
+                SageFrame.Web.SessionLog sLog = new SageFrame.Web.SessionLog();
+                sLog.SessionLogEnd(sessionTracker);
+            }
+            SessionTracker sessionTrackerNew = new SessionTracker();
+            if (sessionTrackerNew != null)
+            {
+                SageFrame.Web.SessionLog sLogNew = new SageFrame.Web.SessionLog();
+                sLogNew.SessionLogStart(sessionTrackerNew);
+            }
+            HttpContext.Current.Session[SessionKeys.Tracker] = sessionTrackerNew;
+            string ReturnUrl = string.Empty;
+            string RedUrl = string.Empty;
+            SageFrameConfig sfConfig = new SageFrameConfig();
+            if (lnkloginStatus.CommandName == "LOGIN")
+            {
 
-
-                string ReturnUrl = string.Empty;
-                string RedUrl = string.Empty;
-                SageFrameConfig sfConfig = new SageFrameConfig();
-                if (lnkloginStatus.CommandName == "LOGIN")
+                if (Request.QueryString["ReturnUrl"] == null)
                 {
-                    if (IsUseFriendlyUrls)
+                    ReturnUrl = Request.RawUrl.ToString();
+                    if (!(ReturnUrl.ToLower().Contains(SageFrameSettingKeys.PageExtension)))
                     {
-                        if (Request.QueryString["ReturnUrl"] == null)
+                        //ReturnUrl = ReturnUrl.Remove(strURL.LastIndexOf('/'));
+                        if (ReturnUrl.EndsWith("/"))
                         {
-                            ReturnUrl = Request.RawUrl.ToString();
-                            if (!(ReturnUrl.ToLower().Contains(".aspx")))
-                            {
-                                //ReturnUrl = ReturnUrl.Remove(strURL.LastIndexOf('/'));
-                                if (ReturnUrl.EndsWith("/"))
-                                {
-                                    ReturnUrl += sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx";
-                                }
-                                else
-                                {
-                                    ReturnUrl += '/' + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx";
-                                }
-                            }
+                            ReturnUrl += sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage).Replace(" ", "-") + SageFrameSettingKeys.PageExtension;
                         }
                         else
                         {
-                            ReturnUrl = Request.QueryString["ReturnUrl"].ToString();
+                            ReturnUrl += '/' + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage).Replace(" ", "-") + SageFrameSettingKeys.PageExtension;
                         }
-                        if (GetPortalID > 1)
-                        {
-                            RedUrl = "~/portal/" + GetPortalSEOName + "/sf/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PlortalLoginpage) + ".aspx";
-
-                        }
-                        else
-                        {
-                            RedUrl = "~/sf/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PlortalLoginpage) + ".aspx";
-                        }
-                    }
-                    else
-                    {
-                        string[] arrUrl;
-                        string strURL = string.Empty;
-                        arrUrl = Request.RawUrl.Split('?');
-                        string[] keys = Request.QueryString.AllKeys;
-                        for (int i = 0; i < Request.QueryString.Count; i++)
-                        {
-                            string[] values = Request.QueryString.GetValues(i);
-                            strURL += keys[i] + '=' + values[0] + '&';
-                        }
-                        if (strURL.Length > 0)
-                        {
-                            strURL = strURL.Remove(strURL.LastIndexOf('&'));
-                        }
-                        ReturnUrl = arrUrl[0] + Server.UrlEncode(strURL.Length > 0 ? "?" + strURL : "");
-                        RedUrl = "~/Default.aspx?ptlid=" + GetPortalID + "&ptSEO=" + GetPortalSEOName + "&pgnm=" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PlortalLoginpage) + "&ReturnUrl=" + ReturnUrl;
                     }
                 }
                 else
                 {
-                    FormsAuthentication.SignOut();
-                    lnkloginStatus.Text = "Login";
-                    SetUserRoles(string.Empty);                    
-                    if (IsUseFriendlyUrls)
-                    {
-                        if (GetPortalID > 1)
-                        {
-                            RedUrl = "~/portal/" + GetPortalSEOName + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx";
-                        }
-                        else
-                        {
-                            RedUrl = "~/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage) + ".aspx";
-                        }
-                    }
-                    else
-                    {
-                        RedUrl = "~/Default.aspx?ptlid=" + GetPortalID + "&ptSEO=" + GetPortalSEOName + "&pgnm=" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage);                        
-                    }
+                    ReturnUrl = Request.QueryString["ReturnUrl"].ToString();
                 }
-                Response.Redirect(RedUrl, false);
+                if (!IsParent)
+                {
+                    RedUrl = GetParentURL + "/portal/" + GetPortalSEOName + "/" + sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalLoginpage) + SageFrameSettingKeys.PageExtension;
+
+                }
+                else
+                {
+                    RedUrl = GetParentURL + "/" + sfConfig.GetSettingValueByIndividualKey(SageFrameSettingKeys.PortalLoginpage) + SageFrameSettingKeys.PageExtension;
+                }
+
             }
-            catch (Exception ex)
+            else
             {
-                ProcessException(ex);
+
+                SecurityPolicy objSecurity = new SecurityPolicy();
+                HttpCookie authenticateCookie = new HttpCookie(objSecurity.FormsCookieName(GetPortalID));
+                authenticateCookie.Expires = DateTime.Now.AddYears(-1);
+                Response.Cookies.Add(authenticateCookie);
+                lnkloginStatus.Text = "Login";
+                SetUserRoles(string.Empty);
+
+                if (!IsParent)
+                {
+                    RedUrl = GetParentURL + "/portal/" + GetPortalSEOName + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage).Replace(" ", "-") + SageFrameSettingKeys.PageExtension;
+                }
+                else
+                {
+                    RedUrl = GetParentURL + "/" + sfConfig.GetSettingsByKey(SageFrameSettingKeys.PortalDefaultPage).Replace(" ", "-") + SageFrameSettingKeys.PageExtension;
+                }
             }
+            FormsAuthentication.SignOut();
+            Response.Redirect(RedUrl, false);
         }
-        public void SetUserRoles(string strRoles)
+        catch (Exception ex)
         {
-            Session["SageUserRoles"] = strRoles;
-            HttpCookie cookie = HttpContext.Current.Request.Cookies["SageUserRolesCookie"];
-            if (cookie == null)
-            {
-                cookie = new HttpCookie("SageUserRolesCookie");
-            }
-            cookie["SageUserRolesProtected"] = strRoles;
-            HttpContext.Current.Response.Cookies.Add(cookie);
+            ProcessException(ex);
         }
     }
+    public void SetUserRoles(string strRoles)
+    {
+        Session[SessionKeys.SageUserRoles] = strRoles;
+        HttpCookie cookie = HttpContext.Current.Request.Cookies[CookiesKeys.SageUserRolesCookie];
+        if (cookie == null)
+        {
+            cookie = new HttpCookie(CookiesKeys.SageUserRolesCookie);
+        }
+        cookie[CookiesKeys.SageUserRolesProtected] = strRoles;
+        HttpContext.Current.Response.Cookies.Add(cookie);
+    }
+}

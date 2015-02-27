@@ -1,7 +1,15 @@
-﻿using System;
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
+*/
+#endregion
+
+#region "References"
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#endregion
 
 namespace SageFrame.SEOExtension
 {
@@ -15,7 +23,6 @@ namespace SageFrame.SEOExtension
         public string Description { get; set; }
         public DateTime UpdatedOn { get; set; }
         public DateTime AddedOn { get; set; }
-
         public string ChangeFreq { get; set; }
        
         public SiteMapInfo() { }

@@ -1,25 +1,13 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+﻿#region "Copyright"
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+
+#endregion
+
+#region "References"
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +16,9 @@ using System.Threading;
 using System.Text.RegularExpressions;
 using System.Collections;
 using SageFrame.Web.Utilities;
+
+#endregion
+
 
 namespace SageFrame.HTMLText
 {
@@ -40,13 +31,9 @@ namespace SageFrame.HTMLText
         public void HTMLCommentDeleteByCommentID(int HTMLCommentID, int PortalID, string DeletedBy)
         {
             try
-            {               
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@HTMLCommentID", HTMLCommentID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@DeletedBy", DeletedBy));
-                SQLHandler sq = new SQLHandler();
-                sq.ExecuteNonQuery("dbo.sp_HTMLCommentDeleteByCommentID", ParaMeterCollection);
+            {
+                HTMLDataProvider objProvider = new HTMLDataProvider();
+                objProvider.HTMLCommentDeleteByCommentID(HTMLCommentID, PortalID, DeletedBy);
             }
             catch (Exception e)
             {
@@ -57,12 +44,10 @@ namespace SageFrame.HTMLText
         public HTMLContentInfo HtmlCommentGetByHTMLCommentID(int PortalID, int HTMLCommentID)
         {
             try
-            {                
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@HTMLCommentID", HTMLCommentID));
-                SQLHandler sq = new SQLHandler();
-                return sq.ExecuteAsObject<HTMLContentInfo>("dbo.sp_HtmlCommentGetByHTMLCommentID", ParaMeterCollection);
+            {
+                HTMLDataProvider objProvider = new HTMLDataProvider();
+                HTMLContentInfo htmlInfo = objProvider.HtmlCommentGetByHTMLCommentID(PortalID, HTMLCommentID);
+                return htmlInfo;
             }
             catch (Exception e)
             {
@@ -74,16 +59,8 @@ namespace SageFrame.HTMLText
         {
             try
             {
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@HTMLTextID", HTMLTextID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Comment", Comment));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsApproved", IsApproved));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsActive", IsActive));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@AddedOn", AddedOn));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@AddedBy", AddedBy));
-                SQLHandler sq = new SQLHandler();
-                sq.ExecuteNonQuery("dbo.sp_HtmlCommentAdd", ParaMeterCollection, "@HTMLCommentID");
+                HTMLDataProvider objProvider = new HTMLDataProvider();
+                objProvider.HtmlCommentAdd(HTMLTextID, Comment, IsApproved, IsActive, AddedOn, PortalID, AddedBy);
             }
             catch (Exception e)
             {
@@ -95,17 +72,8 @@ namespace SageFrame.HTMLText
         {
             try
             {
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@HTMLCommentID", HTMLCommentID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Comment", Comment));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsApproved", IsApproved));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsActive", IsActive));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsModified", IsModified));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@UpdatedOn", UpdatedOn));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@UpdatedBy", UpdatedBy));
-                SQLHandler sq = new SQLHandler();
-                sq.ExecuteNonQuery("dbo.sp_HtmlCommentUpdate", ParaMeterCollection);
+                HTMLDataProvider objProvider = new HTMLDataProvider();
+                objProvider.HtmlCommentUpdate(HTMLCommentID, Comment, IsApproved, IsActive, IsModified, UpdatedOn, PortalID, UpdatedBy);
             }
             catch (Exception e)
             {
@@ -117,13 +85,9 @@ namespace SageFrame.HTMLText
         {
             try
             {
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PermissionKey", "EDIT"));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserModuleID", UserModuleID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Username", Username));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                SQLHandler sagesql = new SQLHandler();
-                return sagesql.ExecuteAsScalar<bool>("sp_CheckUserModulePermissionByPermissionKeyADO", ParaMeterCollection);
+                HTMLDataProvider objProvider = new HTMLDataProvider();
+                bool IsAuthenticated = objProvider.IsAuthenticatedToEdit(UserModuleID, Username, PortalID);
+                return IsAuthenticated;
             }
             catch (Exception e)
             {
@@ -135,29 +99,22 @@ namespace SageFrame.HTMLText
         {
             try
             {
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@UsermoduleID", UsermoduleID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@CultureName", CultureName));
-                SQLHandler sagesql = new SQLHandler();
-                HTMLContentInfo objHtmlInfo = sagesql.ExecuteAsObject<HTMLContentInfo>("dbo.sp_HtmlTextGetByPortalAndUserModule", ParaMeterCollection);
-                return objHtmlInfo;
+                HTMLDataProvider objProvider = new HTMLDataProvider();
+                HTMLContentInfo htmlContentInfo = objProvider.GetHTMLContent(PortalID, UsermoduleID, CultureName);
+                return htmlContentInfo;
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
-       
+
         public List<HTMLContentInfo> BindCommentForSuperUser(int PortalID, string HTMLTextID)
         {
             try
             {
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@HTMLTextID", HTMLTextID));
-                SQLHandler Sq = new SQLHandler();
-                List<HTMLContentInfo> ml = Sq.ExecuteAsList<HTMLContentInfo>("dbo.sp_HtmlCommentGetAllByHTMLTextID", ParaMeterCollection);
+                HTMLDataProvider objProvider = new HTMLDataProvider();
+                List<HTMLContentInfo> ml = objProvider.BindCommentForSuperUser(PortalID, HTMLTextID);
                 return ml;
             }
             catch (Exception e)
@@ -170,11 +127,8 @@ namespace SageFrame.HTMLText
         {
             try
             {
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@HTMLTextID", HTMLTextID));
-                SQLHandler Sq = new SQLHandler();
-                List<HTMLContentInfo> ml = Sq.ExecuteAsList<HTMLContentInfo>("dbo.sp_HtmlActiveCommentGetByHTMLTextID", ParaMeterCollection);
+                HTMLDataProvider objProvider = new HTMLDataProvider();
+                List<HTMLContentInfo> ml = objProvider.BindCommentForOthers(PortalID, HTMLTextID);
                 return ml;
             }
             catch (Exception e)
@@ -187,12 +141,9 @@ namespace SageFrame.HTMLText
         {
             try
             {
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@UsermoduleID", UsermoduleID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@CultureName", CultureName));
-                SQLHandler Sq = new SQLHandler();
-                return Sq.ExecuteAsObject<HTMLContentInfo>("dbo.sp_HtmlTextGetByPortalAndUserModule", ParaMeterCollection);
+                HTMLDataProvider objProvider = new HTMLDataProvider();
+                HTMLContentInfo objHtmlContent = objProvider.HtmlTextGetByPortalAndUserModule(PortalID, UsermoduleID, CultureName);
+                return objHtmlContent;
             }
             catch (Exception e)
             {
@@ -200,22 +151,12 @@ namespace SageFrame.HTMLText
             }
         }
 
-        public void HtmlTextUpdate(string UserModuleID, string Content, string CultureName, bool IsAllowedToComment, bool IsActive, bool IsModified,DateTime UpdatedOn, int PortalID, string UpdatedBy)
+        public void HtmlTextUpdate(string UserModuleID, string Content, string CultureName, bool IsAllowedToComment, bool IsActive, bool IsModified, DateTime UpdatedOn, int PortalID, string UpdatedBy)
         {
             try
             {
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserModuleID", UserModuleID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Content", Content));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@CultureName", CultureName));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsAllowedToComment", IsAllowedToComment));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsActive", IsActive));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsModified", IsModified));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@UpdatedOn", UpdatedOn));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@UpdatedBy", UpdatedBy));
-                SQLHandler Sq = new SQLHandler();
-                Sq.ExecuteNonQuery("dbo.sp_HtmlTextUpdate", ParaMeterCollection);
+                HTMLDataProvider objProvider = new HTMLDataProvider();
+                objProvider.HtmlTextUpdate(UserModuleID, Content, CultureName, IsAllowedToComment, IsActive, IsModified, UpdatedOn, PortalID, UpdatedBy);
             }
             catch (Exception e)
             {
@@ -223,22 +164,13 @@ namespace SageFrame.HTMLText
             }
         }
 
-        public void HtmlTextAdd(string UserModuleID, string Content, string CultureName, bool IsAllowedToComment, bool IsModified, bool IsActive, DateTime AddedOn, int PortalID, string AddedBy)
+        public int HtmlTextAdd(string UserModuleID, string Content, string CultureName, bool IsAllowedToComment, bool IsModified, bool IsActive, DateTime AddedOn, int PortalID, string AddedBy)
         {
             try
             {
-                List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserModuleID", UserModuleID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@Content", Content));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@CultureName", CultureName));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsAllowedToComment", IsAllowedToComment));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsModified", IsModified));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@IsActive", IsActive));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@AddedOn", AddedOn));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", PortalID));
-                ParaMeterCollection.Add(new KeyValuePair<string, object>("@AddedBy", AddedBy));
-                SQLHandler Sq = new SQLHandler();
-                Sq.ExecuteNonQuery("dbo.sp_HtmlTextAdd", ParaMeterCollection, "@HTMLTextID");
+                HTMLDataProvider objProvider = new HTMLDataProvider();
+                int htmlTextAdd = objProvider.HtmlTextAdd(UserModuleID, Content, CultureName, IsAllowedToComment, IsModified, IsActive, AddedOn, PortalID, AddedBy);
+                return htmlTextAdd;
             }
             catch (Exception e)
             {
@@ -256,20 +188,18 @@ namespace SageFrame.HTMLText
             return str; //Regex.Replace(str, @"<(.|\n)*?>", string.Empty);
         }
 
-        public static bool IsAuthenticatedToEdit(string usermoduleid,string username,int portalid)
+        public static bool IsAuthenticatedToEdit(string usermoduleid, string username, int portalid)
         {
-            List<KeyValuePair<string, object>> ParaMeterCollection = new List<KeyValuePair<string, object>>();
-            ParaMeterCollection.Add(new KeyValuePair<string, object>("@PermissionKey", "EDIT"));
-            ParaMeterCollection.Add(new KeyValuePair<string, object>("@UserModuleID", Int32.Parse(usermoduleid)));
-            ParaMeterCollection.Add(new KeyValuePair<string, object>("@Username", username));
-            ParaMeterCollection.Add(new KeyValuePair<string, object>("@PortalID", portalid));
-            SQLHandler sagesql = new SQLHandler();
-            return sagesql.ExecuteAsScalar<bool>("sp_CheckUserModulePermissionByPermissionKeyADO", ParaMeterCollection);
+            try
+            {
+                HTMLDataProvider objProvider = new HTMLDataProvider();
+                bool IsAunticateToEdit = HTMLDataProvider.IsAuthenticatedToEdit(usermoduleid, username, portalid);
+                return IsAunticateToEdit;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
-
-
-
-      
-      
     }
 }

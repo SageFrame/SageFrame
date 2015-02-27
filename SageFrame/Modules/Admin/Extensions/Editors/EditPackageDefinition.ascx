@@ -2,16 +2,18 @@
     Inherits="SageFrame.Modules.Admin.Extensions.Editors.EditPackageDefinition" %>
 
 <script language="javascript" type="text/javascript">
+    //<![CDATA[    
     function DisplaySubmission() {
         SageFrame.messaging.show("The package has been created", "Success");
-    }    
+    }
+    //]]>	
 </script>
 
 <div class="sfCollapsewrapper">
     <div id="divPackageSettings" runat="server" class="sfCollapsecontent">
-        <div class="sfFormwrapper sfPadding">
-            <h2>
-                New Package Details</h2>
+        <div class="sfFormwrapper">
+            <h3>
+                New Package Details</h3>
             <p class="sfNote">
                 <asp:Label ID="lblPackageSettingsHelp" runat="server" Text="In this section you can configure the package information for the Package."
                     meta:resourcekey="lblPackageSettingsHelpResource1"></asp:Label></p>
@@ -20,9 +22,6 @@
                     <td width="20%">
                         <asp:Label ID="lblPackageName" runat="server" Text="Package Name" CssClass="sfFormlabel"
                             meta:resourcekey="lblPackageNameResource1"></asp:Label>
-                    </td>
-                    <td width="30">
-                        :
                     </td>
                     <td>
                         <asp:TextBox ID="txtPackageName" runat="server" CssClass="sfInputbox" meta:resourcekey="txtPackageNameResource1"></asp:TextBox>
@@ -36,9 +35,6 @@
                         <asp:Label ID="lblFriendlyName" runat="server" Text="Friendly Name" CssClass="sfFormlabel"
                             meta:resourcekey="lblFriendlyNameResource1"></asp:Label>
                     </td>
-                    <td width="30">
-                        :
-                    </td>
                     <td>
                         <asp:TextBox ID="txtFriendlyName" runat="server" CssClass="sfInputbox" meta:resourcekey="txtFriendlyNameResource1"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="rfvFriendlyName" CssClass="sfRequired" runat="server"
@@ -48,11 +44,8 @@
                 </tr>
                 <tr>
                     <td>
-                        <asp:Label ID="lblDescription" runat="server" Text="Description:" CssClass="sfFormlabel"
+                        <asp:Label ID="lblDescription" runat="server" Text="Description" CssClass="sfFormlabel"
                             meta:resourcekey="lblDescriptionResource1"></asp:Label>
-                    </td>
-                    <td width="30">
-                        :
                     </td>
                     <td>
                         <asp:TextBox ID="txtDescription" runat="server" CssClass="sfInputbox" Rows="5" TextMode="MultiLine"
@@ -61,11 +54,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <asp:Label ID="lblVersion" runat="server" Text="Version:" CssClass="sfFormlabel"
-                            meta:resourcekey="lblVersionResource1"></asp:Label>
-                    </td>
-                    <td width="30">
-                        :
+                        <asp:Label ID="lblVersion" runat="server" Text="Version" CssClass="sfFormlabel" meta:resourcekey="lblVersionResource1"></asp:Label>
                     </td>
                     <td>
                         <asp:DropDownList ID="ddlFirst" runat="server" CssClass="sfListmenu sfAuto" meta:resourcekey="ddlFirstResource1">
@@ -78,11 +67,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <asp:Label ID="lblLicense" runat="server" Text="License:" CssClass="sfFormlabel"
-                            meta:resourcekey="lblLicenseResource1"></asp:Label>
-                    </td>
-                    <td width="30">
-                        :
+                        <asp:Label ID="lblLicense" runat="server" Text="License" CssClass="sfFormlabel" meta:resourcekey="lblLicenseResource1"></asp:Label>
                     </td>
                     <td>
                         <asp:TextBox ID="txtLicense" runat="server" CssClass="sfInputbox" Rows="5" TextMode="MultiLine"
@@ -91,11 +76,8 @@
                 </tr>
                 <tr>
                     <td>
-                        <asp:Label ID="lblReleaseNotes" runat="server" Text="Release Notes:" CssClass="sfFormlabel"
+                        <asp:Label ID="lblReleaseNotes" runat="server" Text="Release Notes" CssClass="sfFormlabel"
                             meta:resourcekey="lblReleaseNotesResource1"></asp:Label>
-                    </td>
-                    <td width="30">
-                        :
                     </td>
                     <td>
                         <asp:TextBox ID="txtReleaseNotes" runat="server" CssClass="sfInputbox" Rows="5" TextMode="MultiLine"
@@ -106,20 +88,14 @@
                     <td>
                         <asp:Label ID="lblOwner" runat="server" Text="Owner:" CssClass="sfFormlabel" meta:resourcekey="lblOwnerResource1"></asp:Label>
                     </td>
-                    <td width="30">
-                        :
-                    </td>
                     <td>
                         <asp:TextBox ID="txtOwner" runat="server" CssClass="sfInputbox" meta:resourcekey="txtOwnerResource1"></asp:TextBox>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <asp:Label ID="lblOrganization" runat="server" Text="Organization:" CssClass="sfFormlabel"
+                        <asp:Label ID="lblOrganization" runat="server" Text="Organization" CssClass="sfFormlabel"
                             meta:resourcekey="lblOrganizationResource1"></asp:Label>
-                    </td>
-                    <td width="30">
-                        :
                     </td>
                     <td>
                         <asp:TextBox ID="txtOrganization" runat="server" CssClass="sfInputbox" meta:resourcekey="txtOrganizationResource1"></asp:TextBox>
@@ -127,10 +103,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <asp:Label ID="lblUrl" runat="server" Text="Url:" CssClass="sfFormlabel" meta:resourcekey="lblUrlResource1"></asp:Label>
-                    </td>
-                    <td width="30">
-                        :
+                        <asp:Label ID="lblUrl" runat="server" Text="Url" CssClass="sfFormlabel" meta:resourcekey="lblUrlResource1"></asp:Label>
                     </td>
                     <td>
                         <asp:TextBox ID="txtUrl" runat="server" CssClass="sfInputbox" meta:resourcekey="txtUrlResource1"></asp:TextBox>
@@ -142,10 +115,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <asp:Label ID="lblEmail" runat="server" Text="Email:" CssClass="sfFormlabel" meta:resourcekey="lblEmailResource1"></asp:Label>
-                    </td>
-                    <td width="30">
-                        :
+                        <asp:Label ID="lblEmail" runat="server" Text="Email" CssClass="sfFormlabel" meta:resourcekey="lblEmailResource1"></asp:Label>
                     </td>
                     <td>
                         <asp:TextBox ID="txtEmail" runat="server" CssClass="sfInputbox" meta:resourcekey="txtEmailResource1"></asp:TextBox>
@@ -154,27 +124,24 @@
                             meta:resourcekey="revEmailResource1"></asp:RegularExpressionValidator>
                     </td>
                 </tr>
-               
-               
                 <tr>
-                <td> <asp:Label ID="lblSelectPackage" runat="server" CssClass="sfFormlabel" Text="Select Modules"
-                                ></asp:Label></td>
-                                <td width="30">:</td>
+                    <td>
+                        <asp:Label ID="lblSelectPackage" runat="server" CssClass="sfFormlabel" Text="Select Modules"></asp:Label>
+                    </td>
                     <td colspan="3">
                         <asp:UpdatePanel ID="Upanel1" runat="server" UpdateMode="Conditional">
                             <ContentTemplate>
                                 <div class='sfAvailableModules'>
-                                
                                     <asp:ListBox ID="lbAvailableModules" runat="server" CssClass="sfListmenubig" SelectionMode="Multiple"
                                         Height="200"></asp:ListBox>
                                 </div>
-                                <div class="sfSelectleftright">
-                                    <div class="sfSelectleftright1">
-                                        <asp:Button ID="add" runat="server" CssClass="sfSelectoneright" OnClick="add_Click" />
-                                        <asp:Button ID="remove" runat="server" CssClass="sfSelectoneleft" OnClick="remove_Click" /></div>
+                                <div class="sfSelectleftright sfSelectarrow">
+                                        <label class="icon-arrow-slim-e">
+                                            <asp:Button ID="add" runat="server" OnClick="add_Click" /></label>
+                                        <label class="icon-arrow-slim-w">
+                                            <asp:Button ID="remove" runat="server" OnClick="remove_Click" /></label>
                                 </div>
                                 <div class='sfSelectedModules'>
-                                 
                                     <asp:ListBox ID="lbModulesList" CssClass="sfListmenubig" runat="server" SelectionMode="Multiple"
                                         Height="200"></asp:ListBox>
                                     <asp:RequiredFieldValidator ID="rfvModulesList" runat="server" ControlToValidate="lbModulesList"
@@ -193,10 +160,12 @@
         </div>
     </div>
     <div class="sfButtonwrapper">
-        <asp:Button ID="imbCreate" runat="server" CssClass="sfBtn" Text="Download Package"
-            meta:resourcekey="imbCreateResource1" OnClick="imbCreate_Click" ValidationGroup="vdgExtension" />
-        <asp:Button ID="btnCancelled" runat="server" AlternateText="Cancel" CssClass="sfBtn"
+    <label class="icon-download-package sfBtn">
+        <asp:Button ID="imbCreate" runat="server" 
+            meta:resourcekey="imbCreateResource1" OnClick="imbCreate_Click" ValidationGroup="vdgExtension" />Download Package</label>
+       <label class="icon-close sfBtn">Cancel <asp:Button ID="btnCancelled" runat="server" AlternateText="Cancel" 
             Text="Cancel" meta:resourcekey="btnCancelResource2" UseSubmitBehavior="false"
-            OnClientClick="javascript:return window.location=sageRootPath+'Super-User/Modules.aspx';" />
+            OnClientClick="javascript:return window.location=CancelURL;" /></label>
     </div>
 </div>
+

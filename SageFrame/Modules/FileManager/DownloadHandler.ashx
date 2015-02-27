@@ -13,46 +13,11 @@ public class DownloadHandler : IHttpHandler {
 
 
     public void ProcessRequest(HttpContext context)
-    {        
-        int FileID = int.Parse(context.Request.QueryString["FileID"].ToString());
-        int FolderID = int.Parse(context.Request.QueryString["FolderID"].ToString());
-
-        string filepath = string.Empty;
-        List<ATTFile> lstFile = new List<ATTFile>();
-        
-          List<ATTFile> fileDetails=new List<ATTFile>();
-           fileDetails.Add(FileManagerController.GetFileDetails(FileID));
-           lstFile=FolderID==0?fileDetails:FileManagerController.GetFiles(FolderID);
-        
-        int index = lstFile.FindIndex(
-                delegate(ATTFile obj)
-                {
-                    return (obj.FileId == FileID);
-                }
-            );
-        
-        if (index > -1)       {          
-       
-        switch (lstFile[index].StorageLocation)
-        {
-            case 0:
-                filepath = lstFile[index].Folder;
-                filepath += "/" + lstFile[index].FileName;
-                DownloadFile(context, filepath);
-                break;
-            case 1:
-                filepath = lstFile[index].Folder;
-                filepath += "/" + lstFile[index].FileName;               
-                DownloadSecureFile(context,filepath);               
-                break;
-            case 2:
-                DownloadFileFromDatabase(context, lstFile[index].Content, lstFile[index].FileName);
-                break;
-        }
-        }   
-
-           
-       
+    {
+        string FileName = context.Request.QueryString["FileName"].ToString();
+        string FolderName = context.Request.QueryString["FolderName"].ToString();
+        string filepath = Path.Combine(FolderName, FileName);
+        DownloadFile(context, filepath);
     }
     public static string GetAbsolutePath(string filepath)
     {

@@ -5,19 +5,16 @@
     TagPrefix="sfe" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajax" %>
 <div class="sfButtonwrapper">
-    <asp:ImageButton ID="imbUninstall" runat="server" CausesValidation="False" OnClick="imbUninstall_Click"
-        meta:resourcekey="imbUninstallResource1" />
-    <asp:Label ID="lblUnInstallExtension" runat="server" Text="Uninstall Extension" AssociatedControlID="imbUninstall"
-        meta:resourcekey="lblUnInstallExtensionResource1" />
-    <%--<asp:ImageButton ID="imbPackage" runat="server" CausesValidation="False" />
-    <asp:Label  ID="lblCreatePackage" runat="server" Text="Create Package"
-        AssociatedControlID="imbPackage" />--%>
-    <asp:ImageButton ID="imbCancel" runat="server" CausesValidation="False" OnClick="imbCancel_Click"
-        meta:resourcekey="imbCancelResource1" />
-    <asp:Label ID="lblCancel" runat="server" Text="Cancel" AssociatedControlID="imbCancel"
-        meta:resourcekey="lblCancelResource1" />
+    <asp:LinkButton ID="imbUninstall" runat="server" CausesValidation="False" meta:resourcekey="imbUninstallResource1"
+        CssClass="icon-uninstall sfBtn" Text="Uninstall Extension" OnClick="imbUninstall_Click" />
+    <%--<asp:Label ID="lblUnInstallExtension" runat="server" Text="Uninstall Extension" AssociatedControlID="imbUninstall"
+        meta:resourcekey="lblUnInstallExtensionResource1" />--%>
+    <asp:LinkButton ID="imbCancel" runat="server" CausesValidation="False" CssClass="icon-close sfBtn"
+        OnClick="imbCancel_Click" meta:resourcekey="imbCancelResource1" Text="Cancel" />
+    <%-- <asp:Label ID="lblCancel" runat="server" Text="Cancel" AssociatedControlID="imbCancel"
+        meta:resourcekey="lblCancelResource1" />--%>
 </div>
-<ajax:TabContainer ID="TabContainerManageModules" runat="server" ActiveTabIndex="0"
+<ajax:TabContainer ID="TabContainerManageModules" runat="server" ActiveTabIndex="2"
     meta:resourcekey="TabContainerManageModulesResource1">
     <ajax:TabPanel ID="TabPanelModuleEditor" runat="server" meta:resourcekey="TabPanelModuleEditorResource1">
         <HeaderTemplate>
@@ -25,23 +22,21 @@
         </HeaderTemplate>
         <ContentTemplate>
             <div class="sfCollapsewrapper">
-              <h3>Edit Extension</h3>
+                <h3>
+                    Edit Extension</h3>
                 <div id="divExtensionSettings" runat="server" class="sfCollapsecontent">
                     <div class="sfFormwrapper sfMargintop">
                         <p class="sfNote">
-                            <asp:Label ID="lblExtensionSettingsHelp" runat="server" Text="In this section, you can set up more advanced settings for Module Controls on this Module."
-                                meta:resourcekey="lblExtensionSettingsHelpResource1"></asp:Label>
+                            <asp:Label ID="lblExtensionSettingsHelp" runat="server" meta:resourceKey="lblExtensionSettingsHelpResource1"
+                                Text="In this section, you can set up more advanced settings for Module Controls on this Module."></asp:Label>
                         </p>
                         <table border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                                 <td width="20%">
                                     <asp:Label ID="lblModuleName" runat="server" CssClass="sfFormlabel" Text="Module Name"></asp:Label>
                                 </td>
-                                <td width="30">
-                                    :
-                                </td>
                                 <td>
-                                    <asp:Label ID="lblModuleNameD" runat="server" CssClass="cssClassFormLabelField" meta:resourcekey="lblModuleNameDResource1"></asp:Label>
+                                    <asp:Label ID="lblModuleNameD" runat="server" CssClass="cssClassFormLabelField" meta:resourceKey="lblModuleNameDResource1"></asp:Label>
                                     <asp:HiddenField ID="hdnModuleName" runat="server"></asp:HiddenField>
                                 </td>
                             </tr>
@@ -49,21 +44,15 @@
                                 <td>
                                     <asp:Label ID="lblFolderName" runat="server" CssClass="sfFormlabel" Text="Folder Name"></asp:Label>
                                 </td>
-                                <td width="30">
-                                    :
-                                </td>
                                 <td>
                                     <asp:TextBox ID="txtFolderName" runat="server" CssClass="sfInputbox" MaxLength="200"
-                                        ReadOnly="True" meta:resourcekey="txtFolderNameResource1"></asp:TextBox>
+                                        meta:resourceKey="txtFolderNameResource1" ReadOnly="True"></asp:TextBox>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <asp:Label ID="lblBusinessControllerClass" runat="server" CssClass="sfFormlabel"
                                         Text="Business Controller Class"></asp:Label>
-                                </td>
-                                <td width="30">
-                                    :
                                 </td>
                                 <td>
                                     <asp:TextBox ID="txtBusinessControllerClass" runat="server" CssClass="sfInputbox"
@@ -74,68 +63,54 @@
                                 <td>
                                     <asp:Label ID="lblDependencies" runat="server" CssClass="sfFormlabel" Text="Dependencies"></asp:Label>
                                 </td>
-                                <td width="30">
-                                    :
-                                </td>
                                 <td>
-                                    <asp:TextBox ID="txtDependencies" runat="server" CssClass="sfInputbox" meta:resourcekey="txtDependenciesResource1"></asp:TextBox>
+                                    <asp:TextBox ID="txtDependencies" runat="server" CssClass="sfInputbox" meta:resourceKey="txtDependenciesResource1"></asp:TextBox>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <asp:Label ID="lblPermissions" runat="server" CssClass="sfFormlabel" Text="Permissions"></asp:Label>
                                 </td>
-                                <td width="30">
-                                    :
-                                </td>
                                 <td>
-                                    <asp:TextBox ID="txtPermissions" runat="server" CssClass="sfInputbox" meta:resourcekey="txtPermissionsResource1"></asp:TextBox>
+                                    <asp:TextBox ID="txtPermissions" runat="server" CssClass="sfInputbox" meta:resourceKey="txtPermissionsResource1"></asp:TextBox>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
                                     <asp:Label ID="lblIsPortable" runat="server" CssClass="sfFormlabel" Text="Is Portable?"></asp:Label>
                                 </td>
-                                <td width="30">
-                                </td>
                                 <td>
                                     <asp:CheckBox ID="chkIsPortable" runat="server" CssClass="sfCheckbox" Enabled="False"
-                                        meta:resourcekey="chkIsPortableResource1"></asp:CheckBox>
+                                        meta:resourceKey="chkIsPortableResource1"></asp:CheckBox>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <asp:Label ID="lblIsSearchable" runat="server" CssClass="sfFormlabel" Text="Is Searchable?"
-                                        meta:resourcekey="lblIsSearchableResource1"></asp:Label>
-                                </td>
-                                <td width="30">
+                                    <asp:Label ID="lblIsSearchable" runat="server" CssClass="sfFormlabel" meta:resourceKey="lblIsSearchableResource1"
+                                        Text="Is Searchable?"></asp:Label>
                                 </td>
                                 <td>
                                     <asp:CheckBox ID="chkIsSearchable" runat="server" Checked="True" CssClass="sfCheckbox"
-                                        Enabled="False" meta:resourcekey="chkIsSearchableResource1"></asp:CheckBox>
+                                        Enabled="False" meta:resourceKey="chkIsSearchableResource1"></asp:CheckBox>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <asp:Label ID="lblIsUpgradable" runat="server" CssClass="sfFormlabel" Text="Is Upgradable?"
-                                        meta:resourcekey="lblIsUpgradableResource1"></asp:Label>
-                                </td>
-                                <td width="30">
+                                    <asp:Label ID="lblIsUpgradable" runat="server" CssClass="sfFormlabel" meta:resourceKey="lblIsUpgradableResource1"
+                                        Text="Is Upgradable?"></asp:Label>
                                 </td>
                                 <td>
                                     <asp:CheckBox ID="chkIsUpgradable" runat="server" Checked="True" CssClass="sfCheckbox"
-                                        Enabled="False" meta:resourcekey="chkIsUpgradableResource1"></asp:CheckBox>
+                                        Enabled="False" meta:resourceKey="chkIsUpgradableResource1"></asp:CheckBox>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <asp:Label ID="lblIsPremium" runat="server" CssClass="sfFormlabel" Text="Is Premium Module?"
-                                        meta:resourcekey="lblIsPremiumResource1"></asp:Label>
-                                </td>
-                                <td width="30">
+                                    <asp:Label ID="lblIsPremium" runat="server" CssClass="sfFormlabel" meta:resourceKey="lblIsPremiumResource1"
+                                        Text="Is Premium Module?"></asp:Label>
                                 </td>
                                 <td>
-                                    <asp:CheckBox ID="chkIsPremium" runat="server" CssClass="sfCheckbox" meta:resourcekey="chkIsPremiumResource1">
+                                    <asp:CheckBox ID="chkIsPremium" runat="server" CssClass="sfCheckbox" meta:resourceKey="chkIsPremiumResource1">
                                     </asp:CheckBox>
                                 </td>
                             </tr>
@@ -147,9 +122,10 @@
                 <uc1:PackageDetails ID="PackageDetails1" runat="server"></uc1:PackageDetails>
             </div>
             <div class="sfButtonwrapper">
-                <asp:ImageButton ID="imbUpdate" runat="server" OnClick="imbUpdate_Click" meta:resourcekey="imbUpdateResource1" />
-                <asp:Label ID="lblUpdateModule" runat="server" Text="Update Module" AssociatedControlID="imbUpdate"
-                    meta:resourcekey="lblUpdateModuleResource1" />
+                <asp:LinkButton ID="imbUpdate" runat="server" CssClass="icon-update sfBtn" Text="Update Module"
+                    meta:resourceKey="imbUpdateResource1" OnClick="imbUpdate_Click"></asp:LinkButton>
+                <%-- <asp:Label ID="lblUpdateModule" runat="server" AssociatedControlID="imbUpdate" 
+                    meta:resourceKey="lblUpdateModuleResource1" Text="Update Module"></asp:Label>--%>
             </div>
         </ContentTemplate>
     </ajax:TabPanel>
@@ -161,9 +137,8 @@
             <asp:UpdatePanel ID="udpDefinitions" runat="server" Visible="False">
                 <ContentTemplate>
                     <div class="sfCollapsewrapper">
-                        
                         <div id="divModuleDefinitions" runat="server" class="sfCollapsecontent">
-                           <p class="sfNote">
+                            <p class="sfNote">
                                 <asp:Label ID="lblModuleDefinitionsHelp" runat="server" Text="In this section, you can set update information for Module Definitions on this Module."
                                     meta:resourcekey="lblModuleDefinitionsHelpResource1"></asp:Label>
                             </p>
@@ -172,9 +147,6 @@
                                     <tr>
                                         <td width="20%">
                                             <asp:Label ID="lblDefinition" runat="server" CssClass="sfFormlabel" Text="Select Definition" />
-                                        </td>
-                                        <td width="30">
-                                            :
                                         </td>
                                         <td>
                                             <asp:DropDownList ID="ddlDefinitions" runat="server" AutoPostBack="True" CssClass="sfListmenu"
@@ -186,9 +158,6 @@
                                         <td>
                                             <asp:Label ID="lblFriendlyName" runat="server" CssClass="sfFormlabel" Text="Friendly Name" />
                                         </td>
-                                        <td width="30">
-                                            :
-                                        </td>
                                         <td>
                                             <asp:TextBox ID="txtFriendlyName" ValidationGroup="ModuleDef" runat="server" CssClass="sfInputbox"
                                                 MaxLength="200" meta:resourcekey="txtFriendlyNameResource1" />
@@ -199,9 +168,6 @@
                                     <tr>
                                         <td>
                                             <asp:Label ID="lblDefaultCacheTime" runat="server" Text="Default Cache Time" CssClass="sfFormlabel"></asp:Label>
-                                        </td>
-                                        <td width="30">
-                                            :
                                         </td>
                                         <td>
                                             <asp:TextBox ID="txtDefaultCacheTime" CssClass="sfInputbox" ValidationGroup="ModuleDef"
@@ -215,10 +181,11 @@
                         </div>
                     </div>
                     <div class="sfButtonwrapper">
-                        <asp:ImageButton class="CommandButton" ID="imbUpdateDefinition" runat="server" ValidationGroup="ModuleDef"
-                            CausesValidation="True" OnClick="imbUpdateDefinition_Click" meta:resourcekey="imbUpdateDefinitionResource1" />
-                        <asp:Label ID="lblUpdateDefinition" runat="server" Text="Update Definition" AssociatedControlID="imbUpdateDefinition"
-                            meta:resourcekey="lblUpdateDefinitionResource1" />
+                        <asp:LinkButton class="CommandButton" Text="Update Definition" ID="imbUpdateDefinition"
+                            runat="server" ValidationGroup="ModuleDef" CssClass="icon-update sfBtn" CausesValidation="True"
+                            OnClick="imbUpdateDefinition_Click" meta:resourcekey="imbUpdateDefinitionResource1" />
+                        <%--<asp:Label ID="lblUpdateDefinition" runat="server" Text="Update Definition" AssociatedControlID="imbUpdateDefinition"
+                            meta:resourcekey="lblUpdateDefinitionResource1" />--%>
                         <asp:HiddenField ID="hdfModuleDefID" runat="server" />
                     </div>
                 </ContentTemplate>
@@ -231,17 +198,16 @@
         </HeaderTemplate>
         <ContentTemplate>
             <div class="sfCollapsewrapper">
-              
                 <div id="divModuleControls" runat="server" class="sfCollapsecontent">
-                     <p class="sfNote">
+                    <p class="sfNote">
                         <asp:Label ID="lblModuleControlsHelp" runat="server" Text="In this section, you can update settings for Module Controls on this Module."
                             meta:resourcekey="lblModuleControlsHelpResource1"></asp:Label>
                     </p>
                     <div class="sfButtonwrapper">
-                        <asp:ImageButton class="CommandButton" ID="imbAddControl" runat="server" CausesValidation="False"
-                            OnClick="imbAddControl_Click" meta:resourcekey="imbAddControlResource1" />
-                        <asp:Label ID="lblAddControl" runat="server" Text="Add Module Control" AssociatedControlID="imbAddControl"
-                            meta:resourcekey="lblAddControlResource1" />
+                        <asp:LinkButton class="icon-addnew sfBtn" ID="imbAddControl" Text="Add Module Control"
+                            runat="server" CausesValidation="False" OnClick="imbAddControl_Click" meta:resourcekey="imbAddControlResource1" />
+                        <%--<asp:Label ID="lblAddControl" runat="server" Text="Add Module Control" AssociatedControlID="imbAddControl"
+                            meta:resourcekey="lblAddControlResource1" />--%>
                     </div>
                     <div class="sfGridwrapper">
                         <asp:GridView ID="gdvControls" runat="server" Width="100%" AutoGenerateColumns="False"
@@ -268,17 +234,15 @@
                                 <asp:TemplateField meta:resourcekey="TemplateFieldResource4">
                                     <ItemTemplate>
                                         <asp:HiddenField ID="hdnModuleDefID" runat="server" Value='<%# Eval("ModuleDefID") %>' />
-                                        <asp:ImageButton ID="imbEdit" runat="server" CausesValidation="False" CommandArgument='<%# Eval("ModuleControlID") %>'
-                                            CommandName="Edit" ImageUrl='<%# GetTemplateImageUrl("imgedit.png", true) %>'
-                                            ToolTip="Edit ModuleControl" meta:resourcekey="imbEditResource1" />
+                                        <asp:LinkButton ID="imbEdit" runat="server" CausesValidation="False" CommandArgument='<%# Eval("ModuleControlID") %>'
+                                            CommandName="Edit" CssClass="icon-edit" ToolTip="Edit ModuleControl" meta:resourcekey="imbEditResource1" />
                                     </ItemTemplate>
                                     <HeaderStyle CssClass="sfEdit" />
                                 </asp:TemplateField>
                                 <asp:TemplateField meta:resourcekey="TemplateFieldResource5">
                                     <ItemTemplate>
-                                        <asp:ImageButton ID="imbDelete" runat="server" CausesValidation="False" CommandArgument='<%# Eval("ModuleControlID") %>'
-                                            CommandName="Delete" ImageUrl='<%# GetTemplateImageUrl("imgdelete.png", true) %>'
-                                            ToolTip="Delete ModuleControl" OnClientClick="return ConfirmDialog(this, 'Confirmation', 'Are you sure you delete this Module Control?');" />
+                                        <asp:LinkButton ID="imbDelete" runat="server" CausesValidation="False" CommandArgument='<%# Eval("ModuleControlID") %>'
+                                            CssClass="icon-delete" CommandName="Delete" ToolTip="Delete ModuleControl" OnClientClick="return ConfirmDialog(this, 'Confirmation', 'Are you sure you delete this Module Control?');" />
                                     </ItemTemplate>
                                     <HeaderStyle CssClass="sfDelete" />
                                 </asp:TemplateField>
@@ -293,6 +257,7 @@
     </ajax:TabPanel>
 </ajax:TabContainer>
 <div id="auditBar" runat="server" class="sfAuditbar clearfix sfPadding" visible="false">
+    <i class="icon-info" data-title="Information"></i>
     <asp:Label ID="lblCreatedBy" runat="server" Visible="False" meta:resourcekey="lblCreatedByResource1" />
     <asp:Label ID="lblUpdatedBy" runat="server" Visible="False" meta:resourcekey="lblUpdatedByResource1" />
 </div>

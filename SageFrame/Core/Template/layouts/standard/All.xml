@@ -8,7 +8,7 @@
   </section>
   <section name="sfContent" colwidth="20">
     <placeholder name="fulltopspan">FullTopSpan</placeholder>
-    <placeholder name="lefttop" class="sftest">LeftTop</placeholder>
+    <placeholder name="lefttop" class="sfLeftTop">LeftTop</placeholder>
     <placeholder name="leftA" class="leftaclass">LeftA</placeholder>
     <placeholder name="leftB">LeftB</placeholder>
     <placeholder name="leftbottom">LeftBottom</placeholder>

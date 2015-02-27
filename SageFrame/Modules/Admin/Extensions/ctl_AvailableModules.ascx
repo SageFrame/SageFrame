@@ -138,14 +138,6 @@
                     </table>
                 </div>
             </asp:WizardStep>
-            <%--<asp:WizardStep ID="Step4" runat="server" Title="License" StepType="Step" 
-                AllowReturn="false" meta:resourcekey="Step4Resource1">
-               
-            </asp:WizardStep>
-            <asp:WizardStep ID="Step5" runat="Server" Title="InstallResults" 
-                StepType="Finish" meta:resourcekey="Step5Resource1">
-               
-            </asp:WizardStep>--%>
         </WizardSteps>
         <StepNavigationTemplate>
             <div class="sfButtonwrapper">

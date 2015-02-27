@@ -71,7 +71,7 @@
 	float: right;
 }
 #lightbox-container-image-data-box {
-	font: 10px Verdana, Helvetica, sans-serif;
+	font-size: 10px;
 	background-color: #fff;
 	margin: 0 auto;
 	line-height: 1.4em;

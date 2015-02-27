@@ -1,25 +1,10 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +23,7 @@ using SageFrame.Modules;
 using SageFrame.Web;
 using SageFrame.Web.Utilities;
 using RegisterModule;
+#endregion
 
 
 
@@ -51,12 +37,14 @@ namespace SageFrame.Localization
             int ReturnValue = 0;
             try
             {
-                if (fileModule.HasFile)//check for Empty entry
+                //check for Empty entry
+                if (fileModule.HasFile)
                 {
-                    if (IsVAlidZipContentType(fileModule.FileName))//Check if valid Zip file submitted
+                    //Check if valid Zip file submitted
+                    if (IsVAlidZipContentType(fileModule.FileName))
                     {
                         string path = HttpContext.Current.Server.MapPath("~/");
-                        string temPath = SageFrame.Core.RegisterModule.Common.TemporaryFolder;
+                        string temPath = SageFrame.Common.RegisterModule.Common.TemporaryFolder;
                         string destPath = Path.Combine(path, temPath);
                         if (!Directory.Exists(destPath))
                             Directory.CreateDirectory(destPath);
@@ -64,7 +52,7 @@ namespace SageFrame.Localization
                         string filePath = destPath + "\\" + fileModule.FileName;
                         fileModule.SaveAs(filePath);
                         string ExtractedPath = string.Empty;
-                        ZipUtil.UnZipFiles(filePath, destPath, ref ExtractedPath, SageFrame.Core.RegisterModule.Common.Password, SageFrame.Core.RegisterModule.Common.RemoveZipFile);
+                        ZipUtil.UnZipFiles(filePath, destPath, ref ExtractedPath, SageFrame.Common.RegisterModule.Common.Password, SageFrame.Common.RegisterModule.Common.RemoveZipFile);
                         package.TempFolderPath = ExtractedPath;
                         fileModule.FileContent.Dispose();
                         if (!string.IsNullOrEmpty(package.TempFolderPath) && Directory.Exists(package.TempFolderPath))
@@ -123,7 +111,7 @@ namespace SageFrame.Localization
 
         public bool IsLanguageExists(string moduleName, PackageInfo package)
         {
-            
+
             return false;
         }
 
@@ -140,11 +128,11 @@ namespace SageFrame.Localization
                     foreach (XmlNode xn in xnList)
                     {
                         package.PackageName = xn["package"].Attributes["name"].InnerXml.ToString();
-                       
-                        if (!String.IsNullOrEmpty(package.PackageName) && IsLanguageExists(package.PackageName.ToLower(),package))
+
+                        if (!String.IsNullOrEmpty(package.PackageName) && IsLanguageExists(package.PackageName.ToLower(), package))
                         {
                             string path = HttpContext.Current.Server.MapPath("~/");
-                            string targetPath = path + SageFrame.Core.RegisterModule.Common.ModuleFolder + '\\' + package.FolderName;
+                            string targetPath = path + SageFrame.Common.RegisterModule.Common.ModuleFolder + '\\' + package.FolderName;
                             package.InstalledFolderPath = targetPath;
                             return 1;//Already exist
                         }
@@ -235,11 +223,11 @@ namespace SageFrame.Localization
             return package;
         }
 
-        public void InstallPackage(PackageInfo package,string destinationpath,bool isOverWrite,List<FileDetails> selectedModules)
+        public void InstallPackage(PackageInfo package, string destinationpath, bool isOverWrite, List<FileDetails> selectedModules)
         {
             XmlDocument doc = new XmlDocument();
             ArrayList dllFiles = new ArrayList();
-          
+
             doc.Load(package.TempFolderPath + '\\' + package.ManifestFile);
             XmlElement root = doc.DocumentElement;
             if (!String.IsNullOrEmpty(root.ToString()))
@@ -280,11 +268,11 @@ namespace SageFrame.Localization
                     }
                 }
             }
-               
+
             DeleteTempDirectory(package.TempFolderPath);
         }
 
-        public static List<FileDetails> CompareExistingFiles(PackageInfo package,string destinationpath)
+        public static List<FileDetails> CompareExistingFiles(PackageInfo package, string destinationpath)
         {
             XmlDocument doc = new XmlDocument();
             ArrayList dllFiles = new ArrayList();
@@ -303,9 +291,9 @@ namespace SageFrame.Localization
                     obj.FilePath = dir + "\\" + xn["name"].InnerText.ToString();
 
                     if (File.Exists(destinationpath + "/" + dir + "\\" + xn["name"].InnerText.ToString()))
-                    {                       
+                    {
                         obj.IsExists = true;
-                       
+
                     }
                     else
                     {
@@ -313,15 +301,12 @@ namespace SageFrame.Localization
 
                     }
                     lstFiles.Add(obj);
-                 
+
 
                 }
             }
             return lstFiles;
         }
-
-       
-
 
         public void DeleteTempDirectory(string TempDirectory)
         {

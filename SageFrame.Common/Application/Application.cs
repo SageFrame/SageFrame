@@ -1,28 +1,12 @@
-﻿/*
-SageFrame® - http://www.sageframe.com
-Copyright (c) 2009-2012 by SageFrame
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+﻿#region "Copyright"
+/*
+FOR FURTHER DETAILS ABOUT LICENSING, PLEASE VISIT "LICENSE.txt" INSIDE THE SAGEFRAME FOLDER
 */
+#endregion
+
+#region "References"
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Reflection;
 using System.Net;
@@ -30,16 +14,18 @@ using System.Text;
 using SageFrame.Web;
 using Microsoft.Win32;
 using System.Globalization;
+#endregion
 
 namespace SageFrame.Application
 {
+    [Serializable]
     public class Application
     {
         private static ReleaseMode _status = ReleaseMode.None;
 
         private System.Version _NETFrameworkVersion = System.Environment.Version;
         private string _ApplicationPath = string.Empty;
-        private string _ApplicationMapPath = string.Empty;        
+        private string _ApplicationMapPath = string.Empty;
 
         public Application()
         {
@@ -48,7 +34,7 @@ namespace SageFrame.Application
 
             _ApplicationMapPath = System.AppDomain.CurrentDomain.BaseDirectory.Substring(0, (System.AppDomain.CurrentDomain.BaseDirectory.Length - 1));
             _ApplicationMapPath = ApplicationMapPath.Replace("/", "\\");
-             
+
         }
         public static string CurrentDotNetVersion()
         {
@@ -228,6 +214,12 @@ namespace SageFrame.Application
             return strVersion;
         }
 
+        public string FormatShortVersion(System.Version version, bool includeBuild)
+        {
+            string strVersion = (version.Major.ToString("0") + ("." + (version.Minor.ToString("0"))));
+            return strVersion;
+        }
+
         private static System.Version GetNETFrameworkVersion()
         {
             string version = System.Environment.Version.ToString(2);
@@ -264,7 +256,7 @@ namespace SageFrame.Application
 
         public string ServerIPAddress
         {
-            get 
+            get
             {
                 IPAddress[] IPList = Dns.GetHostEntry(DNSName).AddressList;
                 StringBuilder strIpAddress = new StringBuilder();
@@ -289,6 +281,6 @@ namespace SageFrame.Application
             {
                 return Dns.GetHostName();
             }
-        }        
+        }
     }
 }

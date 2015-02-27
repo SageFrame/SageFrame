@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{D9FFA086-318C-48C6-9DD1-43955382CDEF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -83,6 +83,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper\XMLHelper.cs" />
+    <Compile Include="Info\CustomCultureInfo.cs" />
+    <Compile Include="Info\LocalModuleInfo.cs" />
     <Compile Include="Info\LocalPageInfo.cs" />
     <Compile Include="Installer\LanguagePackInstaller.cs" />
     <Compile Include="Installer\PackageInfo.cs" />
@@ -109,9 +111,6 @@
       <Project>{E01DB85D-70F0-4A32-AD9D-9D5CA1771D85}</Project>
       <Name>SageFrame.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\ICSharpCode.SharpZipLib.dll" />

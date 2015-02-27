@@ -1,117 +1,236 @@
-#divControls {
-	border-bottom:1px dotted #ccc;
-	padding:0 0 10px 0;
-	margin:0 0 10px 0
+#divControls
+{
+    padding: 0 0 10px 0;
+    margin: 0 0 10px 0;
 }
-#divControls ul {
-	float:right;
+#divControls ul
+{
+    float: right;
 }
-#divControls ul li {
-	float:left;
-	font-weight:bold;
-	margin:0 10px 0 0;
-	padding:4px 0 0 20px;
-	text-shadow:1px 1px 0 #fff;
-	cursor:pointer;
-	color:#0073A0;
+#divControls ul li
+{
 }
-#divControls ul li:hover {
-	color:#0094DE;
+#divControls ul li:hover
+{
 }
-#divControls ul li.sfUpload {
-	background: url(../images/addfile.png) no-repeat 0 50%;
+/*#divControls ul li.sfUpload
+{
+    background: url(../images/addfile.png) no-repeat 0 50%;
 }
-#divControls ul li.sfDelete {
-	background: url(../images/deletefile.png) no-repeat 0 50%;
+#divControls ul li.sfDelete
+{
+    background: url(../images/deletefile.png) no-repeat 0 50%;
 }
-#divControls ul li.sfAddfolder {
-	background: url(../images/addfolder.png) no-repeat 0 50%;
+#divControls ul li.sfAddfolder
+{
+    background: url(../images/addfolder.png) no-repeat 0 50%;
 }
-#divControls ul li.sfDeletefolder {
-	background: url(../images/deletefolder.png) no-repeat 0 50%;
+#divControls ul li.sfDeletefolder
+{
+    background: url(../images/deletefolder.png) no-repeat 0 50%;
 }
-#divControls ul li.sfCopy {
-	background: url(../images/copy.png) no-repeat 0 50%;
+#divControls ul li.sfCopy
+{
+    background: url(../images/copy.png) no-repeat 0 50%;
 }
-#divControls ul li.sfMove {
-	background: url(../images/move.png) no-repeat 0 50%;
+#divControls ul li.sfMove
+{
+    background: url(../images/move.png) no-repeat 0 50%;
 }
-#divControls ul li.sfRefresh {
-	background: url(../images/refresh.png) no-repeat 0 50%;
+#divControls ul li.sfRefresh
+{
+    background: url(../images/refresh.png) no-repeat 0 50%;
 }
-#divControls ul li.sfSync {
-	background: url(../images/sync.png) no-repeat 0 50%;
+#divControls ul li.sfSync
+{
+    background: url(../images/sync.png) no-repeat 0 50%;
 }
-#divSearch {
+*/#divSearch
+{
 }
-#divSearch input {
-	width:150px;
+#divSearch input
+{
+    width: 150px;
 }
-#divSearch input.sfAuto {
-	width:80px !important;
+#divSearch input.sfAuto
+{
+    width: 80px !important;
 }
-#divSearch table td {
-	padding-top:0;
-	padding-bottom:0;
+#divSearch table td
+{
+    padding-top: 0;
+    padding-bottom: 0;
 }
-.sfFilemanageholder #divFileTreeOuter {
-	float:left;
-	border: 1px solid #a6c9e2;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-	float: left;
+.sfFilemanageholder #divFileTreeOuter
+{
+    float: left;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    float: left;
+    font-weight: bold;
+    padding:0 0 20px;
+    width:300px;
+    color: #4C4C4C;
+    min-height: 150px;
+    margin:0;
+}
+.sfFilemanageholder #divFileTreeOuter .sfTab{ width:auto; margin-bottom:0px; background:none;}
+.sfFilemanageholder #divFileTreeOuter .sfTab li { background:#e0e0e0; border-right:none; margin-right:2px; border-radius:3px 3px 0px 0px; }
+.sfFilemanageholder #divFileTreeOuter .sfTab li:hover { background:#e9e9e9;}
+
+.sfFilemanageholder #divFileTreeOuter .sfTab li.sfActive { background:#485F7E; }
+.sfFilemanageholder #divFileTreeOuter #divFileTree { background:#485F7E; padding:20px 0px; margin-right:-7px;
+border-radius:0px 0px 0px 3px; -webkit-border-radius:0px 0px 0px 3px; -ms-border-radius:0px 0px 0px 3px; -o-border-radius:0px 0px 0px 3px;}
+
+/*scroll bar*/
+.sfFilemanageholder .sfContent { min-height:600px;}
+.sfFilemanageholder #divFileTreeOuter #divFileTree { min-height:200px; max-height:500px; overflow:hidden;}
+.sfFilemanageholder #divFileTreeOuter #divFileTree:hover { overflow:auto;}
+
+.sfFilemanageholder .sfRightcol
+{
+    overflow: hidden;
+}
+.sfFilemanageholder #divFileTree li
+{
+    color: #fff;
+    line-height: 20px;
+    list-style-type: none;
+    padding: 5px 0px;
+}
+
+.sfFilemanageholder #divFileTree li.sfActive{ background: #fff; color: #0b4b83;
+border-radius:3px 0px 0px 3px; -webkit-border-radius:3px 0px 0px 3px; -ms-border-radius:3px 0px 0px 3px; -o-border-radius:3px 0px 0px 3px;}
+.sfFilemanageholder #divFileTree li.sfActive a {color: #0b4b83; }
+.sfFilemanageholder #divFileTree li.sfActive a.cssClassTreeSelected {background:#7C8EA4; color:#fff;
+border-radius:0px 3px 3px 0px; -webkit-border-radius:0px 3px 3px 0px; -ms-border-radius:0px 3px 3px 0px; -o-border-radius:0px 3px 3px 0px;}
+.sfFilemanageholder #divFileTree li ul { border-left:2px solid #7C8EA4; }
+.sfFilemanageholder #divFileTree ul li ul li { position:relative;}
+.sfFilemanageholder #divFileTree ul li ul li:before { content:""; position:absolute; top:14px; left:-12px; height:2px; width:12px; display:block; background:#7C8EA4;}
+
+
+#divPagerNav
+{
+    margin: 10px 0;
+}
+.currentPage a
+{
+    background: #4692C3 !important;
+    border: 1px solid #4692C3 !important;
+    color: #fff !important;
+    cursor: default;
+}
+#divFileTreeOuter UL.jqueryFileTree Li:first-child
+{
+    border-top: none;
+}
+#divFileTreeOuter UL.jqueryFileTree li:last-child
+{
+    border-bottom: none;
+}
+#divFileTreeOuter UL.jqueryFileTree li a { color:#fff;}
+th span.fileName img
+{
+    margin-left: 10px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+#imbSearch
+{
+    cursor: pointer;
+}
+#divSearch .sfLeftdiv
+{
+    float: left;
+}
+#divSearch .sfRightdiv
+{
+    float: right;
+}
+.sfTab { margin-bottom: 15px;}
+.sfTab li
+{
+    float: left; border-right: 1px solid #ccc;
+    list-style-type: none; padding: 10px 15px; cursor: pointer;
+}
+.sfTab li:last-child { border-right:1px solid transparent;}
+
+.sfTab li.lastList.sfActive { border-right:1px solid #ccc !important;}
+
+.sfTab li.sfActive { background: #485F7E; color:#ff;  color:#fff; }
+
+.sfTab li label { cursor: pointer;}
+
+.ui-widget-header, .sfTab { border-bottom:none;}
+/*Dialogue Conform*/
+#popup_container {
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+	min-width: 300px; /* Dialog will be no smaller than this */
+	max-width: 600px; /* Dialog will wrap after this width */
+	background: #FFF;
+	border: solid 5px #999;
+	color: #000;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+#popup_title {
+	font-size: 14px;
 	font-weight: bold;
-	padding:10px 0;
-	width: 21%;
-	color: #4C4C4C;
-	background:#e8f5ff;
-	min-height:150px;
-	margin:0 20px 0 0;
--webkit-box-shadow:inset 0 0 0 1px #fff;
--moz-box-shadow:inset 0 0 0 1px #fff;
-box-shadow:inset 0 0 0 1px #fff;
+	text-align: center;
+	line-height: 1.75em;
+	color: #666;
+	background: #CCC url(images/title.gif) top repeat-x;
+	border: solid 1px #FFF;
+	border-bottom: solid 1px #999;
+	cursor: default;
+	padding: 0em;
+	margin: 0em;
 }
-.sfFilemanageholder .sfRightcol {
-	overflow:hidden;
+
+#popup_content {
+	background: 16px 16px no-repeat url(images/info.gif);
+	padding: 1em 1.75em;
+	margin: 0em;
 }
-.sfFilemanageholder #divFileTreeOuter li {
-	color: #136686;
-	font-family: Arial, Helvetica, sans-serif;
-	font-weight: bold;
-	line-height: 20px;
-	list-style-type: none;
-	text-shadow: 0px 1px 0 #FFFFFF;
-	padding:5px 0px;
-	border-bottom:1px solid #b9daf4;
-	border-top:1px solid #FFFFFF;
+
+#popup_content.alert {
+	background-image: url(images/info.gif);
 }
-#divPagerNav {
-	margin:10px 0;
+
+#popup_content.confirm {
+	background-image: url(images/important.gif);
 }
-.currentPage a {
-	background:#4692C3 !important;
-	border:1px solid #4692C3 !important;
-	color:#fff !important;
-	cursor:default;
+
+#popup_content.prompt {
+	background-image: url(images/help.gif);
 }
-#divFileTreeOuter UL.jqueryFileTree Li:first-child {
-	border-top:none;
+
+#popup_message {
+	padding-left: 48px;
 }
-#divFileTreeOuter UL.jqueryFileTree li:last-child {
-	border-bottom:none;
+
+#popup_panel {
+	text-align: center;
+	margin: 1em 0em 0em 1em;
 }
-th span.fileName img {
-	margin-left:10px;
-	vertical-align:middle;
-	cursor:pointer;
+
+#popup_prompt {
+	margin: .5em 0em;
 }
-#imbSearch {
-	cursor:pointer;
-}
-#divSearch .sfLeftdiv {
-	float:left;
-}
-#divSearch .sfRightdiv {
-	float:right;
-}
+
+#divEditFile { padding: 20px;}
+#divEditMode fieldset { margin:20px;}
+
+
+.sfOrgImage, .sfCropImage {border: 1px solid #ccc;
+margin-right:10px;
+    height: 400px;
+    margin-bottom: 5px;
+    overflow: auto;
+    padding: 10px;
+    width: 400px;}
+.sfCropImage { margin-right:0px;}

@@ -19,6 +19,9 @@ using System.Collections;
 using SageFrame.Web;
 using SageFrame.Framework;
 using System.Web.Caching;
+using SageFrame.Templating.xmlparser;
+using System.Drawing.Imaging;
+using System.Drawing;
 
 [ScriptService]
 public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
@@ -29,74 +32,35 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
     [WebMethod(true)]
     public static string GetFileList(string filePath, int folderId, int UserID, int IsSort, int UserModuleID, int CurrentPage, int PageSize)
     {
-
-        List<string> lstPermissionKeys = FileMangerDataProvider.GetPermissionKeys(folderId, UserID, UserModuleID, "superuser");
         StringBuilder sb = new StringBuilder();
         System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(filePath);
-        List<Folder> lstFolders = new List<Folder>();
-
-        if (!CacheHelper.Get("FileManagerFolders", out lstFolders))
-        {
-            lstFolders = FileManagerController.GetFolders();
-            CacheHelper.Add(lstFolders, "FileManagerFolders");
-        }
-
-
         List<ATTFile> lstFiles = new List<ATTFile>();
-
-        List<FileCacheInfo> lstCache = new List<FileCacheInfo>();
-
-
-        if (!CacheHelper.Get("FileManagerFileList", out lstCache))//if the cache list does not exist,then create on
+        if (filePath == "/")
         {
-            try
-            {
-
-                lstFiles = FileManagerController.GetFiles(folderId);
-                List<FileCacheInfo> lstFCI = new List<FileCacheInfo>();
-                FileCacheInfo cacheObj = new FileCacheInfo();
-                cacheObj.FolderID = folderId;
-                cacheObj.LSTFiles = lstFiles;
-                lstFCI.Add(cacheObj);
-                CacheHelper.Add(lstFCI, "FileManagerFileList");
-            }
-            catch (Exception ex)
-            {
-
-                fb.ProcessException(ex);
-            }
-
+            filePath = HttpContext.Current.Server.MapPath("~/");
         }
-        else //if the cache list exists
+        try
         {
-            int cacheIndex = lstCache.FindIndex(
-                    delegate(FileCacheInfo obj)
-                    {
-                        return (obj.FolderID == folderId);
-                    }
-                );
-            if (cacheIndex > -1)
-            {
-                lstFiles = lstCache[cacheIndex].LSTFiles;
-            }
-            else
-            {
-                try
-                {
-                    lstFiles = FileManagerController.GetFiles(folderId);
-                    List<FileCacheInfo> lstFCI = lstCache;
-                    FileCacheInfo cacheObj = new FileCacheInfo();
-                    cacheObj.FolderID = folderId;
-                    cacheObj.LSTFiles = lstFiles;
-                    lstFCI.Add(cacheObj);
-                    CacheHelper.Add(lstFCI, "FileManagerFileList");
-                }
-                catch (Exception ex)
-                {
 
-                    fb.ProcessException(ex);
+            if (Directory.Exists(filePath))
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(filePath);
+
+                foreach (FileInfo file in dirInfo.GetFiles())
+                {
+                    ATTFile obj = new ATTFile();
+                    obj.FileName = file.Name;
+                    obj.Folder = file.Directory.ToString();
+                    obj.Size = int.Parse(file.Length.ToString());
+                    obj.Extension = file.Extension;
+                    lstFiles.Add(obj);
                 }
             }
+        }
+        catch (Exception ex)
+        {
+
+            fb.ProcessException(ex);
         }
 
 
@@ -104,241 +68,88 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
         {
             SortList(ref lstFiles);
         }
-        if (lstFiles.Count > 0)
-            lstFiles = lstFiles.GetRange(GetStartRange(CurrentPage, PageSize), GetEndRange(CurrentPage, PageSize, lstFiles.Count));
-
-        ///Get the dictionary of images used in buttons
         Dictionary<string, string> dictImages = GetImages();
-
-        sb.Append("<div class='sfGridwrapper'><table  width='100%' cellspacing='0' cellpadding='0' class=\"jqueryFileTree\" id=\"fileList\">\n");
         if (lstFiles.Count > 0)
         {
-            sb.Append("<tr><th><span class='selectAll'><input type='checkbox' id='chkSelectAll'/></span></th><th><span class='fileName'>FileName<img src=" + dictImages["Sort"].ToString() + "></span></th><th><span class='fileInfo'>FileInfo</span></th><th class='sfEdit'></th><th class='sfEdit'></th><th class='sfEdit'></th></tr>");
+            lstFiles = lstFiles.GetRange(GetStartRange(CurrentPage, PageSize), GetEndRange(CurrentPage, PageSize, lstFiles.Count));
+            ///Get the dictionary of images used in buttons
+            
+            sb.Append("<div class='sfGridwrapper'><table  width='100%' cellspacing='0' cellpadding='0' class=\"jqueryFileTree\" id=\"fileList\">\n");
+            if (lstFiles.Count > 0 && HttpContext.Current.Session["SortDir"] == null || (string)HttpContext.Current.Session["SortDir"] == "asc")
+            {
+                sb.Append("<tr><th><span class='selectAll'><input type='checkbox' id='chkSelectAll'/></span></th><th><span class='fileName'>FileName &nbsp;&nbsp;<i class='icon-ascending-order' id='imgSort'></i></span></th><th><span class='fileInfo'>FileInfo</span></th><th class='sfEdit'></th><th class='sfEdit'></th><th class='sfEdit'></th></tr>");
+            }
+            else if (lstFiles.Count > 0 && (string)HttpContext.Current.Session["SortDir"] == "desc")
+            {
+                sb.Append("<tr><th><span class='selectAll'><input type='checkbox' id='chkSelectAll'/></span></th><th><span class='fileName'>FileName &nbsp;&nbsp;<i class='icon-descending-order' id='imgSort' ></i></span></th><th><span class='fileInfo'>FileInfo</span></th><th class='sfEdit'></th><th class='sfEdit'></th><th class='sfEdit'></th></tr>");
+            }
         }
         if (lstFiles.Count == 0)
         {
             sb.Append("<div class='sfEmptyrow'>No Files</div>");
         }
-        string downloadPath = FileManagerHelper.ReplaceBackSlash(Path.Combine(HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority), GetRelativePath("Modules/FileManager/DownloadHandler.ashx?")));
-        string test = HttpContext.Current.Request.PhysicalApplicationPath.ToString();
-        string urlPath = GetUrlPath(filePath);
+        string downloadPath = FileManagerHelper.ReplaceBackSlash(Path.Combine(HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority), GetRelativePath("Modules/FileManager/DownloadHandler.ashx?")));        
+        // string urlPath = GetUrlPath(filePath);
+        string urlPath = GetPreviewUrlPath(filePath);
         string absolutePath = FileManagerHelper.ReplaceBackSlash(Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath.ToString(), filePath));
-
-        string ext = "";
-        bool IsZip = false;
-        bool IsImg = false;
-
-        ///For Users with View and Write Permissions 
-        if (((lstPermissionKeys.Contains("BROWSE") && lstPermissionKeys.Contains("VIEW")) && lstPermissionKeys.Contains("EDIT")) || lstPermissionKeys.Contains("EDIT"))
+        int index = 0;
+        foreach (ATTFile fi in lstFiles)
         {
-            int index = 0;
-            foreach (ATTFile fi in lstFiles)
+            string ext = "";
+            bool IsZip = false;
+            bool IsImg = false;
+
+            if (fi.Extension.Length > 1)
+                ext = fi.Extension.Substring(1).ToLower();
+            if (ext == "zip")
+                IsZip = true;
+            if (ext == "png" || ext == "gif" || ext == "jpg" || ext == "jpeg")
+                IsImg = true;
+            string checkId = "chk_" + fi.FileId;
+            try
             {
-                if (fi.Extension.Length > 1)
-                    ext = fi.Extension.Substring(1).ToLower();
-                if (ext == "zip")
-                    IsZip = true;
-                if (ext == "png" || ext == "gif" || ext == "jpg" || ext == "jpeg")
-                    IsImg = true;
-                string checkId = "chk_" + fi.FileId;
-                if (fi.StorageLocation != (int)StorageLocation.SECURED_DATABASE_SYSTEM)
-                {
-                    switch (fi.StorageLocation)
-                    {
-                        case (int)StorageLocation.SECURED_FILE_SYSTEM:
-                            if (File.Exists(Path.Combine(absolutePath, fi.FileName + ".resources")))
-                            {
-                                try
-                                {
-                                    FileManagerHelper.ConstructHTMLString(IsZip, IsImg, fi.StorageLocation, ext, Path.Combine(urlPath, fi.FileName), Path.Combine(absolutePath, fi.FileName), downloadPath, checkId, folderId, fi, ref sb, "edit", dictImages, index);
-                                }
-                                catch (Exception ex)
-                                {
-
-                                    fb.ProcessException(ex);
-                                }
-
-                            }
-                            break;
-                        case (int)StorageLocation.STANDARD:
-                            if (File.Exists(Path.Combine(absolutePath, fi.FileName)))
-                            {
-                                try
-                                {
-                                    FileManagerHelper.ConstructHTMLString(IsZip, IsImg, fi.StorageLocation, ext, Path.Combine(urlPath, fi.FileName), Path.Combine(absolutePath, fi.FileName), downloadPath, checkId, folderId, fi, ref sb, "edit", dictImages, index);
-                                }
-                                catch (Exception ex)
-                                {
-
-                                    fb.ProcessException(ex);
-                                }
-                            }
-                            break;
-                    }
-
-                }
-                else if (fi.StorageLocation == (int)StorageLocation.SECURED_DATABASE_SYSTEM)
-                {
-                    try
-                    {
-                        FileManagerHelper.ConstructHTMLString(IsZip, IsImg, fi.StorageLocation, ext, Path.Combine(urlPath, fi.FileName), Path.Combine(absolutePath, fi.FileName), downloadPath, checkId, folderId, fi, ref sb, "edit", dictImages, index);
-                    }
-                    catch (Exception ex)
-                    {
-
-                        fb.ProcessException(ex);
-                    }
-
-
-                }
-                index++;
-
+                FileManagerHelper.ConstructHTMLString(IsZip, IsImg, fi.StorageLocation, ext, urlPath + fi.FileName, Path.Combine(absolutePath, fi.FileName), downloadPath, checkId, folderId, fi, ref sb, "edit", dictImages, index);
             }
-        }
-        ///For users with only browse permission
-        else if (((lstPermissionKeys.Contains("BROWSE") && !lstPermissionKeys.Contains("VIEW")) && !lstPermissionKeys.Contains("EDIT")))
-        {
-            int index = 0;
-            foreach (ATTFile fi in lstFiles)
+            catch (Exception ex)
             {
-                if (fi.Extension.Length > 1)
-                    ext = fi.Extension.Substring(1).ToLower();
-                if (ext == "zip")
-                    IsZip = true;
-                if (ext == "png" || ext == "gif" || ext == "jpg" || ext == "jpeg")
-                    IsImg = true;
-                string checkId = "chk_" + fi.FileId;
-
-                if (fi.StorageLocation != (int)StorageLocation.SECURED_DATABASE_SYSTEM)
-                {
-                    switch (fi.StorageLocation)
-                    {
-                        case (int)StorageLocation.SECURED_FILE_SYSTEM:
-                            if (File.Exists(Path.Combine(absolutePath, fi.FileName + ".resources")))
-                            {
-                                try
-                                {
-                                    FileManagerHelper.ConstructHTMLString(false, IsImg, fi.StorageLocation, ext, Path.Combine(urlPath, fi.FileName), Path.Combine(absolutePath, fi.FileName), downloadPath, checkId, folderId, fi, ref sb, "browse", dictImages, index);
-                                }
-                                catch (Exception ex)
-                                {
-
-                                    fb.ProcessException(ex);
-                                }
-                            }
-                            break;
-                        case (int)StorageLocation.STANDARD:
-                            if (File.Exists(Path.Combine(absolutePath, fi.FileName)))
-                            {
-                                try
-                                {
-                                    FileManagerHelper.ConstructHTMLString(false, IsImg, fi.StorageLocation, ext, Path.Combine(urlPath, fi.FileName), Path.Combine(absolutePath, fi.FileName), downloadPath, checkId, folderId, fi, ref sb, "browse", dictImages, index);
-                                }
-                                catch (Exception ex)
-                                {
-
-                                    fb.ProcessException(ex);
-                                }
-                            }
-                            break;
-                    }
-
-                }
-                else
-                {
-                    try
-                    {
-                        FileManagerHelper.ConstructHTMLString(false, IsImg, fi.StorageLocation, ext, Path.Combine(urlPath, fi.FileName), Path.Combine(absolutePath, fi.FileName), downloadPath, checkId, folderId, fi, ref sb, "browse", dictImages, index);
-                    }
-                    catch (Exception ex)
-                    {
-
-                        fb.ProcessException(ex);
-                    }
-
-                }
-                index++;
+                fb.ProcessException(ex);
             }
-
-        }
-        else if (((lstPermissionKeys.Contains("VIEW")) && !lstPermissionKeys.Contains("EDIT")))
-        {
-            int index = 0;
-            foreach (ATTFile fi in lstFiles)
-            {
-                if (fi.Extension.Length > 1)
-                    ext = fi.Extension.Substring(1).ToLower();
-                if (ext == "zip")
-                    IsZip = true;
-                if (ext == "png" || ext == "gif" || ext == "jpg" || ext == "jpeg")
-                    IsImg = true;
-                string checkId = "chk_" + fi.FileId;
-                if (fi.StorageLocation != (int)StorageLocation.SECURED_DATABASE_SYSTEM)
-                {
-                    switch (fi.StorageLocation)
-                    {
-                        case (int)StorageLocation.SECURED_FILE_SYSTEM:
-                            if (File.Exists(Path.Combine(absolutePath, fi.FileName + ".resources")))
-                            {
-                                try
-                                {
-                                    FileManagerHelper.ConstructHTMLString(false, IsImg, fi.StorageLocation, ext, Path.Combine(urlPath, fi.FileName), Path.Combine(absolutePath, fi.FileName), downloadPath, checkId, folderId, fi, ref sb, "view", dictImages, index);
-                                }
-                                catch (Exception ex)
-                                {
-
-                                    fb.ProcessException(ex);
-                                }
-                            }
-                            break;
-                        case (int)StorageLocation.STANDARD:
-                            if (File.Exists(Path.Combine(absolutePath, fi.FileName)))
-                            {
-                                try
-                                {
-                                    FileManagerHelper.ConstructHTMLString(false, IsImg, fi.StorageLocation, ext, Path.Combine(urlPath, fi.FileName), Path.Combine(absolutePath, fi.FileName), downloadPath, checkId, folderId, fi, ref sb, "view", dictImages, index);
-                                }
-                                catch (Exception ex)
-                                {
-
-                                    fb.ProcessException(ex);
-                                }
-                            }
-                            break;
-                    }
-
-                }
-                else
-                {
-                    FileManagerHelper.ConstructHTMLString(false, IsImg, fi.StorageLocation, ext, Path.Combine(urlPath, fi.FileName), Path.Combine(absolutePath, fi.FileName), downloadPath, checkId, folderId, fi, ref sb, "view", dictImages, index);
-
-                }
-                index++;
-            }
+            index++;
         }
         sb.Append("</table></div>");
         sb.Append("<div id='divBottomControl'>");
         sb.Append("</div>");
-
-
         return sb.ToString();
-
     }
 
     [WebMethod(true)]
-    public static string SearchFiles(string SearchQuery, int UserModuleID, string UserName, int CurrentPage, int PageSize)
+    public static string SearchFiles(string SearchQuery, int UserModuleID, string UserName, int CurrentPage, int PageSize, string FilePath)
     {
-
+        if (FilePath == "/")
+        {
+            FilePath = HttpContext.Current.Server.MapPath("~/");
+        }
         StringBuilder sb = new StringBuilder();
-        List<ATTFile> lstFiles = FileManagerController.SearchFiles(SearchQuery);
-        Dictionary<string, string> dictImages = GetImages();
+        List<ATTFile> lstFiles = new List<ATTFile>();
+        if (Directory.Exists(FilePath))
+        {
+            DirectoryInfo dirInfo = new DirectoryInfo(FilePath);
+            foreach (FileInfo file in dirInfo.GetFiles(SearchQuery + "*"))
+            {
+                ATTFile obj = new ATTFile();
+                obj.FileName = file.Name;
+                obj.Folder = file.Directory.ToString();
+                obj.Size = int.Parse(file.Length.ToString());
+                obj.Extension = file.Extension;
+                lstFiles.Add(obj);
+            }
+        }
 
+        Dictionary<string, string> dictImages = GetImages();
         List<string> lstPermissions = FileManagerController.GetModulePermission(UserModuleID, UserName);
         int UserPermissionKey = lstPermissions.Contains("EDIT") ? 1 : 0;
-
         if (lstFiles.Count > 0)
             lstFiles = lstFiles.GetRange(GetStartRange(CurrentPage, PageSize), GetEndRange(CurrentPage, PageSize, lstFiles.Count));
-
 
         sb.Append("<div class='sfGridwrapper'><table  width='100%' cellspacing='0' cellpadding='0' class=\"jqueryFileTree\" id=\"fileList\">\n");
         if (lstFiles.Count > 0)
@@ -359,12 +170,12 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
             foreach (ATTFile fi in lstFiles)
             {
                 string ext = "";
-                bool IsZip = false;
+                //bool IsZip = false;
                 bool IsImg = false;
                 if (fi.Extension.Length > 1)
                     ext = fi.Extension.Substring(1).ToLower();
-                if (ext == "zip")
-                    IsZip = true;
+                // if (ext == "zip")
+                //     IsZip = true;
                 if (ext == "png" || ext == "gif" || ext == "jpg" || ext == "jpeg")
                     IsImg = true;
                 string checkId = "chk_" + fi.FileId;
@@ -387,12 +198,12 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
             foreach (ATTFile fi in lstFiles)
             {
                 string ext = "";
-                bool IsZip = false;
+                //  bool IsZip = false;
                 bool IsImg = false;
                 if (fi.Extension.Length > 1)
                     ext = fi.Extension.Substring(1).ToLower();
-                if (ext == "zip")
-                    IsZip = true;
+                //if (ext == "zip")
+                //   IsZip = true;
                 if (ext == "png" || ext == "gif" || ext == "jpg" || ext == "jpeg")
                     IsImg = true;
                 string checkId = "chk_" + fi.FileId;
@@ -418,22 +229,11 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
     }
 
     [WebMethod()]
-    public static string DeleteFile(string filePath, int folderId, int fileId)
+    public static string DeleteFile(string filePath)
     {
         string message = "";
         filePath = GetAbsolutePath(filePath);
-        List<Folder> lstFolder = FileManagerController.GetFolders();
-        int folderType = 0;
-        int index = lstFolder.FindIndex(
-                delegate(Folder obj)
-                {
-                    return (obj.FolderId == folderId);
-                }
-            );
-        if (index > -1)
-        {
-            folderType = lstFolder[index].StorageLocation;
-        }
+
         if (filePath.EndsWith("/"))
         {
             DirectoryInfo di = new DirectoryInfo(filePath);
@@ -442,30 +242,21 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
                 try
                 {
                     di.Delete();
-                    FileManagerController.DeleteFileFolder(folderId, 0);
-                    message = "Folder Deleted Successfully";
+                    message = "Folder deleted successfully";
 
                 }
                 catch (Exception ex)
                 {
 
                     fb.ProcessException(ex);
-                    message = "Folder Cannot be deleted";
+                    message = "Folder contaning files cannot be deleted";
                 }
 
             }
         }
         else
         {
-            if (folderType == (int)StorageLocation.SECURED_FILE_SYSTEM)
-            {
-                filePath += ".resources";
-            }
-            if (folderType == (int)StorageLocation.SECURED_DATABASE_SYSTEM)
-            {
-                FileManagerController.DeleteFileFolder(0, fileId);
-                message = "File deleted successfully";
-            }
+
             FileInfo file = new FileInfo(filePath);
             // Checking if file exists
             if (file.Exists)
@@ -475,7 +266,7 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
                 {
                     File.SetAttributes(filePath, FileAttributes.Normal);
                     file.Delete();
-                    FileManagerController.DeleteFileFolder(0, fileId);
+
                     message = "File deleted successfully";
                 }
                 catch (Exception ex)
@@ -484,12 +275,10 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
                     fb.ProcessException(ex);
                     message = "File could be deleted";
                 }
-
-
             }
         }
-        CacheHelper.Clear("FileManagerFileList");
-        CacheHelper.Clear("FileManagerFolders");
+        //CacheHelper.Clear("FileManagerFileList");
+        //CacheHelper.Clear("FileManagerFolders");
         return message;
     }
 
@@ -567,28 +356,12 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
     }
 
     [WebMethod()]
-    public static void UpdateFile(int fileId, int folderId, string fileName, string filePath, string attrString)
+    public static void UpdateFile(string fileName, string filePath, string attrString)
     {
 
         filePath = GetAbsolutePath(filePath);
-        List<Folder> lstFolder = FileManagerController.GetFolders();
-        int folderType = 0;
-        int index = lstFolder.FindIndex(
-                delegate(Folder obj)
-                {
-                    return (obj.FolderId == folderId);
-                }
-            );
-        if (index > -1)
-        {
-            folderType = lstFolder[index].StorageLocation;
-        }
-        string newFileName = fileName;
-        if (folderType == 1)
-        {
-            filePath += ".resources";
-            newFileName += ".resources";
-        }
+
+
         try
         {
             FileInfo file = new FileInfo(filePath);
@@ -597,11 +370,11 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
             {
                 ///get the folder path
                 filePath = filePath.Substring(0, filePath.LastIndexOf("/") + 1);
-                filePath = filePath + newFileName;
+                filePath = filePath + fileName;
                 file.MoveTo(filePath);
-                FileManagerController.UpdateFile(fileId, fileName);
+                //FileManagerController.UpdateFile(fileId, fileName);
                 FileManagerHelper.SetFileAttributes(filePath, attrString);
-                CacheHelper.Clear("FileManagerFileList");
+                //CacheHelper.Clear("FileManagerFileList");
 
             }
         }
@@ -616,71 +389,24 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
     }
 
     [WebMethod()]
-    public static void CopyFile(int fileId, string filePath, int folderId, int toFolderId, string fromPath, string toPath)
+    public static void CopyFile(string filePath, string fromPath, string toPath)
     {
 
         string fullFilePath = GetAbsolutePath(filePath);
         string fullFromPath = GetAbsolutePath(fromPath);
         string fullToPath = GetAbsolutePath(toPath);
-        List<Folder> lstFolder = FileManagerController.GetFolders();
-        int folderType1 = 0;
-        int folderType2 = 0;
-        int index1 = lstFolder.FindIndex(
-                delegate(Folder obj)
-                {
-                    return (obj.FolderId == folderId);
-                }
-            );
-        if (index1 > -1)
-        {
-            folderType1 = lstFolder[index1].StorageLocation;
-        }
 
-        int index2 = lstFolder.FindIndex(
-               delegate(Folder obj)
-               {
-                   return (obj.FolderId == toFolderId);
-               }
-           );
-        if (index2 > -1)
-        {
-            folderType2 = lstFolder[index2].StorageLocation;
-        }
 
-        string copyKey = folderType1.ToString() + folderType2.ToString();
+
+
         try
         {
-            switch (copyKey)
-            {
-                case "00":///normal folder type to normal
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.COPY, (int)TransferMode.NORMALTONORMAL, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "01":///normal to secure
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.COPY, (int)TransferMode.NORMALTOSECURE, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "02":///normal to database
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.COPY, (int)TransferMode.NORMALTODATABASE, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "10":///secure to normal
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.COPY, (int)TransferMode.SECURETONORMAL, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "11":///secure to secure
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.COPY, (int)TransferMode.NORMALTOSECURE, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "12":///secure to database
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.COPY, (int)TransferMode.SECURETODATABASE, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "20":///database to normal
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.COPY, (int)TransferMode.DATABASETONORMAL, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "21":///database to secure
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.COPY, (int)TransferMode.DATABASETOSECURE, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "22":///database to database
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.COPY, (int)TransferMode.DATABASETODATABASE, fullFilePath, fullFromPath, fullToPath);
-                    break;
-            }
-            CacheHelper.Clear("FileManagerFileList");
+
+            //public static void TransferFile(string filePath, string toPath, int action, int mode, string fullFilePath, string fullFromPath, string fullToPath)
+            FileManagerHelper.TransferFile(filePath, toPath, (int)Action.COPY, (int)TransferMode.NORMALTONORMAL, fullFilePath, fullFromPath, fullToPath);
+
+
+
         }
         catch (Exception ex)
         {
@@ -690,82 +416,17 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
 
 
     }
-
     [WebMethod()]
-    public static void MoveFile(int fileId, string filePath, int folderId, int toFolderId, string fromPath, string toPath)
+    public static void MoveFile(string filePath, string fromPath, string toPath)
     {
         string fullFilePath = GetAbsolutePath(filePath);
         string fullFromPath = GetAbsolutePath(fromPath);
         string fullToPath = GetAbsolutePath(toPath);
 
-        List<Folder> lstFolder = FileManagerController.GetFolders();
-        int folderType1 = 0;
-        int folderType2 = 0;
-        int index1 = lstFolder.FindIndex(
-                delegate(Folder obj)
-                {
-                    return (obj.FolderId == folderId);
-                }
-            );
-        if (index1 > -1)
-        {
-            folderType1 = lstFolder[index1].StorageLocation;
-        }
-
-        int index2 = lstFolder.FindIndex(
-               delegate(Folder obj)
-               {
-                   return (obj.FolderId == toFolderId);
-               }
-           );
-        if (index2 > -1)
-        {
-            folderType2 = lstFolder[index2].StorageLocation;
-        }
-
-        string moveKey = folderType1.ToString() + folderType2.ToString();
-        try
-        {
-            switch (moveKey)
-            {
-                case "00":///normal folder type to normal
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.MOVE, (int)TransferMode.NORMALTONORMAL, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "01":///normal to secure
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.MOVE, (int)TransferMode.NORMALTOSECURE, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "02":///normal to database
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.MOVE, (int)TransferMode.SECURETODATABASE, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "10":///secure to normal
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.MOVE, (int)TransferMode.SECURETONORMAL, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "11":///secure to secure
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.MOVE, (int)TransferMode.SECURETOSECURE, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "12":///secure to database
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.MOVE, (int)TransferMode.SECURETODATABASE, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "20":///database to normal
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.MOVE, (int)TransferMode.DATABASETONORMAL, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "21":///database to secure
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.MOVE, (int)TransferMode.DATABASETOSECURE, fullFilePath, fullFromPath, fullToPath);
-                    break;
-                case "22":///database to database
-                    FileManagerHelper.TransferFile(filePath, fileId, toFolderId, toPath, (int)Action.MOVE, (int)TransferMode.DATABASETODATABASE, fullFilePath, fullFromPath, fullToPath);
-                    break;
-            }
-            CacheHelper.Clear("FileManagerFileList");
-        }
-        catch (Exception ex)
-        {
-
-            fb.ProcessException(ex);
-        }
-
-
+        FileManagerHelper.TransferFile(filePath, toPath, (int)Action.MOVE, (int)TransferMode.NORMALTONORMAL, fullFilePath, fullFromPath, fullToPath);
     }
+
+
 
     [WebMethod]
     public static List<Roles> GetAllRoles()
@@ -854,8 +515,8 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
         DirectoryInfo dir = new DirectoryInfo(newFolderPath);
         if (!dir.Exists)
         {
-            string path = "";
-            FileManagerHelper.UnZipFiles(absolutePath, newFolderPath, ref path, SageFrame.Core.RegisterModule.Common.Password, false, UserModuleID, fb.GetPortalID);
+            string path = string.Empty;
+            FileManagerHelper.UnZipFiles(absolutePath, newFolderPath, ref path, SageFrame.Common.RegisterModule.Common.Password, false, UserModuleID, fb.GetPortalID);
             Folder folder = new Folder();
             folder.PortalId = fb.GetPortalID;
             folder.ParentID = FolderID;
@@ -873,16 +534,14 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
             }
             catch (Exception ex)
             {
-
                 fb.ProcessException(ex);
-
             }
-       
+
         }
         CacheHelper.Clear("FileManagerFileList");
         CacheHelper.Clear("FileManagerFolders");
         return sb.ToString();
-        
+
     }
 
 
@@ -892,7 +551,7 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
     {
         string extension = "";
         SageFrameConfig config = new SageFrameConfig();
-        extension = config.GetSettingsByKey(SageFrameSettingKeys.FileExtensions);
+        extension = config.GetSettingValueByIndividualKey(SageFrameSettingKeys.FileExtensions);
         return extension;
     }
 
@@ -906,7 +565,7 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
             SynchronizeFiles.PortalID = fb.GetPortalID;
             SynchronizeFiles.extensions = "jpg,zip,txt,doc,docx,tif,css,js,jpeg,png";
             SynchronizeFiles.absolutePath = HttpContext.Current.Request.PhysicalApplicationPath.ToString();
-            SynchronizeFiles.lstFolders = FileManagerController.GetAllFolders();
+            //SynchronizeFiles.lstFolders = FileManagerController.GetAllFolders();
             SynchronizeFiles.F2DSync();
             SynchronizeFiles.D2FSync();
 
@@ -925,17 +584,37 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
 
     #region pagermethods
     [WebMethod]
-    public static int GetCount(int FolderID)
+    public static int GetCount(string FilePath)
     {
-        List<ATTFile> lstFiles = FileManagerController.GetFiles(FolderID);
-        return lstFiles.Count;
+        if (FilePath == "/")
+        {
+            FilePath = HttpContext.Current.Server.MapPath("~/");
+        }
+        string[] files;
+        int numFiles;
+        files = Directory.GetFiles(FilePath);
+        numFiles = files.Length;
+        return numFiles;
     }
 
     [WebMethod(true)]
-    public static int GetSearchCount(string SearchQuery, int UserModuleID, string UserName)
+    public static int GetSearchCount(string SearchQuery, int UserModuleID, string UserName, string FilePath)
     {
-
-        List<ATTFile> lstFiles = FileManagerController.SearchFiles(SearchQuery);
+        if (FilePath == "/")
+        {
+            FilePath = HttpContext.Current.Server.MapPath("~/");
+        }
+        List<ATTFile> lstFiles = new List<ATTFile>();
+        if (Directory.Exists(FilePath))
+        {
+            DirectoryInfo dirInfo = new DirectoryInfo(FilePath);
+            foreach (FileInfo file in dirInfo.GetFiles(SearchQuery + "*"))
+            {
+                ATTFile obj = new ATTFile();
+                obj.FileName = file.Name;
+                lstFiles.Add(obj);
+            }
+        }
         return lstFiles.Count;
     }
 
@@ -961,13 +640,13 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
     public static void SortList(ref List<ATTFile> lstFiles)
     {
         if (HttpContext.Current.Session != null)
-            if (HttpContext.Current.Session["SortDir"] == null || (string) HttpContext.Current.Session["SortDir"] == "asc")
+            if (HttpContext.Current.Session["SortDir"] == null || (string)HttpContext.Current.Session["SortDir"] == "asc")
             {
                 lstFiles.Sort(
                     delegate(ATTFile f1, ATTFile f2)
-                        {
-                            return f1.FileName.CompareTo(f2.FileName);
-                        }
+                    {
+                        return f1.FileName.CompareTo(f2.FileName);
+                    }
 
                     );
                 HttpContext.Current.Session["SortDir"] = "desc";
@@ -976,9 +655,9 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
             {
                 lstFiles.Sort(
                     delegate(ATTFile f1, ATTFile f2)
-                        {
-                            return f2.FileName.CompareTo(f1.FileName);
-                        }
+                    {
+                        return f2.FileName.CompareTo(f1.FileName);
+                    }
 
                     );
                 HttpContext.Current.Session["SortDir"] = "asc";
@@ -995,6 +674,7 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
         dictImageList.Add("Preview", GetRelativePath("Modules/FileManager/images/img_preview.png"));
         dictImageList.Add("Extract", GetRelativePath("Modules/FileManager/images/extract.png"));
         dictImageList.Add("Sort", GetRelativePath("Modules/FileManager/images/sort.png"));
+        dictImageList.Add("Sort2", GetRelativePath("Modules/FileManager/images/sort2.png"));
 
         return dictImageList;
     }
@@ -1024,7 +704,7 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
             try
             {
 
-                if (FileManagerHelper.CheckForValidExtensions(UserModuleID, file.Extension.Replace(".",""), fb.GetPortalID))
+                if (FileManagerHelper.CheckForValidExtensions(UserModuleID, file.Extension.Replace(".", ""), fb.GetPortalID))
                 {
                     FileManagerController.AddFile(obj);
                     sb.Append("File ").Append("Extraction completed successfully");
@@ -1075,8 +755,29 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
     public static string GetUrlPath(string path)
     {
         string relativePathInitial = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + HttpContext.Current.Request.ApplicationPath + "/";
-        return (FileManagerHelper.ReplaceBackSlash(Path.Combine(relativePathInitial, path)));
+        relativePathInitial = (FileManagerHelper.ReplaceBackSlash(Path.Combine(relativePathInitial, path)));
+        if (relativePathInitial.Contains("SageFrame/"))
+        {
+            string[] stringSeparators = new string[] { "SageFrame/" };
+            string[] imgPath;
+            imgPath = relativePathInitial.Split(stringSeparators, StringSplitOptions.None);
+            string testapth = HttpContext.Current.Request.ApplicationPath + "/" + imgPath[1];
+            return HttpContext.Current.Request.ApplicationPath + "/" + imgPath[1];
+        }
+        else
+            return HttpContext.Current.Request.ApplicationPath;
 
+    }
+    public static string GetPreviewUrlPath(string path)
+    {
+        string root = HttpContext.Current.Server.MapPath("~/");
+        string relativePathInitial = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) + HttpContext.Current.Request.ApplicationPath + "/";
+        if (root != path)
+        {
+            string stringSeparators = path.Substring(root.Length).Replace('\\', '/');
+            relativePathInitial += stringSeparators;
+        }
+        return relativePathInitial;
     }
     #endregion
 
@@ -1106,6 +807,152 @@ public partial class Modules_FileManager_js_WebMethods : System.Web.UI.Page
         DATABASETODATABASE = 9
     }
     #endregion
+
+
+    //new
+
+    [WebMethod(true)]
+    public static string EditFile(string FilePath)
+    {
+
+        string ImgPath = HttpContext.Current.Request.ApplicationPath.ToString() + FilePath;
+        return ImgPath;
+    }
+    [WebMethod(true)]
+    public static string ReadFiles(string FullPath)
+    {
+        try
+        {
+            int index = 0;
+            index = HttpContext.Current.Request.ApplicationPath == "/" ? 0 : 1;
+            string originalFile = string.Concat(HttpContext.Current.Server.MapPath("~/"), FullPath.Substring(FullPath.IndexOf("/", index)).Replace("/", "\\"));
+            string html = GetXMLString(originalFile);
+            return html;
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
+    }
+    public static string GetXMLString(string filePath)
+    {
+
+        StreamReader sr = null;
+        string xml = null;
+        try
+        {
+            sr = new StreamReader(filePath);
+            xml = sr.ReadToEnd();
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+        finally
+        {
+            if (sr != null)
+            {
+                sr.Close();
+                sr = null;
+            }
+        }
+        return xml;
+    }
+    [WebMethod(true)]
+    public static bool UpdateFileContain(string FullPath, string UpdateValue)
+    {
+        int index = 0;
+        index = HttpContext.Current.Request.ApplicationPath == "/" ? 0 : 1;
+        string originalFile = string.Concat(HttpContext.Current.Server.MapPath("~/"), FullPath.Substring(FullPath.IndexOf('/', index)).Replace("/", "\\"));
+        System.IO.StreamWriter objStreamWriter = new System.IO.StreamWriter(originalFile);
+        objStreamWriter.Write(UpdateValue);
+        objStreamWriter.Close();
+        return true;
+
+
+    }
+    [WebMethod(true)]
+    public static string CropImage(string ImagePath, int X1, int Y1, int X2, int Y2, int w, int h)
+    {
+
+        string dir = "";
+        string imagename = ImagePath.Substring(ImagePath.LastIndexOf('/') + 1).ToString();
+        dir = ImagePath.Replace(imagename, "");
+        string imagenamewithoutext = imagename.Substring(imagename.LastIndexOf('.') + 1).ToString();
+        string CroppedImag = "";
+        int X = System.Math.Min(X1, X2);
+        int Y = System.Math.Min(Y1, Y2);
+        int index = 0;
+        index = HttpContext.Current.Request.ApplicationPath == "/" ? 0 : 1;
+        string originalFile = string.Concat(HttpContext.Current.Server.MapPath("~/"), ImagePath.Substring(ImagePath.IndexOf('/', index)).Replace("/", "\\"));
+        string savePath = Path.GetDirectoryName(originalFile) + "\\";
+        if (File.Exists(originalFile))
+        {
+            using (System.Drawing.Image img = System.Drawing.Image.FromFile(originalFile))
+            {
+                using (System.Drawing.Bitmap _bitmap = new System.Drawing.Bitmap(w, h))
+                {
+                    _bitmap.SetResolution(img.HorizontalResolution, img.VerticalResolution);
+                    using (Graphics _graphic = Graphics.FromImage(_bitmap))
+                    {
+                        _graphic.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                        _graphic.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                        _graphic.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                        _graphic.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                        _graphic.DrawImage(img, 0, 0, w, h);
+                        _graphic.DrawImage(img, new Rectangle(0, 0, w, h), X, Y, w, h, GraphicsUnit.Pixel);
+
+                        Random rand = new Random((int)DateTime.Now.Ticks);
+                        int RandomNumber;
+                        RandomNumber = rand.Next(1, 200);
+                        int CharCode = rand.Next(Convert.ToInt32('a'), Convert.ToInt32('z'));
+                        char RandomChar = Convert.ToChar(CharCode);
+                        string extension = Path.GetExtension(originalFile);
+                        //string croppedFileName = Guid.NewGuid().ToString();
+                        string croppedFileName = imagenamewithoutext + "_" + RandomNumber.ToString() + RandomChar.ToString();
+                        string path = savePath;
+
+                        // If the image is a gif file, change it into png
+                        if (extension.EndsWith("gif", StringComparison.OrdinalIgnoreCase))
+                        {
+                            extension = ".png";
+                        }
+
+                        string newFullPathName = string.Concat(path, croppedFileName, extension);
+
+                        using (EncoderParameters encoderParameters = new EncoderParameters(1))
+                        {
+                            encoderParameters.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 100L);
+                            _bitmap.Save(newFullPathName, GetImageCodec(extension), encoderParameters);
+                        }
+
+                        //lblCroppedImage.Text = string.Format("<img src='{0}' alt='Cropped image'>", path + extension);
+
+                        CroppedImag = string.Format("<img src='{0}' alt='Cropped image'>", string.Concat(dir, croppedFileName, extension));
+                    }
+                }
+            }
+        }
+        return CroppedImag;
+    }
+    /// <summary>
+    /// Find the right codec
+    /// </summary>
+    /// <param name="extension"></param>
+    /// <returns></returns>
+    public static ImageCodecInfo GetImageCodec(string extension)
+    {
+        extension = extension.ToUpperInvariant();
+        ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+        foreach (ImageCodecInfo codec in codecs)
+        {
+            if (codec.FilenameExtension.Contains(extension))
+            {
+                return codec;
+            }
+        }
+        return codecs[1];
+    }
 
 }
 
